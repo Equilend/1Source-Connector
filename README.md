@@ -1,6 +1,5 @@
 [![Build Status](https://jenkins.equilend.com/buildStatus/icon?job=Onesource_TK_Develop_Build)](https://jenkins.equilend.com/job/Onesource_TK_Develop_Build/)
 
-
 ## Table of contents
 
 * [1. Project Description](#1-project-description)
