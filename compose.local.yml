@@ -1,0 +1,77 @@
+version: "3.9"
+
+services:
+  1source-mock:
+    image: mockoon/cli
+    container_name: 1source-mock
+    command: [ "--data", "data" ]
+    restart: on-failure
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./mockApi/1source-mock.json:/data
+
+  spire-mock:
+    image: mockoon/cli
+    container_name: spire-mock
+    command: [ "--data", "data" ]
+    restart: on-failure
+    ports:
+      - "8083:8083"
+    volumes:
+      - ./mockApi/spire-mock.json:/data
+
+
+  postgres:
+    image: postgres:15
+    container_name: 1source-postgres
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "5432:5432"
+
+  # only for development. Not production version!
+  keycloak-mock:
+    image: quay.io/keycloak/keycloak
+    container_name: keycloak-mock
+    restart: on-failure
+    command:
+      - start-dev
+      - --import-realm
+      - --health-enabled=true
+    volumes:
+      - ./mockApi/keycloak/keycloak-realm-export.json:/opt/keycloak/data/import/realm-export.json
+      - ./mockApi/keycloak/keycloak-healthcheck.sh:/opt/keycloak/health-check.sh
+    environment:
+      DB_VENDOR: POSTGRES
+      DB_ADDR: postgres
+      DB_DATABASE: keycloak
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      PROXY_ADDRESS_FORWARDING: true
+    healthcheck:
+      # keycloak image doesn't have curl to request the '/health/ready' endpoint, using workaround
+      test: "bash /opt/keycloak/health-check.sh"
+      start_period: 10s
+      interval: 5s
+      retries: 5
+      timeout: 10s
+    ports:
+      - "8088:8080"
+
+  1source-integration:
+    build:
+      context: ./
+      dockerfile: Dockerfile-local
+    image: onesource:latest
+    container_name: 1source-integration
+    ports:
+      - "8080:8080"
+      - "8000:8000"
+    depends_on:
+      keycloak-mock:
+        condition: service_healthy

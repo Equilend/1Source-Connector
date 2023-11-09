@@ -1,0 +1,14 @@
+[
+    {
+        "eventId": 3,
+        "eventType": "CONTRACT",
+        "eventDatetime": "2023-07-27T13:41:29.011Z",
+        "resourceUri": "32b71278-9ad2-445a-bfb0-b5ada72f7195"
+    },
+    {
+        "eventId": 4,
+        "eventType": "CONTRACT",
+        "eventDatetime": "2023-03-27T13:41:29.011Z",
+        "resourceUri": "32b71278-9ad2-445a-bfb0-b5ada72f7196"
+    }
+]
