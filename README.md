@@ -5,7 +5,7 @@
 * [3. Setup](#3-setup)
 * [4. Application Configuration](#4-application-configuration)
 
-## 1. Project Description
+## 1. Project Description 
 
 OneSource integration toolkit is a mediator service between 1SOURCE and SPIRE systems. The toolkit aims to enhance the
 end-user experience with lending or borrowing securities.
