@@ -109,13 +109,13 @@ public class OneSourceSpireReconcileService implements ReconcileService {
       checkEquality(tradeAgreement.getDividendRatePct().doubleValue(), DIVIDENT_RATE_PCT,
           position.getLoanBorrowDto().getTaxWithholdingRate(), TAX_WITH_HOLDING_RATE, reconciliationFailMessages);
     }
-    if (tradeAgreement.getTradeDate() != null) {
+    if (tradeAgreement.getTradeDate() != null && position.getTradeDate() != null) {
       checkEquality(tradeAgreement.getTradeDate(), TRADE_DATE,
-          position.getTradeDate(), POSITION_TRADE_DATE, reconciliationFailMessages);
+          position.getTradeDate().toLocalDate(), POSITION_TRADE_DATE, reconciliationFailMessages);
     }
-    if (tradeAgreement.getSettlementDate() != null) {
+    if (tradeAgreement.getSettlementDate() != null && position.getSettleDate() != null) {
       checkEquality(tradeAgreement.getSettlementDate(), SETTLEMENT_DATE,
-          position.getSettleDate(), SETTLE_DATE, reconciliationFailMessages);
+          position.getSettleDate().toLocalDate(), SETTLE_DATE, reconciliationFailMessages);
     }
     checkDeliverFree(tradeAgreement.getSettlementType(), position, reconciliationFailMessages);
     checkCollateralEquality(tradeAgreement.getCollateral(), position, reconciliationFailMessages);

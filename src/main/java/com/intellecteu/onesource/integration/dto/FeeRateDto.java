@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
@@ -20,8 +20,8 @@ public class FeeRateDto {
     @JsonProperty("effectiveRate")
     private Double effectiveRate;
     @JsonProperty("effectiveDate")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime effectiveDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate effectiveDate;
     @JsonProperty("cutoffTime")
     private String cutoffTime;
 }

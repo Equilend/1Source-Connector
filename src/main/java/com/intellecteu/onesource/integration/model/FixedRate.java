@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -30,8 +30,8 @@ public class FixedRate {
     private Double baseRate;
     @Column(name = "effective_rate")
     private Double effectiveRate;
-    @Column(name = "effective_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime effectiveDate;
+    @Column(name = "effective_date", columnDefinition = "DATE")
+    private LocalDate effectiveDate;
     @Column(name = "cutoff_time")
     private String cutoffTime;
 }

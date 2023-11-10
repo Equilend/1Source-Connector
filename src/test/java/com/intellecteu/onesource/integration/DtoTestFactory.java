@@ -25,7 +25,9 @@ import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import lombok.experimental.UtilityClass;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.intellecteu.onesource.integration.model.AgreementStatus.CONFIRMED;
@@ -63,10 +65,10 @@ public class DtoTestFactory {
         .quantity(2)
         .billingCurrency(EUR)
         .dividendRatePct(2)
-        .tradeDate(LocalDateTime.now())
+        .tradeDate(LocalDate.now())
         .termType(OPEN)
-        .termDate(LocalDateTime.now())
-        .settlementDate(LocalDateTime.now())
+        .termDate(LocalDate.now())
+        .settlementDate(LocalDate.now())
         .settlementType(DVP)
         .collateral(buildCollateralDto())
         .transactingParties(createTransactionParties())
@@ -89,8 +91,8 @@ public class DtoTestFactory {
         .quantity(tradeAgreement.getQuantity().doubleValue())
         .currency(buildCurrencyDto(tradeAgreement))
         .loanBorrowDto(buildLoanBorrowDto(tradeAgreement))
-        .tradeDate(tradeAgreement.getTradeDate())
-        .settleDate(tradeAgreement.getSettlementDate())
+        .tradeDate(LocalDateTime.of(tradeAgreement.getTradeDate(), LocalTime.now()))
+        .settleDate(LocalDateTime.of(tradeAgreement.getSettlementDate(), LocalTime.now()))
         .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
         .amount(tradeAgreement.getCollateral().getCollateralValue())
         .price(tradeAgreement.getCollateral().getContractPrice())

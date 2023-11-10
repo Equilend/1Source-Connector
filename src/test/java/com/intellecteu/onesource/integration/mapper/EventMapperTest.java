@@ -197,7 +197,7 @@ class EventMapperTest {
                 "fixed": {
                   "baseRate": 0.05,
                   "effectiveRate": 0,
-                  "effectiveDate": "2023-09-18T00:00:00",
+                  "effectiveDate": "2023-09-18",
                   "cutoffTime": "23:54"
                 }
               }
@@ -205,10 +205,10 @@ class EventMapperTest {
             "quantity": 15000.0,
             "billingCurrency": "USD",
             "dividendRatePct": 85.0,
-            "tradeDate": "2023-10-25T13:50:41.633Z",
+            "tradeDate": "2023-10-25",
             "termType": "OPEN",
-            "termDate": "2023-08-11T00:00:00",
-            "settlementDate": "2023-10-25T13:50:41.633Z",
+            "termDate": "2023-08-11",
+            "settlementDate": "2023-10-25",
             "settlementType": "DVP",
             "collateral": {
               "contractPrice": 119.57,
@@ -296,7 +296,7 @@ class EventMapperTest {
                 "fixed": {
                   "baseRate": 0,
                   "effectiveRate": 0,
-                  "effectiveDate": "2023-09-18T05:01:12.192",
+                  "effectiveDate": "2023-09-18",
                   "cutoffTime": "23:54"
                 }
               }
@@ -304,10 +304,10 @@ class EventMapperTest {
             "quantity": 0,
             "billingCurrency": "USD",
             "dividendRatePct": 0,
-            "tradeDate": "2023-08-11T09:02:37.011",
+            "tradeDate": "2023-08-11",
             "termType": "OPEN",
-            "termDate": "2023-08-11T09:02:37.011",
-            "settlementDate": "2023-08-11T09:02:37.011",
+            "termDate": "2023-08-11",
+            "settlementDate": "2023-08-11",
             "settlementType": "DVP",
             "collateral": {
               "contractPrice": 0,

@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.ContractStatus;
@@ -49,27 +48,5 @@ public class ContractDto {
 
     public boolean isProcessedWithoutErrors() {
         return !Set.of(SPIRE_ISSUE, ONESOURCE_ISSUE).contains(processingStatus);
-    }
-
-    @JsonCreator
-    public ContractDto(@JsonProperty("contractId") String contractId, @JsonProperty("lastEventId") Long lastEventId,
-        @JsonProperty("contractStatus") ContractStatus contractStatus,
-        @JsonProperty("settlementStatus") SettlementStatus settlementStatus,
-        @JsonProperty("lastUpdatePartyId") String lastUpdatePartyId,
-        @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"}) LocalDateTime lastUpdateDatetime,
-        @JsonProperty("trade") TradeAgreementDto trade,
-        @JsonProperty("settlement") List<SettlementDto> settlement,
-        @JsonProperty("eventType") EventType eventType,
-        @JsonProperty("flowStatus") FlowStatus flowStatus) {
-        this.contractId = contractId;
-        this.lastEventId = lastEventId;
-        this.contractStatus = contractStatus;
-        this.settlementStatus = settlementStatus;
-        this.lastUpdatePartyId = lastUpdatePartyId;
-        this.lastUpdateDatetime = lastUpdateDatetime;
-        this.trade = trade;
-        this.settlement = settlement;
-        this.eventType = eventType;
-        this.flowStatus = flowStatus;
     }
 }

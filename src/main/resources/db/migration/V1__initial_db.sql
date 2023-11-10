@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS fee
     id                        SERIAL NOT NULL,
     base_rate                 DOUBLE PRECISION  NULL,
     effective_rate            DOUBLE PRECISION  NULL,
-    effective_date            timestamp NULL,
+    effective_date            DATE NULL,
     cutoff_time               VARCHAR(255)    NULL,
     CONSTRAINT pk_fee       PRIMARY KEY (id)
 );
@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS fixed
     id                        SERIAL NOT NULL,
     base_rate                 DOUBLE PRECISION  NULL,
     effective_rate            DOUBLE PRECISION  NULL,
-    effective_date            timestamp NULL,
+    effective_date            DATE NULL,
     cutoff_time               VARCHAR(255)    NULL,
     CONSTRAINT pk_fixed       PRIMARY KEY (id)
 );
@@ -70,7 +70,7 @@ CREATE TABLE IF NOT EXISTS floating
     effective_rate            DOUBLE PRECISION  NULL,
     is_auto_rerate            BOOLEAN      NULL,
     effective_date_delay      INT          NULL,
-    effective_date            timestamp NULL,
+    effective_date            DATE NULL,
     cutoff_time               VARCHAR(255)    NULL,
     CONSTRAINT pk_floating    PRIMARY KEY (id)
 );
@@ -234,10 +234,10 @@ CREATE TABLE IF NOT EXISTS trade
     quantity        INT          NULL,
     currency        VARCHAR(255) NULL,
     dividend_rate   INT          NULL,
-    trade_date      timestamp         NULL,
+    trade_date      DATE         NULL,
     term_type       VARCHAR(255) NULL,
-    term_date       timestamp         NULL,
-    settlement_date timestamp         NULL,
+    term_date       DATE         NULL,
+    settlement_date DATE         NULL,
     settlement_type VARCHAR(255) NULL,
     collateral      BIGINT       NULL,
     processing_status VARCHAR(255) NULL,

@@ -88,7 +88,7 @@ public class RecordMessageConstant {
           The Lender's loan contract proposal, contractId %s is matching a canceled position, positionId %s""";
 
       public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED_MSG = """
-          The Lender’s loan contract proposal %s has been successfully reconciled 
+          The Lender’s loan contract proposal %s has been successfully reconciled \
           with the position %s and related settlement instructions""";
 
     }

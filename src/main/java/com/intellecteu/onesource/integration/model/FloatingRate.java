@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,8 +41,8 @@ public class FloatingRate {
     private Boolean isAutoRerate;
     @Column(name = "effective_date_delay")
     private Integer effectiveDateDelay;
-    @Column(name = "effective_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime effectiveDate;
+    @Column(name = "effective_date", columnDefinition = "DATE")
+    private LocalDate effectiveDate;
     @Column(name = "cutoff_time")
     private String cutoffTime;
 }

@@ -16,7 +16,9 @@ import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
@@ -609,6 +611,28 @@ class OneSourceSpireReconcileServiceTest {
   void reconcile_shouldSuccess_whenTradeAgreementInternalPartyIdIsMissed() throws Exception {
     TransactingPartyDto party = agreement.getTrade().getTransactingParties().get(0);
     party.getParty().setInternalPartyId(null);
+
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(58)
+  @DisplayName("Should reconcile agreement trade date and position tradeDateTime")
+  void reconcile_shouldSuccess_whenTradeDateTimeIsDifferent() throws Exception {
+    agreement.getTrade().setTradeDate(LocalDate.of(2023, 12, 1));
+    position.setTradeDate(LocalDateTime.of(
+        LocalDate.of(2023, 12, 1), LocalTime.of(10, 55)));
+
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(59)
+  @DisplayName("Should reconcile agreement trade date and position tradeDateTime")
+  void reconcile_shouldSuccess_whenSettleDateTimeIsDifferent() throws Exception {
+    agreement.getTrade().setSettlementDate(LocalDate.of(2023, 12, 5));
+    position.setSettleDate(LocalDateTime.of(
+        LocalDate.of(2023, 12, 5), LocalTime.of(10, 55)));
 
     service.reconcile(agreement, position);
   }

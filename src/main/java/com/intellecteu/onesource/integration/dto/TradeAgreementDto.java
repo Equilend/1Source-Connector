@@ -16,10 +16,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
-
-import javax.persistence.Column;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
@@ -51,16 +49,16 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("dividendRatePct")
     private Integer dividendRatePct;
     @JsonProperty("tradeDate")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime tradeDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate tradeDate;
     @JsonProperty("termType")
     private TermType termType;
     @JsonProperty("termDate")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime termDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate termDate;
     @JsonProperty("settlementDate")
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
-    private LocalDateTime settlementDate;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate settlementDate;
     @JsonProperty("settlementType")
     private SettlementType settlementType;
     @JsonProperty("collateral")
@@ -79,9 +77,9 @@ public class TradeAgreementDto implements Reconcilable {
         @JsonProperty("instrument") InstrumentDto instrument, @JsonProperty("rate") RateDto rate,
         @JsonProperty("quantity") Integer quantity,
         @JsonProperty("billingCurrency") CurrencyCd billingCurrency,
-        @JsonProperty("dividendRatePct") Integer dividendRatePct, @JsonProperty("tradeDate") LocalDateTime tradeDate,
-        @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDateTime termDate,
-        @JsonProperty("settlementDate") LocalDateTime settlementDate,
+        @JsonProperty("dividendRatePct") Integer dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
+        @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDate termDate,
+        @JsonProperty("settlementDate") LocalDate settlementDate,
         @JsonProperty("settlementType") SettlementType settlementType,
         @JsonProperty("collateral") CollateralDto collateral,
         @JsonProperty("transactingParties") List<TransactingPartyDto> transactingParties,

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -54,15 +54,15 @@ public class TradeAgreement {
     private CurrencyCd billingCurrency;
     @Column(name = "dividend_rate")
     private Integer dividendRatePct;
-    @Column(name = "trade_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime tradeDate;
+    @Column(name = "trade_date", columnDefinition = "DATE")
+    private LocalDate tradeDate;
     @Column(name = "term_type")
     @Enumerated(value = EnumType.STRING)
     private TermType termType;
-    @Column(name = "term_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime termDate;
-    @Column(name = "settlement_date", columnDefinition = "TIMESTAMP")
-    private LocalDateTime settlementDate;
+    @Column(name = "term_date", columnDefinition = "DATE")
+    private LocalDate termDate;
+    @Column(name = "settlement_date", columnDefinition = "DATE")
+    private LocalDate settlementDate;
     @Column(name = "settlement_type")
     @Enumerated(value = EnumType.STRING)
     private SettlementType settlementType;
