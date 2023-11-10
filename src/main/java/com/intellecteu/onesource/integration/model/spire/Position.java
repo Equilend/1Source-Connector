@@ -88,7 +88,7 @@ public class Position {
   @Embedded
   @JsonProperty("currencyDTO")
   @AttributeOverrides({
-      @AttributeOverride(name = "currencyName", column = @Column(name = "currency"))
+      @AttributeOverride(name = "currencyKy", column = @Column(name = "currency"))
   })
   private Currency currency;
 

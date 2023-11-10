@@ -51,9 +51,6 @@ public class CollateralDto implements Reconcilable {
 //        if (contractPrice == null) {
 //            throwFieldMissedException(CONTRACT_PRICE);
 //        }
-        if (contractValue == null) {
-            throwFieldMissedException(CONTRACT_VALUE);
-        }
         if (collateralValue == null) {
             throwFieldMissedException(COLLATERAL_VALUE);
         }

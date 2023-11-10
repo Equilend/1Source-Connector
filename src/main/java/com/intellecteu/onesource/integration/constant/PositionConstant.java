@@ -13,7 +13,7 @@ public class PositionConstant {
     public static final String POSITION_COLLATERAL_TYPE = "Position.collateralTypeDTO.collateralType";
     public static final String POSITION_CONTRACT_VALUE = "Position.contractValue";
     public static final String CP_LEI = "Position.counterPartyDTO.lei";
-    public static final String POSITION_CURRENCY = "Position.currencyDTO.currency";
+    public static final String POSITION_CURRENCY = "Position.currencyDTO.currencyKy";
     public static final String CUSTOM_VALUE_2 = "Position.customValue2";
     public static final String DELIVER_FREE = "Position.deliverFree";
     public static final String CP_HAIRCUT = "Position.exposureDTO.cpHaircut";

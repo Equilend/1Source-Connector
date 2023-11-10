@@ -1,10 +1,26 @@
 package com.intellecteu.onesource.integration.services;
 
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.CollateralDto;
+import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import com.intellecteu.onesource.integration.dto.InstrumentDto;
+import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.CollateralType;
+import com.intellecteu.onesource.integration.model.SettlementType;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_ROUNDING_RULE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
@@ -23,7 +39,6 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.VENUE_REF_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.BLOOMBERG_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_MARKROUND_TO;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CUSTOM_VALUE_2;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
@@ -32,7 +47,6 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUANTITY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SEDOL;
@@ -46,35 +60,17 @@ import static com.intellecteu.onesource.integration.exception.ReconcileException
 import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.CollateralDto;
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
-import com.intellecteu.onesource.integration.dto.InstrumentDto;
-import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.SettlementType;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Function;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-
 @Slf4j
 @Service
 public class OneSourceSpireReconcileService implements ReconcileService {
 
   /**
-   * Reconcile the trade agreement retrieved from OneSource
-   * against the position retrieved from Spire.
-   * When the reconciliation is successful, the loan contract
-   * can be initiated from OneSource.
+   * Reconcile the trade agreement retrieved from OneSource against the position retrieved from Spire. When the
+   * reconciliation is successful, the loan contract can be initiated from OneSource.
    *
-   * @param first AgreementDto agreement
+   * @param first  AgreementDto agreement
    * @param second PositionDto position
-   * @param <T> instance of Reconcilable
+   * @param <T>    instance of Reconcilable
    * @throws ReconcileException if at least one reconciliation rule fails
    */
   @Override
@@ -94,11 +90,11 @@ public class OneSourceSpireReconcileService implements ReconcileService {
     var agreementId = agreement.getAgreementId();
     var positionId = position.getId();
     var tradeAgreement = agreement.getTrade();
-    var baseRate = tradeAgreement.getRate().retrieveRateBps();
     validateReconcilableObjects(agreement, position, reconciliationFailMessages);
     checkEquality(tradeAgreement.getExecutionVenue().getPlatform().getVenueRefId(), VENUE_REF_ID,
         position.getCustomValue2(), CUSTOM_VALUE_2, reconciliationFailMessages);
-    checkEquality(baseRate, REBATE_BPS, position.getRate(), RATE, reconciliationFailMessages);
+    checkEquality(tradeAgreement.getRate().retrieveRateBps(), REBATE_BPS,
+        position.getRate(), RATE, reconciliationFailMessages);
     checkEqualityOfSecurityIdentifiers(tradeAgreement.getInstrument(), position, reconciliationFailMessages);
     if (tradeAgreement.getQuantity() != null) {
       checkEquality(tradeAgreement.getQuantity().doubleValue(), QUANTITY,
@@ -182,13 +178,14 @@ public class OneSourceSpireReconcileService implements ReconcileService {
 
   private void checkCollateralEquality(CollateralDto collateral, PositionDto position,
       List<ExceptionMessageDto> failsLog) {
-    if (collateral.getContractPrice() != null) {
-      checkEquality(collateral.getContractPrice(), CONTRACT_PRICE,
-          position.getPrice(), POSITION_PRICE, failsLog);
-    }
+//    Temporary remove price reconciliation checkin until requirements will be refined
+//    if (collateral.getContractPrice() != null) {
+//      checkEquality(collateral.getContractPrice(), CONTRACT_PRICE,
+//          position.getPrice(), POSITION_PRICE, failsLog);
+//    }
     // temporary parseInt solution until position data structure will be clarified
     // please take into account that mock data for Position.contractValue should be parseable to Integer
-    if (position.getContractValue() != null) {
+    if (collateral.getContractValue() != null && position.getContractValue() != null) {
       checkEquality(collateral.getContractValue(), CONTRACT_VALUE,
           position.getContractValue(), POSITION_CONTRACT_VALUE, failsLog);
     }
@@ -197,85 +194,86 @@ public class OneSourceSpireReconcileService implements ReconcileService {
           position.getAmount(), POSITION_AMOUNT, failsLog);
     }
     if (collateral.getCurrency() != null && position.getCurrency() != null
-        && position.getCurrency().getCurrencyName() != null) {
-      checkEquality(collateral.getCurrency(), CURRENCY, position.getCurrency().getCurrencyName(),
+        && position.getCurrency().getCurrencyKy() != null) {
+      checkEquality(collateral.getCurrency(), CURRENCY, position.getCurrency().getCurrencyKy(),
           POSITION_CURRENCY, failsLog);
     }
     if (collateral.getType() != null) {
-      checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
-          position.getCollateralType(), POSITION_COLLATERAL_TYPE, failsLog);
+      if (position.getCollateralType() != null && !position.getCollateralType().isEmpty()) {
+        checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
+            position.getCollateralType(), POSITION_COLLATERAL_TYPE, failsLog);
+      } else {
+        if (collateral.getType() != CollateralType.CASH) {
+          var msg = format("Reconciliation mismatch. OneSource %s must be %s when %s is empty",
+              COLLATERAL_TYPE, CollateralType.CASH, POSITION_COLLATERAL_TYPE);
+          failsLog.add(new ExceptionMessageDto(COLLATERAL_TYPE, msg));
+        }
+      }
     }
-
     if (collateral.getMargin() != null) {
       checkEquality(collateral.getMargin(), COLLATERAL_MARGIN,
           position.getCpHaircut(), CP_HAIRCUT, failsLog);
     }
-
-    // skip check if roundingRule is null. Temporary skip until the data is ready.
-    if (collateral.getRoundingRule() != null) {
-      checkEquality(collateral.getRoundingRule(), COLLATERAL_ROUNDING_RULE,
-          position.getCpMarkRoundTo(), CP_MARKROUND_TO, failsLog);
-    }
   }
 
-  /*
-   * If the SettlementType is DVP then the deliverFree must be True
-   */
-  private void checkDeliverFree(SettlementType settlementType, PositionDto position,
-      List<ExceptionMessageDto> failsLog)  {
-    if (settlementType != null && position.getDeliverFree() != null) {
-      var exceptionDto = new ExceptionMessageDto();
-      if (settlementType == DVP && position.getDeliverFree()) {
-        exceptionDto.setValue(SETTLEMENT_TYPE);
-        exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
-            DELIVER_FREE, position.getDeliverFree()));
-        failsLog.add(exceptionDto);
-      }
-      if (settlementType != DVP && !position.getDeliverFree()) {
-        exceptionDto.setValue(SETTLEMENT_TYPE);
-        exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
-            DELIVER_FREE, position.getDeliverFree()));
-        failsLog.add(exceptionDto);
-      }
-    }
-  }
-
-  /*
-   * Must reconcile if present. At least one security identifier must be present
-   * ('At least one' presence is checked inside PositionDto domain model logic)
-   */
-  private void checkEqualityOfSecurityIdentifiers(InstrumentDto instrument, PositionDto position,
-      List<ExceptionMessageDto> failsLog) {
-    if (position.getSecurityDetailDto() != null) {
-      var securityDetailDto = position.getSecurityDetailDto();
-      if (securityDetailDto.getTicker() != null) {
-        checkEquality(instrument.getTicker(), TICKER, securityDetailDto.getTicker(), POSITION_TICKER, failsLog);
-      }
-      if (securityDetailDto.getCusip() != null) {
-        checkEquality(instrument.getCusip(), CUSIP, securityDetailDto.getCusip(), POSITION_CUSIP, failsLog);
-      }
-      if (securityDetailDto.getIsin() != null) {
-        checkEquality(instrument.getIsin(), ISIN, securityDetailDto.getIsin(), POSITION_ISIN, failsLog);
-      }
-      if (securityDetailDto.getSedol() != null) {
-        checkEquality(instrument.getSedol(), SEDOL, securityDetailDto.getSedol(), POSITION_SEDOL, failsLog);
-      }
-      if (securityDetailDto.getQuickCode() != null) {
-        checkEquality(instrument.getQuick(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK, failsLog);
-      }
-      if (securityDetailDto.getBloombergId() != null) {
-        checkEquality(instrument.getFigi(), FIGI, securityDetailDto.getBloombergId(), BLOOMBERG_ID, failsLog);
+    /*
+     * If the SettlementType is DVP then the deliverFree must be True
+     */
+    private void checkDeliverFree (SettlementType settlementType, PositionDto position,
+        List < ExceptionMessageDto > failsLog){
+      if (settlementType != null && position.getDeliverFree() != null) {
+        var exceptionDto = new ExceptionMessageDto();
+        if (settlementType == DVP && position.getDeliverFree()) {
+          exceptionDto.setValue(SETTLEMENT_TYPE);
+          exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
+              DELIVER_FREE, position.getDeliverFree()));
+          failsLog.add(exceptionDto);
+        }
+        if (settlementType != DVP && !position.getDeliverFree()) {
+          exceptionDto.setValue(SETTLEMENT_TYPE);
+          exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
+              DELIVER_FREE, position.getDeliverFree()));
+          failsLog.add(exceptionDto);
+        }
       }
     }
 
-  }
+    /*
+     * Must reconcile if present. At least one security identifier must be present
+     * ('At least one' presence is checked inside PositionDto domain model logic)
+     */
+    private void checkEqualityOfSecurityIdentifiers (InstrumentDto instrument, PositionDto position,
+        List < ExceptionMessageDto > failsLog){
+      if (position.getSecurityDetailDto() != null) {
+        var securityDetailDto = position.getSecurityDetailDto();
+        if (securityDetailDto.getTicker() != null) {
+          checkEquality(instrument.getTicker(), TICKER, securityDetailDto.getTicker(), POSITION_TICKER, failsLog);
+        }
+        if (securityDetailDto.getCusip() != null) {
+          checkEquality(instrument.getCusip(), CUSIP, securityDetailDto.getCusip(), POSITION_CUSIP, failsLog);
+        }
+        if (securityDetailDto.getIsin() != null) {
+          checkEquality(instrument.getIsin(), ISIN, securityDetailDto.getIsin(), POSITION_ISIN, failsLog);
+        }
+        if (securityDetailDto.getSedol() != null) {
+          checkEquality(instrument.getSedol(), SEDOL, securityDetailDto.getSedol(), POSITION_SEDOL, failsLog);
+        }
+        if (securityDetailDto.getQuickCode() != null) {
+          checkEquality(instrument.getQuick(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK, failsLog);
+        }
+        if (securityDetailDto.getBloombergId() != null) {
+          checkEquality(instrument.getFigi(), FIGI, securityDetailDto.getBloombergId(), BLOOMBERG_ID, failsLog);
+        }
+      }
 
-  private void checkEquality(Object first, String firstName, Object second, String secondName,
-      List<ExceptionMessageDto> exceptionList) {
-    if (!Objects.equals(first, second)) {
-      var msg = "Reconciliation mismatch. OneSource " + first + ":" + firstName
-          + " is not matched with Spire " + second + ":" + secondName;
-      exceptionList.add(new ExceptionMessageDto(firstName, msg));
+    }
+
+    private void checkEquality (Object first, String firstName, Object second, String secondName,
+        List < ExceptionMessageDto > exceptionList){
+      if (!Objects.equals(first, second)) {
+        var msg = "Reconciliation mismatch. OneSource " + first + ":" + firstName
+            + " is not matched with Spire " + second + ":" + secondName;
+        exceptionList.add(new ExceptionMessageDto(firstName, msg));
+      }
     }
   }
-}

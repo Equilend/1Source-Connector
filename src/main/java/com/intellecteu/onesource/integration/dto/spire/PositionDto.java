@@ -19,15 +19,11 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_LEI;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_MARKROUND_TO;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_COLLATERAL_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CONTRACT_VALUE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUANTITY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SECURITY;
@@ -119,29 +115,18 @@ public class PositionDto implements Reconcilable {
     if (deliverFree == null) {
       sb.append(DELIVER_FREE).append(COMMA_DELIMITER);
     }
-    if (price == null) {
-      sb.append(POSITION_PRICE).append(COMMA_DELIMITER);
-    }
-    if (contractValue == null) {
-      sb.append(POSITION_CONTRACT_VALUE).append(COMMA_DELIMITER);
-    }
-    if (contractValue == null) {
-      sb.append(POSITION_CONTRACT_VALUE).append(COMMA_DELIMITER);
-    }
+//    temporary removed until new requirements will be sent
+//    if (price == null) {
+//      sb.append(POSITION_PRICE).append(COMMA_DELIMITER);
+//    }
     if (amount == null) {
       sb.append(POSITION_AMOUNT).append(COMMA_DELIMITER);
     }
-    if (currency == null || currency.getCurrencyName() == null) {
+    if (currency == null || currency.getCurrencyKy() == null) {
       sb.append(POSITION_CURRENCY).append(COMMA_DELIMITER);
-    }
-    if (collateralTypeDto == null || collateralTypeDto.getCollateralType() == null) {
-      sb.append(POSITION_COLLATERAL_TYPE).append(COMMA_DELIMITER);
     }
     if (exposureDto == null || exposureDto.getCpHaircut() == null) {
       sb.append(CP_HAIRCUT).append(COMMA_DELIMITER);
-    }
-    if (exposureDto == null || exposureDto.getCpMarkRoundTo() == null) {
-      sb.append(CP_MARKROUND_TO).append(COMMA_DELIMITER);
     }
     if (accountDto == null || accountDto.getLei() == null) {
       sb.append(ACCOUNT_LEI).append(COMMA_DELIMITER);

@@ -33,7 +33,7 @@ import java.util.List;
 import static com.intellecteu.onesource.integration.model.AgreementStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.CollateralType.CASH;
-import static com.intellecteu.onesource.integration.model.CurrencyCd.EUR;
+import static com.intellecteu.onesource.integration.model.CurrencyCd.USD;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
@@ -63,7 +63,7 @@ public class DtoTestFactory {
         .instrument(buildInstrumentDto())
         .rate(buildRateDto())
         .quantity(2)
-        .billingCurrency(EUR)
+        .billingCurrency(USD)
         .dividendRatePct(2)
         .tradeDate(LocalDate.now())
         .termType(OPEN)
@@ -138,7 +138,7 @@ public class DtoTestFactory {
 
   private static CurrencyDto buildCurrencyDto(TradeAgreementDto tradeAgreement) {
     return CurrencyDto.builder()
-        .currencyName(tradeAgreement.getBillingCurrency().name())
+        .currencyKy(tradeAgreement.getBillingCurrency().name())
         .build();
   }
 
@@ -200,7 +200,7 @@ public class DtoTestFactory {
         .contractPrice(100.00)
         .contractValue(4.52)
         .collateralValue(400.32)
-        .currency("EUR")
+        .currency("USD")
         .type(CASH)
         .descriptionCd(DEBT)
         .margin(2.02)
@@ -241,7 +241,7 @@ public class DtoTestFactory {
   private static PriceDto buildPriceDto() {
     return PriceDto.builder()
         .value(10.0d)
-        .currency("EUR")
+        .currency("USD")
         .unit(LOT)
         .build();
   }

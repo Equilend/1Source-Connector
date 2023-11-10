@@ -19,6 +19,6 @@ import javax.persistence.Embeddable;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Currency {
 
-  private String currencyName;
+  private String currencyKy;
 
 }

@@ -188,7 +188,7 @@ class EventMapperTest {
               "description": "string",
               "price": {
                 "value": 0,
-                "currency": "US Dollar",
+                "currency": "USD",
                 "unit": "SHARE"
               }
             },
@@ -214,7 +214,7 @@ class EventMapperTest {
               "contractPrice": 119.57,
               "contractValue": 17935.5,
               "collateralValue": 17935.5,
-              "currency": "US Dollar",
+              "currency": "USD",
               "type": "CASH",
               "descriptionCd": "NONUSAGENCIES",
               "margin": 1.02,

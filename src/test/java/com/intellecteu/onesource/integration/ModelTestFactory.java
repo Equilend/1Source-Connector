@@ -36,7 +36,7 @@ public class ModelTestFactory {
   public static Price buildPrice() {
     return Price.builder()
         .value(10.0d)
-        .currency("EUR")
+        .currency("USD")
         .unit(LOT)
         .build();
   }
@@ -62,7 +62,7 @@ public class ModelTestFactory {
         .contractPrice(100.0)
         .contractValue(4.25)
         .collateralValue(400.33)
-        .currency("EUR")
+        .currency("USD")
         .type(CASH)
         .description(DEBT)
         .margin(2.05)

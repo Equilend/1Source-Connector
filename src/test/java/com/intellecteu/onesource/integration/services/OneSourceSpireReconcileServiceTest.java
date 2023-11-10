@@ -207,7 +207,7 @@ class OneSourceSpireReconcileServiceTest {
   @Order(15)
   @DisplayName("Throw exception if reconciliation fails for a currency")
   void reconcile_shouldThrowException_whenReconciliationFailsForCurrency() {
-    position.setCurrency(new CurrencyDto("customCurrency"));
+    position.setCurrency(new CurrencyDto("EUR"));
 
     verifyReconciliationFailure();
   }
@@ -308,29 +308,29 @@ class OneSourceSpireReconcileServiceTest {
 
   @Test
   @Order(26)
-  @DisplayName("Throw exception if price is missed")
-  void reconcile_shouldThrowException_whenPriceIsMissed() {
+  @DisplayName("Ignore reconciliation if price is missed")
+  void reconcile_shouldSuccess_whenPriceIsMissed() throws Exception {
     position.setPrice(null);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
   @Order(27)
-  @DisplayName("Throw exception if reconciliation fails for a price")
-  void reconcile_shouldThrowException_whenReconciliationFailsForPrice() {
+  @DisplayName("Ignore reconciliation for a price. Temporary")
+  void reconcile_shouldSuccess_whenPriceIsNotMatched() throws Exception {
     position.setPrice(99999.99d);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
   @Order(28)
-  @DisplayName("Throw exception if contractValue is missed")
-  void reconcile_shouldThrowException_whenContractValueIsMissed() {
+  @DisplayName("Ignore reconciliation if contractValue is missed")
+  void reconcile_shouldSuccess_whenContractValueIsMissed() throws Exception {
     position.setContractValue(null);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
@@ -362,8 +362,19 @@ class OneSourceSpireReconcileServiceTest {
 
   @Test
   @Order(32)
-  @DisplayName("Throw exception if position collateralType is missed")
-  void reconcile_shouldThrowException_whenPositionCollateralTypeIsMissed() {
+  @DisplayName("Trade collateral type shall be CASH when position collateral type is empty")
+  void reconcile_shouldSuccess_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsCash() throws Exception {
+    agreement.getTrade().getCollateral().setType(CollateralType.CASH);
+    position.getCollateralTypeDto().setCollateralType(null);
+
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(32)
+  @DisplayName("Throw exception if position collateralType is missed and trade collateral type is not CASH")
+  void reconcile_shouldFail_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsNotCash() {
+    agreement.getTrade().getCollateral().setType(CollateralType.TRIPARTY);
     position.getCollateralTypeDto().setCollateralType(null);
 
     verifyReconciliationFailure();
@@ -399,20 +410,20 @@ class OneSourceSpireReconcileServiceTest {
 
   @Test
   @Order(36)
-  @DisplayName("Throw exception if cpMarkRoundTo is missed")
-  void reconcile_shouldThrowException_whenCpMarkRoundToIsMissed() {
+  @DisplayName("Ignore reconciliation if cpMarkRoundTo is missed")
+  void reconcile_shouldThrowException_whenCpMarkRoundToIsMissed() throws Exception {
     position.getExposureDto().setCpMarkRoundTo(null);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
   @Order(37)
-  @DisplayName("Throw exception if reconciliation fails for a CpMarkRoundTo")
-  void reconcile_shouldThrowException_whenReconciliationFailsForCpMarkRoundTo() {
+  @DisplayName("Ignore reconciliation for cpMarkRoundTo")
+  void reconcile_shouldSuccess_whenCpMarkRoundToHasMismatch() throws Exception {
     position.getExposureDto().setCpMarkRoundTo(99999);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
@@ -551,11 +562,20 @@ class OneSourceSpireReconcileServiceTest {
 
   @Test
   @Order(51)
-  @DisplayName("Throw exception if trade agreement collateral contract value is missed")
-  void reconcile_shouldThrowException_whenCollateralContractValueIsMissed() {
+  @DisplayName("Ignore reconciliation when trade contract value is missed")
+  void reconcile_shouldSuccess_whenTradeContractValueIsMissed() throws Exception {
     agreement.getTrade().getCollateral().setContractValue(null);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(51)
+  @DisplayName("Ignore reconciliation when position contract value is missed")
+  void reconcile_shouldSuccess_whenPositionContractValueIsMissed() throws Exception {
+    position.setContractValue(null);
+
+    service.reconcile(agreement, position);
   }
 
   @Test
