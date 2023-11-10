@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +27,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "venue_party")
 public class VenueParty {
 
@@ -33,6 +37,7 @@ public class VenueParty {
     @Column(name = "party_role")
     @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
+    @JsonProperty("venuePartyId")
     @Column(name = "venue_id")
     private String venueId;
     @OneToOne(fetch = FetchType.EAGER, cascade= CascadeType.ALL)

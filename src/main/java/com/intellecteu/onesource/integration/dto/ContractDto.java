@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
@@ -36,7 +37,7 @@ public class ContractDto {
     private SettlementStatus settlementStatus;
     @JsonProperty("lastUpdatePartyId")
     private String lastUpdatePartyId;
-    @JsonProperty("lastUpdateDatetime")
+    @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
     private LocalDateTime lastUpdateDatetime;
     @JsonProperty("trade")
     private TradeAgreementDto trade;
@@ -55,7 +56,7 @@ public class ContractDto {
         @JsonProperty("contractStatus") ContractStatus contractStatus,
         @JsonProperty("settlementStatus") SettlementStatus settlementStatus,
         @JsonProperty("lastUpdatePartyId") String lastUpdatePartyId,
-        @JsonProperty("lastUpdateDatetime") LocalDateTime lastUpdateDatetime,
+        @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"}) LocalDateTime lastUpdateDatetime,
         @JsonProperty("trade") TradeAgreementDto trade,
         @JsonProperty("settlement") List<SettlementDto> settlement,
         @JsonProperty("eventType") EventType eventType,

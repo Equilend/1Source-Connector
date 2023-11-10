@@ -52,6 +52,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -173,15 +174,14 @@ public class EventMapper {
     public SettlementInstructionDto toInstructionDto(SettlementInstruction instruction) {
         if (instruction == null) {
             return null;
-        } else {
-            return SettlementInstructionDto.builder()
-                .localAgentAcct(instruction.getLocalAgentAcct())
-                .localAgentBic(instruction.getLocalAgentBic())
-                .localAgentName(instruction.getLocalAgentName())
-                .settlementBic(instruction.getSettlementBic())
-                .localMarketFields(toMarketFieldsDto(instruction.getLocalMarketField()))
-                .build();
         }
+        return SettlementInstructionDto.builder()
+            .localAgentAcct(instruction.getLocalAgentAcct())
+            .localAgentBic(instruction.getLocalAgentBic())
+            .localAgentName(instruction.getLocalAgentName())
+            .settlementBic(instruction.getSettlementBic())
+            .localMarketFields(toMarketFieldsDto(instruction.getLocalMarketField()))
+            .build();
     }
 
     public LocalMarketFieldDto toMarketDto(LocalMarketField marketField) {
@@ -192,7 +192,8 @@ public class EventMapper {
     }
 
     public List<LocalMarketFieldDto> toMarketFieldsDto(List<LocalMarketField> marketFields) {
-        return marketFields.stream().map(this::toMarketDto).collect(Collectors.toList());
+        if (marketFields == null) return null;
+        return marketFields.stream().filter(Objects::nonNull).map(this::toMarketDto).collect(Collectors.toList());
     }
 
     public Agreement toAgreementEntity(AgreementDto agreementDto) {

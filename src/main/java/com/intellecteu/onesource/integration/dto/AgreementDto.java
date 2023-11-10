@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
@@ -28,7 +29,7 @@ public class AgreementDto implements Reconcilable {
   private String agreementId;
   @JsonProperty("status")
   private AgreementStatus status;
-  @JsonProperty("lastUpdateDatetime")
+  @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
   private LocalDateTime lastUpdateDatetime;
   @JsonProperty("trade")
   private TradeAgreementDto trade;

@@ -16,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,6 +48,7 @@ public class Contract {
     private SettlementStatus settlementStatus;
     @Column(name = "last_update_party_id")
     private String lastUpdatePartyId;
+    @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
     @Column(name = "last_update_datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime lastUpdateDatetime;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

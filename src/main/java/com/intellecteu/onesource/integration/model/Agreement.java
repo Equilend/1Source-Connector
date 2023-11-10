@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +30,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "agreement")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Agreement {
 
     @Id
@@ -38,6 +41,7 @@ public class Agreement {
     @Column(name = "status")
     @Enumerated(value = EnumType.STRING)
     private AgreementStatus status;
+    @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
     @Column(name = "last_update_datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime lastUpdateDatetime;
     @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
