@@ -657,6 +657,15 @@ class OneSourceSpireReconcileServiceTest {
     service.reconcile(agreement, position);
   }
 
+  @Test
+  @Order(60)
+  @DisplayName("Reconcile success on margin and hairCut diff types of values")
+  void reconcile_shouldSuccess_whenOnesourceMarginHasDifferentTypeThanSpireHaircut() throws Exception {
+    agreement.getTrade().getCollateral().setMargin(103.0);
+    position.getExposureDto().setCpHaircut(1.03);
+    service.reconcile(agreement, position);
+  }
+
 
   /*
    * Verifies that reconciliation fails because one of the

@@ -119,7 +119,7 @@ public class DtoTestFactory {
 
   private static PositionExposureDto buildPositionExposureDto(TradeAgreementDto tradeAgreement) {
     return PositionExposureDto.builder()
-        .cpHaircut(tradeAgreement.getCollateral().getMargin())
+        .cpHaircut(tradeAgreement.getCollateral().getMargin() / 100.0)
         .cpMarkRoundTo(tradeAgreement.getCollateral().getRoundingRule())
         .build();
   }
@@ -203,7 +203,7 @@ public class DtoTestFactory {
         .currency("USD")
         .type(CASH)
         .descriptionCd(DEBT)
-        .margin(2.02)
+        .margin(202.0)
         .roundingRule(2)
         .roundingMode(ALWAYSUP)
         .build();

@@ -141,18 +141,16 @@ public class OneSourceSpireReconcileService implements ReconcileService {
    */
   private Function<Reconcilable, ExceptionMessageDto> validateFunction() {
     return reconcilable -> {
-      ExceptionMessageDto exceptionDto = null;
       try {
         reconcilable.validateForReconciliation();
       } catch (Exception e) {
-        try {
-          var exception = (ValidationException) e;
-          exceptionDto = exception.getDto();
-        } catch (ClassCastException cce) {
-          log.error("Reconciliation unexpected error: " + cce.getMessage());
+        if (e instanceof ValidationException exception) {
+          return exception.getDto();
+        } else {
+          log.error("Reconciliation unexpected error: " + e.getMessage());
         }
       }
-      return exceptionDto;
+      return null;
     };
   }
 
@@ -210,9 +208,14 @@ public class OneSourceSpireReconcileService implements ReconcileService {
         }
       }
     }
-    if (collateral.getMargin() != null) {
-      checkEquality(collateral.getMargin(), COLLATERAL_MARGIN,
-          position.getCpHaircut(), CP_HAIRCUT, failsLog);
+    if (collateral.getMargin() != null && position.getCpHaircut() != null) {
+      // currently we have different value types for margin 1source and cpHaircut SPIRE 102 vs 1.02
+      // the question is can we have values like: 102.0457 and 1.020457
+      // temporary change data type to String and compare
+      var oneSourceMargin = collateral.getMargin(); // expected value: 102.0
+      var spireCpHaircut = position.getCpHaircut(); // expected value: 1.02
+      checkEquality(String.valueOf(oneSourceMargin), COLLATERAL_MARGIN,
+          String.valueOf(spireCpHaircut * 100.0), CP_HAIRCUT, failsLog);
     }
   }
 
