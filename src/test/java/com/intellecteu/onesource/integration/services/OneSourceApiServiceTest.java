@@ -2,9 +2,13 @@ package com.intellecteu.onesource.integration.services;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.DtoTestFactory;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -31,6 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -112,10 +117,22 @@ class OneSourceApiServiceTest {
     when(recordService.getFactory()).thenReturn(eventFactory);
     when(restTemplate.exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class))).thenReturn(response);
 
-    service.createContract(agreement, List.of(settlement), position);
+    service.createContract(agreement, buildContract(agreement, position, List.of(settlement)), position);
 
     verify(restTemplate).exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class));
     verify(recordService).getFactory();
     verify(recordService).record(any(CloudEventBuildRequest.class));
   }
+
+  ContractProposalDto buildContract(AgreementDto agreement, PositionDto positionDto,
+      List<SettlementDto> settlements) {
+    TradeAgreementDto trade = agreement.getTrade();
+    trade.getCollateral().setRoundingRule(positionDto.getCpMarkRoundTo());
+    trade.getCollateral().setRoundingMode(ALWAYSUP);
+    return ContractProposalDto.builder()
+        .trade(trade)
+        .settlement(settlements)
+        .build();
+  }
+
 }

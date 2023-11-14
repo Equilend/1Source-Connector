@@ -64,6 +64,7 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -107,14 +108,14 @@ public class OneSourceApiService implements OneSourceService {
   }
 
   @Override
-  public void createContract(AgreementDto agreement, List<SettlementDto> settlement, PositionDto position) {
-    TradeAgreementDto trade = agreement.getTrade();
-    trade.getCollateral().setRoundingRule(position.getCpMarkRoundTo());
-    trade.getCollateral().setRoundingMode(ALWAYSUP);
-    ContractProposalDto contractProposalDto = ContractProposalDto.builder()
-        .trade(trade)
-        .settlement(settlement)
-        .build();
+  public void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position) {
+//    TradeAgreementDto trade = agreement.getTrade();
+//    trade.getCollateral().setRoundingRule(position.getCpMarkRoundTo());
+//    trade.getCollateral().setRoundingMode(ALWAYSUP);
+//    ContractProposalDto contractProposalDto = ContractProposalDto.builder()
+//        .trade(trade)
+//        .settlement(settlement)
+//        .build();
     var headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
     HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
@@ -125,6 +126,30 @@ public class OneSourceApiService implements OneSourceService {
         LOAN_CONTRACT_PROPOSAL_CREATED, position.getPositionId());
     cloudEventRecordService.record(recordRequest);
   }
+
+//  @Override
+//  public void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position) {
+//    var headers = new HttpHeaders();
+//    headers.setContentType(APPLICATION_JSON);
+//    HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
+//
+//    log.debug("Sending POST request to {}", baseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
+//    ResponseEntity<JsonNode> response = restTemplate.exchange(
+//        baseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST,
+//        request, JsonNode.class);
+//    if (response.getStatusCode() != CREATED) {
+//      if (agreement != null) {
+//        log.error(
+//            "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: {} (SPIRE Position: {}) for the following reason: {}",
+//            agreement.getAgreementId(), position.getPositionId(), response.getStatusCode());
+//      } else {
+//        log.error(
+//            "The loan contract proposal instruction has not been processed by 1Source for the SPIRE Position: (SPIRE Position: {}) for the following reason: {}",
+//            position.getPositionId(), response.getStatusCode());
+//      }
+//    }
+//    log.debug("The contract was created!");
+//  }
 
   private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
       HttpEntity<ContractProposalDto> request) {

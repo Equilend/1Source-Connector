@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public interface OneSourceService {
 
-    void createContract(AgreementDto agreement, List<SettlementDto> settlement, PositionDto position);
+    void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position);
 
     AgreementDto findTradeAgreement(String agreementId, EventType eventType);
 
