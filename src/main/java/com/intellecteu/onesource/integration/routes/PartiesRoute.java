@@ -14,7 +14,7 @@ public class PartiesRoute extends RouteBuilder {
     private boolean isAutoStarted;
 
     @Value("${camel.partyTimer}")
-    private String repeat;
+    private String partyTimer;
 
     public PartiesRoute(EventService eventService) {
         this.eventService = eventService;
@@ -23,7 +23,7 @@ public class PartiesRoute extends RouteBuilder {
     @Override
     public void configure() {
 
-        from("quartz2://myTimer?cron=" + repeat)
+        from("quartz2://myTimer?cron=" + partyTimer)
             .log("Start route at 6:00 am every day")
             .routeId("PartiesRoute")
             .autoStartup(isAutoStarted)

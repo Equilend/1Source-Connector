@@ -105,6 +105,8 @@ public class ParticipantFlowTests {
 
         eventService.processParties();
 
+        verify(participantHolderRepository).findAll();
+        verify(participantHolderRepository).save(any());
         verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}));
     }
 
@@ -133,6 +135,7 @@ public class ParticipantFlowTests {
         eventService.processParties();
 
         verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}));
+        verify(participantHolderRepository).findAll();
         verify(participantHolderRepository, never()).save(any());
     }
 }
