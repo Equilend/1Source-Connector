@@ -1,42 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.enums.FlowStatus;
-import com.intellecteu.onesource.integration.exception.AgreementNotFoundException;
-import com.intellecteu.onesource.integration.exception.ContractNotFoundException;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.Participant;
-import com.intellecteu.onesource.integration.model.ParticipantHolder;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
-import com.intellecteu.onesource.integration.repository.TimestampRepository;
-import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import static com.intellecteu.onesource.integration.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CREATED;
@@ -51,6 +14,38 @@ import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.Agreement;
+import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.Participant;
+import com.intellecteu.onesource.integration.model.ParticipantHolder;
+import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.repository.AgreementRepository;
+import com.intellecteu.onesource.integration.repository.ContractRepository;
+import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
+import com.intellecteu.onesource.integration.repository.TimestampRepository;
+import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -146,8 +141,11 @@ public class TradeEventService implements EventService {
   @Override
   public void processParties() {
     List<PartyDto> partyDtos = oneSourceService.retrieveParties();
+    if(partyDtos == null) {
+      return;
+    }
     ParticipantHolder holder = participantHolderRepository.findAll().stream().findAny().orElse(null);
-    if (holder == null && partyDtos != null) {
+    if (holder == null) {
       List<Participant> participants = new ArrayList<>();
       partyDtos.forEach(i -> mapParticipants(participants, i));
 
