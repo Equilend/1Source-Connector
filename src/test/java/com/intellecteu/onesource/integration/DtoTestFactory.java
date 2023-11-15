@@ -186,7 +186,7 @@ public class DtoTestFactory {
         createTransactionParty(BORROWER, "borrower-lei"));
   }
 
-  private static PartyDto createPartyDto(String gleifLei) {
+  public static PartyDto createPartyDto(String gleifLei) {
     return PartyDto.builder()
         .partyId("testPartyId")
         .partyName("testPartyName")
