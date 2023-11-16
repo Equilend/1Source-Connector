@@ -323,7 +323,8 @@ CREATE TABLE IF NOT EXISTS event_record
     relatedprocess        VARCHAR(255) NULL,
     relatedsubprocess     VARCHAR(255) NULL,
     dataContentType       VARCHAR(255) NULL,
-    "data"                TEXT NULL
+    "data"                TEXT NULL,
+    processingstatus      VARCHAR(255) NULL
 );
 
 ALTER TABLE agreement DROP CONSTRAINT IF EXISTS FK_AGREEMENT_ON_TRADE;

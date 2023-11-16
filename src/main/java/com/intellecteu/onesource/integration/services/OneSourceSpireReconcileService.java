@@ -264,11 +264,7 @@ public class OneSourceSpireReconcileService implements ReconcileService {
         if (securityDetailDto.getQuickCode() != null) {
           checkEquality(instrument.getQuick(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK, failsLog);
         }
-        if (securityDetailDto.getBloombergId() != null) {
-          checkEquality(instrument.getFigi(), FIGI, securityDetailDto.getBloombergId(), BLOOMBERG_ID, failsLog);
-        }
       }
-
     }
 
     private void checkEquality (Object first, String firstName, Object second, String secondName,

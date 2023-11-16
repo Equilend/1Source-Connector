@@ -146,8 +146,8 @@ class OneSourceSpireReconcileServiceTest {
 
   @Test
   @Order(9)
-  @DisplayName("Throw exception if reconciliation fails for a bloombergId security identifier")
-  void reconcile_shouldThrowException_whenReconciliationFailsForBloombergId() {
+  @DisplayName("Should reconcile if bloombergId security is not matched.")
+  void reconcile_shouldReconcile_whenBloombergIdNotMatched() throws Exception {
     position.getSecurityDetailDto().setBloombergId("customValue");
     position.getSecurityDetailDto().setQuickCode(null);
     position.getSecurityDetailDto().setSedol(null);
@@ -155,7 +155,7 @@ class OneSourceSpireReconcileServiceTest {
     position.getSecurityDetailDto().setCusip(null);
     position.getSecurityDetailDto().setTicker(null);
 
-    verifyReconciliationFailure();
+    service.reconcile(agreement, position);
   }
 
   @Test
@@ -663,6 +663,22 @@ class OneSourceSpireReconcileServiceTest {
   void reconcile_shouldSuccess_whenOnesourceMarginHasDifferentTypeThanSpireHaircut() throws Exception {
     agreement.getTrade().getCollateral().setMargin(103.0);
     position.getExposureDto().setCpHaircut(1.03);
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(61)
+  @DisplayName("Reconcile success when position.securityDTO.bloombergId is missed")
+  void reconcile_shouldSuccess_whenPositionBloombergIdIsMissed() throws Exception {
+    position.getSecurityDetailDto().setBloombergId(null);
+    service.reconcile(agreement, position);
+  }
+
+  @Test
+  @Order(62)
+  @DisplayName("Reconcile success when trade.instrument.figi is missed")
+  void reconcile_shouldSuccess_whenOnesourceFigiIsMissed() throws Exception {
+    agreement.getTrade().getInstrument().setFigi(null);
     service.reconcile(agreement, position);
   }
 
