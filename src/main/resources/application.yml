@@ -1,5 +1,6 @@
 camel:
   timer: ${CAMEL_TIMER:100000}
+  partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
   timestamp: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
   route:
     autostart: ${CAMEL_AUTOSTART:true}
