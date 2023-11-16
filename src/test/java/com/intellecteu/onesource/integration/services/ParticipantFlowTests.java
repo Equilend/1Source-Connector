@@ -136,6 +136,6 @@ public class ParticipantFlowTests {
 
         verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}));
         verify(participantHolderRepository).findAll();
-        verify(participantHolderRepository, never()).save(any());
+        verify(participantHolderRepository).save(any());
     }
 }
