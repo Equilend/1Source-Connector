@@ -2,6 +2,8 @@ package com.intellecteu.onesource.integration.model;
 
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +16,8 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -26,6 +30,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
+@JsonIgnoreProperties(value = {"processingStatus"} )
 @Table(name = "event_record")
 public class CloudEventEntity {
 
@@ -64,6 +69,10 @@ public class CloudEventEntity {
 
   @Column(name = "data")
   private String data;
+
+  @Column(name = "processingstatus")
+  @Enumerated(value = EnumType.STRING)
+  private ProcessingStatus processingStatus;
 
   @PrePersist
   @PreUpdate

@@ -39,6 +39,8 @@ logging:
         onesource:
           integration: DEBUG
     org:
+      apache:
+        kafka: WARN
       springframework:
         web:
           client:
@@ -70,3 +72,10 @@ cloudevents:
 
 integration-toolkit:
   uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
+
+notification:
+  enable: ${NOTIFICATION_ENABLE:false}
+  pulling-timer: ${PULLING_TIMER:10000}
+  spire:
+    bootstrap-server: ${SPIRE_BOOTSTRAP:localhost:9092}
+    topic: ${NOTIFICATION_SPIRE_TOPIC:1SOURCE.SPIRE_TOOLKIT.STAGE}
