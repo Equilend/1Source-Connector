@@ -113,6 +113,7 @@ public class ContractFlowTest {
     private TradeEventService eventService;
     @Mock
     private CloudEventRecordService cloudEventRecordService;
+    @Mock
     private TradeEventRepository eventRepository;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
 

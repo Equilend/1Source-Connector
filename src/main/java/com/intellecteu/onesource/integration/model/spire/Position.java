@@ -2,6 +2,9 @@ package com.intellecteu.onesource.integration.model.spire;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -76,6 +79,10 @@ public class Position {
 
   @Column(name = "position_type_id")
   private Integer positionTypeId;
+
+  @Column(name = "processing_status")
+  @Enumerated(value = EnumType.STRING)
+  private ProcessingStatus processingStatus;
 
   @Embedded
   @JsonProperty("securityDetailDTO")

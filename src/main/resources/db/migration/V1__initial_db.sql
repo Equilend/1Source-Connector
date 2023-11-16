@@ -161,6 +161,7 @@ CREATE TABLE IF NOT EXISTS position
     position_type         VARCHAR(255) NULL,
     account_lei           VARCHAR(255) NULL,
     cp_lei                VARCHAR(255) NULL,
+    processing_status VARCHAR(255) NULL,
     CONSTRAINT pk_position PRIMARY KEY (id)
 );
 

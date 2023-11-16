@@ -54,6 +54,9 @@ import static com.intellecteu.onesource.integration.exception.PositionRetrieveme
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.utils.ApiUtils.createGetInstructionsNQuery;
+import static com.intellecteu.onesource.integration.utils.ApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.ApiUtils.createListOfTuplesGetPosition;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -89,7 +92,7 @@ public class SpireApiService implements SpireService {
         TradeAgreementDto trade = agreement.getTrade();
         String venueRefId = trade.getExecutionVenue().getPlatform().getVenueRefId();
         log.debug("Retrieving Spire Position by venueRefId={}", venueRefId);
-        ResponseEntity<JsonNode> response = requestPosition(venueRefId);
+        ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true, createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
         validateResponse(response, venueRefId, trade);
         final Position position = savePosition(response, venueRefId, trade);
         return position == null ? null : positionMapper.toPositionDto(position);
@@ -124,8 +127,8 @@ public class SpireApiService implements SpireService {
     }
 
     @Override
-    public ResponseEntity<JsonNode> requestPosition(String venueRefId) {
-        final HttpEntity<Query> request = buildRequest(createGetPositionNQuery(venueRefId));
+    public ResponseEntity<JsonNode> requestPosition(NQuery query) {
+        final HttpEntity<Query> request = buildRequest(query);
 
         var lenderResponse = requestPosition(request, lenderSpireEndpoint + GET_POSITION_ENDPOINT, LENDER);
         return isPositionFound(lenderResponse) ?
@@ -330,15 +333,6 @@ public class SpireApiService implements SpireService {
         settlementUpdateRepository.save(settlementUpdate);
     }
 
-    private NQuery createGetPositionNQuery(String venueRefId) {
-        return NQuery.builder()
-            .queries(null)
-            .andOr(AndOr.AND)
-            .empty(true)
-            .tuples(createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null))
-            .build();
-    }
-
     private Position savePosition(ResponseEntity<JsonNode> response, String venueRefId,
         TradeAgreementDto trade) {
         try {
@@ -372,41 +366,6 @@ public class SpireApiService implements SpireService {
         return LocalMarketFieldDto.builder()
             .localFieldName(name)
             .localFieldValue(value)
-            .build();
-    }
-
-    private NQuery createGetInstructionsNQuery(PositionDto position) {
-        return NQuery.builder()
-            .queries(null)
-            .andOr(AndOr.AND)
-            .empty(true)
-            .tuples(createListOfTuplesGetInstruction(position))
-            .build();
-    }
-
-    private List<Tuples> createListOfTuplesGetPosition(String lValue, String operator, String rValue1, String rValue2) {
-        List<Tuples> tuples = new ArrayList<>();
-        tuples.add(createTuples(lValue, operator, rValue1, rValue2));
-
-        return tuples;
-    }
-
-    private List<Tuples> createListOfTuplesGetInstruction(PositionDto position) {
-        List<Tuples> tuples = new ArrayList<>();
-        tuples.add(createTuples("accountId", "EQUALS", String.valueOf(position.getDepoId()), null));
-        tuples.add(createTuples("securityId", "EQUALS", String.valueOf(position.getSecurityId()), null));
-        tuples.add(createTuples("positionTypeId", "EQUALS", String.valueOf(position.getPositionTypeId()), null));
-        tuples.add(createTuples("currencyId", "EQUALS", String.valueOf(position.getCurrencyId()), null));
-
-        return tuples;
-    }
-
-    private Tuples createTuples(String lValue, String operator, String rValue1, String rValue2) {
-        return Tuples.builder()
-            .lValue(lValue)
-            .operator(operator)
-            .rValue1(rValue1)
-            .rValue2(rValue2)
             .build();
     }
 

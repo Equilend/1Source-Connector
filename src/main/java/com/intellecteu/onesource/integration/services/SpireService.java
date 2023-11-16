@@ -6,6 +6,7 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
+import com.intellecteu.onesource.integration.dto.spire.NQuery;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public interface SpireService {
 
     PositionDto getTradePosition(AgreementDto agreement);
 
-    ResponseEntity<JsonNode> requestPosition(String venueRefId);
+    ResponseEntity<JsonNode> requestPosition(NQuery query);
 
     List<SettlementDto> retrieveSettlementDetails(PositionDto position, TradeAgreementDto trade,
         PartyRole partyRole);
