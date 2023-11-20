@@ -44,7 +44,6 @@ public class ApiUtils {
         tuples.add(createTuples("positionType", "IN", "CASH LOAN,CASH BORROW", null));
         tuples.add(createTuples("depoKy", "IN", "DTC", null));
         tuples.add(createTuples("positionId", "GREATER_THAN", positionId, null));
-        tuples.add(createTuples("positionReferenceNumber", "NOT_NULL", null, null));
 
         return tuples;
     }

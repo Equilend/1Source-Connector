@@ -3,7 +3,9 @@ package com.intellecteu.onesource.integration.model;
 public enum ProcessingStatus {
     NEW,
     SAVED,
+    CREATED,
     PROCESSED,
+    MATCHED_POSITION,
     SPIRE_ISSUE,
     VALIDATED,
     TO_CANCEL,

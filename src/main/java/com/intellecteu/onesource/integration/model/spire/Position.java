@@ -84,6 +84,18 @@ public class Position {
   @Enumerated(value = EnumType.STRING)
   private ProcessingStatus processingStatus;
 
+  @Column(name = "last_update_datetime")
+  private LocalDateTime lastUpdateDateTime;
+
+  @Column(name = "matching_1source_trade_agreement_id")
+  String matching1SourceTradeAgreementId;
+
+  @Column(name = "matching_1source_loan_contract_id")
+  String matching1SourceLoanContractId;
+
+  @Column(name = "applicable_instruction_id")
+  private Integer applicableInstructionId;
+
   @Embedded
   @JsonProperty("securityDetailDTO")
   @AttributeOverrides({
