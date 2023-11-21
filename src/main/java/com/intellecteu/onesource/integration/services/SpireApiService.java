@@ -95,22 +95,24 @@ public class SpireApiService implements SpireService {
     public PositionDto getTradePosition(AgreementDto agreement) {
         TradeAgreementDto trade = agreement.getTrade();
         String venueRefId = trade.getExecutionVenue().getPlatform().getVenueRefId();
-        if(!StringUtils.isEmpty(venueRefId)) {
-            log.debug("Retrieving Spire Position by venueRefId={}", venueRefId);
-            ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true,
-                createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
-            validateResponse(response, venueRefId, trade);
-            final Position position = savePosition(response, venueRefId, trade);
-            if (position.getPositionStatus() == null || position.getPositionStatus().getStatus().equals("CANCELED")) {
-                var msg = format(POSITION_CANCELED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
-                    trade.getTradeDate());
-                saveIssue(msg, trade, SPIRE_POSITION_CANCELED);
-                return null;
-            }
-            return position == null ? null : positionMapper.toPositionDto(position);
+        if (!StringUtils.isEmpty(venueRefId)) {
+            return null;
         }
-
-        return null;
+        log.debug("Retrieving Spire Position by venueRefId={}", venueRefId);
+        ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true,
+            createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
+        validateResponse(response, venueRefId, trade);
+        final Position position = savePosition(response, venueRefId, trade);
+        if (position == null) {
+            return null;
+        }
+        if (position.getPositionStatus() == null || position.getPositionStatus().getStatus().equals("CANCELED")) {
+            var msg = format(POSITION_CANCELED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
+                trade.getTradeDate());
+            saveIssue(msg, trade, SPIRE_POSITION_CANCELED);
+            return null;
+        }
+        return position == null ? null : positionMapper.toPositionDto(position);
     }
 
     private void validateResponse(ResponseEntity<JsonNode> response, String venueRefId, TradeAgreementDto trade) {
