@@ -418,3 +418,5 @@ ALTER TABLE participant ADD CONSTRAINT FK_PARTICIPANT_HOLDER FOREIGN KEY (partic
 
 COMMENT ON COLUMN trade.event_id IS 'Link to the event that created this trade';
 COMMENT ON COLUMN trade.resource_uri IS 'Resource URI for this trade';
+COMMENT ON COLUMN position.status IS 'External Spire position status from statusDTO';
+COMMENT ON COLUMN position.processing_status IS 'Integration toolkit internal status';

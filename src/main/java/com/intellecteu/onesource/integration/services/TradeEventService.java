@@ -13,8 +13,8 @@ import static com.intellecteu.onesource.integration.model.EventType.TRADE;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
-import static com.intellecteu.onesource.integration.utils.ApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.ApiUtils.createListOfTuplesGetPosition;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 
 import com.fasterxml.jackson.databind.JsonNode;

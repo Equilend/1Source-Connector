@@ -3,8 +3,8 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
-import static com.intellecteu.onesource.integration.utils.ApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.ApiUtils.createListOfTuplesGetPositionWithoutTA;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,7 +47,7 @@ public class PositionApiService implements PositionService {
     private final CloudEventRecordService cloudEventRecordService;
 
     @Override
-    public void createLoanContractWithoutTA() throws JsonProcessingException {
+    public void createLoanContractWithoutTA() {
         List<Position> storedPositions = positionRepository.findAll();
         Position position = storedPositions.stream()
             .max(Comparator.comparingInt(p -> Integer.parseInt(p.getPositionId()))).orElse(null);
@@ -57,7 +57,7 @@ public class PositionApiService implements PositionService {
                     createListOfTuplesGetPositionWithoutTA(position.getPositionId())));
             List<Position> positions = new ArrayList<>();
 
-            processPositionsResponce(response, positions);
+            processPositionsResponse(response, positions);
 
             positions.forEach(this::processPosition);
         }
@@ -68,7 +68,7 @@ public class PositionApiService implements PositionService {
             createGetPositionNQuery(null, AndOr.AND, null, createListOfTuplesGetPositionWithoutTA("positionID")));
         List<Position> positions = new ArrayList<>();
 
-        processPositionsResponce(response, positions);
+        processPositionsResponse(response, positions);
 
         positions.forEach(this::processPosition);
         return null;
@@ -96,8 +96,7 @@ public class PositionApiService implements PositionService {
             .build();
     }
 
-    private void processPositionsResponce(ResponseEntity<JsonNode> response, List<Position> positions)
-        throws JsonProcessingException {
+    private void processPositionsResponse(ResponseEntity<JsonNode> response, List<Position> positions) {
         if (response.getBody() != null
             && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
@@ -105,7 +104,12 @@ public class PositionApiService implements PositionService {
             JsonNode jsonNode = response.getBody().get("data").get("beans");
             if (jsonNode.isArray()) {
                 for (JsonNode positionNode : jsonNode) {
-                    Position position = positionMapper.toPosition(positionNode);
+                    Position position = null;
+                    try {
+                        position = positionMapper.toPosition(positionNode);
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException(e);
+                    }
                     positions.add(position);
                 }
             }

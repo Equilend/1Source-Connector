@@ -20,7 +20,7 @@ public class PositionRoute extends RouteBuilder {
     @Override
     public void configure() {
 
-        from("timer://eventTimer?period={{camel.timer}}")
+        from("timer://eventTimer?period={{camel.positionTimer}}")
             .routeId("PositionRoute")
             .autoStartup(isAutoStarted)
             .log("Start retrieved positions for matching")
