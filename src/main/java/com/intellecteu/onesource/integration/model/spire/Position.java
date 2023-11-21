@@ -2,6 +2,9 @@ package com.intellecteu.onesource.integration.model.spire;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -77,6 +80,22 @@ public class Position {
   @Column(name = "position_type_id")
   private Integer positionTypeId;
 
+  @Column(name = "processing_status")
+  @Enumerated(value = EnumType.STRING)
+  private ProcessingStatus processingStatus;
+
+  @Column(name = "last_update_datetime")
+  private LocalDateTime lastUpdateDateTime;
+
+  @Column(name = "matching_1source_trade_agreement_id")
+  String matching1SourceTradeAgreementId;
+
+  @Column(name = "matching_1source_loan_contract_id")
+  String matching1SourceLoanContractId;
+
+  @Column(name = "applicable_instruction_id")
+  private Integer applicableInstructionId;
+
   @Embedded
   @JsonProperty("securityDetailDTO")
   @AttributeOverrides({
@@ -135,5 +154,9 @@ public class Position {
       @AttributeOverride(name = "lei", column = @Column(name = "cp_lei"))
   })
   private PositionAccount positionCpAccount;
+
+  @Embedded
+  @JsonProperty("statusDTO")
+  private PositionStatus positionStatus;
 
 }

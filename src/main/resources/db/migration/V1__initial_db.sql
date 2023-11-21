@@ -6,7 +6,10 @@ CREATE TABLE IF NOT EXISTS agreement
     last_update_datetime timestamp    NULL,
     trade_id             BIGINT       NULL,
     event_type           VARCHAR(255) NULL,
+    matching_spire_position_id          VARCHAR(255) NULL,
+    matching_1source_loan_contract_id          VARCHAR(255) NULL,
     flow_status          VARCHAR(255) NULL,
+    processing_status     VARCHAR(255) NULL,
     CONSTRAINT pk_agreement PRIMARY KEY (id)
 );
 
@@ -37,6 +40,7 @@ CREATE TABLE IF NOT EXISTS contract
     trade_id             BIGINT       NULL,
     processing_status    VARCHAR(255) NULL,
     event_type           VARCHAR(255) NULL,
+    matching_spire_position_id          VARCHAR(255) NULL,
     flow_status          VARCHAR(255) NULL,
     CONSTRAINT pk_contract PRIMARY KEY (id)
 );
@@ -161,6 +165,12 @@ CREATE TABLE IF NOT EXISTS position
     position_type         VARCHAR(255) NULL,
     account_lei           VARCHAR(255) NULL,
     cp_lei                VARCHAR(255) NULL,
+    status                VARCHAR(255) NULL,
+    processing_status     VARCHAR(255) NULL,
+    matching_1source_trade_agreement_id     VARCHAR(255) NULL,
+    matching_1source_loan_contract_id     VARCHAR(255) NULL,
+    applicable_instruction_id      INT          NULL,
+    last_update_datetime   timestamp NULL,
     CONSTRAINT pk_position PRIMARY KEY (id)
 );
 
@@ -408,3 +418,5 @@ ALTER TABLE participant ADD CONSTRAINT FK_PARTICIPANT_HOLDER FOREIGN KEY (partic
 
 COMMENT ON COLUMN trade.event_id IS 'Link to the event that created this trade';
 COMMENT ON COLUMN trade.resource_uri IS 'Resource URI for this trade';
+COMMENT ON COLUMN position.status IS 'External Spire position status from statusDTO';
+COMMENT ON COLUMN position.processing_status IS 'Integration toolkit internal status';

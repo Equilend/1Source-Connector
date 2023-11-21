@@ -5,6 +5,7 @@ import com.intellecteu.onesource.integration.model.ContractStatus;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ContractRepository extends JpaRepository<Contract, Long> {
 
@@ -16,5 +17,9 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
 
     @Query("select distinct c from Contract c left join fetch c.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price left join fetch v.platform p where c.flowStatus <> 'PROCESSED'")
     List<Contract> findAllNotProcessed();
+
+    //TODO check if inner join will be enough in this case.
+    @Query("select c from Contract c left join fetch c.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price left join fetch v.platform p where p.venueRefId = :venueRefId")
+    List<Contract> findByVenueRefId(@Param("venueRefId") String venueRefId);
 
 }

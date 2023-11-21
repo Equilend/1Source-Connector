@@ -63,6 +63,8 @@ public class Contract {
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
     private EventType eventType;
+    @Column(name = "matching_spire_position_id")
+    String matchingSpirePositionId;
     @Column(name = "flow_status")
     @Enumerated(value = EnumType.STRING)
     private FlowStatus flowStatus;

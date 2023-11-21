@@ -50,7 +50,14 @@ public class Agreement {
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
     private EventType eventType;
+    @Column(name = "matching_spire_position_id")
+    String matchingSpirePositionId;
+    @Column(name = "matching_1source_loan_contract_id")
+    String matching1SourceLoanContractId;
     @Column(name = "flow_status")
     @Enumerated(value = EnumType.STRING)
     private FlowStatus flowStatus;
+    @Column(name = "processing_status")
+    @Enumerated(value = EnumType.STRING)
+    private ProcessingStatus processingStatus;
 }

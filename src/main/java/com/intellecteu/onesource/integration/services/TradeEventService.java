@@ -13,12 +13,15 @@ import static com.intellecteu.onesource.integration.model.EventType.TRADE;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -85,7 +88,7 @@ public class TradeEventService implements EventService {
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
             final String venueRefId = contract.getTrade().getVenue().getPlatform().getVenueRefId();
-            ResponseEntity<JsonNode> response = spireService.requestPosition(venueRefId);
+            ResponseEntity<JsonNode> response = spireService.requestPosition(createGetPositionNQuery(null, AndOr.AND, true, createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
             var positionLei = extractPositionLei(response);
             var positionId = extractPositionId(response);
             if (isToCancelCandidate(contract, positionLei, response)) {

@@ -26,6 +26,8 @@ public class RecordMessageConstant {
       public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
       public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
       public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
+      public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
+      public static final String LOAN_CONTRACT_MATCHED_POSITION = "Position - %s";
       public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
       public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION = "Position - %s";
       public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED = "Position - %s";
@@ -80,6 +82,14 @@ public class RecordMessageConstant {
       public static final String RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG = """
           The trade agreement %s has been successfully reconciled \
           with the position %s in SPIRE""";
+
+      public static final String MATCHED_POSITION_TRADE_AGREEMENT_MSG = """
+          The trade agreement %s has been matched \
+          with a SPIRE position %s""";
+
+      public static final String MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG = """
+          The loan contract proposal %s has been matched \
+          with a SPIRE position %s""";
 
       public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
           A new trade agreement %s has been captured""";

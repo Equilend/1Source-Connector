@@ -2,13 +2,17 @@ package com.intellecteu.onesource.integration;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
+import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.FeeRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
 import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
+import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
+import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
@@ -21,7 +25,10 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionExposureDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
+import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.LocalMarketField;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import lombok.experimental.UtilityClass;
 
@@ -53,6 +60,18 @@ public class DtoTestFactory {
         .agreementId("testId")
         .status(CONFIRMED)
         .lastUpdateDatetime(LocalDateTime.now())
+        .trade(buildTradeAgreementDto())
+        .build();
+  }
+
+  public static ContractDto buildContractDto() {
+    return ContractDto.builder()
+        .contractId("testId")
+        .lastEventId(1L)
+        .lastUpdatePartyId("test")
+        .eventType(EventType.CONTRACT)
+        .lastUpdateDatetime(LocalDateTime.now())
+        .settlement(List.of(buildSettlementDto()))
         .trade(buildTradeAgreementDto())
         .build();
   }
@@ -281,4 +300,46 @@ public class DtoTestFactory {
         .transactionDatetime(LocalDateTime.now())
         .build();
   }
+
+  private static SettlementDto buildSettlementDto() {
+    return SettlementDto.builder()
+        .partyRole(BORROWER)
+        .instruction(buildInstructionDto())
+        .build();
+  }
+
+  private static SettlementInstructionDto buildInstructionDto() {
+    return SettlementInstructionDto.builder()
+        .localAgentAcct("testacc")
+        .localAgentBic("RHBBMYKL")
+        .localAgentName("nestname")
+        .settlementBic("RHBBMYKL")
+        .localMarketFields(List.of(buildMarketDto()))
+        .build();
+  }
+
+  public static SettlementInstruction buildInstruction() {
+    return SettlementInstruction.builder()
+        .localAgentAcct("testacc")
+        .localAgentBic("RHBBMYKL")
+        .localAgentName("nestname")
+        .settlementBic("RHBBMYKL")
+        .localMarketField(List.of(buildMarket()))
+        .build();
+  }
+
+  private static LocalMarketFieldDto buildMarketDto() {
+    return LocalMarketFieldDto.builder()
+        .localFieldName("testName")
+        .localFieldValue("testValue")
+        .build();
+  }
+
+  private static LocalMarketField buildMarket() {
+    return LocalMarketField.builder()
+        .localFieldName("testName")
+        .localFieldValue("testValue")
+        .build();
+  }
+
 }
