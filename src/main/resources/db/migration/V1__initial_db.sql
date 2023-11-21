@@ -165,6 +165,7 @@ CREATE TABLE IF NOT EXISTS position
     position_type         VARCHAR(255) NULL,
     account_lei           VARCHAR(255) NULL,
     cp_lei                VARCHAR(255) NULL,
+    status                VARCHAR(255) NULL,
     processing_status     VARCHAR(255) NULL,
     matching_1source_trade_agreement_id     VARCHAR(255) NULL,
     matching_1source_loan_contract_id     VARCHAR(255) NULL,

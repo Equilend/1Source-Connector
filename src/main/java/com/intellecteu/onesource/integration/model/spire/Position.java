@@ -155,4 +155,11 @@ public class Position {
   })
   private PositionAccount positionCpAccount;
 
+  @Embedded
+  @JsonProperty("statusDTO")
+  @AttributeOverrides({
+      @AttributeOverride(name = "status", column = @Column(name = "status"))
+  })
+  private PositionStatus positionStatus;
+
 }
