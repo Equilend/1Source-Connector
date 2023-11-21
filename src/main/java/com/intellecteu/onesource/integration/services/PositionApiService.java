@@ -63,17 +63,6 @@ public class PositionApiService implements PositionService {
         }
     }
 
-    public PositionDto getPositionWithoutTA() throws JsonProcessingException {
-        ResponseEntity<JsonNode> response = spireService.requestPosition(
-            createGetPositionNQuery(null, AndOr.AND, null, createListOfTuplesGetPositionWithoutTA("positionID")));
-        List<Position> positions = new ArrayList<>();
-
-        processPositionsResponse(response, positions);
-
-        positions.forEach(this::processPosition);
-        return null;
-    }
-
     public List<SettlementDto> getSettlementDetailsWithoutTA(PositionDto positionDto,
         TradeAgreementDto tradeAgreementDto) {
         final PartyRole partyRole = tradeAgreementDto

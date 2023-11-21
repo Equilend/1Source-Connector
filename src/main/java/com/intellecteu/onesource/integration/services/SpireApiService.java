@@ -23,12 +23,14 @@ import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementUpdate;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -49,10 +51,13 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
+import static com.intellecteu.onesource.integration.exception.PositionCanceledException.POSITION_CANCELED_EXCEPTION;
 import static com.intellecteu.onesource.integration.exception.PositionRetrievementException.TRADE_RELATED_EXCEPTION;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
@@ -90,10 +95,23 @@ public class SpireApiService implements SpireService {
     public PositionDto getTradePosition(AgreementDto agreement) {
         TradeAgreementDto trade = agreement.getTrade();
         String venueRefId = trade.getExecutionVenue().getPlatform().getVenueRefId();
+        if (StringUtils.isEmpty(venueRefId)) {
+            return null;
+        }
         log.debug("Retrieving Spire Position by venueRefId={}", venueRefId);
-        ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true, createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
+        ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true,
+            createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
         validateResponse(response, venueRefId, trade);
         final Position position = savePosition(response, venueRefId, trade);
+        if (position == null) {
+            return null;
+        }
+        if (position.getPositionStatus() == null || position.getPositionStatus().getStatus().equals("CANCELED")) {
+            var msg = format(POSITION_CANCELED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
+                trade.getTradeDate());
+            saveIssue(msg, trade, SPIRE_POSITION_CANCELED);
+            return null;
+        }
         return position == null ? null : positionMapper.toPositionDto(position);
     }
 
@@ -101,17 +119,17 @@ public class SpireApiService implements SpireService {
         if (response.getStatusCode() == NOT_FOUND) {
             var msg = format("The position related to the trade : %s negotiated on %s on %s "
                 + "has not been recorded in SPIRE", venueRefId, trade.retrieveVenueName(), trade.getTradeDate());
-            saveIssue(msg, trade);
+            saveIssue(msg, trade, SPIRE_ISSUE);
         } else if (response.getStatusCode() == UNAUTHORIZED || response.getStatusCode() == FORBIDDEN) {
             var msg = format(TRADE_RELATED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
                 trade.getTradeDate(), response.getStatusCode());
-            saveIssue(msg, trade);
+            saveIssue(msg, trade, SPIRE_ISSUE);
         }
     }
 
-    private static void saveIssue(String errorMsg, TradeAgreementDto trade) {
+    private static void saveIssue(String errorMsg, TradeAgreementDto trade, ProcessingStatus status) {
         log.error(errorMsg);
-        trade.setProcessingStatus(SPIRE_ISSUE);
+        trade.setProcessingStatus(status);
     }
 
     private Position extractPositionFromJson(ResponseEntity<JsonNode> response) throws JsonProcessingException {
@@ -341,7 +359,7 @@ public class SpireApiService implements SpireService {
         } catch (JsonProcessingException | NullPointerException e) {
             var msg = format(TRADE_RELATED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
                 trade.getTradeDate(), "Parse data exception!");
-            saveIssue(msg, trade);
+            saveIssue(msg, trade, SPIRE_ISSUE);
         }
         return null;
     }

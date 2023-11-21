@@ -93,10 +93,12 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             if (partyRole == LENDER) {
                 log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
                 var settlements = spireService.retrieveSettlementDetails(positionDto, agreement.getTrade(), partyRole);
-                log.debug("Submitting contract proposal as a {}", partyRole);
-                ContractProposalDto contractProposalDto = buildContract(agreement, positionDto, settlements);
-                oneSourceService.createContract(agreement, contractProposalDto, positionDto);
-                log.debug("***** Trade Agreement Id: {} was processed successfully", agreement.getAgreementId());
+                if (settlements != null) {
+                    log.debug("Submitting contract proposal as a {}", partyRole);
+                    ContractProposalDto contractProposalDto = buildContract(agreement, positionDto, settlements);
+                    oneSourceService.createContract(agreement, contractProposalDto, positionDto);
+                    log.debug("***** Trade Agreement Id: {} was processed successfully", agreement.getAgreementId());
+                }
             }
         }
     }
