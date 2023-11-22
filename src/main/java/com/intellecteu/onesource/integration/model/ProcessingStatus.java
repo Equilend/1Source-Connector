@@ -6,6 +6,7 @@ public enum ProcessingStatus {
     CREATED,
     PROCESSED,
     MATCHED_POSITION,
+    MATCHED_CANCELED_POSITION,
     SPIRE_ISSUE,
     VALIDATED,
     TO_CANCEL,
@@ -14,5 +15,7 @@ public enum ProcessingStatus {
     SPIRE_POSITION_CANCELED,
     CANCELED,
     DECLINED,
-    ONESOURCE_ISSUE
+    ONESOURCE_ISSUE,
+    UPDATED,
+    SETTLED
 }

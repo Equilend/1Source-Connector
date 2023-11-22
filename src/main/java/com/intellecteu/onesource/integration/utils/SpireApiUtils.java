@@ -48,6 +48,14 @@ public class SpireApiUtils {
         return tuples;
     }
 
+    public static List<Tuples> createListOfTuplesUpdatedPositions(String dateTime, String ids) {
+        List<Tuples> tuples = new ArrayList<>();
+        tuples.add(createTuples("positionId", "IN", ids, null));
+        tuples.add(createTuples("lastModTs", "GREATER THAN", dateTime, null));
+
+        return tuples;
+    }
+
     public static List<Tuples> createListOfTuplesGetInstruction(PositionDto position) {
         List<Tuples> tuples = new ArrayList<>();
         tuples.add(createTuples("accountId", "EQUALS", String.valueOf(position.getDepoId()), null));

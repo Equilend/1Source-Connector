@@ -29,6 +29,7 @@ import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +56,6 @@ import static com.intellecteu.onesource.integration.exception.PositionCanceledEx
 import static com.intellecteu.onesource.integration.exception.PositionRetrievementException.TRADE_RELATED_EXCEPTION;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
@@ -112,7 +112,7 @@ public class SpireApiService implements SpireService {
             saveIssue(msg, trade, SPIRE_POSITION_CANCELED);
             return null;
         }
-        return position == null ? null : positionMapper.toPositionDto(position);
+        return positionMapper.toPositionDto(position);
     }
 
     private void validateResponse(ResponseEntity<JsonNode> response, String venueRefId, TradeAgreementDto trade) {
@@ -355,6 +355,7 @@ public class SpireApiService implements SpireService {
         try {
             final Position entity = Objects.requireNonNull(extractPositionFromJson(response));
             entity.setVenueRefId(venueRefId);
+            entity.setLastUpdateDateTime(LocalDateTime.now());
             return positionRepository.save(entity);
         } catch (JsonProcessingException | NullPointerException e) {
             var msg = format(TRADE_RELATED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
