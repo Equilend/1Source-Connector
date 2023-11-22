@@ -22,6 +22,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_POSITION_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_CANCELED_POSITION_TRADE_AGREEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_TRADE_AGREEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_MSG;
@@ -46,6 +47,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_POSITION_UPDATE_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_CREATED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION;
@@ -110,6 +112,8 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     return switch (recordType) {
       case LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION -> loanContractProposalMatchingEvent(recorded,
           recordType, related);
+      case TRADE_AGREEMENT_MATCHED_CANCELED_POSITION -> tradeAgreementMatchingEvent(recorded,
+          recordType, related);
       case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
       case TRADE_AGREEMENT_RECONCILED -> tradeAgreementReconciledEvent(recorded, recordType, related);
       case TRADE_AGREEMENT_MATCHED_POSITION -> tradeMatchedPositionEvent(recorded, recordType, related);
@@ -154,6 +158,18 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         format(VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION, related),
         CONTRACT_INITIATION,
         VALIDATE_LOAN_CONTRACT_PROPOSAL,
+        createEventData(dataMessage, getLoanProposalRelatedToPosition(recorded, related))
+    );
+  }
+
+  private CloudEventBuildRequest tradeAgreementMatchingEvent(String recorded, RecordType recordType,
+      String related) {
+    String dataMessage = format(MATCHED_CANCELED_POSITION_TRADE_AGREEMENT_MSG, recorded, related);
+    return createRecordRequest(
+        recordType,
+        format(TRADE_AGREEMENT_MATCHED_CANCELED_POSITION, related),
+        CONTRACT_INITIATION,
+        GET_TRADE_AGREEMENT,
         createEventData(dataMessage, getLoanProposalRelatedToPosition(recorded, related))
     );
   }

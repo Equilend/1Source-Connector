@@ -1,10 +1,13 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,9 +28,11 @@ import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +50,7 @@ public class PositionApiService implements PositionService {
     private final SpireService spireService;
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final static String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
 
     @Override
     public void createLoanContractWithoutTA() {
@@ -60,6 +66,28 @@ public class PositionApiService implements PositionService {
             processPositionsResponse(response, positions);
 
             positions.forEach(this::processPosition);
+        }
+    }
+
+    @Override
+    public void processUpdatedPositions() {
+        List<Position> positions = positionRepository.findAllNotCanceledAndSettled();
+        LocalDateTime lastUpdatedDateTime = findLastUpdatedDateTime(positions);
+        List<String> positionIds = positions.stream().map(Position::getPositionId).toList();
+        String ids = positionIds.stream().collect(Collectors.joining(", "));
+
+        if (lastUpdatedDateTime != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
+            String dateTime = lastUpdatedDateTime.format(formatter);
+
+            ResponseEntity<JsonNode> response = spireService.requestPosition(
+                createGetPositionNQuery(null, AndOr.AND, null,
+                    createListOfTuplesUpdatedPositions(dateTime, ids)));
+            List<Position> retrievedPositions = new ArrayList<>();
+
+            processPositionsResponse(response, retrievedPositions);
+
+            retrievedPositions.forEach(this::processUpdatedPosition);
         }
     }
 
@@ -93,7 +121,7 @@ public class PositionApiService implements PositionService {
             JsonNode jsonNode = response.getBody().get("data").get("beans");
             if (jsonNode.isArray()) {
                 for (JsonNode positionNode : jsonNode) {
-                    Position position = null;
+                    Position position;
                     try {
                         position = positionMapper.toPosition(positionNode);
                     } catch (JsonProcessingException e) {
@@ -142,6 +170,11 @@ public class PositionApiService implements PositionService {
 //        createLoanContractProposalWithoutTA(positionDto, settlementDtos, tradeAgreementDto);
     }
 
+    private void processUpdatedPosition(Position position) {
+        updatePosition(position);
+        savePosition(position);
+    }
+
     private void savePosition(Position position) {
         position.setVenueRefId(position.getCustomValue2());
         position.setProcessingStatus(CREATED);
@@ -155,5 +188,56 @@ public class PositionApiService implements PositionService {
         var recordRequest = eventBuilder.buildRequest(id,
             recordType, position.getPositionId());
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private LocalDateTime findLastUpdatedDateTime(List<Position> positions) {
+        LocalDateTime localDateTime = null;
+        if (positions != null && !positions.isEmpty()) {
+            localDateTime = positions.stream()
+                .map(Position::getLastUpdateDateTime)
+                .max(LocalDateTime::compareTo)
+                .get();
+        }
+        return localDateTime;
+    }
+
+    private void updatePosition(Position position) {
+        if (position != null && position.getPositionStatus() != null
+            && position.getPositionStatus().getStatus() != null) {
+            String status = position.getPositionStatus().getStatus();
+            if (status.equals("FUTURE")) {
+                position.setProcessingStatus(UPDATED);
+            } else if (List.of("CANCEL", "FAILED").contains(status)) {
+                position.setProcessingStatus(CANCELED);
+                matchingCanceledPosition(position);
+            } else if (status.equals("OPEN")) {
+                position.setProcessingStatus(SETTLED);
+            }
+            position.setLastUpdateDateTime(LocalDateTime.now());
+        }
+    }
+
+    private void matchingCanceledPosition(Position position) {
+        List<Agreement> agreements = agreementRepository.findByVenueRefId(position.getCustomValue2());
+        if (!agreements.isEmpty()) {
+            Agreement agreement = agreements.get(0);
+            agreement.setLastUpdateDatetime(LocalDateTime.now());
+            agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
+            createContractInitiationCloudEvent(agreement.getAgreementId(), position,
+                TRADE_AGREEMENT_MATCHED_CANCELED_POSITION);
+
+            agreementRepository.save(agreement);
+        }
+
+        List<Contract> contracts = contractRepository.findByVenueRefId(position.getCustomValue2());
+        if (!contracts.isEmpty()) {
+            Contract contract = contracts.get(0);
+            contract.setLastUpdateDatetime(LocalDateTime.now());
+            contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
+            createContractInitiationCloudEvent(contract.getContractId(), position,
+                LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION);
+
+            contractRepository.save(contract);
+        }
     }
 }
