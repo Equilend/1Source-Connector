@@ -127,7 +127,7 @@ public class ContractFlowTest {
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        eventMapper = new EventMapper(objectMapper);
+        eventMapper = new EventMapper();
         positionMapper = new PositionMapper(objectMapper);
         reconcileService = new OneSourceSpireReconcileService();
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
