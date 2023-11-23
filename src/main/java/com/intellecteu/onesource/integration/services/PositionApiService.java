@@ -55,6 +55,8 @@ public class PositionApiService implements PositionService {
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
     private final static String DATE_TIME_PATTERN = "yyyy-MM-dd'T'HH:mm:ss.SSS";
+    private final static String LENDER_POSITION_TYPE = "LOAN CASH";
+    private final static String BORROWER_POSITION_TYPE = "BORROW CASH";
 
     @Override
     public void createLoanContractWithoutTA() {
@@ -101,9 +103,9 @@ public class PositionApiService implements PositionService {
             positionType = position.getPositionType().getPositionType();
         }
         PartyRole partyRole = null;
-        if (positionType != null && positionType.contains("LOAN")) {
+        if (positionType != null && positionType.contains(LENDER_POSITION_TYPE)) {
             partyRole = PartyRole.LENDER;
-        } else if (positionType != null && positionType.contains("BORROW")) {
+        } else if (positionType != null && positionType.contains(BORROWER_POSITION_TYPE)) {
             partyRole = PartyRole.BORROWER;
         }
         if (partyRole != null) {
