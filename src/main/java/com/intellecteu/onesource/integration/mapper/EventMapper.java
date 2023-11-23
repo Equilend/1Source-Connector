@@ -59,8 +59,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class EventMapper {
 
-    private final ObjectMapper objectMapper;
-
     public TradeEvent toEventEntity(TradeEventDto tradeEventDto) {
         return TradeEvent.builder()
             .eventDatetime(tradeEventDto.getEventDatetime())
@@ -132,6 +130,7 @@ public class EventMapper {
         }
         return Settlement.builder()
             .partyRole(settlementDto.getPartyRole())
+            .instructionId(settlementDto.getInstructionId())
             .instruction(toInstructionEntity(settlementDto.getInstruction()))
             .build();
     }
@@ -142,6 +141,7 @@ public class EventMapper {
         }
         return SettlementDto.builder()
             .partyRole(settlement.getPartyRole())
+            .instructionId(settlement.getInstructionId())
             .instruction(toInstructionDto(settlement.getInstruction()))
             .build();
     }

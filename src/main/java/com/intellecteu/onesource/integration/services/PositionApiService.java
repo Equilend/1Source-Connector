@@ -18,6 +18,7 @@ import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -26,6 +27,7 @@ import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.repository.SettlementRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -46,7 +48,9 @@ public class PositionApiService implements PositionService {
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionMapper positionMapper;
+    private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
+    private final SettlementRepository settlementRepository;
     private final SpireService spireService;
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
@@ -91,12 +95,30 @@ public class PositionApiService implements PositionService {
         }
     }
 
-    public List<SettlementDto> getSettlementDetailsWithoutTA(PositionDto positionDto,
-        TradeAgreementDto tradeAgreementDto) {
-        final PartyRole partyRole = tradeAgreementDto
-            .getTransactingParties().get(0).getPartyRole();
-        log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
-        return spireService.retrieveSettlementDetails(positionDto, tradeAgreementDto, partyRole);
+    public void getSettlementDetailsWithoutTA(Position position) {
+        String positionType = null;
+        if (position.getPositionType() != null) {
+            positionType = position.getPositionType().getPositionType();
+        }
+        PartyRole partyRole = null;
+        if (positionType != null && positionType.contains("LOAN")) {
+            partyRole = PartyRole.LENDER;
+        } else if (positionType != null && positionType.contains("BORROW")) {
+            partyRole = PartyRole.BORROWER;
+        }
+        if (partyRole != null) {
+            log.debug("Retrieving Settlement Instruction by position from Spire as a {}", partyRole);
+            List<SettlementDto> settlementDtos = spireService.retrieveSettlementDetails(
+                positionMapper.toPositionDto(position),
+                position.getCustomValue2(), null, partyRole);
+            SettlementDto settlement = settlementDtos.get(0);
+            settlementRepository.save(eventMapper.toSettlementEntity(settlement));
+
+            position.setApplicableInstructionId(settlement.getInstructionId());
+            position.setLastUpdateDateTime(LocalDateTime.now());
+            position.setProcessingStatus(SI_FETCHED);
+            positionRepository.save(position);
+        }
     }
 
     public void createLoanContractProposalWithoutTA(PositionDto positionDto, List<SettlementDto> settlementDtos,
@@ -164,15 +186,13 @@ public class PositionApiService implements PositionService {
         }
 
         savePosition(position);
-
-//        TradeAgreementDto tradeAgreementDto = buildTradeAgreementDto(positionDto);
-//        List<SettlementDto> settlementDtos = getSettlementDetailsWithoutTA(positionDto, tradeAgreementDto);
-//        createLoanContractProposalWithoutTA(positionDto, settlementDtos, tradeAgreementDto);
+        getSettlementDetailsWithoutTA(position);
     }
 
     private void processUpdatedPosition(Position position) {
         updatePosition(position);
         savePosition(position);
+        getSettlementDetailsWithoutTA(position);
     }
 
     private void savePosition(Position position) {

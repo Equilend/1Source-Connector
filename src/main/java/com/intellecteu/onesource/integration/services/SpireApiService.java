@@ -204,27 +204,24 @@ public class SpireApiService implements SpireService {
     }
 
     @Override
-    public List<SettlementDto> retrieveSettlementDetails(PositionDto position, TradeAgreementDto trade,
+    public List<SettlementDto> retrieveSettlementDetails(PositionDto position, String venueRefId,
+        TradeAgreementDto trade,
         PartyRole roleForRequest) {
-        String venueRefId = trade.getExecutionVenue().getPlatform().getVenueRefId();
         final HttpEntity<Query> request = buildRequest(createGetInstructionsNQuery(position));
 
         log.debug("Sending POST request to {}", lenderSpireEndpoint + GET_INSTRUCTION_ENDPOINT);
         ResponseEntity<JsonNode> response = null;
         if (roleForRequest == LENDER) {
-            response = requestInstruction(String.valueOf(trade.getId()), position.getPositionId(),
+            response = requestInstruction(position.getPositionId(), position.getPositionId(),
                 request, lenderSpireEndpoint + GET_INSTRUCTION_ENDPOINT);
         }
         if (roleForRequest == BORROWER) {
-            response = requestInstruction(String.valueOf(trade.getId()), position.getPositionId(),
+            response = requestInstruction(position.getPositionId(), position.getPositionId(),
                 request, borrowerSpireEndpoint + GET_INSTRUCTION_ENDPOINT);
         }
 
-        if (response == null || response.getStatusCode() != OK) {
-            var responseCode = response == null ? "no response" : response.getStatusCode();
-            log.error(format(GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG,
-                trade.getExecutionVenue().getPlatform().getVenueRefId(), position.getPositionId(), responseCode));
-            trade.setProcessingStatus(SPIRE_ISSUE);
+        if (trade != null) {
+            processFailedResponse(position, venueRefId, trade, response);
         }
 
         if (response != null && response.getBody() != null && response.getBody().get("data") != null
@@ -328,6 +325,7 @@ public class SpireApiService implements SpireService {
         SettlementInstructionDto settlementInstruction = toSettlementInstruction(bic, name, agentBic, agentAcc, dtc);
         SettlementDto settlementDto = SettlementDto.builder()
             .partyRole(partyRole)
+            .instructionId(instructionId)
             .instruction(settlementInstruction).build();
 
         saveSettlementUpdate(partyRole, venueRefId, instructionId, settlementInstruction);
@@ -397,6 +395,16 @@ public class SpireApiService implements SpireService {
             .agentBicDTO(
                 new SwiftbicDTO(settlementInstruction.getSettlementBic(), settlementInstruction.getLocalAgentBic()))
             .build();
+    }
+
+    private static void processFailedResponse(PositionDto position, String venueRefId, TradeAgreementDto trade,
+        ResponseEntity<JsonNode> response) {
+        if (response == null || response.getStatusCode() != OK) {
+            var responseCode = response == null ? "no response" : response.getStatusCode();
+            log.error(format(GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG,
+                venueRefId, position.getPositionId(), responseCode));
+            trade.setProcessingStatus(SPIRE_ISSUE);
+        }
     }
 
     public SpireApiService(RestTemplate restTemplate, PositionRepository positionRepository, EventMapper eventMapper,

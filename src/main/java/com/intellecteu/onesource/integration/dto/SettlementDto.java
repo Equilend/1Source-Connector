@@ -15,6 +15,8 @@ public class SettlementDto {
 
     @JsonProperty("partyRole")
     private PartyRole partyRole;
+    @JsonProperty("instructionId")
+    private Integer instructionId;
     @JsonProperty("instruction")
     private SettlementInstructionDto instruction;
 }
