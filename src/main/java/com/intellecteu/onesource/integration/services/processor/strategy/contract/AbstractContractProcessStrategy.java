@@ -3,11 +3,8 @@ package com.intellecteu.onesource.integration.services.processor.strategy.contra
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.CloudEventData;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
-import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
@@ -62,7 +59,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     } else if (partyRole == BORROWER) {
       roleForRequest = LENDER;
     }
-    List<SettlementDto> settlementDtos = spireService.retrieveSettlementDetails(position,
+    List<SettlementDto> settlementDtos = spireService.retrieveSettlementDetails(position, venueRefId,
         contract.getTrade(), roleForRequest);
     settlementTempRepository.save(eventMapper.toSettlementTempEntity(settlementDtos, contract.getContractId()));
     SettlementInstructionDto settlementInstruction = settlementDtos.get(0).getInstruction();

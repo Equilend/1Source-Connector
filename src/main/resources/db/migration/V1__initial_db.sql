@@ -203,6 +203,7 @@ CREATE TABLE IF NOT EXISTS settlement
 (
     id            SERIAL NOT NULL,
     party_role    VARCHAR(255) NULL,
+    instruction_id   BIGINT       NULL,
     instruction   BIGINT       NULL,
     settlement_id BIGINT       NULL,
     CONSTRAINT pk_settlement PRIMARY KEY (id)

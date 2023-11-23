@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
@@ -58,8 +57,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EventMapper {
-
-    private final ObjectMapper objectMapper;
 
     public TradeEvent toEventEntity(TradeEventDto tradeEventDto) {
         return TradeEvent.builder()
@@ -132,6 +129,7 @@ public class EventMapper {
         }
         return Settlement.builder()
             .partyRole(settlementDto.getPartyRole())
+            .instructionId(settlementDto.getInstructionId())
             .instruction(toInstructionEntity(settlementDto.getInstruction()))
             .build();
     }
@@ -142,6 +140,7 @@ public class EventMapper {
         }
         return SettlementDto.builder()
             .partyRole(settlement.getPartyRole())
+            .instructionId(settlement.getInstructionId())
             .instruction(toInstructionDto(settlement.getInstruction()))
             .build();
     }

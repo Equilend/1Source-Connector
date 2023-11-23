@@ -17,5 +17,6 @@ public enum ProcessingStatus {
     DECLINED,
     ONESOURCE_ISSUE,
     UPDATED,
-    SETTLED
+    SETTLED,
+    SI_FETCHED
 }

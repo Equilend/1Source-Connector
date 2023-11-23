@@ -19,7 +19,7 @@ public interface SpireService {
 
     ResponseEntity<JsonNode> requestPosition(NQuery query);
 
-    List<SettlementDto> retrieveSettlementDetails(PositionDto position, TradeAgreementDto trade,
+    List<SettlementDto> retrieveSettlementDetails(PositionDto position, String venueRefId, TradeAgreementDto trade,
         PartyRole partyRole);
 
     void updatePosition(ContractDto contract, String positionId);

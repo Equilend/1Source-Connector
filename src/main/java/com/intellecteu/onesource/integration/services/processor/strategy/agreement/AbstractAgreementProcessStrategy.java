@@ -91,8 +91,9 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             agreement.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
         } else {
             if (partyRole == LENDER) {
+                String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
                 log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
-                var settlements = spireService.retrieveSettlementDetails(positionDto, agreement.getTrade(), partyRole);
+                var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreement.getTrade(), partyRole);
                 if (settlements != null) {
                     log.debug("Submitting contract proposal as a {}", partyRole);
                     ContractProposalDto contractProposalDto = buildContract(agreement, positionDto, settlements);
