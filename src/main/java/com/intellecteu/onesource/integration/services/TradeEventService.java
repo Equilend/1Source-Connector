@@ -10,7 +10,9 @@ import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINE;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE;
+import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
@@ -25,6 +27,7 @@ import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.Participant;
 import com.intellecteu.onesource.integration.model.ParticipantHolder;
 import com.intellecteu.onesource.integration.model.PartyRole;
@@ -247,7 +250,7 @@ public class TradeEventService implements EventService {
 
     private void processData(List<TradeEvent> events) {
         for (TradeEvent event : events) {
-            if (event.getEventType().equals(TRADE)) {
+            if (Set.of(TRADE, TRADE_AGREED).contains(event.getEventType())) {
                 // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77010
                 String eventUri = event.getResourceUri();
                 AgreementDto agreementDto = oneSourceService.findTradeAgreement(eventUri, event.getEventType());
@@ -256,7 +259,7 @@ public class TradeEventService implements EventService {
                     agreementDto.getTrade().setResourceUri(event.getResourceUri());
                     agreementDto.setEventType(event.getEventType());
                     agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
-                    storeAgreement(agreementDto);
+                    storeAgreement(agreementDto, event.getEventType());
                     event.setProcessingStatus(PROCESSED);
                     final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
                     var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
@@ -281,8 +284,12 @@ public class TradeEventService implements EventService {
         }
     }
 
-    private Agreement storeAgreement(AgreementDto agreementDto) {
+    private Agreement storeAgreement(AgreementDto agreementDto, EventType eventType) {
         Agreement agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+        if (eventType.equals(TRADE_AGREED)) {
+            agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
+            agreementEntity.setProcessingStatus(CREATED);
+        }
         return agreementRepository.save(agreementEntity);
     }
 

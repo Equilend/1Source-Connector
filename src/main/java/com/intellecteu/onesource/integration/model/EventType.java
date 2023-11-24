@@ -20,5 +20,6 @@ public enum EventType {
     RETURN_CANCEL,
     SPLIT,
     TRADE,
+    TRADE_AGREED,
     TRADE_CANCEL
 }
