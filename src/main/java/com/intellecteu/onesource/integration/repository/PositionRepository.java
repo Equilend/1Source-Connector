@@ -13,4 +13,5 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     List<Position> findAllNotCanceledAndSettled();
 
     List<Position> findByVenueRefId(String venueRefId);
+    List<Position> findByMatching1SourceTradeAgreementId(String agreementId);
 }

@@ -26,6 +26,7 @@ public class RecordMessageConstant {
       public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
       public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
       public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
+      public static final String TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s";
       public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
       public static final String TRADE_AGREEMENT_MATCHED_CANCELED_POSITION = "Position - %s";
       public static final String LOAN_CONTRACT_MATCHED_POSITION = "Position - %s";
@@ -98,6 +99,12 @@ public class RecordMessageConstant {
 
       public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
           A new trade agreement %s has been captured""";
+
+      public static final String TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG = """
+          The trade agreement %s matched with the position %s has been canceled""";
+
+      public static final String TRADE_AGREEMENT_CANCELED_EVENT_MSG = """
+          The trade agreement %s has been canceled""";
 
       public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG = """
           The Lender's loan contract proposal, contractId %s is matching a canceled position, positionId %s""";

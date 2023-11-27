@@ -16,4 +16,7 @@ public interface AgreementRepository extends JpaRepository<Agreement, Long> {
 
     @Query("select a from Agreement a left join fetch a.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price left join fetch v.platform p where p.venueRefId = :venueRefId")
     List<Agreement> findByVenueRefId(@Param("venueRefId") String venueRefId);
+
+    @Query("select a from Agreement a left join fetch a.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price left join fetch v.platform p where a.agreementId = :agreementId")
+    List<Agreement> findByAgreementId(@Param("agreementId") String agreementId);
 }

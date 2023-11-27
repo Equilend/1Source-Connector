@@ -3,7 +3,6 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.DtoTestFactory.createPartyDto;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.GET;
@@ -76,8 +75,6 @@ public class ParticipantFlowTests {
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
     private TradeEventService eventService;
-    private CloudEventFactory<IntegrationCloudEvent> recordFactory;
-
 
     @BeforeEach
     void setUp() {
@@ -88,7 +85,7 @@ public class ParticipantFlowTests {
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository, timestampRepository, participantHolderRepository, eventMapper, spireService, oneSourceService, cloudEventRecordService);
+        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository, positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService, oneSourceService, cloudEventRecordService);
     }
 
     @Test
