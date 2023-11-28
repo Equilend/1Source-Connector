@@ -3,12 +3,16 @@ package com.intellecteu.onesource.integration.services.processor.strategy.agreem
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
+import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +36,10 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
       saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
       return;
     }
-    saveAgreementWithStage(agreement, POSITION_RETRIEVED);
+    Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
+    String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+    List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+    processMatchingPosition(agreementEntity, positions);
     log.debug("Start reconciliation from AgreementDataReceived strategy");
     reconcile(agreement, positionDto);
     if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
@@ -51,8 +58,8 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
   }
 
   public AgreementDataReceived(OneSourceService oneSourceService, SpireService spireService,
-      ReconcileService reconcileService, AgreementRepository agreementRepository,
+      ReconcileService reconcileService, AgreementRepository agreementRepository, PositionRepository positionRepository,
       EventMapper eventMapper, CloudEventRecordService cloudEventRecordService) {
-    super(oneSourceService, spireService, reconcileService, agreementRepository, eventMapper, cloudEventRecordService);
+    super(oneSourceService, spireService, reconcileService, agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
   }
 }

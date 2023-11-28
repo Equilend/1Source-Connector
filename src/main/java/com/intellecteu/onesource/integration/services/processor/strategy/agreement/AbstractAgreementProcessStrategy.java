@@ -7,14 +7,19 @@ import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
+import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,10 +29,15 @@ import lombok.extern.slf4j.Slf4j;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.exception.DataMismatchException.LEI_MISMATCH_MSG;
 import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
@@ -44,12 +54,13 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     SpireService spireService;
     ReconcileService reconcileService;
     AgreementRepository agreementRepository;
+    PositionRepository positionRepository;
     EventMapper eventMapper;
     CloudEventRecordService cloudEventRecordService;
 
-    void saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
+    Agreement saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
         agreement.setFlowStatus(status);
-        agreementRepository.save(eventMapper.toAgreementEntity(agreement));
+        return agreementRepository.save(eventMapper.toAgreementEntity(agreement));
     }
 
     void reconcile(AgreementDto agreement, PositionDto position) {
@@ -93,7 +104,8 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             if (partyRole == LENDER) {
                 String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
                 log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
-                var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreement.getTrade(), partyRole);
+                var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreement.getTrade(),
+                    partyRole);
                 if (settlements != null) {
                     log.debug("Submitting contract proposal as a {}", partyRole);
                     ContractProposalDto contractProposalDto = buildContract(agreement, positionDto, settlements);
@@ -101,6 +113,34 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
                     log.debug("***** Trade Agreement Id: {} was processed successfully", agreement.getAgreementId());
                 }
             }
+        }
+    }
+
+    void processMatchingPosition(Agreement agreementEntity, List<Position> positions) {
+        if (!positions.isEmpty()) {
+            Position position = positions.get(0);
+            if (position.getProcessingStatus() == CANCELED) {
+                agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
+                agreementEntity.setProcessingStatus(MATCHED_CANCELED_POSITION);
+                agreementEntity.setMatchingSpirePositionId(position.getPositionId());
+
+                position.setLastUpdateDateTime(LocalDateTime.now());
+                position.setMatching1SourceTradeAgreementId(agreementEntity.getAgreementId());
+                createContractInitiationCloudEvent(agreementEntity.getAgreementId(), position,
+                    TRADE_AGREEMENT_MATCHED_CANCELED_POSITION);
+            } else {
+                agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
+                agreementEntity.setProcessingStatus(MATCHED_POSITION);
+                agreementEntity.setMatchingSpirePositionId(position.getPositionId());
+
+                position.setLastUpdateDateTime(LocalDateTime.now());
+                position.setMatching1SourceTradeAgreementId(agreementEntity.getAgreementId());
+                createContractInitiationCloudEvent(agreementEntity.getAgreementId(), position,
+                    TRADE_AGREEMENT_MATCHED_POSITION);
+            }
+
+            positionRepository.save(position);
+            agreementRepository.save(agreementEntity);
         }
     }
 
@@ -113,5 +153,13 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             .trade(trade)
             .settlement(settlements)
             .build();
+    }
+
+    void createContractInitiationCloudEvent(String id, Position position, RecordType recordType) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(id,
+            recordType, position.getPositionId());
+        cloudEventRecordService.record(recordRequest);
     }
 }
