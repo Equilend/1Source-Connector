@@ -108,7 +108,6 @@ public class ContractFlowTest {
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
-    private ReconcileService reconcileService;
     private ContractDataReceived contractDataReceived;
     private TradeEventService eventService;
     @Mock
@@ -129,7 +128,6 @@ public class ContractFlowTest {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         eventMapper = new EventMapper();
         positionMapper = new PositionMapper(objectMapper);
-        reconcileService = new OneSourceSpireReconcileService();
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
         builderMap.put(CONTRACT_INITIATION, new GenericRecordCloudEventBuilder());
@@ -145,7 +143,7 @@ public class ContractFlowTest {
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository, timestampRepository, participantHolderRepository, eventMapper, spireService, oneSourceService, cloudEventRecordService);
+        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository, positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService, oneSourceService, cloudEventRecordService);
         contract = buildContractDto();
         contractEntity = eventMapper.toContractEntity(contract);
         PositionExposure exposure = new PositionExposure();

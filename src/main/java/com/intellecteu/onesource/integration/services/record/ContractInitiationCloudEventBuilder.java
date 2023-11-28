@@ -31,7 +31,9 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_FAIL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CANCELED_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CREATE_EVENT_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
@@ -46,6 +48,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_POSITION_UPDATE_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_POSITION;
@@ -58,6 +61,7 @@ import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_TRADE_CANCELATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.RECONCILE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.VALIDATE_LOAN_CONTRACT_PROPOSAL;
@@ -117,6 +121,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
       case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
       case TRADE_AGREEMENT_RECONCILED -> tradeAgreementReconciledEvent(recorded, recordType, related);
       case TRADE_AGREEMENT_MATCHED_POSITION -> tradeMatchedPositionEvent(recorded, recordType, related);
+      case TRADE_AGREEMENT_CANCELED -> tradeCancelationEvent(recorded, recordType, related);
       case LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION -> loanProposalMatchedPositionEvent(recorded, recordType, related);
       default -> null;
     };
@@ -124,14 +129,13 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
   @Override
   public CloudEventBuildRequest buildRequest(RecordType recordType, String resourceUri) {
-    String message = format(TRADE_AGREEMENT_CREATE_EVENT_MSG, resourceUri);
-    return createRecordRequest(
-        recordType,
-        format(TRADE_AGREEMENT_CREATED, resourceUri),
-        CONTRACT_INITIATION,
-        GET_TRADE_AGREEMENT,
-        createEventData(message, List.of(new RelatedObject(resourceUri, ONESOURCE_TRADE_AGREEMENT)))
-    );
+    return switch (recordType) {
+      case TRADE_AGREEMENT_CREATED -> tradeAgreementCreationEvent(resourceUri,
+          recordType);
+      case TRADE_AGREEMENT_CANCELED -> tradeAgreementCancelationEvent(resourceUri,
+          recordType);
+      default -> null;
+    };
   }
 
   @Override
@@ -210,6 +214,18 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     );
   }
 
+  private CloudEventBuildRequest tradeCancelationEvent(String recorded, RecordType recordType,
+      String related) {
+    String dataMessage = format(TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG, recorded, related);
+    return createRecordRequest(
+        recordType,
+        format(TRADE_AGREEMENT_CANCELED, related),
+        CONTRACT_INITIATION,
+        GET_TRADE_CANCELATION,
+        createEventData(dataMessage, getTradeAgreementRelatedToPosition(recorded, related))
+    );
+  }
+
   private CloudEventBuildRequest loanProposalMatchedPositionEvent(String recorded, RecordType recordType,
       String related) {
     String dataMessage = format(MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG, recorded, related);
@@ -247,6 +263,27 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     );
   }
 
+  private CloudEventBuildRequest tradeAgreementCreationEvent(String resourceUri, RecordType recordType) {
+    String message = format(TRADE_AGREEMENT_CREATE_EVENT_MSG, resourceUri);
+    return createRecordRequest(
+        recordType,
+        format(TRADE_AGREEMENT_CREATED, resourceUri),
+        CONTRACT_INITIATION,
+        GET_TRADE_AGREEMENT,
+        createEventData(message, List.of(new RelatedObject(resourceUri, ONESOURCE_TRADE_AGREEMENT)))
+    );
+  }
+
+  private CloudEventBuildRequest tradeAgreementCancelationEvent(String resourceUri, RecordType recordType) {
+    String message = format(TRADE_AGREEMENT_CANCELED_EVENT_MSG, resourceUri);
+    return createRecordRequest(
+        recordType,
+        format(TRADE_AGREEMENT_CANCELED, resourceUri),
+        CONTRACT_INITIATION,
+        GET_TRADE_CANCELATION,
+        createEventData(message, List.of(new RelatedObject(resourceUri, ONESOURCE_TRADE_AGREEMENT)))
+    );
+  }
   private CloudEventBuildRequest declineLoanContractProposalExceptionEvent(String record,
       HttpStatusCodeException exception, String related, IntegrationSubProcess subProcess) {
     String message = format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, record, exception.getStatusText());
