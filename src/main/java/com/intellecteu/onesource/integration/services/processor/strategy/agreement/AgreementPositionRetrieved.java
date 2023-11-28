@@ -20,7 +20,6 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECON
 @Slf4j
 public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy {
 
-  private final PositionRepository positionRepository;
   private final PositionMapper positionMapper;
 
   @Override
@@ -43,11 +42,15 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
   }
 
   public AgreementPositionRetrieved(OneSourceService oneSourceService, SpireService spireService,
-      ReconcileService reconcileService, AgreementRepository agreementRepository, EventMapper eventMapper,
-      PositionRepository positionRepository, PositionMapper positionMapper,
+      ReconcileService reconcileService, AgreementRepository agreementRepository, PositionRepository positionRepository, EventMapper eventMapper, PositionMapper positionMapper,
       CloudEventRecordService cloudEventRecordService) {
-    super(oneSourceService, spireService, reconcileService, agreementRepository, eventMapper, cloudEventRecordService);
-    this.positionRepository = positionRepository;
+    super(oneSourceService,
+        spireService,
+        reconcileService,
+        agreementRepository,
+        positionRepository,
+        eventMapper,
+        cloudEventRecordService);
     this.positionMapper = positionMapper;
   }
 }

@@ -23,11 +23,7 @@ import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
-import com.intellecteu.onesource.integration.mapper.RecordMapper;
-import com.intellecteu.onesource.integration.model.CurrencyCd;
-import com.intellecteu.onesource.integration.model.spire.Currency;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.CloudEventRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
@@ -36,12 +32,10 @@ import com.intellecteu.onesource.integration.services.processor.strategy.agreeme
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordServiceImpl;
 import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -86,6 +80,7 @@ public class AgreementFlowTest {
 
     @Mock
     private CloudEventRecordService cloudEventRecordService;
+    @Mock
     private TradeEventRepository eventRepository;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
 
@@ -108,7 +103,7 @@ public class AgreementFlowTest {
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             positionMapper, cloudEventRecordService);
         agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
-            agreementRepository, eventMapper, cloudEventRecordService);
+            agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
