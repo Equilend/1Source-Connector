@@ -37,8 +37,10 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     reconcile(agreement, positionDto);
     if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
       processAgreement(agreement, positionDto);
+      agreement.setEventType(EventType.TRADE_AGREED);
       saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
     } else if (agreement.getTrade().getProcessingStatus() == TO_CANCEL) {
+      agreement.setEventType(EventType.TRADE_AGREED);
       saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
     }
   }
