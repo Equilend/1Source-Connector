@@ -9,15 +9,24 @@ import static com.intellecteu.onesource.integration.exception.LoanContractCancel
 import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
@@ -266,7 +275,7 @@ public class TradeEventService implements EventService {
                     agreementDto.setEventType(event.getEventType());
                     agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
                     storeAgreement(agreementDto, event.getEventType());
-                    event.setProcessingStatus(PROCESSED);
+                    event.setProcessingStatus(CREATED);
                     final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
                     var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                     var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CREATED,
@@ -274,7 +283,8 @@ public class TradeEventService implements EventService {
                     cloudEventRecordService.record(recordRequest);
                 }
             } else if (event.getEventType().equals(TRADE_CANCELED)) {
-                String agreementId = event.getResourceUri();
+                String resourceUri = event.getResourceUri();
+                String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/'));
                 List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
                 if (!agreements.isEmpty()) {
                     Agreement agreement = agreements.get(0);
@@ -291,20 +301,22 @@ public class TradeEventService implements EventService {
                     position.setLastUpdateDateTime(LocalDateTime.now());
                     positionRepository.save(position);
                 }
-                event.setProcessingStatus(PROCESSED);
+                event.setProcessingStatus(CREATED);
                 final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
                 createCloudEvent(agreements, positions, savedTradeEvent);
-            } else if (Set.of(CONTRACT, CONTRACT_APPROVE, CONTRACT_DECLINE).contains(event.getEventType())) {
+            } else if (Set.of(CONTRACT, CONTRACT_APPROVE, CONTRACT_DECLINE, CONTRACT_DECLINED, CONTRACT_PROPOSED, CONTRACT_CANCEL, CONTRACT_CANCELED).contains(event.getEventType())) {
                 // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
                 String resourceUri = event.getResourceUri();
-                ContractDto contractDto = oneSourceService.findContract(resourceUri);
+                String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/'));
+                ContractDto contractDto = oneSourceService.findContract(agreementId);
                 if (contractDto != null) {
                     contractDto.getTrade().setEventId(event.getEventId());
                     contractDto.getTrade().setResourceUri(event.getResourceUri());
                     contractDto.setEventType(event.getEventType());
                     contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
+                    processContractByEventType(contractDto, event.getEventType());
                     storeContract(contractDto);
-                    event.setProcessingStatus(PROCESSED);
+                    event.setProcessingStatus(CREATED);
                     tradeEventRepository.save(event);
                 }
             }
@@ -352,6 +364,46 @@ public class TradeEventService implements EventService {
             var recordRequest = eventBuilder.buildRequest(savedTradeEvent.getResourceUri(), TRADE_AGREEMENT_CANCELED,
                 agreement.getMatchingSpirePositionId());
             cloudEventRecordService.record(recordRequest);
+        }
+    }
+
+    private void processContractByEventType(ContractDto contractDto, EventType eventType) {
+        contractDto.setLastUpdateDatetime(LocalDateTime.now());
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+        Position position = positions.isEmpty() ? null : positions.get(0);
+
+        if (Set.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(eventType)) {
+            contractDto.setProcessingStatus(CANCELED);
+            contractDto.setLastUpdateDatetime(LocalDateTime.now());
+            if (position != null) {
+                position.setProcessingStatus(PROPOSAL_CANCELED);
+                position.setLastUpdateDateTime(LocalDateTime.now());
+
+                positionRepository.save(position);
+            }
+        }
+
+        if (Set.of(CONTRACT_DECLINE, CONTRACT_DECLINED).contains(eventType)) {
+            contractDto.setProcessingStatus(DECLINED);
+            contractDto.setLastUpdateDatetime(LocalDateTime.now());
+            if (position != null) {
+                position.setProcessingStatus(PROPOSAL_DECLINED);
+                position.setLastUpdateDateTime(LocalDateTime.now());
+
+                positionRepository.save(position);
+            }
+        }
+
+        if (Set.of(CONTRACT_APPROVE, CONTRACT_PENDING).contains(eventType)) {
+            contractDto.setProcessingStatus(APPROVED);
+            contractDto.setLastUpdateDatetime(LocalDateTime.now());
+            if (position != null) {
+                position.setProcessingStatus(PROPOSAL_APPROVED);
+                position.setLastUpdateDateTime(LocalDateTime.now());
+
+                positionRepository.save(position);
+            }
         }
     }
 }

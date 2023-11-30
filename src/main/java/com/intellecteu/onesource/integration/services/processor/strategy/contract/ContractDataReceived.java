@@ -2,17 +2,15 @@ package com.intellecteu.onesource.integration.services.processor.strategy.contra
 
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventData;
-import com.intellecteu.onesource.integration.dto.record.RelatedObject;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -25,10 +23,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT_PROPOSAL;
-import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Generic.EventTypeMessage.CONTRACT_APPROVE_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Generic.EventTypeMessage.CONTRACT_CANCEL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Generic.EventTypeMessage.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.CTR_INSTRUCTIONS_RETRIEVED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_UPDATED;
@@ -38,11 +32,12 @@ import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GEN
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.ContractStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
@@ -64,7 +59,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
       String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
       log.debug("Contract Id {} Contract Datetime {}, venueRefId: {}", contract.getContractId(),
           contract.getLastUpdateDatetime(), venueRefId);
-      PositionDto position = retrievePositionByVenue(venueRefId);
+      List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+      PositionDto position = positions.isEmpty() ? null : positionMapper.toPositionDto(positions.get(0));
+      processMatchingPosition(eventMapper.toContractEntity(contract), positions);
       if (position == null) {
         savePositionRetrievementIssue(contract, venueRefId);
         return;
@@ -79,14 +76,13 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contractRepository.save(eventMapper.toContractEntity(contract));
         return;
       }
-      if (partyRole == BORROWER && contract.getEventType().equals(CONTRACT)) {
+      if (partyRole == BORROWER && List.of(CONTRACT, CONTRACT_PROPOSED).contains(contract.getEventType())) {
         processContractForBorrower(contract, venueRefId, partyRole);
       }
       if (contract.getEventType().equals(CONTRACT_APPROVE) && contract.getContractStatus() == APPROVED) {
         processApprovedContract(contract, venueRefId, position, partyRole);
       }
-      if (partyRole == BORROWER && contract.getEventType().equals(CONTRACT_CANCEL)
-          && contract.getContractStatus().equals(CANCELED)) {
+      if (partyRole == BORROWER && List.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(contract.getEventType())) {
         processCanceledContractForBorrower(contract, position);
       }
       if (partyRole == LENDER && contract.getEventType().equals(CONTRACT_DECLINE)) {

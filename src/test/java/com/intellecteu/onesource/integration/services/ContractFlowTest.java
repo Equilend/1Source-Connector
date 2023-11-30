@@ -194,6 +194,8 @@ public class ContractFlowTest {
 
         when(restTemplate.exchange(eq(declineContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"))).thenReturn(response);
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
+        doNothing().when(cloudEventRecordService).record(any());
 
         contractDataReceived.process(contract);
 
