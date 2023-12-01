@@ -49,6 +49,8 @@ public class PositionDto implements Reconcilable {
   private Double rate;
   private Double quantity;
   private LocalDateTime tradeDate;
+  private Integer termId;
+  private LocalDateTime endDate;
   private LocalDateTime settleDate;
   private Boolean deliverFree;
   private Double amount;
@@ -81,6 +83,10 @@ public class PositionDto implements Reconcilable {
 
   public String getAccountLei() {
     return accountDto == null ? "" : accountDto.getLei();
+  }
+
+  public String getShortName() {
+    return accountDto == null ? "" : accountDto.getShortName();
   }
 
   public String getCpLei() {

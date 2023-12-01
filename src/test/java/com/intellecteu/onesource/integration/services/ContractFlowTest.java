@@ -157,7 +157,7 @@ public class ContractFlowTest {
         position = new Position();
         position.setPositionId("testId");
         position.setExposure(exposure);
-        position.setPositionAccount(new PositionAccount("borrower-lei"));
+        position.setPositionAccount(new PositionAccount("borrower-lei", "test"));
     }
 
     @Test

@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.PartyRole.*;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
@@ -31,6 +32,7 @@ import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.SettlementStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -132,18 +134,19 @@ public class PositionApiService implements PositionService {
 
     public void getSettlementDetailsWithoutTA(Position position) {
         String positionType = null;
+        List<SettlementDto> settlementDtos = new ArrayList<>();
         if (position.getPositionType() != null) {
             positionType = position.getPositionType().getPositionType();
         }
         PartyRole partyRole = null;
         if (positionType != null && positionType.contains(LENDER_POSITION_TYPE)) {
-            partyRole = PartyRole.LENDER;
+            partyRole = LENDER;
         } else if (positionType != null && positionType.contains(BORROWER_POSITION_TYPE)) {
-            partyRole = PartyRole.BORROWER;
+            partyRole = BORROWER;
         }
         if (partyRole != null) {
             log.debug("Retrieving Settlement Instruction by position from Spire as a {}", partyRole);
-            List<SettlementDto> settlementDtos = spireService.retrieveSettlementDetails(
+            settlementDtos = spireService.retrieveSettlementDetails(
                 positionMapper.toPositionDto(position),
                 position.getCustomValue2(), null, partyRole);
             SettlementDto settlement = settlementDtos.get(0);
@@ -154,12 +157,18 @@ public class PositionApiService implements PositionService {
             position.setProcessingStatus(SI_FETCHED);
             positionRepository.save(position);
         }
+        if (partyRole == LENDER && !settlementDtos.isEmpty()) {
+            createLoanContractProposalWithoutTA(position, settlementDtos);
+        }
     }
 
-    public void createLoanContractProposalWithoutTA(PositionDto positionDto, List<SettlementDto> settlementDtos,
-        TradeAgreementDto tradeAgreementDto) {
-        ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos, tradeAgreementDto);
-        oneSourceService.createContract(null, contractProposalDto, positionDto);
+    public void createLoanContractProposalWithoutTA(Position position, List<SettlementDto> settlementDtos) {
+        PositionDto positionDto = positionMapper.toPositionDto(position);
+        if ((position.getMatching1SourceTradeAgreementId() != null && position.getProcessingStatus() == TRADE_RECONCILED) || (position.getMatching1SourceTradeAgreementId() == null && position.getProcessingStatus() == SI_FETCHED)) {
+            ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
+                buildTradeAgreementDto(positionDto));
+            oneSourceService.createContract(null, contractProposalDto, positionDto);
+        }
     }
 
     private ContractProposalDto buildLoanContractProposal(List<SettlementDto> settlementDtos,
@@ -267,6 +276,13 @@ public class PositionApiService implements PositionService {
                 matchingCanceledPosition(position);
             } else if (status.equals("OPEN")) {
                 position.setProcessingStatus(SETTLED);
+                List<Contract> contracts = contractRepository.findByVenueRefId(position.getCustomValue2());
+                if (!contracts.isEmpty()) {
+                    Contract contract = contracts.get(0);
+                    contract.setSettlementStatus(SettlementStatus.SETTLED);
+
+                    contractRepository.save(contract);
+                }
             }
             position.setLastUpdateDateTime(LocalDateTime.now());
         }

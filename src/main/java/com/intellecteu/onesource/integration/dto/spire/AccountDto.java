@@ -15,5 +15,6 @@ public class AccountDto {
 
     private Long dtc;
     private String lei;
+    private String shortName;
 
 }

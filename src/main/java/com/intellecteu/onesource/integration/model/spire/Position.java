@@ -56,6 +56,12 @@ public class Position {
   @Column(name = "trade_date")
   private LocalDateTime tradeDate;
 
+  @Column(name = "term_id")
+  private Integer termId;
+
+  @Column(name = "end_date")
+  private LocalDateTime endDate;
+
   @Column(name = "settle_date")
   private LocalDateTime settleDate;
 
@@ -144,14 +150,16 @@ public class Position {
   @Embedded
   @JsonProperty("accountDTO")
   @AttributeOverrides({
-      @AttributeOverride(name = "lei", column = @Column(name = "account_lei"))
+      @AttributeOverride(name = "lei", column = @Column(name = "account_lei")),
+      @AttributeOverride(name = "shortName", column = @Column(name = "short_name"))
   })
   private PositionAccount positionAccount;
 
   @Embedded
   @JsonProperty("counterPartyDTO")
   @AttributeOverrides({
-      @AttributeOverride(name = "lei", column = @Column(name = "cp_lei"))
+      @AttributeOverride(name = "lei", column = @Column(name = "cp_lei")),
+      @AttributeOverride(name = "shortName", column = @Column(name = "short_name", insertable = false, updatable = false))
   })
   private PositionAccount positionCpAccount;
 

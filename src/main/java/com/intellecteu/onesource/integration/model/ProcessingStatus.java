@@ -14,6 +14,7 @@ public enum ProcessingStatus {
     PROPOSAL_CANCELED,
     PROPOSAL_DECLINED,
     RECONCILED,
+    TRADE_RECONCILED,
     SAVED,
     SETTLED,
     SI_FETCHED,

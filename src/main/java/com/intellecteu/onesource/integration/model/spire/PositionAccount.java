@@ -20,6 +20,7 @@ import javax.persistence.Embeddable;
 public class PositionAccount {
 
   private String lei;
+  private String shortName;
 
 
 }

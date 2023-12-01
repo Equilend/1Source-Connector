@@ -1,6 +1,10 @@
 package com.intellecteu.onesource.integration.mapper;
 
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.RoundingMode.*;
+import static com.intellecteu.onesource.integration.model.SettlementType.*;
+import static com.intellecteu.onesource.integration.model.TermType.*;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,7 +13,6 @@ import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.FloatingRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
-import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
@@ -21,6 +24,8 @@ import com.intellecteu.onesource.integration.dto.VenuePartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.CollateralType;
 import com.intellecteu.onesource.integration.model.CurrencyCd;
+import com.intellecteu.onesource.integration.model.SettlementType;
+import com.intellecteu.onesource.integration.model.TermType;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -56,8 +61,10 @@ public class PositionMapper {
         .billingCurrency(CurrencyCd.valueOf(positionDto.getCurrency().getCurrencyKy()))
         .dividendRatePct(positionDto.getLoanBorrowDto().getTaxWithholdingRate().intValue())
         .tradeDate(positionDto.getTradeDate().toLocalDate())
+        .termType(checkTermType(positionDto.getTermId()))
+        .termDate(positionDto.getEndDate().toLocalDate())
         .settlementDate(positionDto.getSettleDate().toLocalDate())
-//        .settlementType(positionDto.getDeliverFree())
+        .settlementType(checkSettlementType(positionDto.getDeliverFree()))
         .collateral(buildCollateralDto(positionDto))
         .transactingParties(List.of(createLenderTransactionParty(positionDto), createBorrowerTransactionParty(positionDto)))
         .build();
@@ -67,18 +74,34 @@ public class PositionMapper {
     return TransactingPartyDto.builder()
         .partyRole(LENDER)
         .party(createLenderPartyDto(positionDto))
+        //TODO add internal ref after 1.0.4 implemented
         .build();
+  }
+
+  private SettlementType checkSettlementType(Boolean deliverFree) {
+    return deliverFree == Boolean.FALSE ? DVP : FOP;
+  }
+
+  private TermType checkTermType(Integer termId) {
+    if (termId == 1) {
+      return OPEN;
+    } else if (termId == 2) {
+      return TERM;
+    }
+
+    return null;
   }
 
   private TransactingPartyDto createBorrowerTransactionParty(PositionDto positionDto) {
     return TransactingPartyDto.builder()
-        .partyRole(LENDER)
+        .partyRole(BORROWER)
         .party(createBorrowerPartyDto(positionDto))
         .build();
   }
 
   private static PartyDto createLenderPartyDto(PositionDto positionDto) {
     return PartyDto.builder()
+        .partyName(positionDto.getShortName())
         .gleifLei(positionDto.getAccountLei())
         .build();
   }
@@ -97,6 +120,8 @@ public class PositionMapper {
         .currency(positionDto.getCurrency().getCurrencyKy())
         .type(CollateralType.valueOf(positionDto.getCollateralType()))
         .margin(positionDto.getCpHaircut())
+        .roundingRule(positionDto.getCpMarkRoundTo())
+        .roundingMode(ALWAYSUP)
         .build();
   }
 
@@ -143,19 +168,11 @@ public class PositionMapper {
 
   }
 
-  public VenuePartyDto buildVenuePartyDto() {
+  public VenuePartyDto buildVenuePartyDto(PositionDto positionDto) {
     return VenuePartyDto.builder()
         .partyRole(LENDER)
-        .venuePartyId("testVenuePartyId")
-        .internalRef(buildInternalReferenceDto())
-        .build();
-  }
-
-  private InternalReferenceDto buildInternalReferenceDto() {
-    return InternalReferenceDto.builder()
-        .brokerCd("testBrokerCd")
-        .accountId("testAccountId")
-        .internalRefId("testInternalRefId")
+        //TODO change to venuePartyRefKey after 1.0.4 implemented
+        .venuePartyId(positionDto.getPositionId())
         .build();
   }
 

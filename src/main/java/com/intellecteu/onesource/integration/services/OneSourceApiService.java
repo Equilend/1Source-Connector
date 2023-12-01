@@ -6,7 +6,6 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
@@ -68,7 +67,6 @@ import static org.springframework.http.HttpMethod.PATCH;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -124,7 +122,9 @@ public class OneSourceApiService implements OneSourceService {
     headers.setContentType(APPLICATION_JSON);
     HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
 
-    executeCreateContractRequest(agreement, position, request);
+    if (agreement != null) {
+      executeCreateContractRequest(agreement, position, request);
+    }
   }
 
 //  @Override
@@ -155,7 +155,7 @@ public class OneSourceApiService implements OneSourceService {
       HttpEntity<ContractProposalDto> request) {
     log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
     try {
-      ResponseEntity<JsonNode> response = restTemplate.exchange(
+      restTemplate.exchange(
           onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST, request, JsonNode.class);
       log.debug("The contract was created!");
     } catch (HttpStatusCodeException e) {
