@@ -10,6 +10,7 @@ import com.intellecteu.onesource.integration.dto.spire.NQuery;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.List;
 

@@ -79,7 +79,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
         mockServer.verify();
         Assertions.assertEquals(tradeEvents.size(), 2);
-        Assertions.assertEquals(tradeEvents.get(0).getEventType(), EventType.TRADE);
+        Assertions.assertEquals(tradeEvents.get(0).getEventType(), EventType.TRADE_AGREED);
         Assertions.assertEquals(tradeEvents.get(1).getEventType(), EventType.CONTRACT);
         Assertions.assertEquals(tradeEvents.get(0).getEventDatetime(), LocalDateTime.parse("2023-07-27T13:41:29.011"));
         Assertions.assertEquals(tradeEvents.get(1).getEventDatetime(), LocalDateTime.parse("2023-07-27T13:41:29.011"));

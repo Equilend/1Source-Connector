@@ -95,10 +95,16 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
     return List.of(relatedContractProposal, relatedPosition);
   }
 
-  protected List<RelatedObject> getTradeAgreementRelatedToPosition(String agreementInfo, String positionInfo) {
-    var relatedContractProposal = new RelatedObject(agreementInfo, ONESOURCE_TRADE_AGREEMENT);
-    var relatedPosition = new RelatedObject(positionInfo, POSITION);
+  protected List<RelatedObject> getLoanProposalRelatedToOnesourceEvent(String contractInfo, String eventInfo) {
+    var relatedContractProposal = new RelatedObject(contractInfo, ONESOURCE_LOAN_PROPOSAL);
+    var relatedPosition = new RelatedObject(eventInfo, ONESOURCE_EVENT);
     return List.of(relatedContractProposal, relatedPosition);
+  }
+
+  protected List<RelatedObject> getTradeAgreementRelatedToPosition(String agreementInfo, String positionInfo) {
+    var tradeAgreement = new RelatedObject(agreementInfo, ONESOURCE_TRADE_AGREEMENT);
+    var relatedPosition = new RelatedObject(positionInfo, POSITION);
+    return List.of(tradeAgreement, relatedPosition);
   }
 
   protected List<RelatedObject> getLoanProposalRelatedToPosition(String contractInfo, String positionInfo) {

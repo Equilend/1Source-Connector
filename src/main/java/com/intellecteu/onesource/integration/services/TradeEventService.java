@@ -1,7 +1,47 @@
 package com.intellecteu.onesource.integration.services;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.spire.AndOr;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.Agreement;
+import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.Participant;
+import com.intellecteu.onesource.integration.model.ParticipantHolder;
+import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.repository.AgreementRepository;
+import com.intellecteu.onesource.integration.repository.ContractRepository;
+import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
+import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.repository.TimestampRepository;
+import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+
 import static com.intellecteu.onesource.integration.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.exception.DataMismatchException.LEI_MISMATCH_MSG;
@@ -27,44 +67,12 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-
-import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.spire.AndOr;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.Participant;
-import com.intellecteu.onesource.integration.model.ParticipantHolder;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
-import com.intellecteu.onesource.integration.repository.TimestampRepository;
-import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @Service
@@ -196,41 +204,46 @@ public class TradeEventService implements EventService {
         }
     }
 
-    private static void startParticipantActuality(List<PartyDto> retrievedParties, ParticipantHolder holder,
+    private void startParticipantActuality(List<PartyDto> retrievedParties, ParticipantHolder holder,
         List<String> storedIds, String gleiflei) {
         List<Participant> participants = holder.getParticipants();
         if (!storedIds.contains(gleiflei)) {
-            PartyDto party = retrievedParties.stream().filter(i -> i.getGleifLei().equals(gleiflei))
-                .findFirst().get();
-
-            Participant participant = Participant.builder()
-                .partyId(party.getPartyId())
-                .partyName(party.getPartyName())
-                .gleifLei(party.getGleifLei())
-                .internalPartyId(party.getInternalPartyId())
-                .participantStartDate(LocalDateTime.now())
-                .participantEndDate(null)
-                .build();
-
-            holder.addParticipant(participant);
+            retrievedParties.stream()
+                .filter(p -> p.getGleifLei().equals(gleiflei))
+                .findFirst()
+                .ifPresent(party -> injectParticipantToHolder(party, holder));
         } else {
-            Participant participant = participants.stream().filter(i -> gleiflei.equals(i.getGleifLei()))
-                .findFirst().get();
-            if (participant.getParticipantEndDate() != null) {
-                participant.setParticipantStartDate(LocalDateTime.now());
-                participant.setParticipantEndDate(null);
-            }
+            participants.stream()
+                .filter(p -> gleiflei.equals(p.getGleifLei()))
+                .filter(p -> p.getParticipantEndDate() != null)
+                .findFirst()
+                .ifPresent(participant -> {
+                    participant.setParticipantStartDate(LocalDateTime.now());
+                    participant.setParticipantEndDate(null);
+                });
         }
+    }
+
+    private void injectParticipantToHolder(PartyDto party, ParticipantHolder holder) {
+        Participant participant = Participant.builder()
+            .partyId(party.getPartyId())
+            .partyName(party.getPartyName())
+            .gleifLei(party.getGleifLei())
+            .internalPartyId(party.getInternalPartyId())
+            .participantStartDate(LocalDateTime.now())
+            .participantEndDate(null)
+            .build();
+
+        holder.addParticipant(participant);
     }
 
     private static void endParticipantActuality(List<String> retrievedIds, String gleiflei,
         List<Participant> participants) {
         if (!retrievedIds.contains(gleiflei)) {
-
-            Participant participant = participants.stream().filter(i -> gleiflei.equals(i.getGleifLei()))
-                .findFirst().get();
-
-            participant.setParticipantEndDate(LocalDateTime.now());
+            participants.stream()
+                .filter(i -> gleiflei.equals(i.getGleifLei()))
+                .findFirst()
+                .ifPresent(p -> p.setParticipantEndDate(LocalDateTime.now()));
         }
     }
 
@@ -266,61 +279,86 @@ public class TradeEventService implements EventService {
     private void processData(List<TradeEvent> events) {
         for (TradeEvent event : events) {
             if (Set.of(TRADE, TRADE_AGREED).contains(event.getEventType())) {
-                // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77010
-                String eventUri = event.getResourceUri();
-                AgreementDto agreementDto = oneSourceService.findTradeAgreement(eventUri, event.getEventType());
-                if (agreementDto != null) {
-                    agreementDto.getTrade().setEventId(event.getEventId());
-                    agreementDto.getTrade().setResourceUri(event.getResourceUri());
-                    agreementDto.setEventType(event.getEventType());
-                    agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
-                    storeAgreement(agreementDto, event.getEventType());
-                    event.setProcessingStatus(CREATED);
-                    final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
-                    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                    var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CREATED,
-                        savedTradeEvent.getResourceUri());
-                    cloudEventRecordService.record(recordRequest);
-                }
+                processTradeEvent(event);
             } else if (event.getEventType().equals(TRADE_CANCELED)) {
-                String resourceUri = event.getResourceUri();
-                String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/'));
-                List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
-                if (!agreements.isEmpty()) {
-                    Agreement agreement = agreements.get(0);
-                    agreement.setLastUpdateDatetime(LocalDateTime.now());
-                    agreement.setProcessingStatus(CANCELED);
-                    agreementRepository.save(agreement);
-                }
-
-                List<Position> positions = positionRepository.findByMatching1SourceTradeAgreementId(
-                    agreementId);
-                if (!positions.isEmpty()) {
-                    Position position = positions.get(0);
-                    position.setProcessingStatus(CANCELED);
-                    position.setLastUpdateDateTime(LocalDateTime.now());
-                    positionRepository.save(position);
-                }
-                event.setProcessingStatus(CREATED);
-                final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
-                createCloudEvent(agreements, positions, savedTradeEvent);
-            } else if (Set.of(CONTRACT, CONTRACT_APPROVE, CONTRACT_DECLINE, CONTRACT_DECLINED, CONTRACT_PROPOSED, CONTRACT_CANCEL, CONTRACT_CANCELED).contains(event.getEventType())) {
-                // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
-                String resourceUri = event.getResourceUri();
-                String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/'));
-                ContractDto contractDto = oneSourceService.findContract(agreementId);
-                if (contractDto != null) {
-                    contractDto.getTrade().setEventId(event.getEventId());
-                    contractDto.getTrade().setResourceUri(event.getResourceUri());
-                    contractDto.setEventType(event.getEventType());
-                    contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
-                    processContractByEventType(contractDto, event.getEventType());
-                    storeContract(contractDto);
-                    event.setProcessingStatus(CREATED);
-                    tradeEventRepository.save(event);
-                }
+                processTradeCanceledEvent(event);
+            } else if (Set.of(CONTRACT, CONTRACT_APPROVE, CONTRACT_DECLINE, CONTRACT_DECLINED,
+                CONTRACT_PROPOSED, CONTRACT_CANCEL, CONTRACT_CANCELED).contains(event.getEventType())) {
+                processContractEvent(event);
             }
         }
+    }
+
+    private void processTradeEvent(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77010
+        String eventUri = event.getResourceUri();
+        AgreementDto agreementDto = oneSourceService.findTradeAgreement(eventUri, event.getEventType());
+        if (agreementDto != null) {
+            agreementDto.getTrade().setEventId(event.getEventId());
+            agreementDto.getTrade().setResourceUri(event.getResourceUri());
+            agreementDto.setEventType(event.getEventType());
+            agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
+            storeAgreement(agreementDto, event.getEventType());
+            event.setProcessingStatus(CREATED);
+            final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CREATED,
+                savedTradeEvent.getResourceUri());
+            cloudEventRecordService.record(recordRequest);
+        }
+    }
+
+    private void processTradeCanceledEvent(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/') + 1);
+        List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
+        if (!agreements.isEmpty()) {
+            Agreement agreement = agreements.get(0);
+            agreement.setLastUpdateDatetime(LocalDateTime.now());
+            agreement.setProcessingStatus(CANCELED);
+            agreementRepository.save(agreement);
+        }
+
+        List<Position> positions = positionRepository.findByMatching1SourceTradeAgreementId(
+            agreementId);
+        if (!positions.isEmpty()) {
+            Position position = positions.get(0);
+            position.setProcessingStatus(CANCELED);
+            position.setLastUpdateDateTime(LocalDateTime.now());
+            positionRepository.save(position);
+        }
+        event.setProcessingStatus(CREATED);
+        final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
+        createCloudEvent(agreements, positions, savedTradeEvent);
+    }
+
+    private void processContractEvent(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        try {
+            oneSourceService.findContract(resourceUri)
+                .ifPresent(contractDto -> processContract(contractDto, event));
+        } catch (HttpStatusCodeException e) {
+            log.debug("Contract {} was not found. Details: {} ", resourceUri, e.getMessage());
+            if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(resourceUri,
+                    e, GET_LOAN_CONTRACT_PROPOSAL, String.valueOf(event.getEventId()));
+                cloudEventRecordService.record(recordRequest);
+            }
+        }
+    }
+
+    private void processContract(ContractDto contractDto, TradeEvent event) {
+        contractDto.getTrade().setEventId(event.getEventId());
+        contractDto.getTrade().setResourceUri(event.getResourceUri());
+        contractDto.setEventType(event.getEventType());
+        contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
+        processContractByEventType(contractDto, event.getEventType());
+        storeContract(contractDto);
+        event.setProcessingStatus(CREATED);
+        tradeEventRepository.save(event);
     }
 
     private Agreement storeAgreement(AgreementDto agreementDto, EventType eventType) {
@@ -355,8 +393,7 @@ public class TradeEventService implements EventService {
     private void createCloudEvent(List<Agreement> agreements, List<Position> positions, TradeEvent savedTradeEvent) {
         if (positions.isEmpty()) {
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CANCELED,
-                savedTradeEvent.getResourceUri());
+            var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CANCELED, savedTradeEvent.getResourceUri());
             cloudEventRecordService.record(recordRequest);
         } else if (!agreements.isEmpty()) {
             Agreement agreement = agreements.get(0);
@@ -370,40 +407,25 @@ public class TradeEventService implements EventService {
     private void processContractByEventType(ContractDto contractDto, EventType eventType) {
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
         String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-        List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
-        Position position = positions.isEmpty() ? null : positions.get(0);
+        Optional<Position> position = positionRepository.findByVenueRefId(venueRefId).stream().findFirst();
 
         if (Set.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(eventType)) {
             contractDto.setProcessingStatus(CANCELED);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
-            if (position != null) {
-                position.setProcessingStatus(PROPOSAL_CANCELED);
-                position.setLastUpdateDateTime(LocalDateTime.now());
-
-                positionRepository.save(position);
-            }
+            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_CANCELED));
         }
-
         if (Set.of(CONTRACT_DECLINE, CONTRACT_DECLINED).contains(eventType)) {
             contractDto.setProcessingStatus(DECLINED);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
-            if (position != null) {
-                position.setProcessingStatus(PROPOSAL_DECLINED);
-                position.setLastUpdateDateTime(LocalDateTime.now());
-
-                positionRepository.save(position);
-            }
+            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_DECLINED));
         }
-
         if (Set.of(CONTRACT_APPROVE, CONTRACT_PENDING).contains(eventType)) {
             contractDto.setProcessingStatus(APPROVED);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
-            if (position != null) {
-                position.setProcessingStatus(PROPOSAL_APPROVED);
-                position.setLastUpdateDateTime(LocalDateTime.now());
-
-                positionRepository.save(position);
-            }
+            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_APPROVED));
         }
+    }
+
+    private void savePositionStatus(@NonNull Position position, @NonNull ProcessingStatus status) {
+        position.setProcessingStatus(status);
+        position.setLastUpdateDateTime(LocalDateTime.now());
+        positionRepository.save(position);
     }
 }

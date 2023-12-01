@@ -69,7 +69,7 @@ public class DtoTestFactory {
         .contractId("testId")
         .lastEventId(1L)
         .lastUpdatePartyId("test")
-        .eventType(EventType.CONTRACT)
+        .eventType(EventType.CONTRACT_PROPOSED)
         .lastUpdateDatetime(LocalDateTime.now())
         .settlement(List.of(buildSettlementDto()))
         .trade(buildTradeAgreementDto())
@@ -91,6 +91,7 @@ public class DtoTestFactory {
         .settlementType(DVP)
         .collateral(buildCollateralDto())
         .transactingParties(createTransactionParties())
+        .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
         .build();
   }
 

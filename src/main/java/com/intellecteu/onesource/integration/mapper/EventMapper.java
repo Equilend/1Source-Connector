@@ -84,6 +84,7 @@ public class EventMapper {
             .settlement(toSettlementList(contractDto.getSettlement()))
             .processingStatus(contractDto.getProcessingStatus())
             .eventType(contractDto.getEventType())
+            .matchingSpirePositionId(contractDto.getMatchingSpirePositionId())
             .flowStatus(contractDto.getFlowStatus())
             .build();
     }
@@ -104,6 +105,7 @@ public class EventMapper {
             .settlement(toSettlementDtoList(contract.getSettlement()))
             .processingStatus(contract.getProcessingStatus())
             .eventType(contract.getEventType())
+            .matchingSpirePositionId(contract.getMatchingSpirePositionId())
             .flowStatus(contract.getFlowStatus())
             .build();
     }
@@ -205,6 +207,8 @@ public class EventMapper {
             .status(agreementDto.getStatus())
             .trade(toTradeAgreementEntity(agreementDto.getTrade()))
             .eventType(agreementDto.getEventType())
+            .matchingSpirePositionId(agreementDto.getMatchingSpirePositionId())
+            .matching1SourceLoanContractId(agreementDto.getMatching1SourceLoanContractId())
             .flowStatus(agreementDto.getFlowStatus())
             .lastUpdateDatetime(agreementDto.getLastUpdateDatetime())
             .build();
@@ -431,6 +435,8 @@ public class EventMapper {
             .status(agreement.getStatus())
             .trade(toTradeAgreementDto(agreement.getTrade()))
             .eventType(agreement.getEventType())
+            .matchingSpirePositionId(agreement.getMatchingSpirePositionId())
+            .matching1SourceLoanContractId(agreement.getMatching1SourceLoanContractId())
             .flowStatus(agreement.getFlowStatus())
             .lastUpdateDatetime(agreement.getLastUpdateDatetime())
             .build();

@@ -4,7 +4,6 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -12,6 +11,7 @@ import com.intellecteu.onesource.integration.model.EventType;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface OneSourceService {
 
@@ -19,13 +19,13 @@ public interface OneSourceService {
 
     AgreementDto findTradeAgreement(String agreementId, EventType eventType);
 
-    ContractDto findContract(String contractId);
+    Optional<ContractDto> findContract(String contractId);
 
     void updateContract(ContractDto contractDto, PositionDto positionDto);
 
-    void approveContract(ContractDto contractDto, PositionDto positionDto);
+    void approveContract(ContractDto contractDto);
 
-    void declineContract(ContractDto contractDto, PositionDto positionDto);
+    void declineContract(ContractDto contractDto);
 
     void cancelContract(Contract contract, String positionId);
 

@@ -34,7 +34,7 @@ public class CloudEventNotificationService implements EventNotificationService<C
   @Transactional
   public void sendAllEvents() {
     final Set<CloudEventEntity> entities = getNotProcessedEvents();
-    log.debug("Sending notifications. Events to send: " + entities.size());
+    log.debug(">>>>> Sending notifications. Events to send: " + entities.size());
     var errorList = new HashSet<CloudEventEntity>();
     for (var eventEntity : entities) {
       CloudEvent cloudEvent = convertToCloudEvent(eventEntity);
@@ -51,8 +51,9 @@ public class CloudEventNotificationService implements EventNotificationService<C
     // think about batching
     if (!errorList.isEmpty()) {
       log.warn("Events were not sent: " + errorList.size());
+      errorList.forEach(event -> repository.updateProcessingStatusById(event.getId(), "FAILED"));
     }
-    errorList.forEach(event -> repository.updateProcessingStatusById(event.getId(), "FAILED"));
+    log.debug("<<<<< Sending notifications finished.");
   }
 
   private CloudEvent convertToCloudEvent(CloudEventEntity eventEntity) {

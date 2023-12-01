@@ -42,7 +42,7 @@ public class Position {
   private String venueRefId;
 
   @Column(name = "spire_position_id")
-  String positionId;
+  private String positionId;
 
   @Column(name = "custom_value2")
   private String customValue2;
@@ -88,10 +88,10 @@ public class Position {
   private LocalDateTime lastUpdateDateTime;
 
   @Column(name = "matching_1source_trade_agreement_id")
-  String matching1SourceTradeAgreementId;
+  private String matching1SourceTradeAgreementId;
 
   @Column(name = "matching_1source_loan_contract_id")
-  String matching1SourceLoanContractId;
+  private String matching1SourceLoanContractId;
 
   @Column(name = "applicable_instruction_id")
   private Integer applicableInstructionId;

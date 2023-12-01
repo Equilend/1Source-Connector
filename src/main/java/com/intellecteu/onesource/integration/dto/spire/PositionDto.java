@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.dto.spire;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,9 +54,14 @@ public class PositionDto implements Reconcilable {
   private Double amount;
   private Double price;
   private Double contractValue;
-  private Integer positionTypeId;
   private Integer currencyId;
   private Long securityId;
+  private Integer positionTypeId;
+  private ProcessingStatus processingStatus;
+  private LocalDateTime lastUpdateDateTime;
+  private String matching1SourceTradeAgreementId;
+  private String matching1SourceLoanContractId;
+  private Integer applicableInstructionId;
   @JsonProperty("securityDetailDTO")
   private SecurityDetailDto securityDetailDto;
   @JsonProperty("currencyDTO")

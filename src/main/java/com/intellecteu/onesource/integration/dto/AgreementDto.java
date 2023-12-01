@@ -34,6 +34,8 @@ public class AgreementDto implements Reconcilable {
   @JsonProperty("trade")
   private TradeAgreementDto trade;
   private EventType eventType;
+  private String matchingSpirePositionId;
+  private String matching1SourceLoanContractId;
   private FlowStatus flowStatus;
 
   @Override

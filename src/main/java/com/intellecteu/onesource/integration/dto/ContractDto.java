@@ -44,6 +44,7 @@ public class ContractDto {
     private List<SettlementDto> settlement;
     private ProcessingStatus processingStatus;
     private EventType eventType;
+    private String matchingSpirePositionId;
     private FlowStatus flowStatus;
 
     public boolean isProcessedWithoutErrors() {

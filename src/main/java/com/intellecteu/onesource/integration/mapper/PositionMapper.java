@@ -37,6 +37,11 @@ public class PositionMapper {
     return objectMapper.convertValue(position, PositionDto.class);
   }
 
+  public Position toPosition(PositionDto positionDto) {
+    if (positionDto == null) return null;
+    return objectMapper.convertValue(positionDto, Position.class);
+  }
+
   public Position toPosition(JsonNode json) throws JsonProcessingException {
     if (json == null) return null;
     return objectMapper.readValue(json.toString(), Position.class);

@@ -9,6 +9,7 @@ import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -35,6 +36,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
@@ -42,6 +44,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.MaintainOnesourceParticipantsList.DataMsg.GET_PARTICIPANTS_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
@@ -53,6 +56,7 @@ import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL_UPDATE;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
@@ -121,10 +125,6 @@ public class OneSourceApiService implements OneSourceService {
     HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
 
     executeCreateContractRequest(agreement, position, request);
-    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
-    var recordRequest = eventBuilder.buildRequest(agreement.getTrade().getResourceUri(),
-        LOAN_CONTRACT_PROPOSAL_CREATED, position.getPositionId());
-    cloudEventRecordService.record(recordRequest);
   }
 
 //  @Override
@@ -191,21 +191,13 @@ public class OneSourceApiService implements OneSourceService {
   }
 
   @Override
-  public ContractDto findContract(String contractUri) {
+  public Optional<ContractDto> findContract(String contractUri) {
     log.debug("Retrieving contract: {}", contractUri);
-    ContractDto contract = null;
-    try {
-      contract = restTemplate.getForObject(onesourceBaseEndpoint + contractUri, ContractDto.class);
-    } catch (HttpStatusCodeException e) {
-      log.debug("Contract {} was not found. Details: {} ", contractUri, e.getMessage());
-      if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(contractUri, e, GET_LOAN_CONTRACT_PROPOSAL,
-            "positionId");//todo: find position
-        cloudEventRecordService.record(recordRequest);
-      }
-    }
-    return contract;
+    return Optional.ofNullable(findContractViaHttpRequest(contractUri));
+  }
+
+  private ContractDto findContractViaHttpRequest(String contractUri) throws HttpStatusCodeException {
+    return restTemplate.getForObject(onesourceBaseEndpoint + contractUri, ContractDto.class);
   }
 
   @Override
@@ -242,17 +234,17 @@ public class OneSourceApiService implements OneSourceService {
     } catch (HttpStatusCodeException e) {
       log.error(format(POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG, contract.getContractId(), e.getStatusText()));
       contract.setProcessingStatus(SPIRE_ISSUE);
-      if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-            POST_LOAN_CONTRACT_PROPOSAL_UPDATE, positionId);
+      if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
+        var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e, POST_LOAN_CONTRACT_UPDATE,
+            contract.getMatchingSpirePositionId());
         cloudEventRecordService.record(recordRequest);
       }
     }
   }
 
   @Override
-  public void approveContract(ContractDto contract, PositionDto positionDto) {
+  public void approveContract(ContractDto contract) {
     log.debug("Approving contract: {}", contract.getContractId());
     var headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
@@ -261,32 +253,28 @@ public class OneSourceApiService implements OneSourceService {
       restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
           request, JsonNode.class, contract.getContractId());
     } catch (HttpStatusCodeException e) {
-      log.error(format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), e.getStatusCode()));
+      var positionId = contract.getMatchingSpirePositionId();
+      log.error(format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
       contract.setProcessingStatus(ONESOURCE_ISSUE);
       if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-            APPROVE_LOAN_CONTRACT_PROPOSAL, positionDto.getPositionId());
-        cloudEventRecordService.record(recordRequest);
+        makeCloudEventRecord(contract.getContractId(), e, APPROVE_LOAN_CONTRACT_PROPOSAL, positionId);
       }
     }
   }
 
   @Override
-  public void declineContract(ContractDto contract, PositionDto positionDto) {
+  public void declineContract(ContractDto contract) {
     try {
       log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_DECLINE_ENDPOINT);
       restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_DECLINE_ENDPOINT, POST,
           null, JsonNode.class, contract.getContractId());
       log.debug("The contract: {} was declined!", contract.getContractId());
     } catch (HttpStatusCodeException e) {
-      log.error(format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), e.getStatusText()));
+      String positionId = contract.getMatchingSpirePositionId();
+      log.error(format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusText()));
       contract.setProcessingStatus(SPIRE_ISSUE);
       if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-            DECLINE_LOAN_CONTRACT_PROPOSAL, positionDto.getPositionId());
-        cloudEventRecordService.record(recordRequest);
+        makeCloudEventRecord(contract.getContractId(), e, DECLINE_LOAN_CONTRACT_PROPOSAL, positionId);
       }
     }
   }
@@ -302,10 +290,17 @@ public class OneSourceApiService implements OneSourceService {
       if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-            CANCEL_LOAN_CONTRACT_PROPOSAL, positionId);
+            CANCEL_LOAN_CONTRACT_PROPOSAL, contract.getMatchingSpirePositionId());
         cloudEventRecordService.record(recordRequest);
       }
     }
+  }
+
+  private void makeCloudEventRecord(String recordData, HttpStatusCodeException exception,
+      IntegrationSubProcess subProcess, String positionId) {
+    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+    var recordRequest = eventBuilder.buildExceptionRequest(recordData, exception, subProcess, positionId);
+    cloudEventRecordService.record(recordRequest);
   }
 
   @Override

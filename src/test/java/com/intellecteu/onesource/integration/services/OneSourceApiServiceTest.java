@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,14 +27,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static org.mockito.ArgumentMatchers.any;
@@ -84,6 +88,7 @@ class OneSourceApiServiceTest {
     ReflectionTestUtils.setField(service, VERSION_FIELD_INJECT, TEST_API_VERSION);
     var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
     builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
+    builderMap.put(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder());
     eventFactory = new CloudEventFactoryImpl(builderMap);
   }
 
@@ -112,10 +117,9 @@ class OneSourceApiServiceTest {
 
     var expectedUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_CREATE_CONTRACT_ENDPOINT;
 
-    final ResponseEntity<JsonNode> response = ResponseEntity.status(401).build();
-
     when(recordService.getFactory()).thenReturn(eventFactory);
-    when(restTemplate.exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class))).thenReturn(response);
+    when(restTemplate.exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class)))
+        .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
 
     service.createContract(agreement, buildContract(agreement, position, List.of(settlement)), position);
 

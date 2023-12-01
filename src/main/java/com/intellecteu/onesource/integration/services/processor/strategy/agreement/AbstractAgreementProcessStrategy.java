@@ -79,7 +79,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
-                TRADE_AGREEMENT_RECONCILED, position.getPositionId());
+                TRADE_AGREEMENT_RECONCILED, agreement.getMatchingSpirePositionId());
             cloudEventRecordService.record(recordRequest);
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
@@ -88,7 +88,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
-                position.getPositionId(), e.getErrorList());
+                agreement.getMatchingSpirePositionId(), e.getErrorList());
             cloudEventRecordService.record(recordRequest);
         }
     }

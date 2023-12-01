@@ -8,7 +8,6 @@ import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.spire.AccountDto;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.InstructionDTO;
@@ -43,7 +42,6 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG;
@@ -155,21 +153,11 @@ public class SpireApiService implements SpireService {
 
     private ResponseEntity<JsonNode> requestPosition(HttpEntity<Query> request, String endpoint, PartyRole role) {
         log.debug("Sending POST request to {}: {}", role, endpoint);
-        try {
-            return requestSpire(request, endpoint);
-        } catch (HttpStatusCodeException e) {
-            log.warn("SPIRE error response for request Position: " + e.getStatusCode());
-            if (Set.of(UNAUTHORIZED, FORBIDDEN).contains(e.getStatusCode())) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(e,
-                    IntegrationSubProcess.GET_POSITIONS_PENDING_CONFIRMATION);
-                cloudEventRecordService.record(recordRequest);
-            }
-            return ResponseEntity.of(Optional.empty());
-        }
+        return sendSpireHttpRequest(request, endpoint);
     }
 
-    private ResponseEntity<JsonNode> requestSpire(HttpEntity<Query> request, String endpoint) {
+    private ResponseEntity<JsonNode> sendSpireHttpRequest(HttpEntity<Query> request,
+        String endpoint) throws HttpStatusCodeException {
         return restTemplate.postForEntity(endpoint, request, JsonNode.class);
     }
 
@@ -237,7 +225,7 @@ public class SpireApiService implements SpireService {
     private ResponseEntity<JsonNode> requestInstruction(String agreementId, String positionId,
         HttpEntity<Query> request, String endpoint) {
         try {
-            return requestSpire(request, endpoint);
+            return sendSpireHttpRequest(request, endpoint);
         } catch (HttpStatusCodeException e) {
             log.warn("SPIRE error response for request Instruction: " + e.getStatusCode());
             if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(e.getStatusCode())) {
@@ -261,10 +249,12 @@ public class SpireApiService implements SpireService {
         } catch (HttpStatusCodeException e) {
             log.error(format(POST_POSITION_UPDATE_EXCEPTION_MSG, contract.getContractId(), positionId, e.getMessage()));
             contract.setProcessingStatus(SPIRE_ISSUE);
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-                POST_POSITION_UPDATE, positionId);
-            cloudEventRecordService.record(recordRequest);
+            if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(e.getStatusCode())) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
+                    POST_POSITION_UPDATE, contract.getMatchingSpirePositionId());
+                cloudEventRecordService.record(recordRequest);
+            }
         }
     }
 
@@ -286,24 +276,24 @@ public class SpireApiService implements SpireService {
             case BORROWER -> borrowerSpireEndpoint + UPDATE_INSTRUCTION_ENDPOINT;
             default -> "";
         };
-        executeUpdateInstructionRequest(url, contract, position.getPositionId(), request, settlementUpdate);
+        executeUpdateInstructionRequest(url, contract, request, settlementUpdate);
         log.debug("The Spire settlement instruction was updated! The loan contract: {}, Spire position: {}",
             contract.getContractId(), position.getPositionId());
     }
 
     private ResponseEntity<JsonNode> executeUpdateInstructionRequest(String url, ContractDto contract,
-        String positionId, HttpEntity<InstructionDTO> request, SettlementUpdate settlementUpdate) {
+        HttpEntity<InstructionDTO> request, SettlementUpdate settlementUpdate) {
         try {
             return restTemplate.exchange(url, PUT, request, JsonNode.class, settlementUpdate.getInstructionId());
         } catch (HttpStatusCodeException e) {
             String contractId = contract.getContractId();
-            log.error(format(POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG, contractId, positionId,
-                e.getStatusCode()));
+            log.error(format(POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG, contractId,
+                contract.getMatchingSpirePositionId(), e.getStatusCode()));
             contract.setProcessingStatus(SPIRE_ISSUE);
             if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(e.getStatusCode())) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(contractId, e,
-                    POST_SETTLEMENT_INSTRUCTION_UPDATE, positionId);
+                    POST_SETTLEMENT_INSTRUCTION_UPDATE, contract.getMatchingSpirePositionId());
                 cloudEventRecordService.record(recordRequest);
             }
             return null;

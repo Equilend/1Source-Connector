@@ -1,24 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildContractDto;
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstruction;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
-import static com.intellecteu.onesource.integration.model.ContractStatus.*;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpMethod.PATCH;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
@@ -48,10 +30,11 @@ import com.intellecteu.onesource.integration.services.processor.strategy.contrac
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.record.ContractSettlementCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
-import java.util.HashMap;
-import java.util.List;
+import com.intellecteu.onesource.integration.services.record.MaintainParticipantsCloudEventBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,6 +45,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.List;
+
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildContractDto;
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstruction;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
+import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.PATCH;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
 
 @ExtendWith(MockitoExtension.class)
 public class ContractFlowTest {
@@ -130,9 +136,9 @@ public class ContractFlowTest {
         positionMapper = new PositionMapper(objectMapper);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_INITIATION, new GenericRecordCloudEventBuilder());
-        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder());
+        builderMap.put(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder());
+        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new MaintainParticipantsCloudEventBuilder());
+        builderMap.put(CONTRACT_SETTLEMENT, new ContractSettlementCloudEventBuilder());
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate, settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
@@ -195,13 +201,14 @@ public class ContractFlowTest {
         when(restTemplate.exchange(eq(declineContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"))).thenReturn(response);
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
-        doNothing().when(cloudEventRecordService).record(any());
+        doNothing().when(cloudEventRecordService).record(any(CloudEventBuildRequest.class));
 
         contractDataReceived.process(contract);
 
         verify(restTemplate).exchange(eq(declineContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"));
         verify(restTemplate, never()).exchange(eq(approveContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"));
         verify(restTemplate, never()).exchange(eq(contractUrl), eq(PATCH), any(), eq(JsonNode.class), eq("testId"));
+        verify(cloudEventRecordService, times(2)).record(any(CloudEventBuildRequest.class));
     }
 
     @Test
