@@ -23,7 +23,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.SettlementUpdate;
+import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
@@ -208,7 +208,7 @@ public class SpireApiService implements SpireService {
                 request, borrowerSpireEndpoint + GET_INSTRUCTION_ENDPOINT);
         }
 
-        if (trade != null) {
+        if (trade != null) { // todo rework
             processFailedResponse(position, venueRefId, trade, response);
         }
 
@@ -263,7 +263,8 @@ public class SpireApiService implements SpireService {
         SettlementInstructionDto settlementInstructionDto, PartyRole role) {
         InstructionDTO instructionDTO = fillInstructions(settlementInstructionDto);
 
-        SettlementUpdate settlementUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).get(0);
+        SettlementInstructionUpdate settlementInstructionUpdate = settlementUpdateRepository
+            .findByVenueRefId(venueRefId).get(0);
 
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
@@ -276,15 +277,15 @@ public class SpireApiService implements SpireService {
             case BORROWER -> borrowerSpireEndpoint + UPDATE_INSTRUCTION_ENDPOINT;
             default -> "";
         };
-        executeUpdateInstructionRequest(url, contract, request, settlementUpdate);
+        executeUpdateInstructionRequest(url, contract, request, settlementInstructionUpdate);
         log.debug("The Spire settlement instruction was updated! The loan contract: {}, Spire position: {}",
             contract.getContractId(), position.getPositionId());
     }
 
     private ResponseEntity<JsonNode> executeUpdateInstructionRequest(String url, ContractDto contract,
-        HttpEntity<InstructionDTO> request, SettlementUpdate settlementUpdate) {
+        HttpEntity<InstructionDTO> request, SettlementInstructionUpdate settlementInstructionUpdate) {
         try {
-            return restTemplate.exchange(url, PUT, request, JsonNode.class, settlementUpdate.getInstructionId());
+            return restTemplate.exchange(url, PUT, request, JsonNode.class, settlementInstructionUpdate.getInstructionId());
         } catch (HttpStatusCodeException e) {
             String contractId = contract.getContractId();
             log.error(format(POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG, contractId,
@@ -329,13 +330,13 @@ public class SpireApiService implements SpireService {
 
     private void saveSettlementUpdate(PartyRole partyRole, String venueRefId, Integer instructionId,
         SettlementInstructionDto settlementInstruction) {
-        SettlementUpdate settlementUpdate = SettlementUpdate.builder()
+        SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
             .instructionId(instructionId)
             .venueRefId(venueRefId)
             .partyRole(partyRole)
             .instruction(eventMapper.toInstructionEntity(settlementInstruction)).build();
 
-        settlementUpdateRepository.save(settlementUpdate);
+        settlementUpdateRepository.save(settlementInstructionUpdate);
     }
 
     private Position savePosition(ResponseEntity<JsonNode> response, String venueRefId,
@@ -391,8 +392,7 @@ public class SpireApiService implements SpireService {
         ResponseEntity<JsonNode> response) {
         if (response == null || response.getStatusCode() != OK) {
             var responseCode = response == null ? "no response" : response.getStatusCode();
-            log.error(format(GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG,
-                venueRefId, position.getPositionId(), responseCode));
+            log.error(format(GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG, position.getPositionId(), responseCode));
             trade.setProcessingStatus(SPIRE_ISSUE);
         }
     }

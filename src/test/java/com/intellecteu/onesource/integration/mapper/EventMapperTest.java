@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
+import com.intellecteu.onesource.integration.TestConfig;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
@@ -30,11 +31,8 @@ class EventMapperTest {
 
   @BeforeEach
   void setUp() {
-    objectMapper = new ObjectMapper();
-    objectMapper.registerModule(new JavaTimeModule());
-    objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    eventMapper = new EventMapper();
+    objectMapper = TestConfig.createTestObjectMapper();
+    eventMapper = new EventMapper(objectMapper);
   }
 
   @Test

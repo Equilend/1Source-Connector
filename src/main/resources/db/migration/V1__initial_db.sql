@@ -212,14 +212,14 @@ CREATE TABLE IF NOT EXISTS settlement
     CONSTRAINT pk_settlement PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS settlement_update
+CREATE TABLE IF NOT EXISTS settlement_instruction_update
 (
     id            SERIAL NOT NULL,
     venue_ref_id  VARCHAR(255) NULL,
     party_role    VARCHAR(255) NULL,
     instruction_id   BIGINT       NULL,
     instruction   BIGINT       NULL,
-    CONSTRAINT pk_settlement_update PRIMARY KEY (id)
+    CONSTRAINT pk_settlement_instruction_update PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS settlement_instruction
@@ -377,8 +377,8 @@ ALTER TABLE settlement
 ALTER TABLE settlement
     ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT FOREIGN KEY (settlement_id) REFERENCES contract (id);
 
-ALTER TABLE settlement_update DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_INSTRUCTION;
-ALTER TABLE settlement_update
+ALTER TABLE settlement_instruction_update DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_INSTRUCTION;
+ALTER TABLE settlement_instruction_update
     ADD CONSTRAINT FK_SETTLEMENT_ON_INSTRUCTION FOREIGN KEY (instruction) REFERENCES settlement_instruction (id);
 
 ALTER TABLE trade DROP CONSTRAINT IF EXISTS FK_TRADE_ON_COLLATERAL;

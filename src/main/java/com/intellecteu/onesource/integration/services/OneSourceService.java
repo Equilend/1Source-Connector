@@ -4,6 +4,7 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -20,10 +21,14 @@ public interface OneSourceService {
     AgreementDto findTradeAgreement(String agreementId, EventType eventType);
 
     Optional<ContractDto> findContract(String contractId);
+    SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 
-    void updateContract(ContractDto contractDto, PositionDto positionDto);
+    void updateContract(ContractDto contractDto, SettlementDto settlementDto);
 
+    @Deprecated(since = "1.0.4")
     void approveContract(ContractDto contractDto);
+
+    void approveContract(ContractDto contractDto, SettlementDto settlementDto);
 
     void declineContract(ContractDto contractDto);
 

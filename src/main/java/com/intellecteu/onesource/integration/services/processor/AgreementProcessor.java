@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -34,10 +35,8 @@ public class AgreementProcessor implements TradeDataProcessor {
   private void processAgreement(AgreementDto agreement) {
     log.debug("***** Processing Trade Agreement Id: {}, Agreement last updated datetime: {}",
         agreement.getAgreementId(), agreement.getLastUpdateDatetime());
-    var strategy = strategyByFlow.get(agreement.getFlowStatus());
-    if (strategy == null) {
-      throw new NotYetImplementedException("Strategy is not implemented for the flow: " + agreement.getFlowStatus());
-    }
+    var strategy = Optional.ofNullable(strategyByFlow.get(agreement.getFlowStatus())).orElseThrow(
+        () -> new NotYetImplementedException("Strategy is not implemented for the flow: " + agreement.getFlowStatus()));
     strategy.process(agreement);
   }
 }

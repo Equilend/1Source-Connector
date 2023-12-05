@@ -9,7 +9,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class TestConfig {
 
-  public static ObjectMapper createObjectMapper() {
+  public static ObjectMapper createTestObjectMapper() {
     var objectMapper = new ObjectMapper();
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);

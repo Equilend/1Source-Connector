@@ -6,6 +6,14 @@ import com.intellecteu.onesource.integration.model.Instrument;
 import com.intellecteu.onesource.integration.model.InternalReference;
 import com.intellecteu.onesource.integration.model.Price;
 import com.intellecteu.onesource.integration.model.VenueParty;
+import com.intellecteu.onesource.integration.model.spire.Currency;
+import com.intellecteu.onesource.integration.model.spire.LoanBorrow;
+import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.spire.PositionAccount;
+import com.intellecteu.onesource.integration.model.spire.PositionCollateralType;
+import com.intellecteu.onesource.integration.model.spire.PositionExposure;
+import com.intellecteu.onesource.integration.model.spire.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.spire.PositionType;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDateTime;
@@ -34,6 +42,37 @@ public class ModelTestFactory {
         .description("testDescription")
         .price(buildPrice())
         .build();
+  }
+
+  public static Position buildPosition() {
+    return Position.builder()
+        .id(1L)
+        .venueRefId("testVenueRefId")
+        .positionId("testSpirePositionId")
+        .customValue2("customValue2")
+        .positionSecurityDetail(buildSecurityDetail())
+        .rate(0.1d)
+        .quantity(15000.0d)
+        .currency(new Currency("USD"))
+        .loanBorrow(new LoanBorrow(0.5d))
+        .tradeDate(LocalDateTime.now())
+        .settleDate(LocalDateTime.now())
+        .deliverFree(true)
+        .amount(1.0d)
+        .price(100.0d)
+        .contractValue(123.0d)
+        .positionCollateralType(new PositionCollateralType("testCollateral"))
+        .exposure(new PositionExposure(0.05d, 10, 12))
+        .positionType(new PositionType("BORROW CASH"))
+        .positionAccount(new PositionAccount("testLei", "testLeiName"))
+        .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName"))
+        .build();
+  }
+
+  private static PositionSecurityDetail buildSecurityDetail() {
+    PositionSecurityDetail securityDetail = new PositionSecurityDetail();
+    securityDetail.setTicker("testTicker");
+    return securityDetail;
   }
 
   public static CloudEventEntity buildCloudEventEntity() {

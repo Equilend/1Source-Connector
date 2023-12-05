@@ -1,22 +1,9 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
-import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.PartyRole.*;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -39,6 +26,12 @@ import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -47,11 +40,29 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
+
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @Slf4j
 @Service
@@ -74,12 +85,13 @@ public class PositionApiService implements PositionService {
     @Override
     public void createLoanContractWithoutTA() {
         List<Position> storedPositions = positionRepository.findAll();
+        log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
         storedPositions.stream()
             .max(Comparator.comparingInt(p -> Integer.parseInt(p.getPositionId())))
-            .ifPresent(this::requestAndProcessPosition);
+            .ifPresent(this::createLoanContractProposal);
     }
 
-    private void requestAndProcessPosition(Position position) {
+    private void createLoanContractProposal(Position position) {
         log.debug("Sending POST request for position id: {}", position.getPositionId());
         try {
             ResponseEntity<JsonNode> response = spireService.requestPosition(
@@ -132,7 +144,8 @@ public class PositionApiService implements PositionService {
         }
     }
 
-    public void getSettlementDetailsWithoutTA(Position position) {
+    public SettlementDto getSettlementDetailsWithoutTA(Position position) {
+        SettlementDto settlementDto = null;
         String positionType = null;
         List<SettlementDto> settlementDtos = new ArrayList<>();
         if (position.getPositionType() != null) {
@@ -149,10 +162,10 @@ public class PositionApiService implements PositionService {
             settlementDtos = spireService.retrieveSettlementDetails(
                 positionMapper.toPositionDto(position),
                 position.getCustomValue2(), null, partyRole);
-            SettlementDto settlement = settlementDtos.get(0);
-            settlementRepository.save(eventMapper.toSettlementEntity(settlement));
+            settlementDto = settlementDtos.get(0);
+            settlementRepository.save(eventMapper.toSettlementEntity(settlementDto));
 
-            position.setApplicableInstructionId(settlement.getInstructionId());
+            position.setApplicableInstructionId(settlementDto.getInstructionId());
             position.setLastUpdateDateTime(LocalDateTime.now());
             position.setProcessingStatus(SI_FETCHED);
             positionRepository.save(position);
@@ -160,11 +173,15 @@ public class PositionApiService implements PositionService {
         if (partyRole == LENDER && !settlementDtos.isEmpty()) {
             createLoanContractProposalWithoutTA(position, settlementDtos);
         }
+        return settlementDto;
     }
 
     public void createLoanContractProposalWithoutTA(Position position, List<SettlementDto> settlementDtos) {
         PositionDto positionDto = positionMapper.toPositionDto(position);
-        if ((position.getMatching1SourceTradeAgreementId() != null && position.getProcessingStatus() == TRADE_RECONCILED) || (position.getMatching1SourceTradeAgreementId() == null && position.getProcessingStatus() == SI_FETCHED)) {
+        if ((position.getMatching1SourceTradeAgreementId() != null
+            && position.getProcessingStatus() == TRADE_RECONCILED)
+            || (position.getMatching1SourceTradeAgreementId() == null
+            && position.getProcessingStatus() == SI_FETCHED)) {
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);
@@ -204,34 +221,46 @@ public class PositionApiService implements PositionService {
     }
 
     private void processPosition(Position position) {
-        List<Agreement> agreements = agreementRepository.findByVenueRefId(position.getCustomValue2());
-        if (!agreements.isEmpty()) {
-            Agreement agreement = agreements.get(0);
-            position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
-            agreement.setMatchingSpirePositionId(position.getPositionId());
-            agreement.setLastUpdateDatetime(LocalDateTime.now());
-            agreement.setProcessingStatus(MATCHED_POSITION);
-            createContractInitiationCloudEvent(agreement.getAgreementId(),
-                TRADE_AGREEMENT_MATCHED_POSITION, agreement.getMatchingSpirePositionId());
-
-            agreementRepository.save(agreement);
-        }
-
-        List<Contract> contracts = contractRepository.findByVenueRefId(position.getCustomValue2());
-        if (!contracts.isEmpty()) {
-            Contract contract = contracts.get(0);
-            position.setMatching1SourceLoanContractId(contract.getContractId());
-            contract.setMatchingSpirePositionId(position.getPositionId());
-            contract.setLastUpdateDatetime(LocalDateTime.now());
-            contract.setProcessingStatus(MATCHED_POSITION);
-            createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
-                contract.getMatchingSpirePositionId());
-
-            contractRepository.save(contract);
-        }
-
         savePosition(position);
-        getSettlementDetailsWithoutTA(position);
+
+        agreementRepository.findByVenueRefId(position.getCustomValue2()).stream()
+            .findFirst()
+            .ifPresent(a -> saveAgreement(position, a));
+
+        ContractDto contract = contractRepository.findByVenueRefId(position.getCustomValue2()).stream()
+            .findFirst()
+            .map(c -> saveContract(position, c))
+            .orElse(null);
+
+        final SettlementDto settlementDto = getSettlementDetailsWithoutTA(position);
+
+        if (contract != null
+            && contract.getProcessingStatus() == RECONCILED
+            && position.getPositionType().getPositionType().equals(BORROWER_POSITION_TYPE)) {
+            oneSourceService.approveContract(contract, settlementDto);
+        }
+    }
+
+    private ContractDto saveContract(Position position, Contract contract) {
+        position.setMatching1SourceLoanContractId(contract.getContractId());
+        contract.setMatchingSpirePositionId(position.getPositionId());
+        contract.setLastUpdateDatetime(LocalDateTime.now());
+        contract.setProcessingStatus(MATCHED_POSITION);
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
+            contract.getMatchingSpirePositionId());
+
+        return eventMapper.toContractDto(contractRepository.save(contract));
+    }
+
+    private AgreementDto saveAgreement(Position position, Agreement agreement) {
+        position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
+        agreement.setMatchingSpirePositionId(position.getPositionId());
+        agreement.setLastUpdateDatetime(LocalDateTime.now());
+        agreement.setProcessingStatus(MATCHED_POSITION);
+        createContractInitiationCloudEvent(agreement.getAgreementId(),
+            TRADE_AGREEMENT_MATCHED_POSITION, agreement.getMatchingSpirePositionId());
+
+        return eventMapper.toAgreementDto(agreementRepository.save(agreement));
     }
 
     private void processUpdatedPosition(Position position) {

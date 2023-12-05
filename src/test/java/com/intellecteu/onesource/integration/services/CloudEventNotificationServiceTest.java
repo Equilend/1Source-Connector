@@ -38,7 +38,7 @@ class CloudEventNotificationServiceTest {
 
   @BeforeEach
   void setUp() {
-    recordMapper = new RecordMapper(TestConfig.createObjectMapper());
+    recordMapper = new RecordMapper(TestConfig.createTestObjectMapper());
     service = new CloudEventNotificationService(kafkaTemplate, repository, recordMapper);
     ReflectionTestUtils.setField(service, SPIRE_TOPIC_FIELD, SPIRE_TOPIC_VALUE);
   }

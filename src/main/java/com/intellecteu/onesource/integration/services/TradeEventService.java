@@ -296,6 +296,7 @@ public class TradeEventService implements EventService {
         if (agreementDto != null) {
             agreementDto.getTrade().setEventId(event.getEventId());
             agreementDto.getTrade().setResourceUri(event.getResourceUri());
+            agreementDto.getTrade().setProcessingStatus(NEW);
             agreementDto.setEventType(event.getEventType());
             agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
             storeAgreement(agreementDto, event.getEventType());
@@ -354,6 +355,7 @@ public class TradeEventService implements EventService {
         contractDto.getTrade().setEventId(event.getEventId());
         contractDto.getTrade().setResourceUri(event.getResourceUri());
         contractDto.setEventType(event.getEventType());
+        contractDto.setProcessingStatus(NEW);
         contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
         processContractByEventType(contractDto, event.getEventType());
         storeContract(contractDto);

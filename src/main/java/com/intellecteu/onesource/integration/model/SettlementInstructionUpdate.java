@@ -1,5 +1,12 @@
 package com.intellecteu.onesource.integration.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,20 +19,22 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+/*
+ * 1SOURCE v.1.0.4 has PartySettlementInstruction as an inner object
+ * for SettlementInstructionUpdate.
+ * In current implementation PartySettlementInstruction is unwrapped
+ * to SettlementInstructionUpdate.
+ */
 @Getter
 @Setter
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "settlement_update")
-public class SettlementUpdate {
+@Table(name = "settlement_instruction_update")
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class SettlementInstructionUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

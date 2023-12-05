@@ -145,8 +145,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
       log.debug("Declining contract: {} as a {}", contract.getContractId(), partyRole);
       oneSourceService.declineContract(contract);
     } else if (contract.getProcessingStatus() == VALIDATED) {
-      oneSourceService.updateContract(contract, matchedPosition);
-      oneSourceService.approveContract(contract);
+      var settlementDto = oneSourceService.retrieveSettlementInstruction(contract);
+      oneSourceService.updateContract(contract, settlementDto);
+      oneSourceService.approveContract(contract, settlementDto);
       if (contract.isProcessedWithoutErrors()) {
         log.debug("Contract {} was approved by {}!", contract.getContractId(), partyRole);
       }

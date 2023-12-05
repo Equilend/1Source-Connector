@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.intellecteu.onesource.integration.TestConfig;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
@@ -14,7 +15,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.SettlementUpdate;
+import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.model.spire.PositionAccount;
 import com.intellecteu.onesource.integration.model.spire.PositionExposure;
@@ -128,11 +129,8 @@ public class ContractFlowTest {
 
     @BeforeEach
     void setUp() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        eventMapper = new EventMapper();
+        objectMapper = TestConfig.createTestObjectMapper();
+        eventMapper = new EventMapper(objectMapper);
         positionMapper = new PositionMapper(objectMapper);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
@@ -165,7 +163,7 @@ public class ContractFlowTest {
     void test_contractFlow_shouldApproveContract_success() {
         var agreement = buildAgreementDto();
 
-        SettlementUpdate settlementUpdate = SettlementUpdate.builder()
+        SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
             .instructionId(2)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
@@ -179,7 +177,7 @@ public class ContractFlowTest {
         when(restTemplate.exchange(eq(approveContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"))).thenReturn(response);
         when(restTemplate.exchange(eq(contractUrl), eq(PATCH), any(), eq(JsonNode.class), eq("testId"))).thenReturn(response);
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
-        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementUpdate));
+        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of(eventMapper.toAgreementEntity(agreement)));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
@@ -218,7 +216,7 @@ public class ContractFlowTest {
         contract.setContractStatus(APPROVED);
         position.setPositionId("2");
 
-        SettlementUpdate settlementUpdate = SettlementUpdate.builder()
+        SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
             .instructionId(2)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
@@ -242,7 +240,7 @@ public class ContractFlowTest {
         when(restTemplate.postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class))).thenReturn(
             instructionResponse);
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
-        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementUpdate));
+        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 

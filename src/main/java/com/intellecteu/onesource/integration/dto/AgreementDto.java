@@ -6,6 +6,7 @@ import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.AgreementStatus;
 import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,7 @@ public class AgreementDto implements Reconcilable {
   private String matchingSpirePositionId;
   private String matching1SourceLoanContractId;
   private FlowStatus flowStatus;
+  private ProcessingStatus processingStatus;
 
   @Override
   public void validateForReconciliation() throws ValidationException {

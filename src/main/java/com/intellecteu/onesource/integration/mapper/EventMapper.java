@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
@@ -46,6 +47,7 @@ import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.model.TransactingParty;
 import com.intellecteu.onesource.integration.model.Venue;
 import com.intellecteu.onesource.integration.model.VenueParty;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +57,11 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
+@Getter
 @RequiredArgsConstructor
 public class EventMapper {
+
+    private final ObjectMapper objectMapper;
 
     public TradeEvent toEventEntity(TradeEventDto tradeEventDto) {
         return TradeEvent.builder()
@@ -201,17 +206,7 @@ public class EventMapper {
         if (agreementDto == null) {
             return null;
         }
-        return Agreement.builder()
-            .id(agreementDto.getId())
-            .agreementId(agreementDto.getAgreementId())
-            .status(agreementDto.getStatus())
-            .trade(toTradeAgreementEntity(agreementDto.getTrade()))
-            .eventType(agreementDto.getEventType())
-            .matchingSpirePositionId(agreementDto.getMatchingSpirePositionId())
-            .matching1SourceLoanContractId(agreementDto.getMatching1SourceLoanContractId())
-            .flowStatus(agreementDto.getFlowStatus())
-            .lastUpdateDatetime(agreementDto.getLastUpdateDatetime())
-            .build();
+        return objectMapper.convertValue(agreementDto, Agreement.class);
     }
 
     public TradeAgreement toTradeAgreementEntity(TradeAgreementDto tradeAgreementDto) {
@@ -429,17 +424,7 @@ public class EventMapper {
         if (agreement == null) {
             return null;
         }
-        return AgreementDto.builder()
-            .id(agreement.getId())
-            .agreementId(agreement.getAgreementId())
-            .status(agreement.getStatus())
-            .trade(toTradeAgreementDto(agreement.getTrade()))
-            .eventType(agreement.getEventType())
-            .matchingSpirePositionId(agreement.getMatchingSpirePositionId())
-            .matching1SourceLoanContractId(agreement.getMatching1SourceLoanContractId())
-            .flowStatus(agreement.getFlowStatus())
-            .lastUpdateDatetime(agreement.getLastUpdateDatetime())
-            .build();
+        return objectMapper.convertValue(agreement, AgreementDto.class);
     }
 
     public List<TransactingPartyDto> toTransactingDtoParties(List<TransactingParty> transactingParty) {

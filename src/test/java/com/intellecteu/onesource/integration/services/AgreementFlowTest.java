@@ -1,24 +1,9 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpMethod.POST;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.intellecteu.onesource.integration.TestConfig;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
@@ -34,8 +19,6 @@ import com.intellecteu.onesource.integration.services.record.CloudEventFactoryIm
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
-import java.time.LocalDateTime;
-import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +29,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.POST;
 
 @ExtendWith(MockitoExtension.class)
 public class AgreementFlowTest {
@@ -86,11 +85,8 @@ public class AgreementFlowTest {
 
     @BeforeEach
     void setUp() {
-        objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        eventMapper = new EventMapper();
+        objectMapper = TestConfig.createTestObjectMapper();
+        eventMapper = new EventMapper(objectMapper);
         positionMapper = new PositionMapper(objectMapper);
         reconcileService = new OneSourceSpireReconcileService();
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();

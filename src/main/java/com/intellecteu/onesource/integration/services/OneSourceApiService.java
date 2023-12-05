@@ -6,6 +6,7 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
@@ -13,7 +14,6 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.SettlementUpdate;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
@@ -25,7 +25,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -50,17 +49,13 @@ import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.CANCEL_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_1SOURCE_EVENTS;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_PARTICIPANTS_LIST;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL_UPDATE;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
-import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
-import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -201,28 +196,33 @@ public class OneSourceApiService implements OneSourceService {
   }
 
   @Override
-  public void updateContract(ContractDto contract, PositionDto positionDto) {
+  public void updateContract(ContractDto contract, SettlementDto settlementDto) {
     String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-    log.debug("Updating contract by venueRefId: {}", venueRefId);
-    List<SettlementUpdate> settlementUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId);
-    if (CollectionUtils.isEmpty(settlementUpdate)) {
-      log.warn("No settlement update was found for venueRefId:{}", venueRefId);
-      return;
-    }
-    SettlementUpdate settlement = settlementUpdate.get(0);
-    SettlementDto settlementDto = SettlementDto.builder()
-        .partyRole(BORROWER)
-        .instruction(eventMapper.toInstructionDto(settlement.getInstruction())).build();
-
-    log.debug("Settlement with role {} was created from venueRefId:{}",
-        settlementDto.getPartyRole(), venueRefId);
-
     var headers = new HttpHeaders();
     headers.setContentType(APPLICATION_JSON);
     HttpEntity<SettlementDto> request = new HttpEntity<>(settlementDto, headers);
 
-    executeUpdateContract(contract, request, positionDto.getPositionId());
+    executeUpdateContract(contract, request, contract.getMatchingSpirePositionId());
     log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
+  }
+
+  public SettlementDto retrieveSettlementInstruction(ContractDto contractDto) {
+    String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+    log.debug("Updating contract by venueRefId: {}", venueRefId);
+    var settlementInstructionUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).stream()
+        .findFirst()
+        .orElse(null);
+    if (settlementInstructionUpdate == null) {
+      log.warn("No settlement update was found for venueRefId:{}", venueRefId);
+      return null;
+    }
+    SettlementDto settlementDto = SettlementDto.builder()
+        .partyRole(BORROWER)
+        .instruction(eventMapper.toInstructionDto(settlementInstructionUpdate.getInstruction())).build();
+
+    log.debug("Settlement with role {} was created from venueRefId:{}",
+        settlementDto.getPartyRole(), venueRefId);
+    return settlementDto;
   }
 
   private void executeUpdateContract(ContractDto contract, HttpEntity<SettlementDto> request, String positionId) {
@@ -244,6 +244,7 @@ public class OneSourceApiService implements OneSourceService {
   }
 
   @Override
+  @Deprecated(since = "1.0.4")
   public void approveContract(ContractDto contract) {
     log.debug("Approving contract: {}", contract.getContractId());
     var headers = new HttpHeaders();
@@ -252,6 +253,27 @@ public class OneSourceApiService implements OneSourceService {
     try {
       restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
           request, JsonNode.class, contract.getContractId());
+    } catch (HttpStatusCodeException e) {
+      var positionId = contract.getMatchingSpirePositionId();
+      log.error(format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
+      contract.setProcessingStatus(ONESOURCE_ISSUE);
+      if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+        makeCloudEventRecord(contract.getContractId(), e, APPROVE_LOAN_CONTRACT_PROPOSAL, positionId);
+      }
+    }
+  }
+
+  @Override
+  public void approveContract(ContractDto contract, SettlementDto settlementDto) {
+    log.debug("Approving contract: {}", contract.getContractId());
+    var settlementInstructionUpdateDto = new SettlementInstructionUpdateDto(settlementDto);
+    var headers = new HttpHeaders();
+    headers.setContentType(APPLICATION_JSON);
+    HttpEntity<SettlementInstructionUpdateDto> request = new HttpEntity<>(settlementInstructionUpdateDto, headers);
+    try {
+      restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
+          request, JsonNode.class, contract.getContractId());
+      log.debug("Contract id: {} approval  was sent.", contract.getContractId());
     } catch (HttpStatusCodeException e) {
       var positionId = contract.getMatchingSpirePositionId();
       log.error(format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
