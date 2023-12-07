@@ -18,11 +18,11 @@ public class EventNotificationRoute extends RouteBuilder {
 
     @Override
     public void configure() {
-        from("timer://eventTimer?period={{notification.pulling-timer}}")
+        from("timer://eventTimer?period={{notification.timer}}")
             .routeId("EventNotificationRoute")
             .autoStartup(isEnabled)
             .log("Sending events...")
-            .setHeader("timestamp", constant("{{notification.pulling-timer}}"))
+            .setHeader("timestamp", constant("{{notification.timer}}"))
             .bean(eventNotificationService, "sendAllEvents")
             .log("Sending events process was finished!");
     }

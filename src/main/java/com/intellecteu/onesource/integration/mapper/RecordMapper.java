@@ -10,8 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -28,6 +26,10 @@ public class RecordMapper {
       log.warn("Couldn't write value to CloudEventEntity id: {}", entity.getId());
     }
     return entity;
+  }
+
+  public String toJson(CloudEvent event) throws JsonProcessingException {
+    return objectMapper.writeValueAsString(event);
   }
 
   public CloudEvent toCloudEvent(CloudEventEntity entity) {

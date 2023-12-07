@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
 import com.intellecteu.onesource.integration.dto.VenuePartyDto;
+import com.intellecteu.onesource.integration.dto.record.CloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.AccountDto;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
 import com.intellecteu.onesource.integration.dto.spire.LoanBorrowDto;
@@ -30,6 +31,7 @@ import com.intellecteu.onesource.integration.model.LocalMarketField;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.SettlementType;
+import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
 import java.time.LocalDate;
@@ -97,7 +99,21 @@ public class DtoTestFactory {
 
   public static PositionDto buildPositionDto() {
     return buildPositionDtoFromTradeAgreement(buildTradeAgreementDto());
+  }
 
+  public static CloudEvent buildTestCloudEvent() {
+    return CloudEvent.builder()
+        .id(UUID.randomUUID().toString())
+        .specVersion("1.0.2")
+        .type("testType")
+        .source("testSource")
+        .subject("testSubject")
+        .time(LocalDateTime.now())
+        .relatedProcess("testRelatedProcess")
+        .relatedSubProcess("testRelatedSubProcess")
+        .dataContentType("application/json")
+        .eventData("{ \"test\":\"data\" }")
+        .build();
   }
 
   public static PositionDto buildPositionDtoFromTradeAgreement(TradeAgreementDto tradeAgreement) {

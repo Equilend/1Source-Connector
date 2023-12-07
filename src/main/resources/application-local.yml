@@ -77,7 +77,10 @@ integration-toolkit:
 
 notification:
   enable: ${NOTIFICATION_ENABLE_LOCAL:false}
-  pulling-timer: ${PULLING_TIMER_LOCAL:10000}
+  timer: ${NOTIFICATION_TIMER_LOCAL:10000}
   spire:
-    bootstrap-server: ${SPIRE_BOOTSTRAP_SERVER:localhost:9092}
-    topic: ${NOTIFICATION_SPIRE_TOPIC_LOCAL:1SOURCE.SPIRE_TOOLKIT.STAGE}
+    bootstrap-server: ${SPIRE_BOOTSTRAP_SERVER_LOCAL:localhost:9092}
+    topic: ${NOTIFICATION_SPIRE_TOPIC_LOCAL:TEST.TOPIC}
+    auth:
+      key: ${NOTIFICATION_SPIRE_KEY_LOCAL:test}
+      secret: ${NOTIFICATION_SPIRE_SECRET_LOCAL:test}

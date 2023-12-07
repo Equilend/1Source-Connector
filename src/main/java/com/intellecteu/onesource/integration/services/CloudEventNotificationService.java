@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.intellecteu.onesource.integration.dto.record.CloudEvent;
 import com.intellecteu.onesource.integration.exception.ConvertException;
 import com.intellecteu.onesource.integration.mapper.RecordMapper;
@@ -7,7 +8,7 @@ import com.intellecteu.onesource.integration.model.CloudEventEntity;
 import com.intellecteu.onesource.integration.repository.CloudEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCE
 @RequiredArgsConstructor
 public class CloudEventNotificationService implements EventNotificationService<CloudEvent> {
 
-  private final KafkaTemplate<String, CloudEvent> kafkaTemplate;
+  private final KafkaTemplate<String, String> kafkaTemplate;
   private final CloudEventRepository repository;
   private final RecordMapper recordMapper;
 
@@ -44,13 +45,13 @@ public class CloudEventNotificationService implements EventNotificationService<C
       try {
         sendEvent(cloudEvent);
         repository.updateProcessingStatusById(eventEntity.getId(), PROCESSED.name());
-      } catch (KafkaException e) {
+      } catch (RuntimeException e) {
         errorList.add(eventEntity);
       }
     }
     // think about batching
     if (!errorList.isEmpty()) {
-      log.warn("Events were not sent: " + errorList.size());
+      log.warn("Events were not sent. Failed amount: " + errorList.size());
       errorList.forEach(event -> repository.updateProcessingStatusById(event.getId(), "FAILED"));
     }
     log.debug("<<<<< Sending notifications finished.");
@@ -68,7 +69,14 @@ public class CloudEventNotificationService implements EventNotificationService<C
   @Override
   public void sendEvent(CloudEvent event) {
     // think whether we should send and consume events in a batch
-    kafkaTemplate.send(spireTopic, event);
+    try {
+      final ProducerRecord<String, String> record = new ProducerRecord<>(spireTopic, event.getRelatedProcess(),
+          recordMapper.toJson(event));
+      kafkaTemplate.send(record);
+    } catch (JsonProcessingException e) {
+      log.warn("Fail to serialize");
+      throw new RuntimeException();
+    }
   }
 
   private Set<CloudEventEntity> getNotProcessedEvents() {
