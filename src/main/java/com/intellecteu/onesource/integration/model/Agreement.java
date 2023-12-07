@@ -1,5 +1,8 @@
 package com.intellecteu.onesource.integration.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.intellecteu.onesource.integration.enums.FlowStatus;
 import java.time.LocalDateTime;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,10 +16,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.intellecteu.onesource.integration.enums.FlowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +43,7 @@ public class Agreement {
     @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
     @Column(name = "last_update_datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime lastUpdateDatetime;
-    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "trade_id")
     private TradeAgreement trade;
     @Column(name = "event_type")

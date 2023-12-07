@@ -86,7 +86,8 @@ public class TradeEventServiceIT extends AbstractTest {
     }
 
     @Test
-    @Disabled // disabled until final implementation for Contract will be finished
+    @Disabled
+        // disabled until final implementation for Contract will be finished
     void getNewLoanContractTest() throws Exception {
         mapper.registerModule(new JavaTimeModule());
         mockServer.reset();
@@ -121,7 +122,8 @@ public class TradeEventServiceIT extends AbstractTest {
     }
 
     @Test
-    @Disabled // disabled until final implementation for Trade Agreement will be finished
+    @Disabled
+        // disabled until final implementation for Trade Agreement will be finished
     void getTradeAgreementTest() throws Exception {
         mapper.registerModule(new JavaTimeModule());
         mockServer.reset();
@@ -165,7 +167,8 @@ public class TradeEventServiceIT extends AbstractTest {
     private void retrieveEvents(File file) throws IOException, URISyntaxException {
         List<TradeEventDto> tradeEventDtos = mapper.readValue(file, List.class);
         mockServer.expect(ExpectedCount.once(),
-                requestTo(new URI(baseEndpoint.concat("ledger/events?since=2023-06-25T09:51:16.111&eventType=TRADE&eventType=CONTRACT&eventType=CONTRACT_APPROVE&eventType=CONTRACT_CANCEL&eventType=CONTRACT_DECLINE"))))
+                requestTo(new URI(baseEndpoint.concat(
+                    "ledger/events?since=2023-06-25T09:51:16.111&eventType=TRADE&eventType=CONTRACT&eventType=CONTRACT_APPROVE&eventType=CONTRACT_CANCEL&eventType=CONTRACT_DECLINE"))))
             .andExpect(method(HttpMethod.GET))
             .andRespond(withStatus(HttpStatus.OK)
                 .contentType(MediaType.APPLICATION_JSON)

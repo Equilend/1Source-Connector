@@ -1,21 +1,19 @@
 package com.intellecteu.onesource.integration.routes;
 
-import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.PositionPendingConfirmationServiceImpl;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class PositionUpdateRoute extends RouteBuilder {
 
-    private final PositionService positionService;
+    private final PositionPendingConfirmationServiceImpl updatePositionService;
 
     @Value("${camel.route.autostart}")
     private boolean isAutoStarted;
-
-    public PositionUpdateRoute(PositionService positionService) {
-        this.positionService = positionService;
-    }
 
     @Override
     public void configure() {
@@ -24,8 +22,7 @@ public class PositionUpdateRoute extends RouteBuilder {
             .routeId("PositionUpdateRoute")
             .autoStartup(isAutoStarted)
             .log("Start processing updated positions")
-            .bean(positionService, "processUpdatedPositions")
+            .bean(updatePositionService, "processUpdatedPositions")
             .log("Updated positions successfully updated");
-
     }
 }

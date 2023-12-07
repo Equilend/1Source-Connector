@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CurrencyDto {
 
-  @JsonAlias({"currency", "currencyKy"})
-  private String currencyKy;
+    @JsonAlias({"currency", "currencyKy"})
+    private String currencyKy;
 
 }

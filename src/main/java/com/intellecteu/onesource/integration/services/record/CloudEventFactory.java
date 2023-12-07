@@ -11,20 +11,20 @@ import com.intellecteu.onesource.integration.enums.IntegrationProcess;
  */
 public interface CloudEventFactory<T extends CloudEventRecord> {
 
-  /**
-   * Create a CloudEventRecord
-   *
-   * @param buildRequest CloudEventBuildRequest
-   * @return CloudEventRecord instance
-   */
-  T createRecord(CloudEventBuildRequest buildRequest);
+    /**
+     * Create a CloudEventRecord
+     *
+     * @param buildRequest CloudEventBuildRequest
+     * @return CloudEventRecord instance
+     */
+    T createRecord(CloudEventBuildRequest buildRequest);
 
-  /**
-   * Get cloud event builder by IntegrationProcess type
-   *
-   * @param type IntegrationProcess
-   * @return IntegrationCloudEventBuilder instance
-   */
-  IntegrationCloudEventBuilder eventBuilder(IntegrationProcess type);
+    /**
+     * Get cloud event builder by IntegrationProcess type
+     *
+     * @param type IntegrationProcess
+     * @return IntegrationCloudEventBuilder instance
+     */
+    IntegrationCloudEventBuilder eventBuilder(IntegrationProcess type);
 
 }

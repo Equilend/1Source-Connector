@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class InternalReferenceDto {
+
     private String brokerCd;
     private String accountId;
     private String internalRefId;

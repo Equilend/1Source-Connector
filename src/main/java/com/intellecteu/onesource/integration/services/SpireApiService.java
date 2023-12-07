@@ -1,5 +1,28 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_POSITION_UPDATE_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
+import static com.intellecteu.onesource.integration.exception.PositionCanceledException.POSITION_CANCELED_EXCEPTION;
+import static com.intellecteu.onesource.integration.exception.PositionRetrievementException.TRADE_RELATED_EXCEPTION;
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_POSITION_CANCELED;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
+import static java.lang.String.format;
+import static org.springframework.http.HttpMethod.PUT;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
@@ -29,6 +52,10 @@ import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,34 +65,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_POSITION_UPDATE_EXCEPTION_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
-import static com.intellecteu.onesource.integration.exception.PositionCanceledException.POSITION_CANCELED_EXCEPTION;
-import static com.intellecteu.onesource.integration.exception.PositionRetrievementException.TRADE_RELATED_EXCEPTION;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_POSITION_CANCELED;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
-import static java.lang.String.format;
-import static org.springframework.http.HttpMethod.PUT;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.OK;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @Service
@@ -285,7 +284,8 @@ public class SpireApiService implements SpireService {
     private ResponseEntity<JsonNode> executeUpdateInstructionRequest(String url, ContractDto contract,
         HttpEntity<InstructionDTO> request, SettlementInstructionUpdate settlementInstructionUpdate) {
         try {
-            return restTemplate.exchange(url, PUT, request, JsonNode.class, settlementInstructionUpdate.getInstructionId());
+            return restTemplate.exchange(url, PUT, request, JsonNode.class,
+                settlementInstructionUpdate.getInstructionId());
         } catch (HttpStatusCodeException e) {
             String contractId = contract.getContractId();
             log.error(format(POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_MSG, contractId,

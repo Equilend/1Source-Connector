@@ -33,7 +33,7 @@ public class TransactingParty {
     @Column(name = "party_role")
     @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
-    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "party_id")
     private Party party;
 }

@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,8 +15,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,11 +37,11 @@ public class Venue {
     @Column(name = "type")
     @Enumerated(value = EnumType.STRING)
     private VenueType type;
-    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "platform_id")
     private Platform platform;
-//    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    //    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "venue_party_id")
     private List<VenueParty> venueParties;
 }

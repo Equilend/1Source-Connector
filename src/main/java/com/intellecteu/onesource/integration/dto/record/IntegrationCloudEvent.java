@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class IntegrationCloudEvent implements CloudEventRecord {
 
-  private CloudEventMetadata metadata;
-  private CloudEventData data;
+    private CloudEventMetadata metadata;
+    private CloudEventData data;
 
 }

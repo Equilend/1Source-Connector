@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CancelContractRoute extends RouteBuilder {
+
     private final EventService eventService;
 
     @Value("${camel.route.autostart}")

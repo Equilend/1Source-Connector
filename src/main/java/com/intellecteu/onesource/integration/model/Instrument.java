@@ -42,7 +42,7 @@ public class Instrument {
     private String figi;
     @Column(name = "description")
     private String description;
-    @OneToOne(fetch = FetchType.LAZY, cascade= CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "price_id")
     private Price price;
 }

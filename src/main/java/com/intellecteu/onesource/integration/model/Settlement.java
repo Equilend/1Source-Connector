@@ -35,7 +35,7 @@ public class Settlement {
     @Column(name = "party_role")
     @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
-    @OneToOne(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "instruction")
     private SettlementInstruction instruction;
 }

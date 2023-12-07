@@ -4,8 +4,8 @@ import com.intellecteu.onesource.integration.dto.record.Record;
 
 public interface EventNotificationService<T extends Record> {
 
-  void sendAllEvents();
+    void sendAllEvents();
 
-  void sendEvent(T event);
+    void sendEvent(T event);
 
 }

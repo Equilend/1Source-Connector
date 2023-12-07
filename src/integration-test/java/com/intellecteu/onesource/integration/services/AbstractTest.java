@@ -11,15 +11,15 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 /**
- * Parent test class for integration tests.
- * Uses testcontainers for integration purposes
- * and launches with "it" profile.
+ * Parent test class for integration tests. Uses testcontainers for integration purposes and launches with "it"
+ * profile.
  *
  * A new integration test should be extended from this class.
  */
 @SpringBootTest(classes = TestApplication.class)
 @ActiveProfiles("it")
 public class AbstractTest {
+
     @Autowired
     TradeEventRepository tradeEventRepository;
 

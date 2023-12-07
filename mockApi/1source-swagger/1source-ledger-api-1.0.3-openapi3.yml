@@ -40,7 +40,7 @@ paths:
         - parties
       summary: Read a collection of registered trading parties.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of Parties'
@@ -65,18 +65,18 @@ paths:
     #       '$ref': '#/components/responses/Error'
   '/ledger/parties/{partyId}':
     parameters:
-    - name: partyId
-      description: 'The unique identifier of a party'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/PartyId'
+      - name: partyId
+        description: 'The unique identifier of a party'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/PartyId'
     get:
       tags:
         - parties
       summary: Read a party
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The party corresponding to the provided "partyId"'
@@ -96,7 +96,7 @@ paths:
         - agreements
       summary: Read a collection of trade agreements. Defaults to return the last 100 trade agreeements created.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       parameters:
         - in: query
           name: since
@@ -132,7 +132,7 @@ paths:
         - agreements
       summary: Create a trade agreement
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         '$ref': '#/components/requestBodies/TradeAgreement'
       responses:
@@ -146,20 +146,20 @@ paths:
           '$ref': '#/components/responses/NotFound'
         '500':
           '$ref': '#/components/responses/Error'
-  '/ledger/agreements/{agreementId}': 
+  '/ledger/agreements/{agreementId}':
     parameters:
-    - name: agreementId
-      description: 'The unique identifier of a trade agreement'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/AgreementId'
+      - name: agreementId
+        description: 'The unique identifier of a trade agreement'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/AgreementId'
     get:
       tags:
         - agreements
       summary: Read an agreement
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The trade agreement corresponding to the provided "agreementId"'
@@ -175,12 +175,12 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/agreements/{agreementId}/cancel':
     parameters:
-    - name: agreementId
-      description: 'The unique identifier of an agreement'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/AgreementId'
+      - name: agreementId
+        description: 'The unique identifier of an agreement'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/AgreementId'
     # post:
     #   tags:
     #     - agreements
@@ -209,7 +209,7 @@ paths:
         - contracts
       summary: Read a collection of contracts. Defaults to return the last 100 contracts created.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       parameters:
         - in: query
           name: since
@@ -247,7 +247,7 @@ paths:
         - contracts
       summary: Create a contract in "proposal" state. Normally done by the Lend side
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         '$ref': '#/components/requestBodies/ContractProposal'
       responses:
@@ -268,18 +268,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - contracts
       summary: Read a specific contract the user is authorized to access
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId"'
@@ -298,15 +298,15 @@ paths:
         - contracts
       summary: Update unilateral fields in a contract
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         content:
           application/json:
             schema:
               oneOf:
-              - '$ref': '#/components/schemas/SettlementInstructionUpdate'
-              - '$ref': '#/components/schemas/InternalReferenceUpdate'
-              - '$ref': '#/components/schemas/SettlementStatusUpdate'
+                - '$ref': '#/components/schemas/SettlementInstructionUpdate'
+                - '$ref': '#/components/schemas/InternalReferenceUpdate'
+                - '$ref': '#/components/schemas/SettlementStatusUpdate'
       responses:
         '200':
           '$ref': '#/components/responses/Success'
@@ -320,18 +320,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/approve':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     post:
       tags:
         - contracts
       summary: Approve a contract in "proposed" state
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         '$ref': '#/components/requestBodies/SettlementInstructionUpdate'
       responses:
@@ -356,18 +356,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/cancel':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     post:
       tags:
         - contracts
       summary: Cancel a contract in "proposed" state. Original proposer only.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is canceled'
@@ -388,18 +388,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/decline':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     post:
       tags:
         - contracts
       summary: Decline a contract in "proposed" state
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is declined'
@@ -420,18 +420,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/events':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - events
       summary: Read collection of events against a specific contract. With no parameters returns events since start of current day.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       parameters:
         - in: query
           name: eventType
@@ -480,24 +480,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/events/{eventId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: eventId
-      description: 'The unique identifier of an Event'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/EventId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: eventId
+        description: 'The unique identifier of an Event'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/EventId'
     get:
       tags:
         - events
       summary: Read an event
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The event corresponding to the provided "eventId"'
@@ -513,18 +513,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/returns':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - returns
       summary: Read collection of returns against contract specified by `contractId`'
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of returns'
@@ -543,7 +543,7 @@ paths:
         - returns
       summary: Create a return
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -565,24 +565,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/returns/{returnId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: returnId
-      description: 'The unique identifier of a return'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ReturnId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: returnId
+        description: 'The unique identifier of a return'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ReturnId'
     get:
       tags:
         - returns
       summary: Read a return
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The return corresponding to the provided "returnId"'
@@ -600,24 +600,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/returns/{returnId}/cancel':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: returnId
-      description: 'The unique identifier of a return'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ReturnId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: returnId
+        description: 'The unique identifier of a return'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ReturnId'
     post:
       tags:
         - returns
       summary: Cancel a return in "proposed" state. Original proposer only.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is canceled'
@@ -633,18 +633,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/recalls':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - recalls
       summary: Read collection of recalls against contract specified by `contractId`'
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of recalls'
@@ -663,7 +663,7 @@ paths:
         - recalls
       summary: Create a recall
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -683,24 +683,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/recalls/{recallId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: recallId
-      description: 'The unique identifier of a recall'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RecallId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: recallId
+        description: 'The unique identifier of a recall'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RecallId'
     get:
       tags:
         - recalls
       summary: Read a recall
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The recall corresponding to the provided "recallId"'
@@ -716,24 +716,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/recalls/{recallId}/cancel':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: recallId
-      description: 'The unique identifier of a recall'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RecallId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: recallId
+        description: 'The unique identifier of a recall'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RecallId'
     post:
       tags:
         - recalls
       summary: Cancel a recall in "proposed" state. Original proposer only.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The recall corresponding to the provided "recallId" is canceled'
@@ -749,18 +749,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/rerates':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - rerates
       summary: Read collection of rerates against contract specified by `contractId`'
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of rerates'
@@ -779,7 +779,7 @@ paths:
         - rerates
       summary: Create a rerate
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         '$ref': '#/components/requestBodies/RerateProposal'
       responses:
@@ -798,24 +798,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/rerates/{rerateId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: rerateId
-      description: 'The unique identifier of a rerate'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RerateId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: rerateId
+        description: 'The unique identifier of a rerate'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RerateId'
     get:
       tags:
         - rerates
       summary: Read a rerate
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The rerate corresponding to the provided "rerateId"'
@@ -831,24 +831,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/rerates/{rerateId}/approve':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: rerateId
-      description: 'The unique identifier of a rerate'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RerateId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: rerateId
+        description: 'The unique identifier of a rerate'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RerateId'
     post:
       tags:
         - rerates
       summary: Approve a rerate in "proposed" state.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is canceled'
@@ -864,24 +864,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/rerates/{rerateId}/cancel':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: rerateId
-      description: 'The unique identifier of a rerate'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RerateId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: rerateId
+        description: 'The unique identifier of a rerate'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RerateId'
     post:
       tags:
         - rerates
       summary: Cancel a rerate in "proposed" state. Original proposer only.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is canceled'
@@ -897,24 +897,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/rerates/{rerateId}/decline':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: rerateId
-      description: 'The unique identifier of a rerate'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RerateId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: rerateId
+        description: 'The unique identifier of a rerate'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RerateId'
     post:
       tags:
         - rerates
       summary: Decline a rerate in "proposed" state.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The contract corresponding to the provided "contractId" is canceled'
@@ -930,18 +930,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/buyins':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
     get:
       tags:
         - buyins
       summary: Read collection of buyins against contract specified by `contractId`'
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of buyins'
@@ -962,7 +962,7 @@ paths:
         - buyins
       summary: Create a buyin
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       requestBody:
         content:
           application/json:
@@ -984,24 +984,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/buyins/{buyinId}':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: buyinId
-      description: 'The unique identifier of a buyin'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/BuyinId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: buyinId
+        description: 'The unique identifier of a buyin'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/BuyinId'
     get:
       tags:
         - buyins
       summary: Read a buyin
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The buyin corresponding to the provided "buyinId"'
@@ -1017,24 +1017,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/buyins/{buyinId}/approve':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: buyinId
-      description: 'The unique identifier of a buyin'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/BuyinId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: buyinId
+        description: 'The unique identifier of a buyin'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/BuyinId'
     post:
       tags:
         - buyins
       summary: Approve a buyin in "proposed" state.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The buyin corresponding to the provided "buyinId" is canceled'
@@ -1050,24 +1050,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/buyins/{buyinId}/cancel':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: buyinId
-      description: 'The unique identifier of a buyin'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/BuyinId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: buyinId
+        description: 'The unique identifier of a buyin'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/BuyinId'
     post:
       tags:
         - buyins
       summary: Cancel a buyin in "proposed" state. Original proposer only.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The buyin corresponding to the provided "buyinId" is canceled'
@@ -1083,24 +1083,24 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/contracts/{contractId}/buyins/{buyinId}/decline':
     parameters:
-    - name: contractId
-      description: 'The unique identifier of a contract'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ContractId'
-    - name: buyinId
-      description: 'The unique identifier of a buyin'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/BuyinId'
+      - name: contractId
+        description: 'The unique identifier of a contract'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ContractId'
+      - name: buyinId
+        description: 'The unique identifier of a buyin'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/BuyinId'
     post:
       tags:
         - buyins
       summary: Decline a buyin in "proposed" state.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The buyin corresponding to the provided "buyinId" is canceled'
@@ -1120,7 +1120,7 @@ paths:
         - events
       summary: Read collection of events. With no parameters returns events since start of current day.
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       parameters:
         - in: query
           name: eventType
@@ -1168,18 +1168,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/events/{eventId}':
     parameters:
-    - name: eventId
-      description: 'The unique identifier of an event'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/EventId'
+      - name: eventId
+        description: 'The unique identifier of an event'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/EventId'
     get:
       tags:
         - events
       summary: Read an event
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The event corresponding to the provided "eventId"'
@@ -1201,7 +1201,7 @@ paths:
         - returns
       summary: Read collection of returns
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of returns'
@@ -1215,18 +1215,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/returns/{returnId}':
     parameters:
-    - name: returnId
-      description: 'The unique identifier of a return'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/ReturnId'
+      - name: returnId
+        description: 'The unique identifier of a return'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/ReturnId'
     get:
       tags:
         - returns
       summary: Read a return
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The return corresponding to the provided "returnId"'
@@ -1246,7 +1246,7 @@ paths:
         - recalls
       summary: Read collection of recalls
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of recalls'
@@ -1260,18 +1260,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/recalls/{recallId}':
     parameters:
-    - name: recallId
-      description: 'The unique identifier of a recall'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RecallId'
+      - name: recallId
+        description: 'The unique identifier of a recall'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RecallId'
     get:
       tags:
         - recalls
       summary: Read a recall
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The recall corresponding to the provided "recallId"'
@@ -1291,7 +1291,7 @@ paths:
         - rerates
       summary: Read collection of rerates
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of rerates'
@@ -1305,18 +1305,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/rerates/{rerateId}':
     parameters:
-    - name: rerateId
-      description: 'The unique identifier of a rerate'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/RerateId'
+      - name: rerateId
+        description: 'The unique identifier of a rerate'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/RerateId'
     get:
       tags:
         - rerates
       summary: Read a rerate
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The rerate corresponding to the provided "rerateId"'
@@ -1336,7 +1336,7 @@ paths:
         - buyins
       summary: Read collection of buyins
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'List of buyins'
@@ -1350,18 +1350,18 @@ paths:
           '$ref': '#/components/responses/Error'
   '/ledger/buyins/{buyinId}':
     parameters:
-    - name: buyinId
-      description: 'The unique identifier of a buyin'
-      in: path
-      required: true
-      schema:
-        '$ref': '#/components/schemas/BuyinId'
+      - name: buyinId
+        description: 'The unique identifier of a buyin'
+        in: path
+        required: true
+        schema:
+          '$ref': '#/components/schemas/BuyinId'
     get:
       tags:
         - buyins
       summary: Read a buyin
       security:
-        - 1sourceBearerAuth: []
+        - 1sourceBearerAuth: [ ]
       responses:
         '200':
           description: 'The buyin corresponding to the provided "buyinId"'
@@ -1492,7 +1492,7 @@ components:
         price:
           '$ref': '#/components/schemas/Price'
       required:
-      - figi
+        - figi
     AgreementId:
       description: 'The unique identifier of a trade agreement - UUID'
       type: string
@@ -1509,8 +1509,8 @@ components:
         trade:
           '$ref': '#/components/schemas/TradeAgreement'
       required:
-      - agreementId
-      - status
+        - agreementId
+        - status
     Agreements:
       type: array
       items:
@@ -1551,12 +1551,12 @@ components:
         transactingParties:
           '$ref': '#/components/schemas/TransactingParties'
       required:
-      - instrument
-      - rate
-      - quantity
-      - tradeDate
-      - collateral
-      - transactingParties
+        - instrument
+        - rate
+        - quantity
+        - tradeDate
+        - collateral
+        - transactingParties
     ContractId:
       description: 'The unique identifier of a contract - UUID'
       type: string
@@ -1588,9 +1588,9 @@ components:
         settlement:
           '$ref': '#/components/schemas/Settlement'
       required:
-      - contractId
-      - status
-      - lastUpdateDatetime
+        - contractId
+        - status
+        - lastUpdateDatetime
     Contracts:
       type: array
       items:
@@ -1633,16 +1633,16 @@ components:
         resourceUri:
           type: string
       required:
-      - eventId
-      - eventType
-      - eventSubType
+        - eventId
+        - eventType
+        - eventSubType
     TradeEvent:
       description: 'A trade related event that attaches the current Trade Agreement representation. Note that `TRADE`, `TRADE_CANCEL` will be used as the eventType discriminator value.'
       "allOf":
         - "$ref": "#/components/schemas/Event"
         - type: object
           properties:
-            agreement: 
+            agreement:
               "$ref": "#/components/schemas/Agreement"
     ContractEvent:
       description: 'A contract related event that attaches the current Contract representation. Note that `CONTRACT` will be used as the eventType discriminator value.'
@@ -1650,12 +1650,12 @@ components:
         - "$ref": "#/components/schemas/Event"
         - type: object
           properties:
-            contract: 
+            contract:
               "$ref": "#/components/schemas/Contract"
     Events:
       type: array
       items:
-         oneOf:
+        oneOf:
           - $ref: '#/components/schemas/TradeEvent'
           - $ref: '#/components/schemas/ContractEvent'
     ReturnId:
@@ -1678,10 +1678,10 @@ components:
           type: string
           format: date-time
       required:
-      - contractId
-      - status
-      - quantity
-      - lastUpdateDatetime
+        - contractId
+        - status
+        - quantity
+        - lastUpdateDatetime
     Returns:
       type: array
       items:
@@ -1704,11 +1704,11 @@ components:
           type: string
           format: date-time
       required:
-      - recallId
-      - contractId
-      - status
-      - quantity
-      - lastUpdateDatetime
+        - recallId
+        - contractId
+        - status
+        - quantity
+        - lastUpdateDatetime
     Recalls:
       type: array
       items:
@@ -1737,12 +1737,12 @@ components:
           type: string
           format: date-time
       required:
-      - rerateId
-      - contractId
-      - status
-      - rate
-      - rerate
-      - lastUpdateDatetime
+        - rerateId
+        - contractId
+        - status
+        - rate
+        - rerate
+        - lastUpdateDatetime
     RerateProposal:
       type: object
       properties:
@@ -1753,8 +1753,8 @@ components:
             - '$ref': '#/components/schemas/RebateRate'
             - '$ref': '#/components/schemas/FeeRate'
       required:
-      - contractId
-      - rate
+        - contractId
+        - rate
     Rerates:
       type: array
       items:
@@ -1777,11 +1777,11 @@ components:
           type: string
           format: date-time
       required:
-      - buyinId
-      - contractId
-      - status
-      - quantity
-      - lastUpdateDatetime
+        - buyinId
+        - contractId
+        - status
+        - quantity
+        - lastUpdateDatetime
     Buyins:
       type: array
       items:
@@ -1824,8 +1824,8 @@ components:
           type: string
           format: date-time
       required:
-      - rateType
-      - baseRate
+        - rateType
+        - baseRate
     FeeRate:
       type: object
       properties:
@@ -1841,7 +1841,7 @@ components:
           type: string
           format: date
       required:
-      - baseRate
+        - baseRate
     VenueType:
       type: string
       enum:
@@ -1857,7 +1857,7 @@ components:
         venueParties:
           '$ref': '#/components/schemas/VenueParties'
       required:
-      - name
+        - name
     Platform:
       type: object
       properties:
@@ -1875,7 +1875,7 @@ components:
           type: string
           format: date-time
       required:
-      - gleifLei
+        - gleifLei
     PartyRole:
       type: string
       enum:
@@ -1898,7 +1898,7 @@ components:
         internalPartyId:
           type: string
       required:
-      - gleifLei
+        - gleifLei
     Parties:
       type: array
       items:
@@ -1924,7 +1924,7 @@ components:
         internalRef:
           '$ref': '#/components/schemas/InternalReference'
       required:
-      - partyRole
+        - partyRole
     VenueParties:
       type: array
       items:
@@ -1939,21 +1939,21 @@ components:
         internalRefId:
           type: string
       required:
-      - internalReferenceId
+        - internalReferenceId
     InternalReferenceUpdate:
       type: object
       properties:
         internalRef:
           '$ref': '#/components/schemas/InternalReference'
       required:
-      - internalRef
+        - internalRef
     SettlementStatusUpdate:
       type: object
       properties:
         settlementStatus:
           '$ref': '#/components/schemas/SettlementStatus'
       required:
-      - internalRef
+        - internalRef
     LocalMarketField:
       type: object
       properties:
@@ -2002,17 +2002,17 @@ components:
           items:
             '$ref': '#/components/schemas/LocalMarketField'
       required:
-      - settlementBic
-      - localAgentBic
-      - localAgentName
-      - localAgentAcct
+        - settlementBic
+        - localAgentBic
+        - localAgentName
+        - localAgentAcct
     SettlementInstructionUpdate:
       type: object
       properties:
         settlement:
           '$ref': '#/components/schemas/PartySettlementInstruction'
       required:
-      - settlement
+        - settlement
     Quantity:
       type: number
       format: int32
@@ -2032,7 +2032,7 @@ components:
         unit:
           '$ref': '#/components/schemas/PriceUnit'
       required:
-      - original
+        - original
     Collateral:
       type: object
       properties:
@@ -2055,12 +2055,12 @@ components:
           type: integer
           format: int32
       required:
-      - currency
-      - type
+        - currency
+        - type
     LedgerResponse:
       type: object
       required:
-      - message
+        - message
       properties:
         timestamp:
           type: string

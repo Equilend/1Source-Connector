@@ -4,7 +4,7 @@ public class LoanContractProcessException extends RuntimeException {
 
     public static final String PROCESS_EXCEPTION_MESSAGE = "The loan contract proposal instruction "
         + "has not been processed by 1Source for the trade agreement: %s (SPIRE Position: %s) "
-        + "for the following reason: %s";
+        + "for the following position status: %s";
 
     public LoanContractProcessException() {
         super();

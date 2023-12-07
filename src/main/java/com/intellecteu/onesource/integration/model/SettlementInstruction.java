@@ -37,7 +37,7 @@ public class SettlementInstruction {
     private String localAgentName;
     @Column(name = "local_agent_acct")
     private String localAgentAcct;
-    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "local_market_field_id")
     private List<LocalMarketField> localMarketField;
 }

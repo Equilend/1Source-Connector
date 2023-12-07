@@ -20,21 +20,22 @@ import org.springframework.http.HttpStatus;
 @Slf4j
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class CloudEventBuildRequest implements RecordRequest<CloudEventMetadata, CloudEventData> {
-  RecordType recordType;
-  String subject;
-  IntegrationProcess relatedProcess;
-  IntegrationSubProcess relatedSubProcess;
-  HttpStatus statusCode;
-  EventType eventType;
-  CloudEventData data;
 
-  @Override
-  public CloudEventMetadata getMetadata() {
-    return CloudEventMetadata.builder()
-        .type(recordType.name())
-        .subject(subject)
-        .relatedProcess(relatedProcess.name())
-        .relatedSubProcess(relatedSubProcess.name())
-        .build();
-  }
+    RecordType recordType;
+    String subject;
+    IntegrationProcess relatedProcess;
+    IntegrationSubProcess relatedSubProcess;
+    HttpStatus statusCode;
+    EventType eventType;
+    CloudEventData data;
+
+    @Override
+    public CloudEventMetadata getMetadata() {
+        return CloudEventMetadata.builder()
+            .type(recordType.name())
+            .subject(subject)
+            .relatedProcess(relatedProcess.name())
+            .relatedSubProcess(relatedSubProcess.name())
+            .build();
+    }
 }

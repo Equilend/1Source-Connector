@@ -1,29 +1,32 @@
 package com.intellecteu.onesource.integration.dto;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
+
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
+import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.ContractStatus;
 import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
+import com.intellecteu.onesource.integration.services.Reconcilable;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ContractDto {
+public class ContractDto implements Reconcilable {
 
     private long id;
     @JsonProperty("contractId")
@@ -49,5 +52,11 @@ public class ContractDto {
 
     public boolean isProcessedWithoutErrors() {
         return !Set.of(SPIRE_ISSUE, ONESOURCE_ISSUE).contains(processingStatus);
+    }
+
+    @Override
+    public void validateForReconciliation() throws ValidationException {
+        throwIfFieldMissedException(trade, TRADE);
+        trade.validateForReconciliation();
     }
 }

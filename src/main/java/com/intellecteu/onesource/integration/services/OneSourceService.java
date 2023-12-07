@@ -9,7 +9,6 @@ import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.EventType;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +20,7 @@ public interface OneSourceService {
     AgreementDto findTradeAgreement(String agreementId, EventType eventType);
 
     Optional<ContractDto> findContract(String contractId);
+
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 
     void updateContract(ContractDto contractDto, SettlementDto settlementDto);

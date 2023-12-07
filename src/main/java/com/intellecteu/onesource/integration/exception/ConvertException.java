@@ -11,6 +11,7 @@ public class ConvertException extends RuntimeException {
     public ConvertException(Throwable cause) {
         super(cause);
     }
+
     public ConvertException(String message) {
         super(message);
     }

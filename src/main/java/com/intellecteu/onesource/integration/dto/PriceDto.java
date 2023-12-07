@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PriceDto {
+
     @JsonProperty("value")
     private Double value;
     @JsonProperty("currency")

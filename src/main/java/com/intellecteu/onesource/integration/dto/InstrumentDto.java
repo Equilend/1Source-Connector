@@ -1,17 +1,5 @@
 package com.intellecteu.onesource.integration.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.services.Reconcilable;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import java.util.Objects;
-import java.util.stream.Stream;
-
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.FIGI;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
@@ -20,12 +8,24 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TICKER;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.services.Reconcilable;
+import java.util.Objects;
+import java.util.stream.Stream;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Slf4j
 public class InstrumentDto implements Reconcilable {
+
     private String ticker;
     private String cusip;
     private String isin;
@@ -38,7 +38,7 @@ public class InstrumentDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        var failedValidationFields = getFailedValidationFields();
+        String failedValidationFields = getFailedValidationFields();
         if (!failedValidationFields.isEmpty()) {
             throwFieldMissedException(failedValidationFields);
         }

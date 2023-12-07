@@ -1,6 +1,12 @@
 package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
 
+import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_RETRIEVED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
+
 import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
@@ -17,49 +23,46 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_RETRIEVED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
-
 @Component
 @Slf4j
 public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
 
-  @Override
-  @Transactional
-  public void process(AgreementDto agreement) {
-    var positionDto = spireService.getTradePosition(agreement);
-    if (positionDto == null) {
-      log.warn("No position for agreement: {}. Skipping processing", agreement.getAgreementId());
-      agreement.getTrade().setProcessingStatus(SPIRE_ISSUE);
-      saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
-      return;
+    @Override
+    @Transactional
+    public void process(AgreementDto agreement) {
+        var positionDto = spireService.getTradePosition(agreement);
+        if (positionDto == null) {
+            log.warn("No position for agreement: {}. Skipping processing", agreement.getAgreementId());
+            agreement.getTrade().setProcessingStatus(SPIRE_ISSUE);
+            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+            return;
+        }
+        Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
+        String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+        processMatchingPosition(agreementEntity, positions);
+        log.debug("Start reconciliation from AgreementDataReceived strategy");
+        reconcile(agreement, positionDto);
+        if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
+            processAgreement(agreement, positionDto);
+            agreement.setEventType(EventType.TRADE_AGREED);
+            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+        } else if (agreement.getTrade().getProcessingStatus() == TO_CANCEL) {
+            agreement.setEventType(EventType.TRADE_AGREED);
+            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+        }
     }
-    Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
-    String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-    List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
-    processMatchingPosition(agreementEntity, positions);
-    log.debug("Start reconciliation from AgreementDataReceived strategy");
-    reconcile(agreement, positionDto);
-    if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
-      processAgreement(agreement, positionDto);
-      agreement.setEventType(EventType.TRADE_AGREED);
-      saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
-    } else if (agreement.getTrade().getProcessingStatus() == TO_CANCEL) {
-      agreement.setEventType(EventType.TRADE_AGREED);
-      saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+
+    @Override
+    public FlowStatus getProcessFlow() {
+        return FlowStatus.TRADE_DATA_RECEIVED;
     }
-  }
 
-  @Override
-  public FlowStatus getProcessFlow() {
-    return FlowStatus.TRADE_DATA_RECEIVED;
-  }
-
-  public AgreementDataReceived(OneSourceService oneSourceService, SpireService spireService,
-      ReconcileService reconcileService, AgreementRepository agreementRepository, PositionRepository positionRepository,
-      EventMapper eventMapper, CloudEventRecordService cloudEventRecordService) {
-    super(oneSourceService, spireService, reconcileService, agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
-  }
+    public AgreementDataReceived(OneSourceService oneSourceService, SpireService spireService,
+        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementRepository agreementRepository,
+        PositionRepository positionRepository,
+        EventMapper eventMapper, CloudEventRecordService cloudEventRecordService) {
+        super(oneSourceService, spireService, agreementReconcileService, agreementRepository,
+            positionRepository, eventMapper, cloudEventRecordService);
+    }
 }

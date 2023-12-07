@@ -18,7 +18,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionStatus {
 
-  private String status;
+    private String status;
 
 
 }

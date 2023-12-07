@@ -15,41 +15,41 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class RecordMapper {
 
-  private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
-  public CloudEventEntity toCloudEventEntity(IntegrationCloudEvent record) {
-    final CloudEventEntity entity = objectMapper.convertValue(record.getMetadata(), CloudEventEntity.class);
-    try {
-      final String data = objectMapper.writeValueAsString(record.getData());
-      entity.setData(data);
-    } catch (JsonProcessingException e) {
-      log.warn("Couldn't write value to CloudEventEntity id: {}", entity.getId());
+    public CloudEventEntity toCloudEventEntity(IntegrationCloudEvent record) {
+        final CloudEventEntity entity = objectMapper.convertValue(record.getMetadata(), CloudEventEntity.class);
+        try {
+            final String data = objectMapper.writeValueAsString(record.getData());
+            entity.setData(data);
+        } catch (JsonProcessingException e) {
+            log.warn("Couldn't write value to CloudEventEntity id: {}", entity.getId());
+        }
+        return entity;
     }
-    return entity;
-  }
 
-  public String toJson(CloudEvent event) throws JsonProcessingException {
-    return objectMapper.writeValueAsString(event);
-  }
-
-  public CloudEvent toCloudEvent(CloudEventEntity entity) {
-    try {
-      return CloudEvent.builder()
-          .id(entity.getId())
-          .specVersion(entity.getSpecVersion())
-          .type(entity.getType())
-          .source(entity.getSource())
-          .subject(entity.getSubject())
-          .time(entity.getTime())
-          .relatedProcess(entity.getRelatedProcess())
-          .relatedSubProcess(entity.getRelatedSubProcess())
-          .dataContentType(entity.getDataContentType())
-          .eventData(entity.getData())
-          .build();
-    } catch (Exception e) {
-      String id = entity == null ? "null" : entity.getId();
-      log.warn("Couldn't create CloudEvent from CloudEventEntity, id: {}", id);
-      throw new ConvertException(e);
+    public String toJson(CloudEvent event) throws JsonProcessingException {
+        return objectMapper.writeValueAsString(event);
     }
-  }
+
+    public CloudEvent toCloudEvent(CloudEventEntity entity) {
+        try {
+            return CloudEvent.builder()
+                .id(entity.getId())
+                .specVersion(entity.getSpecVersion())
+                .type(entity.getType())
+                .source(entity.getSource())
+                .subject(entity.getSubject())
+                .time(entity.getTime())
+                .relatedProcess(entity.getRelatedProcess())
+                .relatedSubProcess(entity.getRelatedSubProcess())
+                .dataContentType(entity.getDataContentType())
+                .eventData(entity.getData())
+                .build();
+        } catch (Exception e) {
+            String id = entity == null ? "null" : entity.getId();
+            log.warn("Couldn't create CloudEvent from CloudEventEntity, id: {}", id);
+            throw new ConvertException(e);
+        }
+    }
 }

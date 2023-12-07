@@ -15,11 +15,11 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SecurityDetailDto {
 
-  private String ticker;
-  private String cusip;
-  private String isin;
-  private String sedol;
-  private String quickCode;
-  private String bloombergId;
+    private String ticker;
+    private String cusip;
+    private String isin;
+    private String sedol;
+    private String quickCode;
+    private String bloombergId;
 
 }

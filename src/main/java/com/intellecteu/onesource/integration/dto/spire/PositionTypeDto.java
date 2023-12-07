@@ -15,6 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionTypeDto {
 
-  private String positionType;
+    private String positionType;
 
 }

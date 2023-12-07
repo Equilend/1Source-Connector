@@ -4,16 +4,16 @@ import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 
 /**
- * Service to record events according to the
- * CloudEvents <a href="https://github.com/cloudevents/spec">specification</a>
+ * Service to record events according to the CloudEvents <a
+ * href="https://github.com/cloudevents/spec">specification</a>
  */
 public interface CloudEventRecordService extends RecordService<CloudEventBuildRequest> {
 
-  /**
-   * Get the creation factory for IntegrationCloudEvent
-   *
-   * @return CloudEventFactory<IntegrationCloudEvent>
-   */
-  CloudEventFactory<IntegrationCloudEvent> getFactory();
+    /**
+     * Get the creation factory for IntegrationCloudEvent
+     *
+     * @return CloudEventFactory<IntegrationCloudEvent>
+     */
+    CloudEventFactory<IntegrationCloudEvent> getFactory();
 
 }

@@ -1,31 +1,29 @@
 package com.intellecteu.onesource.integration.routes;
 
-import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.ContractInitiationService;
+import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PositionRoute extends RouteBuilder {
+@RequiredArgsConstructor
+public class ContractInitiationRoute extends RouteBuilder {
 
-    private final PositionService positionService;
+    private final ContractInitiationService contractInitiationService;
 
     @Value("${camel.route.autostart}")
     private boolean isAutoStarted;
-
-    public PositionRoute(PositionService positionService) {
-        this.positionService = positionService;
-    }
 
     @Override
     public void configure() {
 
         from("timer://eventTimer?period={{camel.positionTimer}}")
-            .routeId("PositionRoute")
+            .routeId("ContractInitiationRoute")
             .autoStartup(isAutoStarted)
             .log("Start retrieved positions for matching")
-            .bean(positionService, "createLoanContractWithoutTA")
-            .log("Loan Contract proposal without TA success");
+            .bean(contractInitiationService, "startContractInitiation")
+            .log("ContractInitiationRoute is processed");
 
     }
 }

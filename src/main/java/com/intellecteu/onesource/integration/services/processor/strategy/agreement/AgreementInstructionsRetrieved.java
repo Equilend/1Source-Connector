@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -17,24 +18,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class AgreementInstructionsRetrieved extends AbstractAgreementProcessStrategy {
 
-  @Override
-  @Transactional
-  public void process(AgreementDto agreement) {
-    log.debug("Skipping processing AgreementInstructionsRetrieved as not yet implemented!");
-  }
+    @Override
+    @Transactional
+    public void process(AgreementDto agreement) {
+        log.debug("Skipping processing AgreementInstructionsRetrieved as not yet implemented!");
+    }
 
-  @Override
-  public FlowStatus getProcessFlow() {
-    return FlowStatus.AGR_INSTRUCTIONS_RETRIEVED;
-  }
+    @Override
+    public FlowStatus getProcessFlow() {
+        return FlowStatus.AGR_INSTRUCTIONS_RETRIEVED;
+    }
 
-  public AgreementInstructionsRetrieved(OneSourceService oneSourceService,
-      SpireService spireService,
-      ReconcileService reconcileService,
-      AgreementRepository agreementRepository,
-      PositionRepository positionRepository,
-      EventMapper eventMapper,
-      CloudEventRecordService cloudEventRecordService) {
-    super(oneSourceService, spireService, reconcileService, agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
-  }
+    public AgreementInstructionsRetrieved(OneSourceService oneSourceService,
+        SpireService spireService,
+        ReconcileService<AgreementDto, PositionDto> agreementReconcileService,
+        AgreementRepository agreementRepository,
+        PositionRepository positionRepository,
+        EventMapper eventMapper,
+        CloudEventRecordService cloudEventRecordService) {
+        super(oneSourceService, spireService, agreementReconcileService, agreementRepository, positionRepository,
+            eventMapper, cloudEventRecordService);
+    }
 }

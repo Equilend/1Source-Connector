@@ -5,6 +5,7 @@ public enum ProcessingStatus {
     CANCELED,
     CREATED,
     DECLINED,
+    DISCREPANCIES,
     MATCHED_CANCELED_POSITION,
     MATCHED_POSITION,
     NEW,

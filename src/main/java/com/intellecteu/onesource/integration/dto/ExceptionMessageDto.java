@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ExceptionMessageDto {
 
-  private String value;
-  private String exceptionMessage;
+    private String value;
+    private String exceptionMessage;
 
 }

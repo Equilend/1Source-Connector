@@ -8,6 +8,6 @@ import com.intellecteu.onesource.integration.dto.record.Recordable;
  */
 public interface RecordService<T extends RecordRequest<? extends Recordable, ? extends Recordable>> {
 
-  void record(T recordRequest);
+    void record(T recordRequest);
 
 }

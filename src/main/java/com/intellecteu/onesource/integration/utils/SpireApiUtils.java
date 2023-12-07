@@ -22,7 +22,8 @@ public class SpireApiUtils {
             .build();
     }
 
-    public static NQuery createGetPositionNQuery(List<String> queries, AndOr andOr, Boolean empty, List<Tuples> tuples) {
+    public static NQuery createGetPositionNQuery(List<String> queries, AndOr andOr, Boolean empty,
+        List<Tuples> tuples) {
         return NQuery.builder()
             .queries(queries)
             .andOr(andOr)
@@ -31,7 +32,8 @@ public class SpireApiUtils {
             .build();
     }
 
-    public static List<Tuples> createListOfTuplesGetPosition(String lValue, String operator, String rValue1, String rValue2) {
+    public static List<Tuples> createListOfTuplesGetPosition(String lValue, String operator, String rValue1,
+        String rValue2) {
         List<Tuples> tuples = new ArrayList<>();
         tuples.add(createTuples(lValue, operator, rValue1, rValue2));
 

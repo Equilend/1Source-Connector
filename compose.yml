@@ -18,7 +18,7 @@ services:
       dockerfile: Dockerfile
     image: onesource:latest
     container_name: 1source-integration
-#    restart: on-failure
+    #    restart: on-failure
     ports:
       - "8080:8080"
       - "8000:8000"

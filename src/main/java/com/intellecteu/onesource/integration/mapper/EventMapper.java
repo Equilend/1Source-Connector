@@ -47,14 +47,13 @@ import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.model.TransactingParty;
 import com.intellecteu.onesource.integration.model.Venue;
 import com.intellecteu.onesource.integration.model.VenueParty;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 
 @Service
 @Getter
@@ -198,7 +197,9 @@ public class EventMapper {
     }
 
     public List<LocalMarketFieldDto> toMarketFieldsDto(List<LocalMarketField> marketFields) {
-        if (marketFields == null) return null;
+        if (marketFields == null) {
+            return null;
+        }
         return marketFields.stream().filter(Objects::nonNull).map(this::toMarketDto).collect(Collectors.toList());
     }
 

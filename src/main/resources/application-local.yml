@@ -7,32 +7,32 @@ camel:
     autostart: ${CAMEL_AUTOSTART_LOCAL:true}
 
 spring:
-    datasource:
-      driverClassName: ${DB_DRIVER_LOCAL:org.postgresql.Driver}
-      url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
-      username: ${DB_USERNAME_LOCAL:postgres}
-      password: ${DB_PASSWORD_LOCAL:postgres}
-    jpa:
-      database: POSTGRESQL
-      show-sql: false
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
-          default_schema: ${DB_SCHEMA_LOCAL:postgres}
+  datasource:
+    driverClassName: ${DB_DRIVER_LOCAL:org.postgresql.Driver}
+    url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USERNAME_LOCAL:postgres}
+    password: ${DB_PASSWORD_LOCAL:postgres}
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    properties:
       hibernate:
-        ddl-auto: none
-    flyway:
-      locations: classpath:db/migration, classpath:local/db/migration
-      baseline-on-migrate: true
-      url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
-      user: ${DB_USERNAME_LOCAL:postgres}
-      password: ${DB_PASSWORD_LOCAL:postgres}
-      schemas: ${DB_SCHEMA_LOCAL:postgres}
-      enabled: true
-      default-schema: ${DB_SCHEMA_LOCAL:postgres}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: ${DB_SCHEMA_LOCAL:postgres}
+    hibernate:
+      ddl-auto: none
+  flyway:
+    locations: classpath:db/migration, classpath:local/db/migration
+    baseline-on-migrate: true
+    url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
+    user: ${DB_USERNAME_LOCAL:postgres}
+    password: ${DB_PASSWORD_LOCAL:postgres}
+    schemas: ${DB_SCHEMA_LOCAL:postgres}
+    enabled: true
+    default-schema: ${DB_SCHEMA_LOCAL:postgres}
 
-    jackson:
-      date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
 
 logging:
   level:

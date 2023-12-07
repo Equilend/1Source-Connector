@@ -31,7 +31,7 @@ public class SettlementTemp {
     private long id;
     @Column(name = "contract_id")
     private String contractId;
-    @OneToMany(fetch = FetchType.EAGER, cascade= CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "settlement_id")
     private List<Settlement> settlement;
 }

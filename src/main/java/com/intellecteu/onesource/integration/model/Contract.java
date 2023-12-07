@@ -1,5 +1,7 @@
 package com.intellecteu.onesource.integration.model;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.intellecteu.onesource.integration.enums.FlowStatus;
 import java.time.LocalDateTime;
 import java.util.List;
 import javax.persistence.CascadeType;
@@ -15,9 +17,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.intellecteu.onesource.integration.enums.FlowStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,7 +53,7 @@ public class Contract {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "trade_id")
     private TradeAgreement trade;
-    @OneToMany(fetch = FetchType.LAZY, cascade=CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "settlement_id")
     private List<Settlement> settlement;
     @Column(name = "processing_status")

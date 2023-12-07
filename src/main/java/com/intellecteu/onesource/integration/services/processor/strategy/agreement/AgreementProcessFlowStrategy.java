@@ -5,8 +5,8 @@ import com.intellecteu.onesource.integration.enums.FlowStatus;
 
 public interface AgreementProcessFlowStrategy {
 
-  void process(AgreementDto agreement);
+    void process(AgreementDto agreement);
 
-  FlowStatus getProcessFlow();
+    FlowStatus getProcessFlow();
 
 }

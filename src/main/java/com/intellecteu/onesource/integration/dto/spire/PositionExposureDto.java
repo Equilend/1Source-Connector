@@ -15,8 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionExposureDto {
 
-  private Double cpHaircut;
-  private Integer cpMarkRoundTo;
-  private Integer depoId;
+    private Double cpHaircut;
+    private Integer cpMarkRoundTo;
+    private Integer depoId;
 
 }

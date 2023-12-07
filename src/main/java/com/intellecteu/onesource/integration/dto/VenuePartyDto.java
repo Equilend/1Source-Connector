@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class VenuePartyDto {
+
     @JsonProperty("partyRole")
     private PartyRole partyRole;
     @JsonProperty("venuePartyId")

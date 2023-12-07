@@ -1,5 +1,13 @@
 package com.intellecteu.onesource.integration.dto;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -10,22 +18,13 @@ import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import com.intellecteu.onesource.integration.model.TermType;
 import com.intellecteu.onesource.integration.services.Reconcilable;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
-import java.time.LocalDate;
-import java.util.List;
-
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 @Data
 @AllArgsConstructor
@@ -85,7 +84,7 @@ public class TradeAgreementDto implements Reconcilable {
         @JsonProperty("transactingParties") List<TransactingPartyDto> transactingParties,
         @JsonProperty("eventId") Long eventId,
         @JsonProperty("resourceUri") String resourceUri
-        ) {
+    ) {
         this.executionVenue = executionVenue;
         this.instrument = instrument;
         this.rate = rate;
@@ -105,28 +104,15 @@ public class TradeAgreementDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        if (instrument == null) {
-            throwFieldMissedException(INSTRUMENT);
-        } else {
-            instrument.validateForReconciliation();
-        }
+        throwIfFieldMissedException(instrument, INSTRUMENT);
+        throwIfFieldMissedException(quantity, QUANTITY);
+        throwIfFieldMissedException(tradeDate, TRADE_DATE);
+        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE);
+        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE);
+        throwIfFieldMissedException(collateral, COLLATERAL);
         rate.validateForReconciliation();
-        if (quantity == null) {
-            throwFieldMissedException(QUANTITY);
-        }
-        if (tradeDate == null) {
-            throwFieldMissedException(TRADE_DATE);
-        }
-        if (settlementDate == null) {
-            throwFieldMissedException(SETTLEMENT_DATE);
-        }
-        if (settlementType == null) {
-            throwFieldMissedException(SETTLEMENT_TYPE);
-        }
-        if (collateral == null) {
-            throwFieldMissedException(COLLATERAL);
-        }
         collateral.validateForReconciliation();
+        instrument.validateForReconciliation();
         validateParties();
     }
 

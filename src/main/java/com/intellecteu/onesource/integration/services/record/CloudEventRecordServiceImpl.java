@@ -11,33 +11,33 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class CloudEventRecordServiceImpl implements CloudEventRecordService {
 
-  private final CloudEventFactory<IntegrationCloudEvent> recordFactory;
-  private final CloudEventRepository eventRepository;
-  private final RecordMapper recordMapper;
+    private final CloudEventFactory<IntegrationCloudEvent> recordFactory;
+    private final CloudEventRepository eventRepository;
+    private final RecordMapper recordMapper;
 
-  @Override
-  public void record(CloudEventBuildRequest buildRequest) {
-    final IntegrationCloudEvent record = createEvent(buildRequest);
-    record(record);
-  }
+    @Override
+    public void record(CloudEventBuildRequest buildRequest) {
+        final IntegrationCloudEvent record = createEvent(buildRequest);
+        record(record);
+    }
 
-  private void record(IntegrationCloudEvent record) {
-    eventRepository.save(recordMapper.toCloudEventEntity(record));
-  }
+    private void record(IntegrationCloudEvent record) {
+        eventRepository.save(recordMapper.toCloudEventEntity(record));
+    }
 
-  private IntegrationCloudEvent createEvent(CloudEventBuildRequest buildRequest) {
-    return recordFactory.createRecord(buildRequest);
-  }
+    private IntegrationCloudEvent createEvent(CloudEventBuildRequest buildRequest) {
+        return recordFactory.createRecord(buildRequest);
+    }
 
-  public CloudEventRecordServiceImpl(CloudEventFactory<IntegrationCloudEvent> recordFactory,
-      CloudEventRepository eventRepository, RecordMapper recordMapper) {
-    this.recordFactory = recordFactory;
-    this.eventRepository = eventRepository;
-    this.recordMapper = recordMapper;
-  }
+    public CloudEventRecordServiceImpl(CloudEventFactory<IntegrationCloudEvent> recordFactory,
+        CloudEventRepository eventRepository, RecordMapper recordMapper) {
+        this.recordFactory = recordFactory;
+        this.eventRepository = eventRepository;
+        this.recordMapper = recordMapper;
+    }
 
-  @Override
-  public CloudEventFactory<IntegrationCloudEvent> getFactory() {
-    return recordFactory;
-  }
+    @Override
+    public CloudEventFactory<IntegrationCloudEvent> getFactory() {
+        return recordFactory;
+    }
 }

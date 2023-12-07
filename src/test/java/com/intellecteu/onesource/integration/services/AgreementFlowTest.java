@@ -1,11 +1,28 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.HttpMethod.POST;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.TestConfig;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -19,6 +36,9 @@ import com.intellecteu.onesource.integration.services.record.CloudEventFactoryIm
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -29,22 +49,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.LocalDateTime;
-import java.util.HashMap;
-
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.springframework.http.HttpMethod.POST;
 
 @ExtendWith(MockitoExtension.class)
 public class AgreementFlowTest {
@@ -74,7 +78,7 @@ public class AgreementFlowTest {
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
-    private ReconcileService reconcileService;
+    private ReconcileService<AgreementDto, PositionDto> reconcileService;
     private AgreementDataReceived agreementDataReceived;
 
     @Mock
@@ -88,14 +92,15 @@ public class AgreementFlowTest {
         objectMapper = TestConfig.createTestObjectMapper();
         eventMapper = new EventMapper(objectMapper);
         positionMapper = new PositionMapper(objectMapper);
-        reconcileService = new OneSourceSpireReconcileService();
+        reconcileService = new AgreementReconcileService();
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
         builderMap.put(CONTRACT_INITIATION, new GenericRecordCloudEventBuilder());
         builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new GenericRecordCloudEventBuilder());
         builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder());
         recordFactory = new CloudEventFactoryImpl(builderMap);
-        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate, settlementUpdateRepository, eventMapper, eventRepository);
+        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
+            settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             positionMapper, cloudEventRecordService);
         agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
@@ -108,8 +113,9 @@ public class AgreementFlowTest {
 
     @Test
     @DisplayName("Contract proposal successfully created with 201 response code.")
-    void test_agreementFlow_shouldCreateContractProposal_success() throws JsonProcessingException {
+    void test_agreementFlow_shouldCreateContractProposal_success() throws JsonProcessingException, ReconcileException {
         var agreement = buildAgreementDto();
+        var agreementEntity = eventMapper.toAgreementEntity(agreement);
         agreement.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
         agreement.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
         String fullPositionResponse = """
@@ -137,19 +143,21 @@ public class AgreementFlowTest {
         final ResponseEntity<JsonNode> positionResponse = new ResponseEntity<>(node, HttpStatus.CREATED);
         final ResponseEntity<JsonNode> instructionResponse = new ResponseEntity<>(instructionNode, HttpStatus.OK);
 
-        when(restTemplate.exchange(eq(createContractUrl), eq(POST), any(), eq(JsonNode.class))).thenReturn(response);
         when(restTemplate.postForEntity(eq(getPositionUrl), any(), eq(JsonNode.class))).thenReturn(positionResponse);
-        when(restTemplate.postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class))).thenReturn(
-            instructionResponse);
         when(positionRepository.save(any())).thenReturn(positionEntity);
+        when(agreementRepository.save(any())).thenReturn(agreementEntity);
+        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(positionEntity));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
         agreementDataReceived.process(agreement);
 
         verify(restTemplate).postForEntity(eq(getPositionUrl), any(), eq(JsonNode.class));
+        verify(positionRepository).findByVenueRefId(any());
+        verify(cloudEventRecordService, times(2)).record(any());
+        verify(positionRepository, times(2)).save(any());
+        verify(agreementRepository, times(3)).save(any());
         verify(restTemplate).postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class));
-        verify(restTemplate).exchange(eq(createContractUrl), eq(POST), any(), eq(JsonNode.class));
     }
 
     @Test

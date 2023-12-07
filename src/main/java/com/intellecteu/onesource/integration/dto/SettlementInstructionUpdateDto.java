@@ -11,11 +11,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SettlementInstructionUpdateDto {
-  private Double roundingRule;
-  private RoundingMode roundingMode;
-  private SettlementDto settlement;
 
-  public SettlementInstructionUpdateDto(SettlementDto settlement) {
-    this.settlement = settlement;
-  }
+    private Double roundingRule;
+    private RoundingMode roundingMode;
+    private SettlementDto settlement;
+
+    public SettlementInstructionUpdateDto(SettlementDto settlement) {
+        this.settlement = settlement;
+    }
 }

@@ -1,5 +1,23 @@
 package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
+import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
+import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
+import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
+import static java.lang.String.format;
+
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
@@ -26,25 +44,6 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
-import static com.intellecteu.onesource.integration.exception.DataMismatchException.LEI_MISMATCH_MSG;
-import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
-import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-import static java.lang.String.format;
-
 @Slf4j
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = AccessLevel.PROTECTED)
@@ -52,7 +51,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
 
     OneSourceService oneSourceService;
     SpireService spireService;
-    ReconcileService reconcileService;
+    ReconcileService<AgreementDto, PositionDto> reconcileService;
     AgreementRepository agreementRepository;
     PositionRepository positionRepository;
     EventMapper eventMapper;
@@ -93,27 +92,33 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         }
     }
 
-    void processAgreement(AgreementDto agreement, PositionDto positionDto) {
-        var positionLei = positionDto.getAccountLei();
-        final PartyRole partyRole = extractPartyRole(agreement.getTrade().getTransactingParties(), positionLei);
-        if (partyRole == null) {
-            log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreement.getAgreementId(),
-                positionDto.getId(), format(LEI_MISMATCH_MSG, positionLei)));
-            agreement.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
-        } else {
-            if (partyRole == LENDER) {
-                String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-                log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
-                var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreement.getTrade(),
-                    partyRole);
-                if (settlements != null) {
-                    log.debug("Submitting contract proposal as a {}", partyRole);
-                    ContractProposalDto contractProposalDto = buildContract(agreement, positionDto, settlements);
-                    oneSourceService.createContract(agreement, contractProposalDto, positionDto);
-                    log.debug("***** Trade Agreement Id: {} was processed successfully", agreement.getAgreementId());
-                }
+    void processAgreement(AgreementDto agreementDto, PositionDto positionDto) {
+        extractPartyRole(positionDto.unwrapPositionType())
+            .ifPresentOrElse(
+                party -> processByParty(party, agreementDto, positionDto),
+                () -> persistIssueStatus(agreementDto, positionDto)
+            );
+    }
+
+    private void processByParty(PartyRole partyRole, AgreementDto agreementDto, PositionDto positionDto) {
+        if (partyRole == LENDER) {
+            String venueRefId = agreementDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+            log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
+            var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreementDto.getTrade(),
+                partyRole);
+            if (settlements != null) {
+                log.debug("Submitting contract proposal as a {}", partyRole);
+                ContractProposalDto contractProposalDto = buildContract(agreementDto, positionDto, settlements);
+                oneSourceService.createContract(agreementDto, contractProposalDto, positionDto);
+                log.debug("***** Trade Agreement Id: {} was processed successfully", agreementDto.getAgreementId());
             }
         }
+    }
+
+    private void persistIssueStatus(AgreementDto agreementDto, PositionDto positionDto) {
+        log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreementDto.getAgreementId(), positionDto.getId(),
+            positionDto.unwrapPositionStatus()));
+        agreementDto.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
     }
 
     void processMatchingPosition(Agreement agreementEntity, List<Position> positions) {

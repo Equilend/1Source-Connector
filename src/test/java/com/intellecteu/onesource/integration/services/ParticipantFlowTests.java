@@ -8,7 +8,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.GET;
 
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Participant;
@@ -20,7 +19,6 @@ import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -78,14 +76,17 @@ public class ParticipantFlowTests {
 
     @BeforeEach
     void setUp() {
-        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate, settlementUpdateRepository, eventMapper, eventRepository);
+        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
+            settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             positionMapper, cloudEventRecordService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository, positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService, oneSourceService, cloudEventRecordService);
+        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository,
+            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService,
+            oneSourceService, cloudEventRecordService);
     }
 
     @Test
@@ -96,7 +97,9 @@ public class ParticipantFlowTests {
         var partiesUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_PARTIES_ENDPOINT;
         final ResponseEntity<List<PartyDto>> response = ResponseEntity.ok(List.of(partyDto));
 
-        when(restTemplate.exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}))).thenReturn(response);
+        when(restTemplate.exchange(eq(partiesUrl), eq(GET), eq(null),
+            eq(new ParameterizedTypeReference<List<PartyDto>>() {
+            }))).thenReturn(response);
         when(participantHolderRepository.findAll()).thenReturn(new ArrayList<>());
         when(participantHolderRepository.save(any())).thenReturn(new ParticipantHolder());
 
@@ -104,7 +107,9 @@ public class ParticipantFlowTests {
 
         verify(participantHolderRepository).findAll();
         verify(participantHolderRepository).save(any());
-        verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}));
+        verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null),
+            eq(new ParameterizedTypeReference<List<PartyDto>>() {
+            }));
     }
 
     @Test
@@ -126,12 +131,16 @@ public class ParticipantFlowTests {
         var partiesUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_PARTIES_ENDPOINT;
         final ResponseEntity<List<PartyDto>> response = ResponseEntity.ok(List.of(partyDto));
 
-        when(restTemplate.exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}))).thenReturn(response);
+        when(restTemplate.exchange(eq(partiesUrl), eq(GET), eq(null),
+            eq(new ParameterizedTypeReference<List<PartyDto>>() {
+            }))).thenReturn(response);
         when(participantHolderRepository.findAll()).thenReturn(List.of(participantHolder));
 
         eventService.processParties();
 
-        verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null), eq(new ParameterizedTypeReference<List<PartyDto>>() {}));
+        verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null),
+            eq(new ParameterizedTypeReference<List<PartyDto>>() {
+            }));
         verify(participantHolderRepository).findAll();
         verify(participantHolderRepository).save(any());
     }

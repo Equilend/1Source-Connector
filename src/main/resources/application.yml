@@ -7,32 +7,32 @@ camel:
     autostart: ${CAMEL_AUTOSTART:true}
 
 spring:
-    datasource:
-      driverClassName: ${DB_DRIVER:org.postgresql.Driver}
-      url: ${DB_URL:jdbc:postgresql://1source-postgres:5432/postgres}
-      username: ${DB_USERNAME:postgres}
-      password: ${DB_PASSWORD:postgres}
-    jpa:
-      database: POSTGRESQL
-      show-sql: false
-      properties:
-        hibernate:
-          dialect: org.hibernate.dialect.PostgreSQLDialect
-          default_schema: ${DB_SCHEMA:postgres}
+  datasource:
+    driverClassName: ${DB_DRIVER:org.postgresql.Driver}
+    url: ${DB_URL:jdbc:postgresql://1source-postgres:5432/postgres}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    database: POSTGRESQL
+    show-sql: false
+    properties:
       hibernate:
-        ddl-auto: none
-    flyway:
-      locations: classpath:db/migration
-      baseline-on-migrate: true
-      url: ${DB_URL:jdbc:postgresql://1source-postgres:5432/postgres}
-      user: ${DB_USERNAME:postgres}
-      password: ${DB_PASSWORD:postgres}
-      schemas: ${DB_SCHEMA:postgres}
-      enabled: true
-      default-schema: ${DB_SCHEMA:postgres}
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: ${DB_SCHEMA:postgres}
+    hibernate:
+      ddl-auto: none
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    url: ${DB_URL:jdbc:postgresql://1source-postgres:5432/postgres}
+    user: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    schemas: ${DB_SCHEMA:postgres}
+    enabled: true
+    default-schema: ${DB_SCHEMA:postgres}
 
-    jackson:
-      date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
 
 logging:
   level:

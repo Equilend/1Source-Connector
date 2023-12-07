@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class PlatformDto {
+
     @JsonProperty("gleifLei")
     private String gleifLei;
     @JsonProperty("legalName")

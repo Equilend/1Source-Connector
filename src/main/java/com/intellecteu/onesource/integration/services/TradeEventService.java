@@ -1,50 +1,10 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.spire.AndOr;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.Participant;
-import com.intellecteu.onesource.integration.model.ParticipantHolder;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
-import com.intellecteu.onesource.integration.repository.TimestampRepository;
-import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-
 import static com.intellecteu.onesource.integration.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CREATED;
-import static com.intellecteu.onesource.integration.exception.DataMismatchException.LEI_MISMATCH_MSG;
 import static com.intellecteu.onesource.integration.exception.LoanContractCancelException.CANCEL_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
@@ -73,6 +33,44 @@ import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createLi
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
+import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.spire.AndOr;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.Agreement;
+import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.Participant;
+import com.intellecteu.onesource.integration.model.ParticipantHolder;
+import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.repository.AgreementRepository;
+import com.intellecteu.onesource.integration.repository.ContractRepository;
+import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
+import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.repository.TimestampRepository;
+import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
 @Service
@@ -114,10 +112,12 @@ public class TradeEventService implements EventService {
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
             final String venueRefId = contract.getTrade().getVenue().getPlatform().getVenueRefId();
-            ResponseEntity<JsonNode> response = spireService.requestPosition(createGetPositionNQuery(null, AndOr.AND, true, createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
-            var positionLei = extractPositionLei(response);
+            ResponseEntity<JsonNode> response = spireService.requestPosition(
+                createGetPositionNQuery(null, AndOr.AND, true,
+                    createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
+            var positionType = extractPositionType(response);
             var positionId = extractPositionId(response);
-            if (isToCancelCandidate(contract, positionLei, response)) {
+            if (isToCancelCandidate(contract, positionType, response)) {
                 candidatesForCancelToPositionId.put(contract, positionId);
             }
         }
@@ -128,28 +128,26 @@ public class TradeEventService implements EventService {
         log.debug("<<<<< Finishing Cancel contract process.");
     }
 
-    private boolean isToCancelCandidate(Contract contract, String positionLei, ResponseEntity<JsonNode> response) {
-        final ContractDto contractDto = eventMapper.toContractDto(contract);
-        final PartyRole partyRole = extractPartyRole(contractDto.getTrade().getTransactingParties(), positionLei);
-        if (partyRole == null) {
-            log.debug(String.format(CANCEL_EXCEPTION_MESSAGE, contract.getContractId(),
-                String.format(LEI_MISMATCH_MSG, positionLei)));
+    private boolean isToCancelCandidate(Contract contract, String positionType, ResponseEntity<JsonNode> response) {
+        Optional<PartyRole> partyRole = extractPartyRole(positionType);
+        if (partyRole.isEmpty()) {
+            log.debug(String.format(CANCEL_EXCEPTION_MESSAGE, contract.getContractId(), positionType));
             contract.setProcessingStatus(ProcessingStatus.ONESOURCE_ISSUE);
-        } else if (partyRole == LENDER) {
-            log.debug("Processing Spire position response for contract: {}", contract.getContractId());
-            return isToCancelCandidate(contract, response);
         }
-        return false;
+        return partyRole
+            .filter(role -> role == LENDER)
+            .map(party -> isToCancelCandidate(contract, response))
+            .orElse(false);
     }
 
-    private String extractPositionLei(ResponseEntity<JsonNode> response) {
+    private String extractPositionType(ResponseEntity<JsonNode> response) {
         if (response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
             JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            JsonNode accountDto = jsonNode.get("accountDTO");
-            if (accountDto != null && accountDto.get("lei") != null) {
-                return accountDto.get("lei").toString().replace("\"", "");
+            JsonNode positionTypeDTO = jsonNode.get("positiontypeDTO");
+            if (positionTypeDTO != null && positionTypeDTO.get("positionType") != null) {
+                return positionTypeDTO.get("positionType").toString().trim();
             }
         }
         return "";
