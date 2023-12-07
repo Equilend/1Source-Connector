@@ -3,8 +3,10 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.DtoTestFactory.getPositionAsJson;
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -68,12 +70,13 @@ public class SpireContractInitiationServiceTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    @DisplayName("Execute approve contract for Borrower reconciled contract")
-    void test_shouldExecuteApproveContract_whenReconciledAndBorrower() throws JsonProcessingException {
+    @DisplayName("Test contract initiation flow for the Borrower")
+    void test_contractInitiationFlow_whenBorrower() throws JsonProcessingException {
         var testEventMapper = new EventMapper(createTestObjectMapper());
         var position = ModelTestFactory.buildPosition();
         var positionDto = DtoTestFactory.buildPositionDto();
         position.getPositionType().setPositionType(BORROWER_POSITION_TYPE);
+        positionDto.getPositionTypeDto().setPositionType(BORROWER_POSITION_TYPE);
         var contractDto = DtoTestFactory.buildContractDto();
         var contract = testEventMapper.toContractEntity(contractDto);
         contractDto.setProcessingStatus(ProcessingStatus.RECONCILED);
@@ -87,13 +90,57 @@ public class SpireContractInitiationServiceTest {
         when(positionMapper.toPosition(any(PositionDto.class))).thenReturn(position);
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
+        when(contractRepository.save(any())).thenReturn(contract);
         when(positionRepository.save(any())).thenReturn(position);
         when(settlementService.getSettlementInstruction(any())).thenReturn(List.of(settlementDto));
         when(settlementService.persistSettlement(any())).thenReturn(settlementDto);
         when(eventMapper.toContractDto(any())).thenReturn(contractDto);
         when(cloudEventRecordService.getFactory()).thenReturn(eventFactoryMock);
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
+
+        positionApiService.startContractInitiation();
+
+        verify(positionRepository).findAll();
+        verify(spireService).requestPosition(any());
+        verify(positionMapper).jsonToPositionDto(any(JsonNode.class));
+        verify(settlementService).getSettlementInstruction(any());
+        verify(settlementService).persistSettlement(any());
+        verify(positionMapper, times(2)).toPosition(any(PositionDto.class));
+        verify(positionRepository, times(2)).save(any());
+        verify(agreementRepository).findByVenueRefId(any());
+        verify(contractRepository).findByVenueRefId(any());
+        verify(oneSourceService, never()).createContract(any(), any(), any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    @DisplayName("Test contract initiation flow for the Lender")
+    void test_contractInitiationFlow_whenLender() throws JsonProcessingException {
+        var testEventMapper = new EventMapper(createTestObjectMapper());
+        var position = ModelTestFactory.buildPosition();
+        var positionDto = DtoTestFactory.buildPositionDto();
+        position.getPositionType().setPositionType(LENDER_POSITION_TYPE);
+        positionDto.getPositionTypeDto().setPositionType(LENDER_POSITION_TYPE);
+        var contractDto = DtoTestFactory.buildContractDto();
+        var contract = testEventMapper.toContractEntity(contractDto);
+        contractDto.setProcessingStatus(ProcessingStatus.RECONCILED);
+        final JsonNode jsonNode = testEventMapper.getObjectMapper().readTree(getPositionAsJson());
+        var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
+        var settlementDto = DtoTestFactory.buildSettlementDto();
+
+        when(positionRepository.findAll()).thenReturn(List.of(position));
+        when(spireService.requestPosition(any())).thenReturn(ResponseEntity.ok(jsonNode));
+        when(positionMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
+        when(positionMapper.toPosition(any(PositionDto.class))).thenReturn(position);
+        when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
+        when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
         when(contractRepository.save(any())).thenReturn(contract);
+        when(positionRepository.save(any())).thenReturn(position);
+        when(settlementService.getSettlementInstruction(any())).thenReturn(List.of(settlementDto));
+        when(settlementService.persistSettlement(any())).thenReturn(settlementDto);
+        when(eventMapper.toContractDto(any())).thenReturn(contractDto);
+        when(cloudEventRecordService.getFactory()).thenReturn(eventFactoryMock);
+        when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
         doNothing().when(oneSourceService).createContract(any(), any(), any());
 
         positionApiService.startContractInitiation();

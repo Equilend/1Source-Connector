@@ -35,7 +35,6 @@ import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
-import com.intellecteu.onesource.integration.repository.SettlementRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -53,12 +52,13 @@ import org.springframework.web.client.HttpStatusCodeException;
 @RequiredArgsConstructor
 public class SpireContractInitiationService implements ContractInitiationService {
 
+    private static final String STARTING_POSITION_ID = "0";
+
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionMapper positionMapper;
     private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
-    private final SettlementRepository settlementRepository;
     private final SpireService spireService;
     private final OneSourceService oneSourceService;
     private final SettlementService settlementService;
@@ -87,8 +87,8 @@ public class SpireContractInitiationService implements ContractInitiationService
         log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
         return storedPositions.stream()
             .max(Comparator.comparingInt(p -> Integer.parseInt(p.getPositionId())))
-            .map(this::requestPositionDetails)
-            .orElse(List.of());
+            .map(p -> requestPositionDetails(String.valueOf(p.getPositionId())))
+            .orElseGet(() -> requestPositionDetails(STARTING_POSITION_ID));
     }
 
     @Override
@@ -109,12 +109,16 @@ public class SpireContractInitiationService implements ContractInitiationService
             .map(c -> saveContract(positionDto, c));
     }
 
-    private List<PositionDto> requestPositionDetails(Position position) {
-        log.debug("Sending POST request for position id: {}", position.getPositionId());
+    private List<PositionDto> requestPositionDetails(String positionId) {
+        log.debug("Sending POST request for position id: {}", positionId);
+        return requestSpire(positionId);
+    }
+
+    private List<PositionDto> requestSpire(String positionId) {
         try {
             ResponseEntity<JsonNode> response = spireService.requestPosition(
                 createGetPositionNQuery(null, AndOr.AND, null,
-                    createListOfTuplesGetPositionWithoutTA(position.getPositionId())));
+                    createListOfTuplesGetPositionWithoutTA(positionId)));
             return convertPositionResponse(response);
         } catch (HttpStatusCodeException e) {
             log.warn("SPIRE error response for {} subprocess. Details: {}",
@@ -133,6 +137,8 @@ public class SpireContractInitiationService implements ContractInitiationService
         settlementService.persistSettlement(settlementDto);
         positionDto.setApplicableInstructionId(settlementDto.getInstructionId());
         savePosition(positionDto, SI_FETCHED);
+        log.debug("Settlement instruction id {} was saved as {} for position id {}",
+            settlementDto.getInstructionId(), SI_FETCHED, positionDto.getPositionId());
     }
 
     public void instructLoanContractProposal(PositionDto positionDto, List<SettlementDto> settlementDtos) {
@@ -143,6 +149,7 @@ public class SpireContractInitiationService implements ContractInitiationService
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);
+            log.debug("Loan contract proposal was created for position id: {}", positionDto.getPositionId());
         }
     }
 
