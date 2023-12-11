@@ -24,6 +24,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCE
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
@@ -298,7 +299,7 @@ public class TradeEventService implements EventService {
             agreementDto.setEventType(event.getEventType());
             agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
             storeAgreement(agreementDto, event.getEventType());
-            event.setProcessingStatus(CREATED);
+            event.setProcessingStatus(PROCESSED);
             final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CREATED,
@@ -327,7 +328,7 @@ public class TradeEventService implements EventService {
             position.setLastUpdateDateTime(LocalDateTime.now());
             positionRepository.save(position);
         }
-        event.setProcessingStatus(CREATED);
+        event.setProcessingStatus(PROCESSED);
         final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
         createCloudEvent(agreements, positions, savedTradeEvent);
     }
@@ -357,7 +358,7 @@ public class TradeEventService implements EventService {
         contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
         processContractByEventType(contractDto, event.getEventType());
         storeContract(contractDto);
-        event.setProcessingStatus(CREATED);
+        event.setProcessingStatus(PROCESSED);
         tradeEventRepository.save(event);
     }
 
