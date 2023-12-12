@@ -35,7 +35,6 @@ import com.intellecteu.onesource.integration.model.LocalMarketField;
 import com.intellecteu.onesource.integration.model.Party;
 import com.intellecteu.onesource.integration.model.Platform;
 import com.intellecteu.onesource.integration.model.Price;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.Rate;
 import com.intellecteu.onesource.integration.model.RebateRate;
 import com.intellecteu.onesource.integration.model.Settlement;
@@ -68,7 +67,17 @@ public class EventMapper {
             .eventId(tradeEventDto.getEventId())
             .eventType(tradeEventDto.getEventType())
             .resourceUri(tradeEventDto.getResourceUri())
-            .processingStatus(ProcessingStatus.NEW)
+            .processingStatus(tradeEventDto.getProcessingStatus())
+            .build();
+    }
+
+    public TradeEventDto toEventDto(TradeEvent tradeEvent) {
+        return TradeEventDto.builder()
+            .eventDatetime(tradeEvent.getEventDatetime())
+            .eventId(tradeEvent.getEventId())
+            .eventType(tradeEvent.getEventType())
+            .resourceUri(tradeEvent.getResourceUri())
+            .processingStatus(tradeEvent.getProcessingStatus())
             .build();
     }
 
@@ -80,7 +89,7 @@ public class EventMapper {
             .id(contractDto.getId())
             .contractId(contractDto.getContractId())
             .contractStatus(contractDto.getContractStatus())
-            .lastEventId(contractDto.getLastEventId())
+            .lastEvent(toEventEntity(contractDto.getLastEvent()))
             .lastUpdateDatetime(contractDto.getLastUpdateDatetime())
             .lastUpdatePartyId(contractDto.getLastUpdatePartyId())
             .trade(toTradeAgreementEntity(contractDto.getTrade()))
@@ -101,7 +110,7 @@ public class EventMapper {
             .id(contract.getId())
             .contractId(contract.getContractId())
             .contractStatus(contract.getContractStatus())
-            .lastEventId(contract.getLastEventId())
+            .lastEvent(toEventDto(contract.getLastEvent()))
             .lastUpdateDatetime(contract.getLastUpdateDatetime())
             .lastUpdatePartyId(contract.getLastUpdatePartyId())
             .trade(toTradeAgreementDto(contract.getTrade()))

@@ -26,6 +26,7 @@ import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
+import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
 import com.intellecteu.onesource.integration.dto.VenuePartyDto;
@@ -68,12 +69,18 @@ public class DtoTestFactory {
     public static ContractDto buildContractDto() {
         return ContractDto.builder()
             .contractId("testId")
-            .lastEventId(1L)
+            .lastEvent(buildTradeEventDto())
             .lastUpdatePartyId("test")
             .eventType(EventType.CONTRACT_PROPOSED)
             .lastUpdateDatetime(LocalDateTime.now())
             .settlement(List.of(buildSettlementDto()))
             .trade(buildTradeAgreementDto())
+            .build();
+    }
+
+    public static TradeEventDto buildTradeEventDto() {
+        return TradeEventDto.builder()
+            .eventId(1L)
             .build();
     }
 

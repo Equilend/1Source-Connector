@@ -245,7 +245,12 @@ class EventMapperTest {
         return """
             {
               "contractId": "{{urlParam 'contractId'}}",
-              "lastEventId": 0,
+              "lastEvent":  {
+                  "eventId": 1,
+                  "eventType": "TRADE_AGREED",
+                  "eventDateTime": "2023-07-27T15:51:40.011Z",
+                  "resourceUri": "/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7193"
+                },
               "contractStatus": "APPROVED",
               "settlementStatus": "NONE",
               "lastUpdatePartyId": "string",

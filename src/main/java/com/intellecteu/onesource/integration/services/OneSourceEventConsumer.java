@@ -1,8 +1,12 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
+
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.Timestamp;
+import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import java.time.LocalDateTime;
@@ -38,8 +42,14 @@ public class OneSourceEventConsumer implements EventConsumer {
         events.forEach(i -> log.debug("Event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
             i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDatetime()));
         List<TradeEventDto> newEvents = findNewEvents(events);
-        newEvents.forEach(i -> tradeEventRepository.save(eventMapper.toEventEntity(i))); //make batch insert later
+        newEvents.forEach(this::saveEvents); //make batch insert later
         log.debug("<<<<< Retrieved {} new events!", newEvents.size());
+    }
+
+    private void saveEvents(TradeEventDto tradeEventDto) {
+        TradeEvent eventEntity = eventMapper.toEventEntity(tradeEventDto);
+        eventEntity.setProcessingStatus(NEW);
+        tradeEventRepository.save(eventEntity);
     }
 
     private List<TradeEventDto> findNewEvents(List<TradeEventDto> events) {
