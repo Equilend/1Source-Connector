@@ -23,4 +23,8 @@ public class FixedRateDto {
     private LocalDate effectiveDate;
     @JsonProperty("cutoffTime")
     private String cutoffTime;
+
+    public FixedRateDto(Double baseRate) {
+        this.baseRate = baseRate;
+    }
 }

@@ -30,12 +30,14 @@ public class AgreementConstant {
         public static final String ISIN = "Agreement.trade.instrument.isin";
         public static final String FIGI = "Agreement.trade.instrument.figi";
         public static final String GLEIF_LEI = "Agreement.trade.transactingParties.party.gleifLei";
+        public static final String PRICE_UNIT = "Agreement.trade.instrument.price.unit";
         public static final String QUANTITY = "Agreement.trade.quantity";
         public static final String QUICK = "Agreement.trade.instrument.quick";
-        public static final String REBATE_BPS = "Agreement.trade.rate.rebateBps";
+        public static final String REBATE = "Agreement.trade.rate.rebate";
         public static final String SEDOL = "Agreement.trade.instrument.sedol";
         public static final String SETTLEMENT_DATE = "Agreement.trade.settlementDate";
         public static final String SETTLEMENT_TYPE = "Agreement.trade.settlementType";
+        public static final String TERM_TYPE = "Agreement.trade.termType";
         public static final String TICKER = "Agreement.trade.instrument.ticker";
         public static final String TRADE = "Agreement.trade";
         public static final String TRADE_DATE = "Agreement.tradeDate";

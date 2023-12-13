@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE_BPS;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -26,14 +26,14 @@ public class RateDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(retrieveRateBps(), REBATE_BPS);
+        throwIfFieldMissedException(getRebateRate(), REBATE);
     }
 
     public Double retrieveRateBps() {
         return fee == null ? getRebateRate() : fee.getBaseRate();
     }
 
-    private Double getRebateRate() {
+    public Double getRebateRate() {
         return rebate == null ? null : rebate.retrieveBaseRate();
     }
 }

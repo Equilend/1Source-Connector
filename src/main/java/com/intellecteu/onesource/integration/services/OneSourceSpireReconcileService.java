@@ -3,19 +3,21 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.DIVIDENT_RATE_PCT;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.GLEIF_LEI;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.PRICE_UNIT;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUICK;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE_BPS;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SEDOL;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TICKER;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TERM_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.VENUE_REF_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
@@ -27,28 +29,37 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE_FACTOR;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUANTITY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SEDOL;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TICKER;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TERM_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TRADE_DATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.RATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.TAX_WITH_HOLDING_RATE;
 import static com.intellecteu.onesource.integration.exception.ReconcileException.RECONCILE_MISMATCH;
+import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.PriceUnit.SHARE;
 import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
+import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
+import com.intellecteu.onesource.integration.dto.PriceDto;
+import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.CollateralType;
 import com.intellecteu.onesource.integration.model.SettlementType;
+import com.intellecteu.onesource.integration.model.TermType;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
@@ -121,11 +132,11 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
 
     private void checkCollateralEquality(CollateralDto collateral, PositionDto position,
         List<ExceptionMessageDto> failsLog) {
-//    Temporary remove price reconciliation checkin until requirements will be refined
-//    if (collateral.getContractPrice() != null) {
-//      checkEquality(collateral.getContractPrice(), CONTRACT_PRICE,
-//          position.getPrice(), POSITION_PRICE, failsLog);
-//    }
+
+        if (collateral.getContractPrice() != null) {
+            checkEquality(collateral.getContractPrice(), CONTRACT_PRICE,
+                position.getPrice(), POSITION_PRICE, failsLog);
+        }
         // temporary parseInt solution until position data structure will be clarified
         // please take into account that mock data for Position.contractValue should be parseable to Integer
         if (collateral.getContractValue() != null && position.getContractValue() != null) {
@@ -141,8 +152,8 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
             checkEquality(collateral.getCurrency(), CURRENCY, position.getCurrency().getCurrencyKy(),
                 POSITION_CURRENCY, failsLog);
         }
-        if (collateral.getType() != null) {
-            if (position.getCollateralType() != null && !position.getCollateralType().isEmpty()) {
+        if (collateral.getType() != null && position.getCollateralType() != null) {
+            if (!position.getCollateralType().isEmpty()) {
                 checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
                     position.getCollateralType(), POSITION_COLLATERAL_TYPE, failsLog);
             } else {
@@ -171,13 +182,8 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         List<ExceptionMessageDto> failsLog) {
         if (settlementType != null && position.getDeliverFree() != null) {
             var exceptionDto = new ExceptionMessageDto();
-            if (settlementType == DVP && position.getDeliverFree()) {
-                exceptionDto.setValue(SETTLEMENT_TYPE);
-                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
-                    DELIVER_FREE, position.getDeliverFree()));
-                failsLog.add(exceptionDto);
-            }
-            if (settlementType != DVP && !position.getDeliverFree()) {
+            if ((settlementType == DVP && position.getDeliverFree())
+                || (settlementType == FOP && !position.getDeliverFree())) {
                 exceptionDto.setValue(SETTLEMENT_TYPE);
                 exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
                     DELIVER_FREE, position.getDeliverFree()));
@@ -194,9 +200,6 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         List<ExceptionMessageDto> failsLog) {
         if (position.getSecurityDetailDto() != null) {
             var securityDetailDto = position.getSecurityDetailDto();
-            if (securityDetailDto.getTicker() != null) {
-                checkEquality(instrument.getTicker(), TICKER, securityDetailDto.getTicker(), POSITION_TICKER, failsLog);
-            }
             if (securityDetailDto.getCusip() != null) {
                 checkEquality(instrument.getCusip(), CUSIP, securityDetailDto.getCusip(), POSITION_CUSIP, failsLog);
             }
@@ -216,9 +219,8 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         List<ExceptionMessageDto> reconciliationFailMessages) {
         checkEquality(tradeDto.getExecutionVenue().getVenueRefKey(), VENUE_REF_ID,
             positionDto.getCustomValue2(), CUSTOM_VALUE_2, reconciliationFailMessages);
-        checkEquality(tradeDto.getRate().retrieveRateBps(), REBATE_BPS,
-            positionDto.getRate(), RATE, reconciliationFailMessages);
-        checkEqualityOfSecurityIdentifiers(tradeDto.getInstrument(), positionDto, reconciliationFailMessages);
+        checkRateEquality(tradeDto.getRate(), positionDto.getRate(), reconciliationFailMessages);
+        checkEqualityInstrument(tradeDto.getInstrument(), positionDto, reconciliationFailMessages);
         if (tradeDto.getQuantity() != null) {
             checkEquality(tradeDto.getQuantity().doubleValue(), QUANTITY,
                 positionDto.getQuantity(), POSITION_QUANTITY, reconciliationFailMessages);
@@ -237,16 +239,57 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
             checkEquality(tradeDto.getSettlementDate(), SETTLEMENT_DATE,
                 positionDto.getSettleDate().toLocalDate(), SETTLE_DATE, reconciliationFailMessages);
         }
+        checkTermType(tradeDto.getTermType(), positionDto.getTermId(), reconciliationFailMessages);
         checkDeliverFree(tradeDto.getSettlementType(), positionDto, reconciliationFailMessages);
         checkCollateralEquality(tradeDto.getCollateral(), positionDto, reconciliationFailMessages);
         checkLei(tradeDto.getTransactingParties(), positionDto, reconciliationFailMessages);
     }
 
+    private void checkRateEquality(RateDto rateDto, Double positionRate, List<ExceptionMessageDto> failsLog) {
+        if (rateDto != null && positionRate != null && rateDto.getRebateRate() != null) {
+            checkEquality(rateDto.getRebateRate(), REBATE, positionRate, RATE, failsLog);
+        }
+    }
+
+    private void checkTermType(TermType termType, Integer termId,
+        List<ExceptionMessageDto> failsLog) {
+        if (termType != null && termId != null) {
+            if ((termId.equals(1) && termType != TermType.OPEN)
+                || (termId.equals(2) && termType != TermType.TERM)) {
+                var exceptionDto = new ExceptionMessageDto();
+                exceptionDto.setValue(TERM_TYPE);
+                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, TERM_TYPE, termType,
+                    POSITION_TERM_ID, termId));
+                failsLog.add(exceptionDto);
+            }
+        }
+    }
+
+    private void checkEqualityInstrument(InstrumentDto instrumentDto, PositionDto positionDto,
+        List<ExceptionMessageDto> failsLog) {
+        checkEqualityOfSecurityIdentifiers(instrumentDto, positionDto, failsLog);
+        checkInstrumentUnit(instrumentDto.getPrice(), positionDto.getSecurityDetailDto(), failsLog);
+    }
+
+    private void checkInstrumentUnit(PriceDto price, SecurityDetailDto securityDetailDto,
+        List<ExceptionMessageDto> failsLog) {
+        if (price != null && securityDetailDto != null && securityDetailDto.getPriceFactor() != null) {
+            final Integer priceFactor = securityDetailDto.getPriceFactor();
+            if ((priceFactor.equals(1) && price.getUnit() != SHARE)
+                || (!priceFactor.equals(1) && price.getUnit() != LOT)) {
+                var exceptionDto = new ExceptionMessageDto();
+                exceptionDto.setValue(PRICE_UNIT);
+                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, PRICE_UNIT, price.getUnit(),
+                    POSITION_PRICE_FACTOR, priceFactor));
+                failsLog.add(exceptionDto);
+            }
+        }
+    }
+
     void checkEquality(Object first, String firstName, Object second, String secondName,
         List<ExceptionMessageDto> exceptionList) {
         if (!Objects.equals(first, second)) {
-            var msg = "Reconciliation mismatch. OneSource " + first + ":" + firstName
-                + " is not matched with Spire " + second + ":" + secondName;
+            var msg = String.format(RECONCILE_MISMATCH, first, firstName, second, secondName);
             exceptionList.add(new ExceptionMessageDto(firstName, msg));
         }
     }

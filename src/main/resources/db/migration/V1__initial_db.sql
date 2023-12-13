@@ -132,6 +132,7 @@ CREATE TABLE IF NOT EXISTS position
     isin                  VARCHAR(255) NULL,
     sedol                 VARCHAR(255) NULL,
     quick_code            VARCHAR(255) NULL,
+    price_factor          INT NULL,
     bloomberg_id          VARCHAR(255) NULL,
     rate                  DOUBLE PRECISION       NULL,
     quantity              DOUBLE PRECISION       NULL,
