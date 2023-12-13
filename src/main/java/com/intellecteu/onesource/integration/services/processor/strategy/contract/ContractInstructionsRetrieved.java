@@ -31,7 +31,7 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         PositionDto position = retrievePositionByVenue(venueRefId);
         if (position == null) {
             savePositionRetrievementIssue(contract);
@@ -47,7 +47,7 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
     }
 
     private void processByRole(PartyRole partyRole, ContractDto contractDto, PositionDto positionDto) {
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
         if (contractDto.getEventType().equals(CONTRACT_APPROVE) && (contractDto.getContractStatus() == APPROVED)) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);
             settlementTempRepository.findByContractId(contractDto.getContractId()).stream()

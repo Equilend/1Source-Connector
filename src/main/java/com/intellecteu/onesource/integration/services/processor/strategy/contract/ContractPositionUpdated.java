@@ -26,7 +26,7 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         if (contract.getEventType().equals(CONTRACT_APPROVE) && contract.getContractStatus() == APPROVED) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);
             PositionDto position = retrievePositionByVenue(venueRefId);

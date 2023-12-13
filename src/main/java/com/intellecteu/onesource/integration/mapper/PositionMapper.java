@@ -16,7 +16,6 @@ import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.FloatingRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.RebateRateDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -179,7 +178,7 @@ public class PositionMapper {
 
     private VenueDto buildVenueDto(PositionDto positionDto) {
         return VenueDto.builder()
-            .platform(buildPlatformDto(positionDto))
+            .venueRefKey(positionDto.getCustomValue2())
             .build();
 
     }
@@ -189,12 +188,6 @@ public class PositionMapper {
             .partyRole(LENDER)
             //TODO change to venuePartyRefKey after 1.0.4 implemented
             .venuePartyRefKey(positionDto.getPositionId())
-            .build();
-    }
-
-    private PlatformDto buildPlatformDto(PositionDto positionDto) {
-        return PlatformDto.builder()
-            .venueRefId(positionDto.getCustomValue2())
             .build();
     }
 

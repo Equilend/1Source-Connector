@@ -59,7 +59,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Contract Id {} Contract Datetime {}, venueRefId: {}", contract.getContractId(),
             contract.getLastUpdateDatetime(), venueRefId);
         positionRepository.findByVenueRefId(venueRefId).stream()
@@ -82,7 +82,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processContractByRole(PartyRole partyRole, ContractDto contract, PositionDto positionDto) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
             positionDto.getPositionId(), partyRole);
         if (partyRole == BORROWER && Set.of(CONTRACT, CONTRACT_PROPOSED).contains(contract.getEventType())) {

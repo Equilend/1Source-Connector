@@ -13,7 +13,7 @@
                 "legalName": "string",
                 "mic": "string",
                 "venueName": "string",
-                "venueRefId": "string",
+                "venueRefKey": "string",
                 "transactionDatetime": "2023-08-11T09:02:37.011Z"
             },
             "venueParties": [

@@ -151,22 +151,24 @@ class EventMapperTest {
               "lastUpdateDatetime": "2023-08-11T05:01:12.192Z",
               "trade": {
                 "executionVenue": {
-                  "type": "ONPLATFORM",
-                  "platform": {
-                    "gleifLei": "string",
-                    "legalName": "string",
-                    "mic": "string",
-                    "venueName": "string",
-                    "venueRefId": "f7193",
-                    "transactionDatetime": "2023-08-11T05:01:12.192Z"
-                  },
-                  "venueParties": [
-                    {
-                      "partyRole": "LENDER",
-                      "venuePartyRefKey": "string"
-                    }
-                  ]
-                },
+                "partyId": "String",
+                "type": "ONPLATFORM",
+                "venueName": "string",
+                "venueRefId": "f7193",
+                "transactionDatetime": "2023-08-11T05:01:12.192Z",
+                "venueParties": [
+                {
+                    "partyRole": "LENDER",
+                    "venuePartyRefKey": "string"
+                }
+            ],
+            "localVenueFields": [
+                {
+                    "localFieldName": "string",
+                    "localFieldValue": "string"
+                }
+            ]
+        },
                 "instrument": {
                   "ticker": "string",
                   "cusip": "023135106",
@@ -251,21 +253,23 @@ class EventMapperTest {
               "lastUpdateDatetime": "2023-07-27T17:22:46.245",
               "trade": {
                 "executionVenue": {
-                  "type": "ONPLATFORM",
-                  "platform": {
-                    "gleifLei": "string",
-                    "legalName": "string",
-                    "mic": "string",
-                    "venueName": "string",
-                    "venueRefId": "f7195",
-                    "transactionDatetime": "2023-08-11T09:02:37.011"
-                  },
-                  "venueParties": [
+                "partyId": "String",
+                "type": "ONPLATFORM",
+                "venueName": "string",
+                "venueRefId": "f7195",
+                "transactionDatetime": "2023-08-11T09:02:37.011",
+                "venueParties": [
                     {
-                      "partyRole": "BORROWER",
-                      "venuePartyRefKey": "string"
+                    "partyRole": "BORROWER",
+                    "venuePartyRefKey": "string"
                     }
-                  ]
+                ],
+                "localVenueFields": [
+                    {
+                    "localFieldName": "string",
+                    "localFieldValue": "string"
+                    }
+                ]
                 },
                 "instrument": {
                   "ticker": "string",

@@ -1,10 +1,7 @@
 package com.intellecteu.onesource.integration.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,16 +18,14 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "venue_party")
-public class VenueParty {
+@Table(name = "local_venue_field")
+public class LocalVenueField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "party_role")
-    @Enumerated(value = EnumType.STRING)
-    private PartyRole partyRole;
-    @Column(name = "venue_id")
-    private String venueId;
+    @Column(name = "local_field_name")
+    private String localFieldName;
+    @Column(name = "local_field_value")
+    private String localFieldValue;
 }

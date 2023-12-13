@@ -112,7 +112,7 @@ public class TradeEventService implements EventService {
         log.debug("Retrieved {} candidatesToCancel in Proposed status.", proposedContracts.size());
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
-            final String venueRefId = contract.getTrade().getVenue().getPlatform().getVenueRefId();
+            final String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
             ResponseEntity<JsonNode> response = spireService.requestPosition(
                 createGetPositionNQuery(null, AndOr.AND, true,
                     createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
@@ -407,7 +407,7 @@ public class TradeEventService implements EventService {
 
     private void processContractByEventType(ContractDto contractDto, EventType eventType) {
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
         Optional<Position> position = positionRepository.findByVenueRefId(venueRefId).stream().findFirst();
 
         if (Set.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(eventType)) {

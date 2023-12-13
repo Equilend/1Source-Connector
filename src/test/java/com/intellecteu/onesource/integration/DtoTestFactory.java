@@ -19,8 +19,8 @@ import com.intellecteu.onesource.integration.dto.FeeRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
 import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
 import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
+import com.intellecteu.onesource.integration.dto.LocalVenueFieldsDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
@@ -41,6 +41,7 @@ import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.LocalMarketField;
+import com.intellecteu.onesource.integration.model.LocalVenueField;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.SettlementType;
@@ -127,7 +128,7 @@ public class DtoTestFactory {
         return PositionDto.builder()
             .id(tradeAgreement.getId())
             .positionId("testSpirePositionId")
-            .customValue2(tradeAgreement.getExecutionVenue().getPlatform().getVenueRefId())
+            .customValue2(tradeAgreement.getExecutionVenue().getVenueRefKey())
             .securityDetailDto(buildSecurityDetailDto(tradeAgreement))
             .rate(tradeAgreement.getRate().getFee().getBaseRate())
             .quantity(tradeAgreement.getQuantity().doubleValue())
@@ -290,9 +291,13 @@ public class DtoTestFactory {
 
     public static VenueDto buildVenueDto() {
         return VenueDto.builder()
+            .partyId("testPartyId")
             .type(ONPLATFORM)
-            .platform(buildPlatformDto())
+            .venueName("testVenueName")
+            .venueRefKey("testVenueRefId")
+            .transactionDatetime(LocalDateTime.now())
             .venueParties(List.of(buildVenuePartyDto()))
+            .localVenueFields(List.of(buildVenueFieldsDto()))
             .build();
 
     }
@@ -309,17 +314,6 @@ public class DtoTestFactory {
             .brokerCd("testBrokerCd")
             .accountId("testAccountId")
             .internalRefId("testInternalRefId")
-            .build();
-    }
-
-    public static PlatformDto buildPlatformDto() {
-        return PlatformDto.builder()
-            .gleifLei("testGleiFlei")
-            .legalName("testLegalName")
-            .mic("testMic")
-            .venueName("testVenueName")
-            .venueRefId("testVenueRefId")
-            .transactionDatetime(LocalDateTime.now())
             .build();
     }
 
@@ -357,8 +351,22 @@ public class DtoTestFactory {
             .build();
     }
 
+    public static LocalVenueFieldsDto buildVenueFieldsDto() {
+        return LocalVenueFieldsDto.builder()
+            .localFieldName("testName")
+            .localFieldValue("testValue")
+            .build();
+    }
+
     public static LocalMarketField buildMarket() {
         return LocalMarketField.builder()
+            .localFieldName("testName")
+            .localFieldValue("testValue")
+            .build();
+    }
+
+    public static LocalVenueField buildVenueField() {
+        return LocalVenueField.builder()
             .localFieldName("testName")
             .localFieldValue("testValue")
             .build();
