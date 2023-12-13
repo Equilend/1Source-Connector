@@ -271,6 +271,7 @@ public class EventMapper {
         return TransactingParty.builder()
             .partyRole(transactingPartyDto.getPartyRole())
             .party(toPartyEntity(transactingPartyDto.getParty()))
+            .internalRef(toInternalRefEntity(transactingPartyDto.getInternalRef()))
             .build();
     }
 
@@ -322,8 +323,7 @@ public class EventMapper {
 
     public VenueParty toVenueParty(VenuePartyDto venuePartyDto) {
         return VenueParty.builder()
-            .venueId(venuePartyDto.getVenuePartyId())
-            .internalRef(toInternalRefEntity(venuePartyDto.getInternalRef()))
+            .venueId(venuePartyDto.getVenuePartyRefKey())
             .partyRole(venuePartyDto.getPartyRole())
             .build();
     }
@@ -445,6 +445,7 @@ public class EventMapper {
         return TransactingPartyDto.builder()
             .partyRole(transactingParty.getPartyRole())
             .party(toPartyDto(transactingParty.getParty()))
+            .internalRef(toInternalRefDto(transactingParty.getInternalRef()))
             .build();
     }
 
@@ -496,8 +497,7 @@ public class EventMapper {
 
     public VenuePartyDto toVenuePartyDto(VenueParty venueParty) {
         return VenuePartyDto.builder()
-            .venuePartyId(venueParty.getVenueId())
-            .internalRef(toInternalRefDto(venueParty.getInternalRef()))
+            .venuePartyRefKey(venueParty.getVenueId())
             .partyRole(venueParty.getPartyRole())
             .build();
     }

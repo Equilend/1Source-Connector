@@ -36,4 +36,7 @@ public class TransactingParty {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "party_id")
     private Party party;
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "internal_ref_id")
+    private InternalReference internalRef;
 }

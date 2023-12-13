@@ -15,8 +15,6 @@ public class VenuePartyDto {
 
     @JsonProperty("partyRole")
     private PartyRole partyRole;
-    @JsonProperty("venuePartyId")
-    private String venuePartyId;
-    @JsonProperty("internalRef")
-    private InternalReferenceDto internalRef;
+    @JsonProperty("venuePartyRefKey")
+    private String venuePartyRefKey;
 }

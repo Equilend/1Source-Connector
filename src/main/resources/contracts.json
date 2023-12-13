@@ -19,12 +19,7 @@
             "venueParties": [
                 {
                     "partyRole": "BORROWER",
-                    "venuePartyId": "string",
-                    "internalRef": {
-                        "brokerCd": "string",
-                        "accountId": "string",
-                        "internalRefId": "string"
-                    }
+                    "venuePartyRefKey": "string"
                 }
             ]
         },

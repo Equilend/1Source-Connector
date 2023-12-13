@@ -17,4 +17,6 @@ public class TransactingPartyDto {
     private PartyRole partyRole;
     @JsonProperty("party")
     private PartyDto party;
+    @JsonProperty("internalRef")
+    private InternalReferenceDto internalRef;
 }

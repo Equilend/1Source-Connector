@@ -188,7 +188,7 @@ public class PositionMapper {
         return VenuePartyDto.builder()
             .partyRole(LENDER)
             //TODO change to venuePartyRefKey after 1.0.4 implemented
-            .venuePartyId(positionDto.getPositionId())
+            .venuePartyRefKey(positionDto.getPositionId())
             .build();
     }
 

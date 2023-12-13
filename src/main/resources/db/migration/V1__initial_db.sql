@@ -276,6 +276,7 @@ CREATE TABLE IF NOT EXISTS transacting_party
     id                   SERIAL NOT NULL,
     party_role           VARCHAR(255) NULL,
     party_id             BIGINT       NULL,
+    internal_ref_id BIGINT       NULL,
     transacting_party_id BIGINT       NULL,
     CONSTRAINT pk_transacting_party PRIMARY KEY (id)
 );
@@ -293,7 +294,6 @@ CREATE TABLE IF NOT EXISTS venue_party
     id              SERIAL NOT NULL,
     party_role      VARCHAR(255) NULL,
     venue_id        VARCHAR(255) NULL,
-    internal_ref_id BIGINT       NULL,
     venue_party_id  BIGINT       NULL,
     CONSTRAINT pk_venue_party PRIMARY KEY (id)
 );
@@ -409,20 +409,21 @@ ALTER TABLE venue DROP CONSTRAINT IF EXISTS FK_VENUE_ON_PLATFORM;
 ALTER TABLE venue
     ADD CONSTRAINT FK_VENUE_ON_PLATFORM FOREIGN KEY (platform_id) REFERENCES platform (id);
 
-ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_INTERNAL_REF;
-ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_VENUE_PARTY;
-ALTER TABLE venue_party
-    ADD CONSTRAINT FK_VENUE_PARTY_ON_INTERNAL_REF FOREIGN KEY (internal_ref_id) REFERENCES internal_ref (id);
 ALTER TABLE venue_party
     ADD CONSTRAINT FK_VENUE_PARTY_ON_VENUE_PARTY FOREIGN KEY (venue_party_id) REFERENCES venue (id);
-
+ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_VENUE_PARTY;
 ALTER TABLE settlement_temp DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_SETTLEMENT_TEMP;
+
 ALTER TABLE settlement_temp
     ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT_TEMP FOREIGN KEY (settlement_id) REFERENCES settlement (id);
-
 ALTER TABLE participant DROP CONSTRAINT IF EXISTS FK_PARTICIPANT_HOLDER;
+
 ALTER TABLE participant add participant_holder_id BIGINT NULL;
 ALTER TABLE participant ADD CONSTRAINT FK_PARTICIPANT_HOLDER FOREIGN KEY (participant_holder_id) REFERENCES participant_holder (id);
+
+ALTER TABLE transacting_party DROP CONSTRAINT IF EXISTS FK_TRANSACTING_PARTY_ON_INTERNAL_REF;
+ALTER TABLE transacting_party
+    ADD CONSTRAINT FK_TRANSACTING_PARTY_ON_INTERNAL_REF FOREIGN KEY (internal_ref_id) REFERENCES internal_ref (id);
 
 COMMENT ON COLUMN trade.event_id IS 'Link to the event that created this trade';
 COMMENT ON COLUMN trade.resource_uri IS 'Resource URI for this trade';

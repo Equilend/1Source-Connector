@@ -300,8 +300,7 @@ public class DtoTestFactory {
     public static VenuePartyDto buildVenuePartyDto() {
         return VenuePartyDto.builder()
             .partyRole(LENDER)
-            .venuePartyId("testVenuePartyId")
-            .internalRef(buildInternalReferenceDto())
+            .venuePartyRefKey("testVenuePartyRefKey")
             .build();
     }
 

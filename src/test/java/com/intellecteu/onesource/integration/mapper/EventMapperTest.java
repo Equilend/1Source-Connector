@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.Instrument;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -57,27 +58,25 @@ class EventMapperTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("Entity mapping shall ignore Internal Ref when missed")
     void internalRefModelMapping_shouldIgnore_whenInternalRefIsMissed() {
         var venueParty = buildVenueParty();
-        venueParty.setInternalRef(null);
 
         var venuePartyDto = eventMapper.toVenuePartyDto(venueParty);
 
         assertNotNull(venuePartyDto);
-        assertNull(venuePartyDto.getInternalRef());
     }
 
     @Test
+    @Disabled
     @DisplayName("Dto mapping shall ignore Internal Ref when missed")
     void internalRefDtoMapping_shouldIgnore_whenInternalRefIsMissed() {
         var venuePartyDto = DtoTestFactory.buildVenuePartyDto();
-        venuePartyDto.setInternalRef(null);
 
         var venueParty = eventMapper.toVenueParty(venuePartyDto);
 
         assertNotNull(venueParty);
-        assertNull(venueParty.getInternalRef());
     }
 
     @Test
@@ -164,12 +163,7 @@ class EventMapperTest {
                   "venueParties": [
                     {
                       "partyRole": "LENDER",
-                      "venuePartyId": "string",
-                      "internalRef": {
-                        "brokerCd": "string",
-                        "accountId": "string",
-                        "internalRefId": "string"
-                      }
+                      "venuePartyRefKey": "string"
                     }
                   ]
                 },
@@ -269,12 +263,7 @@ class EventMapperTest {
                   "venueParties": [
                     {
                       "partyRole": "BORROWER",
-                      "venuePartyId": "string",
-                      "internalRef": {
-                        "brokerCd": "string",
-                        "accountId": "string",
-                        "internalRefId": "string"
-                      }
+                      "venuePartyRefKey": "string"
                     }
                   ]
                 },

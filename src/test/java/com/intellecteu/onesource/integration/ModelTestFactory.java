@@ -100,8 +100,7 @@ public class ModelTestFactory {
     public static VenueParty buildVenueParty() {
         return VenueParty.builder()
             .partyRole(LENDER)
-            .venueId("testVenuePartyId")
-            .internalRef(buildInternalReferenceDto())
+            .venueId("testVenuePartyRefKey")
             .build();
     }
 
