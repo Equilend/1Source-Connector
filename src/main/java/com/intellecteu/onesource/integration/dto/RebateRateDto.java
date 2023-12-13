@@ -18,6 +18,9 @@ public class RebateRateDto {
     private FloatingRateDto floating;
 
     public Double retrieveBaseRate() {
-        return fixed == null ? floating.getBaseRate() : fixed.getBaseRate();
+        if (fixed == null && floating == null) {
+            return null;
+        }
+        return fixed == null ? floating.getEffectiveRate() : fixed.getBaseRate();
     }
 }

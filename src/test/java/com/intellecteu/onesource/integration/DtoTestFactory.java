@@ -16,6 +16,7 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.FeeRateDto;
+import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
 import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
 import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
@@ -23,6 +24,7 @@ import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
+import com.intellecteu.onesource.integration.dto.RebateRateDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -247,7 +249,13 @@ public class DtoTestFactory {
     public static RateDto buildRateDto() {
         return RateDto.builder()
             .fee(buildFeeRateDto())
-            .rebate(null)
+            .rebate(buildRebateRateDto())
+            .build();
+    }
+
+    private static RebateRateDto buildRebateRateDto() {
+        return RebateRateDto.builder()
+            .fixed(new FixedRateDto(10.2d))
             .build();
     }
 

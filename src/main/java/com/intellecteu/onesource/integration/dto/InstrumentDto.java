@@ -1,11 +1,9 @@
 package com.intellecteu.onesource.integration.dto;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.FIGI;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUICK;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SEDOL;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TICKER;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -45,10 +43,10 @@ public class InstrumentDto implements Reconcilable {
     }
 
     private String getFailedValidationFields() {
-        var isAtLeastOneInstrumentPresent = Stream.of(ticker, cusip, isin, sedol, quick, figi)
+        var isAtLeastOneInstrumentPresent = Stream.of(cusip, isin, sedol, quick)
             .anyMatch(Objects::nonNull);
         if (!isAtLeastOneInstrumentPresent) {
-            return String.join(", ", TICKER, CUSIP, ISIN, SEDOL, QUICK, FIGI);
+            return String.join(", ", CUSIP, ISIN, SEDOL, QUICK);
         }
         return "";
     }

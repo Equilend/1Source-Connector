@@ -1,11 +1,13 @@
 package com.intellecteu.onesource.integration;
 
+import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.model.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.CollateralType.CASH;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 
+import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.CloudEventEntity;
 import com.intellecteu.onesource.integration.model.Collateral;
 import com.intellecteu.onesource.integration.model.Instrument;
@@ -41,6 +43,12 @@ public class ModelTestFactory {
             .description("testDescription")
             .price(buildPrice())
             .build();
+    }
+
+    public static Agreement buildAgreement() {
+        var agreementDto = DtoTestFactory.buildAgreementDto();
+        var om = createTestObjectMapper();
+        return om.convertValue(agreementDto, Agreement.class);
     }
 
     public static Position buildPosition() {

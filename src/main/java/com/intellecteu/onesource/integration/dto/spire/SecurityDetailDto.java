@@ -21,5 +21,6 @@ public class SecurityDetailDto {
     private String sedol;
     private String quickCode;
     private String bloombergId;
+    private Integer priceFactor;
 
 }

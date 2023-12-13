@@ -3,10 +3,15 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
@@ -16,6 +21,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
@@ -26,6 +32,7 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
@@ -63,22 +70,83 @@ public class SpireContractInitiationService implements ContractInitiationService
     private final OneSourceService oneSourceService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final ReconcileService<AgreementDto, PositionDto> reconcileService;
 
     @Override
     public void startContractInitiation() {
+        log.debug(">>>>> Starting SPIRE contract initiation process!");
         List<PositionDto> positionDetails = getPositionDetails();
         positionDetails.forEach(this::processPositionInformation);
+        log.debug("<<<<< SPIRE contract initiation process is finished!");
+        positionDetails.forEach(this::proceedWithSettlementInstruction);
+    }
 
-        for (var positionDto : positionDetails) {
-            List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
-            settlementDtoList.stream()
-                .findFirst()
-                .ifPresent(settlement -> recordSettlementInstruction(settlement, positionDto));
+    private void proceedWithSettlementInstruction(PositionDto positionDto) {
+        List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
+        settlementDtoList.stream()
+            .findFirst()
+            .map(s -> recordInstructionAndPosition(s, positionDto));
 
-            extractPartyRole(positionDto.unwrapPositionType())
-                .filter(role -> role == LENDER)
-                .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
+        extractPartyRole(positionDto.unwrapPositionType())
+            .filter(role -> role == LENDER)
+            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
+
+        if (positionDto.getProcessingStatus() == SI_FETCHED
+            && positionDto.getMatching1SourceTradeAgreementId() != null) {
+            reconcileMatchingTradeAgreement(positionDto);
         }
+    }
+
+    private void reconcileMatchingTradeAgreement(PositionDto positionDto) {
+        final List<Agreement> agreementList = agreementRepository.findByAgreementId(
+            positionDto.getMatching1SourceTradeAgreementId());
+        agreementList.stream()
+            .findFirst()
+            .ifPresent(a -> reconcile(eventMapper.toAgreementDto(a), positionDto));
+    }
+
+    private void reconcile(AgreementDto agreementDto, PositionDto positionDto) {
+        try {
+            log.debug("Starting reconciliation for agreement {} and position {}",
+                agreementDto.getAgreementId(), positionDto.getPositionId());
+            reconcileService.reconcile(agreementDto, positionDto);
+            log.debug("Agreement {} is reconciled with position {}", agreementDto.getAgreementId(),
+                positionDto.getPositionId());
+            saveAgreement(agreementDto, RECONCILED);
+            savePosition(positionDto, TRADE_RECONCILED);
+            recordSuccessReconciliationCloudEvent(agreementDto);
+        } catch (ReconcileException e) {
+            log.error("Reconciliation fails with message: {} ", e.getMessage());
+            saveAgreement(agreementDto, DISCREPANCIES);
+            savePosition(positionDto, TRADE_DISCREPANCIES);
+            recordFailReconciliationCloudEvent(agreementDto, e);
+        }
+    }
+
+    private void recordFailReconciliationCloudEvent(AgreementDto agreementDto, ReconcileException exception) {
+        exception.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(agreementDto.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
+            agreementDto.getMatchingSpirePositionId(), exception.getErrorList());
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordSuccessReconciliationCloudEvent(AgreementDto agreementDto) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(agreementDto.getAgreementId(),
+            TRADE_AGREEMENT_RECONCILED, agreementDto.getMatchingSpirePositionId());
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private SettlementDto recordInstructionAndPosition(SettlementDto settlementDto, PositionDto positionDto) {
+        final SettlementDto recordedSettlementDto = proceedWithSettlementInstruction(settlementDto);
+        positionDto.setApplicableInstructionId(recordedSettlementDto.getInstructionId());
+        savePosition(positionDto, SI_FETCHED);
+        log.debug("Settlement instruction id {} was saved as {} for position id {}",
+            settlementDto.getInstructionId(), SI_FETCHED, positionDto.getPositionId());
+        return recordedSettlementDto;
     }
 
     @Override
@@ -133,12 +201,8 @@ public class SpireContractInitiationService implements ContractInitiationService
         }
     }
 
-    private void recordSettlementInstruction(SettlementDto settlementDto, PositionDto positionDto) {
-        settlementService.persistSettlement(settlementDto);
-        positionDto.setApplicableInstructionId(settlementDto.getInstructionId());
-        savePosition(positionDto, SI_FETCHED);
-        log.debug("Settlement instruction id {} was saved as {} for position id {}",
-            settlementDto.getInstructionId(), SI_FETCHED, positionDto.getPositionId());
+    private SettlementDto proceedWithSettlementInstruction(SettlementDto settlementDto) {
+        return settlementService.persistSettlement(settlementDto);
     }
 
     public void instructLoanContractProposal(PositionDto positionDto, List<SettlementDto> settlementDtos) {
@@ -146,6 +210,7 @@ public class SpireContractInitiationService implements ContractInitiationService
             && positionDto.getProcessingStatus() == TRADE_RECONCILED)
             || (positionDto.getMatching1SourceTradeAgreementId() == null
             && positionDto.getProcessingStatus() == SI_FETCHED)) {
+            reconcileMatchingTradeAgreement(positionDto);
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);
@@ -210,6 +275,14 @@ public class SpireContractInitiationService implements ContractInitiationService
         positionDto.setProcessingStatus(processingStatus);
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
         positionRepository.save(positionMapper.toPosition(positionDto));
+        log.debug("Position {} changed processing status to {}", positionDto.getPositionId(), processingStatus);
+    }
+
+    private void saveAgreement(AgreementDto agreementDto, ProcessingStatus processingStatus) {
+        agreementDto.setProcessingStatus(processingStatus);
+        agreementDto.setLastUpdateDatetime(LocalDateTime.now());
+        agreementRepository.save(eventMapper.toAgreementEntity(agreementDto));
+        log.debug("Agreement {} changed processing status to {}", agreementDto.getAgreementId(), processingStatus);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

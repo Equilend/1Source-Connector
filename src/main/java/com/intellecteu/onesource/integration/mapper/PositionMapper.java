@@ -40,30 +40,30 @@ public class PositionMapper {
     private final ObjectMapper objectMapper;
 
     public PositionDto toPositionDto(Position position) {
-      if (position == null) {
-        return null;
-      }
+        if (position == null) {
+            return null;
+        }
         return objectMapper.convertValue(position, PositionDto.class);
     }
 
     public Position toPosition(PositionDto positionDto) {
-      if (positionDto == null) {
-        return null;
-      }
+        if (positionDto == null) {
+            return null;
+        }
         return objectMapper.convertValue(positionDto, Position.class);
     }
 
     public Position toPosition(JsonNode json) throws JsonProcessingException {
-      if (json == null) {
-        return null;
-      }
+        if (json == null) {
+            return null;
+        }
         return objectMapper.readValue(json.toString(), Position.class);
     }
 
     public PositionDto jsonToPositionDto(JsonNode json) throws JsonProcessingException {
-      if (json == null) {
-        return null;
-      }
+        if (json == null) {
+            return null;
+        }
         return objectMapper.readValue(json.toString(), PositionDto.class);
     }
 

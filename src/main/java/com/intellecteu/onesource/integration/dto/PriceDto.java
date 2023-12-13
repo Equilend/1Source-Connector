@@ -19,4 +19,8 @@ public class PriceDto {
     private String currency;
     @JsonProperty("unit")
     private PriceUnit unit;
+
+    public PriceDto(PriceUnit unit) {
+        this.unit = unit;
+    }
 }

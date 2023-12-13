@@ -29,8 +29,10 @@ public class PositionConstant {
         public static final String DELIVER_FREE = "Position.deliverFree";
         public static final String CP_HAIRCUT = "Position.exposureDTO.cpHaircut";
         public static final String CP_MARKROUND_TO = "Position.exposureDTO.cpMarkRoundTo";
+        public static final String POSITION_TERM_ID = "Position.termId";
         public static final String TAX_WITH_HOLDING_RATE = "Position.loanBorrowDTO.taxWithholdingRate";
         public static final String POSITION_PRICE = "Position.price";
+        public static final String POSITION_PRICE_FACTOR = "Position.securityDetailDTO.priceFactor";
         public static final String RATE = "Position.rate";
         public static final String POSITION_SECURITY = "Position.securityDetailDTO";
         public static final String BLOOMBERG_ID = "Position.securityDetailDTO.bloombergId";

@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.dto.spire;
 
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.ACCOUNT_LEI;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.BLOOMBERG_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_LEI;
@@ -10,11 +9,11 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUANTITY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SECURITY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SEDOL;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TICKER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TRADE_DATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.RATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
@@ -140,13 +139,9 @@ public class PositionDto implements Reconcilable {
         if (settleDate == null) {
             sb.append(SETTLE_DATE).append(COMMA_DELIMITER);
         }
-        if (deliverFree == null) {
-            sb.append(DELIVER_FREE).append(COMMA_DELIMITER);
+        if (price == null) {
+            sb.append(POSITION_PRICE).append(COMMA_DELIMITER);
         }
-//    temporary removed until new requirements will be sent
-//    if (price == null) {
-//      sb.append(POSITION_PRICE).append(COMMA_DELIMITER);
-//    }
         if (amount == null) {
             sb.append(POSITION_AMOUNT).append(COMMA_DELIMITER);
         }
@@ -165,6 +160,9 @@ public class PositionDto implements Reconcilable {
         if (securityDetailDto == null) {
             sb.append(POSITION_SECURITY).append(COMMA_DELIMITER);
         }
+        if (deliverFree == null) {
+            sb.append(DELIVER_FREE).append(COMMA_DELIMITER);
+        }
         final String failedIdentifiers = getSecurityIdentifiersOnFailedValidation();
         if (!failedIdentifiers.isEmpty()) {
             sb.append(failedIdentifiers);
@@ -181,14 +179,12 @@ public class PositionDto implements Reconcilable {
     private String getSecurityIdentifiersOnFailedValidation() {
         if (securityDetailDto != null) {
             var isAtLeastOneSecurityFieldPresent = Stream
-                .of(securityDetailDto.getTicker(), securityDetailDto.getCusip(),
-                    securityDetailDto.getIsin(), securityDetailDto.getSedol(),
-                    securityDetailDto.getQuickCode(), securityDetailDto.getBloombergId())
+                .of(securityDetailDto.getCusip(), securityDetailDto.getIsin(),
+                    securityDetailDto.getSedol(), securityDetailDto.getQuickCode())
                 .anyMatch(Objects::nonNull);
             if (!isAtLeastOneSecurityFieldPresent) {
                 log.debug("Validation failed. At least one security field must be present!");
-                return String.format("%s, %s, %s, %s, %s, %s", POSITION_TICKER, POSITION_CUSIP,
-                    POSITION_ISIN, POSITION_SEDOL, POSITION_QUICK, BLOOMBERG_ID);
+                return String.format("%s, %s, %s, %s", POSITION_CUSIP, POSITION_ISIN, POSITION_SEDOL, POSITION_QUICK);
             }
         }
 

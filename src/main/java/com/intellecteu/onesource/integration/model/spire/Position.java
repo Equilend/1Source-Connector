@@ -105,7 +105,8 @@ public class Position {
     @JsonProperty("securityDetailDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "bloombergId", column = @Column(name = "bloomberg_id")),
-        @AttributeOverride(name = "quickCode", column = @Column(name = "quick_code"))
+        @AttributeOverride(name = "quickCode", column = @Column(name = "quick_code")),
+        @AttributeOverride(name = "priceFactor", column = @Column(name = "price_factor")),
     })
     private PositionSecurityDetail positionSecurityDetail;
 
