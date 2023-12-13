@@ -48,7 +48,7 @@ public class OneSourceEventConsumer implements EventConsumer {
 
     private void saveEvents(TradeEventDto tradeEventDto) {
         TradeEvent eventEntity = eventMapper.toEventEntity(tradeEventDto);
-        eventEntity.setProcessingStatus(NEW);
+        eventEntity.setProcessingStatus(CREATED);
         tradeEventRepository.save(eventEntity);
     }
 
