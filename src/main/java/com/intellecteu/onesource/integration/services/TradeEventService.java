@@ -92,7 +92,7 @@ public class TradeEventService implements EventService {
     @Override
     public void processEventData() {
         log.debug(">>>>> Process event data!");
-        List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(NEW);
+        List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(CREATED);
         timeStamp = findMaxDateTimeOfEvents(events);
         storeTimestamp(timeStamp);
         log.debug("The latest timestamp: {}", timeStamp);
