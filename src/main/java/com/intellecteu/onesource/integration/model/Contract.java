@@ -37,8 +37,9 @@ public class Contract {
     private long id;
     @Column(name = "contract_id")
     private String contractId;
-    @Column(name = "last_event_id")
-    private Long lastEventId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "last_event_id")
+    private TradeEvent lastEvent;
     @Column(name = "contract_status")
     @Enumerated(value = EnumType.STRING)
     private ContractStatus contractStatus;

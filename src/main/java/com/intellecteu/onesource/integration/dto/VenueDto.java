@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.VenueType;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
@@ -11,18 +12,31 @@ import lombok.Data;
 @Builder
 public class VenueDto {
 
+    @JsonProperty("partyId")
+    private String partyId;
     @JsonProperty("type")
     private VenueType type;
-    @JsonProperty("platform")
-    private PlatformDto platform;
+    @JsonProperty("venueName")
+    private String venueName;
+    @JsonProperty("venueRefKey")
+    private String venueRefKey;
+    @JsonProperty("transactionDatetime")
+    private LocalDateTime transactionDatetime;
     @JsonProperty("venueParties")
     private List<VenuePartyDto> venueParties;
+    @JsonProperty("localVenueFields")
+    private List<LocalVenueFieldsDto> localVenueFields;
 
     @JsonCreator
-    public VenueDto(@JsonProperty("type") VenueType type, @JsonProperty("platform") PlatformDto platform,
-        @JsonProperty("venueParties") List<VenuePartyDto> venueParties) {
+    public VenueDto(@JsonProperty("partyId") String partyId, @JsonProperty("type") VenueType type, @JsonProperty("venueName") String venueName, @JsonProperty("venueRefKey") String venueRefKey,
+        @JsonProperty("transactionDatetime") LocalDateTime transactionDatetime,
+        @JsonProperty("venueParties") List<VenuePartyDto> venueParties, @JsonProperty("localVenueFields") List<LocalVenueFieldsDto> localVenueFields) {
+        this.partyId = partyId;
         this.type = type;
-        this.platform = platform;
+        this.venueName = venueName;
+        this.venueRefKey = venueRefKey;
+        this.transactionDatetime = transactionDatetime;
         this.venueParties = venueParties;
+        this.localVenueFields = localVenueFields;
     }
 }

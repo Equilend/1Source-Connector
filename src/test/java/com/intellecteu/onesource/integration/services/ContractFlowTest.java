@@ -220,7 +220,7 @@ public class ContractFlowTest {
     @Test
     @DisplayName("Position and Instructions were successfully updated.")
     void test_contractFlow_shouldUpdateInstructionsAndPosition_success() throws JsonProcessingException {
-        contract.setEventType(EventType.CONTRACT_APPROVE);
+        contract.setEventType(EventType.CONTRACT_PENDING);
         contract.setContractStatus(APPROVED);
         position.setPositionId("2");
 

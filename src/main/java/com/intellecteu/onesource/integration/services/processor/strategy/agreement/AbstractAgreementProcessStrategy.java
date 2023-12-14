@@ -102,7 +102,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
 
     private void processByParty(PartyRole partyRole, AgreementDto agreementDto, PositionDto positionDto) {
         if (partyRole == LENDER) {
-            String venueRefId = agreementDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+            String venueRefId = agreementDto.getTrade().getExecutionVenue().getVenueRefKey();
             log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
             var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreementDto.getTrade(),
                 partyRole);

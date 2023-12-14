@@ -140,7 +140,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void savePositionRetrievementIssue(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.warn("Could not retrieve position by venue {} for the contract {}", venueRefId, contract.getContractId());
         contract.setProcessingStatus(SPIRE_ISSUE);
         contract.setFlowStatus(PROCESSED);

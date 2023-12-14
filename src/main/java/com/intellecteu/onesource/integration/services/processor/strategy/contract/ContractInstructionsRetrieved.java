@@ -3,7 +3,7 @@ package com.intellecteu.onesource.integration.services.processor.strategy.contra
 import static com.intellecteu.onesource.integration.enums.FlowStatus.CTR_INSTRUCTIONS_RETRIEVED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 
 import com.intellecteu.onesource.integration.dto.ContractDto;
@@ -31,7 +31,7 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         PositionDto position = retrievePositionByVenue(venueRefId);
         if (position == null) {
             savePositionRetrievementIssue(contract);
@@ -47,8 +47,8 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
     }
 
     private void processByRole(PartyRole partyRole, ContractDto contractDto, PositionDto positionDto) {
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-        if (contractDto.getEventType().equals(CONTRACT_APPROVE) && (contractDto.getContractStatus() == APPROVED)) {
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
+        if (contractDto.getEventType().equals(CONTRACT_PENDING) && (contractDto.getContractStatus() == APPROVED)) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);
             settlementTempRepository.findByContractId(contractDto.getContractId()).stream()
                 .findFirst()

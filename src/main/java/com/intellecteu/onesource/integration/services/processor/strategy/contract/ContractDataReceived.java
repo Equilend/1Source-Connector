@@ -10,11 +10,8 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
@@ -59,7 +56,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Contract Id {} Contract Datetime {}, venueRefId: {}", contract.getContractId(),
             contract.getLastUpdateDatetime(), venueRefId);
         positionRepository.findByVenueRefId(venueRefId).stream()
@@ -71,7 +68,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processContractWithPosition(ContractDto contract, PositionDto position) {
-        if (Set.of(CONTRACT, CONTRACT_PROPOSED).contains(contract.getEventType())) {
+        if (contract.getEventType() == CONTRACT_PROPOSED) {
             recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
             processMatchingPosition(contract, position);
         }
@@ -82,23 +79,23 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processContractByRole(PartyRole partyRole, ContractDto contract, PositionDto positionDto) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
             positionDto.getPositionId(), partyRole);
-        if (partyRole == BORROWER && Set.of(CONTRACT, CONTRACT_PROPOSED).contains(contract.getEventType())) {
+        if (partyRole == BORROWER && contract.getEventType() == CONTRACT_PROPOSED) {
             processContractForBorrower(contract, venueRefId, partyRole);
         }
-        if (Set.of(CONTRACT_APPROVE, CONTRACT_PENDING).contains(contract.getEventType())
+        if ((contract.getEventType() == CONTRACT_PENDING)
             && contract.getContractStatus() == APPROVED) {
             processApprovedContract(contract, venueRefId, positionDto, partyRole);
         }
         if (partyRole == BORROWER && MATCHED_POSITION.equals(contract.getProcessingStatus())) {
             reconcile(contract, positionDto);
         }
-        if (partyRole == BORROWER && Set.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(contract.getEventType())) {
+        if (partyRole == BORROWER && contract.getEventType() == CONTRACT_CANCELED) {
             processCanceledContractForBorrower(contract, positionDto);
         }
-        if (partyRole == LENDER && Set.of(CONTRACT_DECLINE, CONTRACT_DECLINED).contains(contract.getEventType())) {
+        if (partyRole == LENDER && Set.of(CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED).contains(contract.getEventType())) {
             processDeclinedContractForLender(contract, positionDto);
         }
     }

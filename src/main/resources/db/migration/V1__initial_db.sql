@@ -121,18 +121,6 @@ CREATE TABLE IF NOT EXISTS party
     CONSTRAINT pk_party PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS platform
-(
-    id                   SERIAL NOT NULL,
-    gleif_lei            VARCHAR(255) NULL,
-    legal_name           VARCHAR(255) NULL,
-    mic                  VARCHAR(255) NULL,
-    venue_name           VARCHAR(255) NULL,
-    venue_ref            VARCHAR(255) NULL,
-    transaction_datetime timestamp    NULL,
-    CONSTRAINT pk_platform PRIMARY KEY (id)
-);
-
 CREATE TABLE IF NOT EXISTS position
 (
     id                    SERIAL NOT NULL,
@@ -277,6 +265,7 @@ CREATE TABLE IF NOT EXISTS transacting_party
     id                   SERIAL NOT NULL,
     party_role           VARCHAR(255) NULL,
     party_id             BIGINT       NULL,
+    internal_ref_id BIGINT       NULL,
     transacting_party_id BIGINT       NULL,
     CONSTRAINT pk_transacting_party PRIMARY KEY (id)
 );
@@ -284,8 +273,11 @@ CREATE TABLE IF NOT EXISTS transacting_party
 CREATE TABLE IF NOT EXISTS venue
 (
     id          SERIAL NOT NULL,
+    party_id    VARCHAR(255) NULL,
     type        VARCHAR(255) NULL,
-    platform_id BIGINT       NULL,
+    venue_name           VARCHAR(255) NULL,
+    venue_ref_key            VARCHAR(255) NULL,
+    transaction_datetime timestamp    NULL,
     CONSTRAINT pk_venue PRIMARY KEY (id)
 );
 
@@ -294,9 +286,17 @@ CREATE TABLE IF NOT EXISTS venue_party
     id              SERIAL NOT NULL,
     party_role      VARCHAR(255) NULL,
     venue_id        VARCHAR(255) NULL,
-    internal_ref_id BIGINT       NULL,
     venue_party_id  BIGINT       NULL,
     CONSTRAINT pk_venue_party PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS local_venue_field
+(
+    id              SERIAL NOT NULL,
+    local_field_name      VARCHAR(255) NULL,
+    local_field_value     VARCHAR(255) NULL,
+    local_venue_field_id  BIGINT       NULL,
+    CONSTRAINT pk_local_venue_field PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS settlement_temp
@@ -348,6 +348,10 @@ ALTER TABLE agreement
 ALTER TABLE contract DROP CONSTRAINT IF EXISTS FK_CONTRACT_ON_TRADE;
 ALTER TABLE contract
     ADD CONSTRAINT FK_CONTRACT_ON_TRADE FOREIGN KEY (trade_id) REFERENCES trade (id);
+
+ALTER TABLE contract DROP CONSTRAINT IF EXISTS FK_CONTRACT_ON_EVENT;
+ALTER TABLE contract
+    ADD CONSTRAINT FK_CONTRACT_ON_EVENT FOREIGN KEY (last_event_id) REFERENCES trade_event (id);
 
 ALTER TABLE instrument DROP CONSTRAINT IF EXISTS FK_INSTRUMENT_ON_PRICE;
 ALTER TABLE instrument
@@ -402,24 +406,25 @@ ALTER TABLE transacting_party
 ALTER TABLE transacting_party
     ADD CONSTRAINT FK_TRANSACTING_PARTY_ON_TRANSACTING_PARTY FOREIGN KEY (transacting_party_id) REFERENCES trade (id);
 
-ALTER TABLE venue DROP CONSTRAINT IF EXISTS FK_VENUE_ON_PLATFORM;
-ALTER TABLE venue
-    ADD CONSTRAINT FK_VENUE_ON_PLATFORM FOREIGN KEY (platform_id) REFERENCES platform (id);
-
-ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_INTERNAL_REF;
-ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_VENUE_PARTY;
-ALTER TABLE venue_party
-    ADD CONSTRAINT FK_VENUE_PARTY_ON_INTERNAL_REF FOREIGN KEY (internal_ref_id) REFERENCES internal_ref (id);
 ALTER TABLE venue_party
     ADD CONSTRAINT FK_VENUE_PARTY_ON_VENUE_PARTY FOREIGN KEY (venue_party_id) REFERENCES venue (id);
-
+ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_VENUE_PARTY;
 ALTER TABLE settlement_temp DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_SETTLEMENT_TEMP;
+
+ALTER TABLE local_venue_field DROP CONSTRAINT IF EXISTS FK_LOCAL_VENUE_FIELD_ON_VENUE;
+ALTER TABLE local_venue_field
+ADD CONSTRAINT FK_LOCAL_VENUE_FIELD_ON_VENUE FOREIGN KEY (local_venue_field_id) REFERENCES venue (id);
+
 ALTER TABLE settlement_temp
     ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT_TEMP FOREIGN KEY (settlement_id) REFERENCES settlement (id);
-
 ALTER TABLE participant DROP CONSTRAINT IF EXISTS FK_PARTICIPANT_HOLDER;
+
 ALTER TABLE participant add participant_holder_id BIGINT NULL;
 ALTER TABLE participant ADD CONSTRAINT FK_PARTICIPANT_HOLDER FOREIGN KEY (participant_holder_id) REFERENCES participant_holder (id);
+
+ALTER TABLE transacting_party DROP CONSTRAINT IF EXISTS FK_TRANSACTING_PARTY_ON_INTERNAL_REF;
+ALTER TABLE transacting_party
+    ADD CONSTRAINT FK_TRANSACTING_PARTY_ON_INTERNAL_REF FOREIGN KEY (internal_ref_id) REFERENCES internal_ref (id);
 
 COMMENT ON COLUMN trade.event_id IS 'Link to the event that created this trade';
 COMMENT ON COLUMN trade.resource_uri IS 'Resource URI for this trade';

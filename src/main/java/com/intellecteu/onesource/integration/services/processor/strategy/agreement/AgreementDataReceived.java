@@ -38,7 +38,7 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
             return;
         }
         Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
-        String venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
         List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
         processMatchingPosition(agreementEntity, positions);
         log.debug("Start reconciliation from AgreementDataReceived strategy");

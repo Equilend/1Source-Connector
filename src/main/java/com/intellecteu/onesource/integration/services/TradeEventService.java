@@ -7,15 +7,11 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.exception.LoanContractCancelException.CANCEL_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
-import static com.intellecteu.onesource.integration.model.EventType.TRADE;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
@@ -112,7 +108,7 @@ public class TradeEventService implements EventService {
         log.debug("Retrieved {} candidatesToCancel in Proposed status.", proposedContracts.size());
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
-            final String venueRefId = contract.getTrade().getVenue().getPlatform().getVenueRefId();
+            final String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
             ResponseEntity<JsonNode> response = spireService.requestPosition(
                 createGetPositionNQuery(null, AndOr.AND, true,
                     createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
@@ -277,12 +273,12 @@ public class TradeEventService implements EventService {
 
     private void processData(List<TradeEvent> events) {
         for (TradeEvent event : events) {
-            if (Set.of(TRADE, TRADE_AGREED).contains(event.getEventType())) {
+            if (Set.of(TRADE_AGREED).contains(event.getEventType())) {
                 processTradeEvent(event);
             } else if (event.getEventType().equals(TRADE_CANCELED)) {
                 processTradeCanceledEvent(event);
-            } else if (Set.of(CONTRACT, CONTRACT_APPROVE, CONTRACT_DECLINE, CONTRACT_DECLINED,
-                CONTRACT_PROPOSED, CONTRACT_CANCEL, CONTRACT_CANCELED).contains(event.getEventType())) {
+            } else if (Set.of(CONTRACT_PENDING, CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED,
+                CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
                 processContractEvent(event);
             }
         }
@@ -407,18 +403,18 @@ public class TradeEventService implements EventService {
 
     private void processContractByEventType(ContractDto contractDto, EventType eventType) {
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
         Optional<Position> position = positionRepository.findByVenueRefId(venueRefId).stream().findFirst();
 
-        if (Set.of(CONTRACT_CANCEL, CONTRACT_CANCELED).contains(eventType)) {
+        if (eventType == CONTRACT_CANCELED) {
             contractDto.setProcessingStatus(CANCELED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_CANCELED));
         }
-        if (Set.of(CONTRACT_DECLINE, CONTRACT_DECLINED).contains(eventType)) {
+        if (Set.of(CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED).contains(eventType)) {
             contractDto.setProcessingStatus(DECLINED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_DECLINED));
         }
-        if (Set.of(CONTRACT_APPROVE, CONTRACT_PENDING).contains(eventType)) {
+        if (eventType == CONTRACT_PENDING) {
             contractDto.setProcessingStatus(APPROVED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_APPROVED));
         }

@@ -41,7 +41,7 @@ public class AgreementConstant {
         public static final String TICKER = "Agreement.trade.instrument.ticker";
         public static final String TRADE = "Agreement.trade";
         public static final String TRADE_DATE = "Agreement.tradeDate";
-        public static final String VENUE_REF_ID = "Agreement.trade.executionVenue.platform.venueRefId";
+        public static final String VENUE_REF_ID = "Agreement.trade.executionVenue.venueRefKey";
     }
 
 }

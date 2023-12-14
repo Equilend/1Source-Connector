@@ -26,7 +26,7 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
     @Override
     @Transactional
     public void process(AgreementDto agreement) {
-        var venueRefId = agreement.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        var venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
         var positionDto = positionMapper.toPositionDto(positionRepository.findByVenueRefId(venueRefId).get(0));
         var processingStatus = agreement.getTrade().getProcessingStatus();
         log.debug("Start reconciliation from AgreementPositionRetrieved strategy");

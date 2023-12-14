@@ -3,7 +3,7 @@ package com.intellecteu.onesource.integration.services.processor.strategy.contra
 import static com.intellecteu.onesource.integration.enums.FlowStatus.AGR_INSTRUCTIONS_RETRIEVED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_APPROVE;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 
 import com.intellecteu.onesource.integration.dto.ContractDto;
@@ -26,8 +26,8 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
-        if (contract.getEventType().equals(CONTRACT_APPROVE) && contract.getContractStatus() == APPROVED) {
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
+        if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);
             PositionDto position = retrievePositionByVenue(venueRefId);
             if (position == null) {

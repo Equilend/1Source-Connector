@@ -217,7 +217,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
 
     void reconcileTrade(TradeAgreementDto tradeDto, PositionDto positionDto,
         List<ExceptionMessageDto> reconciliationFailMessages) {
-        checkEquality(tradeDto.getExecutionVenue().getPlatform().getVenueRefId(), VENUE_REF_ID,
+        checkEquality(tradeDto.getExecutionVenue().getVenueRefKey(), VENUE_REF_ID,
             positionDto.getCustomValue2(), CUSTOM_VALUE_2, reconciliationFailMessages);
         checkRateEquality(tradeDto.getRate(), positionDto.getRate(), reconciliationFailMessages);
         checkEqualityInstrument(tradeDto.getInstrument(), positionDto, reconciliationFailMessages);

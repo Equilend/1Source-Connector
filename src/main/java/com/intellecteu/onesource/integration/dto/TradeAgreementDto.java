@@ -117,7 +117,7 @@ public class TradeAgreementDto implements Reconcilable {
     }
 
     public String retrieveVenueName() {
-        return executionVenue.getPlatform().getVenueName();
+        return executionVenue.getVenueName();
     }
 
     private void validateParties() throws ValidationException {

@@ -11,8 +11,8 @@ import com.intellecteu.onesource.integration.dto.FloatingRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
 import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
 import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
+import com.intellecteu.onesource.integration.dto.LocalVenueFieldsDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.PlatformDto;
 import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.RebateRateDto;
@@ -32,10 +32,9 @@ import com.intellecteu.onesource.integration.model.FloatingRate;
 import com.intellecteu.onesource.integration.model.Instrument;
 import com.intellecteu.onesource.integration.model.InternalReference;
 import com.intellecteu.onesource.integration.model.LocalMarketField;
+import com.intellecteu.onesource.integration.model.LocalVenueField;
 import com.intellecteu.onesource.integration.model.Party;
-import com.intellecteu.onesource.integration.model.Platform;
 import com.intellecteu.onesource.integration.model.Price;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.Rate;
 import com.intellecteu.onesource.integration.model.RebateRate;
 import com.intellecteu.onesource.integration.model.Settlement;
@@ -50,6 +49,7 @@ import com.intellecteu.onesource.integration.model.VenueParty;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +68,17 @@ public class EventMapper {
             .eventId(tradeEventDto.getEventId())
             .eventType(tradeEventDto.getEventType())
             .resourceUri(tradeEventDto.getResourceUri())
-            .processingStatus(ProcessingStatus.NEW)
+            .processingStatus(tradeEventDto.getProcessingStatus())
+            .build();
+    }
+
+    public TradeEventDto toEventDto(TradeEvent tradeEvent) {
+        return TradeEventDto.builder()
+            .eventDatetime(tradeEvent.getEventDatetime())
+            .eventId(tradeEvent.getEventId())
+            .eventType(tradeEvent.getEventType())
+            .resourceUri(tradeEvent.getResourceUri())
+            .processingStatus(tradeEvent.getProcessingStatus())
             .build();
     }
 
@@ -80,7 +90,7 @@ public class EventMapper {
             .id(contractDto.getId())
             .contractId(contractDto.getContractId())
             .contractStatus(contractDto.getContractStatus())
-            .lastEventId(contractDto.getLastEventId())
+            .lastEvent(toEventEntity(contractDto.getLastEvent()))
             .lastUpdateDatetime(contractDto.getLastUpdateDatetime())
             .lastUpdatePartyId(contractDto.getLastUpdatePartyId())
             .trade(toTradeAgreementEntity(contractDto.getTrade()))
@@ -101,7 +111,7 @@ public class EventMapper {
             .id(contract.getId())
             .contractId(contract.getContractId())
             .contractStatus(contract.getContractStatus())
-            .lastEventId(contract.getLastEventId())
+            .lastEvent(toEventDto(contract.getLastEvent()))
             .lastUpdateDatetime(contract.getLastUpdateDatetime())
             .lastUpdatePartyId(contract.getLastUpdatePartyId())
             .trade(toTradeAgreementDto(contract.getTrade()))
@@ -176,6 +186,17 @@ public class EventMapper {
             .build();
     }
 
+    public Set<LocalVenueField> toVenueFields(List<LocalVenueFieldsDto> venueFieldDtos) {
+        return venueFieldDtos.stream().map(this::toVenueEntity).collect(Collectors.toSet());
+    }
+
+    public LocalVenueField toVenueEntity(LocalVenueFieldsDto venueFieldsDto) {
+        return LocalVenueField.builder()
+            .localFieldName(venueFieldsDto.getLocalFieldName())
+            .localFieldValue(venueFieldsDto.getLocalFieldValue())
+            .build();
+    }
+
     public SettlementInstructionDto toInstructionDto(SettlementInstruction instruction) {
         if (instruction == null) {
             return null;
@@ -201,6 +222,20 @@ public class EventMapper {
             return null;
         }
         return marketFields.stream().filter(Objects::nonNull).map(this::toMarketDto).collect(Collectors.toList());
+    }
+
+    public LocalVenueFieldsDto toVenueFieldDto(LocalVenueField venueField) {
+        return LocalVenueFieldsDto.builder()
+            .localFieldName(venueField.getLocalFieldName())
+            .localFieldValue(venueField.getLocalFieldValue())
+            .build();
+    }
+
+    public List<LocalVenueFieldsDto> toVenueFieldsDto(Set<LocalVenueField> venueFields) {
+        if (venueFields == null) {
+            return null;
+        }
+        return venueFields.stream().filter(Objects::nonNull).map(this::toVenueFieldDto).collect(Collectors.toList());
     }
 
     public Agreement toAgreementEntity(AgreementDto agreementDto) {
@@ -262,6 +297,7 @@ public class EventMapper {
         return TransactingParty.builder()
             .partyRole(transactingPartyDto.getPartyRole())
             .party(toPartyEntity(transactingPartyDto.getParty()))
+            .internalRef(toInternalRefEntity(transactingPartyDto.getInternalRef()))
             .build();
     }
 
@@ -290,31 +326,23 @@ public class EventMapper {
 
     public Venue toVenueEntity(VenueDto venueDto) {
         return Venue.builder()
+            .partyId(venueDto.getPartyId())
+            .venueName(venueDto.getVenueName())
+            .venueRefKey(venueDto.getVenueRefKey())
+            .transactionDatetime(venueDto.getTransactionDatetime())
             .venueParties(toVenueParties(venueDto.getVenueParties()))
-            .platform(toPlatformEntity(venueDto.getPlatform()))
+            .localVenueFields(toVenueFields(venueDto.getLocalVenueFields()))
             .type(venueDto.getType())
             .build();
     }
 
-    public Platform toPlatformEntity(PlatformDto platformDto) {
-        return Platform.builder()
-            .mic(platformDto.getMic())
-            .gleifLei(platformDto.getGleifLei())
-            .legalName(platformDto.getLegalName())
-            .transactionDatetime(platformDto.getTransactionDatetime())
-            .venueName(platformDto.getVenueName())
-            .venueRefId(platformDto.getVenueRefId())
-            .build();
-    }
-
-    public List<VenueParty> toVenueParties(List<VenuePartyDto> venuePartyDtoList) {
-        return venuePartyDtoList.stream().map(this::toVenueParty).collect(Collectors.toList());
+    public Set<VenueParty> toVenueParties(List<VenuePartyDto> venuePartyDtoList) {
+        return venuePartyDtoList.stream().map(this::toVenueParty).collect(Collectors.toSet());
     }
 
     public VenueParty toVenueParty(VenuePartyDto venuePartyDto) {
         return VenueParty.builder()
-            .venueId(venuePartyDto.getVenuePartyId())
-            .internalRef(toInternalRefEntity(venuePartyDto.getInternalRef()))
+            .venueId(venuePartyDto.getVenuePartyRefKey())
             .partyRole(venuePartyDto.getPartyRole())
             .build();
     }
@@ -436,6 +464,7 @@ public class EventMapper {
         return TransactingPartyDto.builder()
             .partyRole(transactingParty.getPartyRole())
             .party(toPartyDto(transactingParty.getParty()))
+            .internalRef(toInternalRefDto(transactingParty.getInternalRef()))
             .build();
     }
 
@@ -464,31 +493,23 @@ public class EventMapper {
 
     public VenueDto toVenueDto(Venue venue) {
         return VenueDto.builder()
+            .venueRefKey(venue.getVenueRefKey())
+            .venueName(venue.getVenueName())
+            .partyId(venue.getPartyId())
+            .transactionDatetime(venue.getTransactionDatetime())
             .venueParties(toVenueDtoParties(venue.getVenueParties()))
-            .platform(toPlatformDto(venue.getPlatform()))
+            .localVenueFields(toVenueFieldsDto(venue.getLocalVenueFields()))
             .type(venue.getType())
             .build();
     }
 
-    public PlatformDto toPlatformDto(Platform platform) {
-        return PlatformDto.builder()
-            .mic(platform.getMic())
-            .gleifLei(platform.getGleifLei())
-            .legalName(platform.getLegalName())
-            .transactionDatetime(platform.getTransactionDatetime())
-            .venueName(platform.getVenueName())
-            .venueRefId(platform.getVenueRefId())
-            .build();
-    }
-
-    public List<VenuePartyDto> toVenueDtoParties(List<VenueParty> venueParty) {
+    public List<VenuePartyDto> toVenueDtoParties(Set<VenueParty> venueParty) {
         return venueParty.stream().map(this::toVenuePartyDto).collect(Collectors.toList());
     }
 
     public VenuePartyDto toVenuePartyDto(VenueParty venueParty) {
         return VenuePartyDto.builder()
-            .venuePartyId(venueParty.getVenueId())
-            .internalRef(toInternalRefDto(venueParty.getInternalRef()))
+            .venuePartyRefKey(venueParty.getVenueId())
             .partyRole(venueParty.getPartyRole())
             .build();
     }

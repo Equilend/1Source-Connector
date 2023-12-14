@@ -4,24 +4,21 @@
     "lastUpdateDatetime": "2023-08-22T18:19:07.906Z",
     "trade": {
         "executionVenue": {
+            "partyId": "String",
             "type": "ONPLATFORM",
-            "platform": {
-                "gleifLei": "string",
-                "legalName": "string",
-                "mic": "string",
-                "venueName": "string",
-                "venueRefId": "string",
-                "transactionDatetime": "2023-08-22T18:19:07.906Z"
-            },
+            "venueName": "string",
+            "venueRefKey": "f7195",
+            "transactionDatetime": "2023-08-22T18:19:07.906Z",
             "venueParties": [
                 {
                     "partyRole": "BORROWER",
-                    "venuePartyId": "string",
-                    "internalRef": {
-                        "brokerCd": "string",
-                        "accountId": "string",
-                        "internalRefId": "string"
-                    }
+                    "venuePartyRefKey": "string"
+                }
+            ],
+            "localVenueFields": [
+                {
+                    "localFieldName": "string",
+                    "localFieldValue": "string"
                 }
             ]
         },

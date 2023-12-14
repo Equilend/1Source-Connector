@@ -91,7 +91,7 @@ public class SpireApiService implements SpireService {
     @Override
     public PositionDto getTradePosition(AgreementDto agreement) {
         TradeAgreementDto trade = agreement.getTrade();
-        String venueRefId = trade.getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = trade.getExecutionVenue().getVenueRefKey();
         if (StringUtils.isEmpty(venueRefId)) {
             return null;
         }

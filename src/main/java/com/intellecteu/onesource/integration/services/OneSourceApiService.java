@@ -197,7 +197,7 @@ public class OneSourceApiService implements OneSourceService {
 
     @Override
     public void updateContract(ContractDto contract, SettlementDto settlementDto) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
         HttpEntity<SettlementDto> request = new HttpEntity<>(settlementDto, headers);
@@ -207,7 +207,7 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     public SettlementDto retrieveSettlementInstruction(ContractDto contractDto) {
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getPlatform().getVenueRefId();
+        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Updating contract by venueRefId: {}", venueRefId);
         var settlementInstructionUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()

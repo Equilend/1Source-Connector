@@ -1919,7 +1919,7 @@ components:
       properties:
         partyRole:
           '$ref': '#/components/schemas/PartyRole'
-        venuePartyId:
+        venuePartyRefKey:
           type: string
         internalRef:
           '$ref': '#/components/schemas/InternalReference'
