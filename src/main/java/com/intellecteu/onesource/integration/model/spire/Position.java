@@ -107,6 +107,7 @@ public class Position {
         @AttributeOverride(name = "bloombergId", column = @Column(name = "bloomberg_id")),
         @AttributeOverride(name = "quickCode", column = @Column(name = "quick_code")),
         @AttributeOverride(name = "priceFactor", column = @Column(name = "price_factor")),
+        @AttributeOverride(name = "baseRebateRate", column = @Column(name = "base_rebate_rate"))
     })
     private PositionSecurityDetail positionSecurityDetail;
 
@@ -148,10 +149,18 @@ public class Position {
     private PositionType positionType;
 
     @Embedded
+    @JsonProperty("indexDTO")
+    @AttributeOverrides({
+        @AttributeOverride(name = "indexName", column = @Column(name = "index_name"))
+    })
+    private Index index;
+
+    @Embedded
     @JsonProperty("accountDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "lei", column = @Column(name = "account_lei")),
-        @AttributeOverride(name = "shortName", column = @Column(name = "short_name"))
+        @AttributeOverride(name = "shortName", column = @Column(name = "short_name")),
+        @AttributeOverride(name = "info", column = @Column(name = "info", insertable = false, updatable = false))
     })
     private PositionAccount positionAccount;
 

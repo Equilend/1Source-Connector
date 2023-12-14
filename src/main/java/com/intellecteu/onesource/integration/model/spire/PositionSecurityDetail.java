@@ -24,6 +24,8 @@ public class PositionSecurityDetail {
     private String sedol;
     private String quickCode;
     private String bloombergId;
+    private String description;
     private Integer priceFactor;
+    private Double baseRebateRate;
 
 }

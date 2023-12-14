@@ -71,8 +71,8 @@ public class ModelTestFactory {
             .positionCollateralType(new PositionCollateralType("testCollateral"))
             .exposure(new PositionExposure(0.05d, 10, 12))
             .positionType(new PositionType("CASH BORROW"))
-            .positionAccount(new PositionAccount("testLei", "testLeiName"))
-            .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName"))
+            .positionAccount(new PositionAccount("testLei", "testLeiName", "testAccountId"))
+            .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName", "testAccountId"))
             .build();
     }
 

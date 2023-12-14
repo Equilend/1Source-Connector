@@ -105,48 +105,19 @@ public class OneSourceApiService implements OneSourceService {
 
     @Override
     public void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position) {
-//    TradeAgreementDto trade = agreement.getTrade();
-//    trade.getCollateral().setRoundingRule(position.getCpMarkRoundTo());
-//    trade.getCollateral().setRoundingMode(ALWAYSUP);
-//    ContractProposalDto contractProposalDto = ContractProposalDto.builder()
-//        .trade(trade)
-//        .settlement(settlement)
-//        .build();
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
         HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
 
-        if (agreement != null) {
-            executeCreateContractRequest(agreement, position, request);
-        }
+        executeCreateContractRequest(agreement, position, request);
     }
-
-//  @Override
-//  public void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position) {
-//    var headers = new HttpHeaders();
-//    headers.setContentType(APPLICATION_JSON);
-//    HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
-//
-//    log.debug("Sending POST request to {}", baseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
-//    ResponseEntity<JsonNode> response = restTemplate.exchange(
-//        baseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST,
-//        request, JsonNode.class);
-//    if (response.getStatusCode() != CREATED) {
-//      if (agreement != null) {
-//        log.error(
-//            "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: {} (SPIRE Position: {}) for the following reason: {}",
-//            agreement.getAgreementId(), position.getPositionId(), response.getStatusCode());
-//      } else {
-//        log.error(
-//            "The loan contract proposal instruction has not been processed by 1Source for the SPIRE Position: (SPIRE Position: {}) for the following reason: {}",
-//            position.getPositionId(), response.getStatusCode());
-//      }
-//    }
-//    log.debug("The contract was created!");
-//  }
 
     private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
         HttpEntity<ContractProposalDto> request) {
+        String agreementId = null;
+        if (agreement != null) {
+            agreementId = agreement.getAgreementId();
+        }
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
         try {
             restTemplate.exchange(
@@ -156,7 +127,7 @@ public class OneSourceApiService implements OneSourceService {
             log.warn(
                 "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: "
                     + "{} (SPIRE Position: {}) for the following reason: {}",
-                agreement.getAgreementId(), position.getPositionId(), e.getStatusCode());
+                agreementId, position.getPositionId(), e.getStatusCode());
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,

@@ -81,6 +81,8 @@ public class PositionDto implements Reconcilable {
     private AccountDto cpDto;
     @JsonProperty("statusDTO")
     private PositionStatusDto positionStatusDto;
+    @JsonProperty("indexDto")
+    private IndexDto indexDto;
 
     public String getAccountLei() {
         return accountDto == null ? "" : accountDto.getLei();

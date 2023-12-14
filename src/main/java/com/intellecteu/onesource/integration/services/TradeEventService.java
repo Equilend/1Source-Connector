@@ -10,6 +10,7 @@ import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSE
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
@@ -24,6 +25,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCE
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
@@ -92,7 +94,7 @@ public class TradeEventService implements EventService {
     @Override
     public void processEventData() {
         log.debug(">>>>> Process event data!");
-        List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(NEW);
+        List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(CREATED);
         timeStamp = findMaxDateTimeOfEvents(events);
         storeTimestamp(timeStamp);
         log.debug("The latest timestamp: {}", timeStamp);
@@ -417,6 +419,10 @@ public class TradeEventService implements EventService {
         if (eventType == CONTRACT_PENDING) {
             contractDto.setProcessingStatus(APPROVED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_APPROVED));
+        }
+        if (eventType == CONTRACT_OPENED) {
+            contractDto.setProcessingStatus(SETTLED);
+            contractDto.setLastUpdateDatetime(LocalDateTime.now());
         }
     }
 
