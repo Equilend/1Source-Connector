@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.mapper;
 
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.PriceUnit.*;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
@@ -27,6 +28,7 @@ import com.intellecteu.onesource.integration.dto.VenuePartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.CollateralType;
 import com.intellecteu.onesource.integration.model.CurrencyCd;
+import com.intellecteu.onesource.integration.model.PriceUnit;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import com.intellecteu.onesource.integration.model.TermType;
 import com.intellecteu.onesource.integration.model.spire.Position;
@@ -143,7 +145,6 @@ public class PositionMapper {
             .collateralValue(positionDto.getAmount())
             .currency(positionDto.getCurrency().getCurrencyKy())
             .type(CollateralType.valueOf(positionDto.getCollateralType()))
-            //TODO clarification needed
             .margin(positionDto.getCpHaircut())
             .roundingRule(positionDto.getCpMarkRoundTo())
             .roundingMode(ALWAYSUP)
@@ -173,7 +174,6 @@ public class PositionMapper {
 
     private FloatingRateDto buildFloatingRateDto(PositionDto positionDto) {
         return FloatingRateDto.builder()
-            //TODO benchmark clarification
             .effectiveRate(positionDto.getRate())
             .baseRate(positionDto.getSecurityDetailDto().getBaseRebateRate())
             .spread(positionDto.getIndexDto().getSpread())
@@ -210,11 +210,15 @@ public class PositionMapper {
 
     private PriceDto buildPriceDto(PositionDto positionDto) {
         return PriceDto.builder()
-            //TODO unit setting clarification
+            .unit(checkPriceUnit(positionDto))
             .value(positionDto.getPrice())
             .currency(positionDto.getCurrency().getCurrencyKy())
             .build();
 
+    }
+
+    private PriceUnit checkPriceUnit(PositionDto positionDto) {
+        return positionDto.getSecurityDetailDto().getPriceFactor() == 1 ? SHARE : LOT;
     }
 
     public VenuePartyDto buildLenderVenuePartyDto(PositionDto positionDto) {

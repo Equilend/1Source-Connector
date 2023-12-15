@@ -11,7 +11,6 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
@@ -95,7 +94,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         if (partyRole == BORROWER && contract.getEventType() == CONTRACT_CANCELED) {
             processCanceledContractForBorrower(contract, positionDto);
         }
-        if (partyRole == LENDER && Set.of(CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED).contains(contract.getEventType())) {
+        if (partyRole == LENDER && contract.getEventType() == CONTRACT_DECLINED) {
             processDeclinedContractForLender(contract, positionDto);
         }
     }
