@@ -10,12 +10,19 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.FixedRateDto;
+import com.intellecteu.onesource.integration.dto.FloatingRateDto;
+import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
+import com.intellecteu.onesource.integration.dto.RebateRateDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
+import com.intellecteu.onesource.integration.dto.spire.IndexDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.CollateralType;
+import com.intellecteu.onesource.integration.model.PriceUnit;
+import com.intellecteu.onesource.integration.model.TermType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -145,6 +152,8 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(9)
+    @Disabled
+    @Deprecated(since = "1.0.4", forRemoval = true)
     @DisplayName("Should reconcile if bloombergId security is not matched.")
     void reconcile_shouldReconcile_whenBloombergIdNotMatched() throws Exception {
         position.getSecurityDetailDto().setBloombergId("customValue");
@@ -306,20 +315,11 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(26)
-    @DisplayName("Ignore reconciliation if price is missed")
-    void reconcile_shouldSuccess_whenPriceIsMissed() throws Exception {
+    @DisplayName("Should throw exception if position.price is missed")
+    void reconcile_shouldSuccess_whenPriceIsMissed() {
         position.setPrice(null);
 
-        service.reconcile(contractDto, position);
-    }
-
-    @Test
-    @Order(27)
-    @DisplayName("Ignore reconciliation for a price. Temporary")
-    void reconcile_shouldSuccess_whenPriceIsNotMatched() throws Exception {
-        position.setPrice(99999.99d);
-
-        service.reconcile(contractDto, position);
+        verifyReconciliationFailure();
     }
 
     @Test
@@ -370,9 +370,9 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(32)
-    @DisplayName("Throw exception if position collateralType is missed and trade collateral type is not CASH")
-    void reconcile_shouldFail_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsNotCash() {
-        contractDto.getTrade().getCollateral().setType(CollateralType.TRIPARTY);
+    @DisplayName("Throw exception if position collateralType is missed and trade collateral type is missed")
+    void reconcile_shouldFail_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsMissing() {
+        contractDto.getTrade().getCollateral().setType(null);
         position.getCollateralTypeDto().setCollateralType(null);
 
         verifyReconciliationFailure();
@@ -542,21 +542,11 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(50)
-    @DisplayName("Throw exception if trade contractDto collateral contract price is missed")
-    @Disabled("Temporary replaced with reconcile_shouldSuccess_whenCollateralContractPriceIsMissed")
+    @DisplayName("Throw exception if trade collateral contract price is missed")
     void reconcile_shouldThrowException_whenCollateralContractPriceIsMissed() {
         contractDto.getTrade().getCollateral().setContractPrice(null);
 
         verifyReconciliationFailure();
-    }
-
-    @Test
-    @Order(50)
-    @DisplayName("Temporary test. Do not throw exception if trade contractDto collateral contract price is missed")
-    void reconcile_shouldSuccess_whenCollateralContractPriceIsMissed() throws Exception {
-        contractDto.getTrade().getCollateral().setContractPrice(null);
-
-        service.reconcile(contractDto, position);
     }
 
     @Test
@@ -679,6 +669,142 @@ class ContractReconcileServiceTest {
     void reconcile_shouldSuccess_whenTradeFigiIsMissed() throws Exception {
         contractDto.getTrade().getInstrument().setFigi(null);
         service.reconcile(contractDto, position);
+    }
+
+    @Test
+    @Order(63)
+    @DisplayName("Should throw exception if position.securityDetailDTO.priceFactor is 1 and "
+        + "trade.instrument.price.unit is not SHARE")
+    void reconcile_shouldThrowException_whenPriceFactorIsNotShare() {
+        contractDto.getTrade().getInstrument().setPrice(new PriceDto(PriceUnit.LOT));
+        position.getSecurityDetailDto().setPriceFactor(1);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(64)
+    @DisplayName("Should throw exception if position.securityDetailDTO.priceFactor is 2 and "
+        + "trade.instrument.price.unit is not LOT")
+    void reconcile_shouldThrowException_whenPriceFactorIsNotLot() {
+        contractDto.getTrade().getInstrument().setPrice(new PriceDto(PriceUnit.SHARE));
+        position.getSecurityDetailDto().setPriceFactor(2);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(65)
+    @DisplayName("Should throw exception if position.termId is 1 and "
+        + "trade.termType is not OPEN")
+    void reconcile_shouldThrowException_whenTermTypeIsNotOpen() {
+        contractDto.getTrade().setTermType(TermType.TERM);
+        position.setTermId(1);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(66)
+    @DisplayName("Should throw exception if position.termId is 1 and "
+        + "trade.termType is not TERM")
+    void reconcile_shouldThrowException_whenTermTypeIsNotTerm() {
+        contractDto.getTrade().setTermType(TermType.OPEN);
+        position.setTermId(2);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(67)
+    @DisplayName("Should throw exception if position.price is not matched with trade.contractPrice")
+    void reconcile_shouldThrowException_whenPositionPriceIsNotMatchedWithContractPrice() {
+        position.setPrice(1.0d);
+        contractDto.getTrade().getCollateral().setContractPrice(999.0d);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(68)
+    @DisplayName("Throw exception if trade.rate.rebate.fixed.effectiveDate is not matched with position.settleDate")
+    void reconcile_shouldThrowException_whenRateRebateFixedEffectiveDateNotMatched() {
+        position.setSettleDate(LocalDateTime.now());
+        contractDto.getTrade().getRate().getRebate().getFixed().setEffectiveDate(LocalDate.now().minusDays(2));
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(69)
+    @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
+    void reconcile_shouldReconcile_whenRateRebateFixedEffectiveDateIsMatched() throws Exception {
+        contractDto.getTrade().getRate().getRebate().getFixed().setEffectiveDate(
+            LocalDate.of(2023, 12, 1));
+        position.setSettleDate(LocalDateTime.of(
+            LocalDate.of(2023, 12, 1), LocalTime.of(10, 55)));
+
+        // set tradeSettlementDate to match with position settlementDate also
+        contractDto.getTrade().setSettlementDate(LocalDate.of(2023, 12, 1));
+
+        service.reconcile(contractDto, position);
+    }
+
+    @Test
+    @Order(70)
+    @DisplayName("Throw exception if trade.rate.rebate.floating.spread is not matched with position.indexDTO.spread")
+    void reconcile_shouldThrowException_whenRateRebateFloatingSpreadIsNotMatched() {
+        var floating = FloatingRateDto.builder().spread(1.0d).build();
+        contractDto.getTrade().getRate().getRebate().setFixed(null);
+        contractDto.getTrade().getRate().getRebate().setFloating(floating);
+        position.setIndexDto(new IndexDto("testName", 2.0d));
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(71)
+    @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
+    void reconcile_shouldReconcile_whenRateRebateFloatingSpreadIsMatched() throws Exception {
+        var floating = FloatingRateDto.builder()
+            .spread(1.0d)
+            .effectiveRate(10.2d) // must match with positionDto test data position.rate
+            .build();
+        contractDto.getTrade().getRate().getRebate().setFixed(null);
+        contractDto.getTrade().getRate().getRebate().setFloating(floating);
+        position.setIndexDto(new IndexDto("testName", 1.0d));
+
+        service.reconcile(contractDto, position);
+    }
+
+    @Test
+    @Order(72)
+    @DisplayName("Throw exception if trade.rate.rebate doesn't have fixed or floating objects")
+    void reconcile_shouldThrowException_whenRateRebateFixedAndFloatingMissed() {
+        contractDto.getTrade().getRate().setRebate(new RebateRateDto());
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(73)
+    @DisplayName("Throw exception if trade.rate.rebate.floating.effectiveRate is missed for Floating object")
+    void reconcile_shouldThrowException_whenRateRebateFloatingEffectiveRateIsMissed() {
+        var floating = FloatingRateDto.builder().effectiveRate(null).build();
+        contractDto.getTrade().getRate().getRebate().setFixed(null);
+        contractDto.getTrade().getRate().getRebate().setFloating(floating);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(74)
+    @DisplayName("Throw exception if trade.rate.rebate.fixed.baseRate is missed for Fixed object")
+    void reconcile_shouldThrowException_whenRateRebateFixedBaseRateIsMissed() {
+        contractDto.getTrade().getRate().getRebate().setFloating(null);
+        contractDto.getTrade().getRate().getRebate().setFixed(new FixedRateDto());
+
+        verifyReconciliationFailure();
     }
 
 

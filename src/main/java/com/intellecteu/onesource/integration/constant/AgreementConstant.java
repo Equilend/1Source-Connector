@@ -11,6 +11,7 @@ import lombok.experimental.UtilityClass;
 public class AgreementConstant {
 
     public static final Set<ProcessingStatus> SKIP_RECONCILIATION_STATUSES = Set.of(RECONCILED, TO_CANCEL);
+    public static final String FIXED_RATE = "Fixed Rate";
 
     public static class Field {
 
@@ -33,6 +34,8 @@ public class AgreementConstant {
         public static final String PRICE_UNIT = "Agreement.trade.instrument.price.unit";
         public static final String QUANTITY = "Agreement.trade.quantity";
         public static final String QUICK = "Agreement.trade.instrument.quick";
+        public static final String REBATE_FIXED_EFFECTIVE_DATE = "Agreement.trade.rate.rebate.fixed.effectiveDate";
+        public static final String REBATE_FLOATING_SPREAD = "Agreement.trade.rate.rebate.floating.spread";
         public static final String REBATE = "Agreement.trade.rate.rebate";
         public static final String SEDOL = "Agreement.trade.instrument.sedol";
         public static final String SETTLEMENT_DATE = "Agreement.trade.settlementDate";

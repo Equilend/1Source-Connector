@@ -1,8 +1,10 @@
 package com.intellecteu.onesource.integration.mapper;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.FIXED_RATE;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.PriceUnit.*;
+import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.PriceUnit.SHARE;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
@@ -161,7 +163,7 @@ public class PositionMapper {
         FloatingRateDto floatingRateDto = null;
         FixedRateDto fixedRateDto = null;
         String indexName = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getIndexName();
-        if (indexName == "Fixed Rate") {
+        if (FIXED_RATE.equals(indexName)) {
             fixedRateDto = buildFixedRateDto(positionDto);
         } else {
             floatingRateDto = buildFloatingRateDto(positionDto);
@@ -173,10 +175,14 @@ public class PositionMapper {
     }
 
     private FloatingRateDto buildFloatingRateDto(PositionDto positionDto) {
+        if (positionDto == null) {
+            return null;
+        }
+        var spread = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getSpread();
         return FloatingRateDto.builder()
             .effectiveRate(positionDto.getRate())
             .baseRate(positionDto.getSecurityDetailDto().getBaseRebateRate())
-            .spread(positionDto.getIndexDto().getSpread())
+            .spread(spread)
             .build();
     }
 

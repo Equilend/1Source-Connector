@@ -41,6 +41,7 @@ public class PositionConstant {
         public static final String POSITION_SEDOL = "Position.securityDetailDTO.sedol";
         public static final String POSITION_TICKER = "Position.securityDetailDTO.ticker";
         public static final String POSITION_QUICK = "Position.securityDetailDTO.quickCode";
+        public static final String POSITION_SPREAD = "Position.indexDTO.spread";
         public static final String SETTLE_DATE = "Position.settleDate";
         public static final String POSITION_TRADE_DATE = "Position.tradeDate";
         public static final String POSITION_QUANTITY = "Position.quantity";

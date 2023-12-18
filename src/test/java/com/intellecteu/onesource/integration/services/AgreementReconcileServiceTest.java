@@ -18,6 +18,7 @@ import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.RebateRateDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
+import com.intellecteu.onesource.integration.dto.spire.IndexDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.CollateralType;
@@ -387,15 +388,6 @@ class AgreementReconcileServiceTest {
     @Order(26)
     @DisplayName("Should throw exception if position.price is missed")
     void reconcile_shouldSuccess_whenPriceIsMissed() {
-        position.setPrice(null);
-
-        verifyReconciliationFailure();
-    }
-
-    @Test
-    @Order(27)
-    @DisplayName("Throw exception if trade.collateral.contractPrice is missed")
-    void reconcile_shouldThrowException_whenPositionPriceIsMissed() {
         position.setPrice(null);
 
         verifyReconciliationFailure();
@@ -793,6 +785,87 @@ class AgreementReconcileServiceTest {
         verifyReconciliationFailure();
     }
 
+    @Test
+    @Order(68)
+    @DisplayName("Throw exception if trade.rate.rebate.fixed.effectiveDate is not matched with position.settleDate")
+    void reconcile_shouldThrowException_whenRateRebateFixedEffectiveDateNotMatched() {
+        position.setSettleDate(LocalDateTime.now());
+        agreement.getTrade().getRate().getRebate().getFixed().setEffectiveDate(LocalDate.now().minusDays(2));
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(69)
+    @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
+    void reconcile_shouldReconcile_whenRateRebateFixedEffectiveDateIsMatched() throws Exception {
+        agreement.getTrade().getRate().getRebate().getFixed().setEffectiveDate(
+            LocalDate.of(2023, 12, 1));
+        position.setSettleDate(LocalDateTime.of(
+            LocalDate.of(2023, 12, 1), LocalTime.of(10, 55)));
+
+        // set tradeSettlementDate to match with position settlementDate also
+        agreement.getTrade().setSettlementDate(LocalDate.of(2023, 12, 1));
+
+        service.reconcile(agreement, position);
+    }
+
+    @Test
+    @Order(70)
+    @DisplayName("Throw exception if trade.rate.rebate.floating.spread is not matched with position.indexDTO.spread")
+    void reconcile_shouldThrowException_whenRateRebateFloatingSpreadIsNotMatched() {
+        var floating = FloatingRateDto.builder().spread(1.0d).build();
+        agreement.getTrade().getRate().getRebate().setFixed(null);
+        agreement.getTrade().getRate().getRebate().setFloating(floating);
+        position.setIndexDto(new IndexDto("testName", 2.0d));
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(71)
+    @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
+    void reconcile_shouldReconcile_whenRateRebateFloatingSpreadIsMatched() throws Exception {
+        var floating = FloatingRateDto.builder()
+            .spread(1.0d)
+            .effectiveRate(10.2d) // must match with positionDto test data position.rate
+            .build();
+        agreement.getTrade().getRate().getRebate().setFixed(null);
+        agreement.getTrade().getRate().getRebate().setFloating(floating);
+        position.setIndexDto(new IndexDto("testName", 1.0d));
+
+        service.reconcile(agreement, position);
+    }
+
+    @Test
+    @Order(72)
+    @DisplayName("Throw exception if trade.rate.rebate doesn't have fixed or floating objects")
+    void reconcile_shouldThrowException_whenRateRebateFixedAndFloatingMissed() {
+        agreement.getTrade().getRate().setRebate(new RebateRateDto());
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(73)
+    @DisplayName("Throw exception if trade.rate.rebate.floating.effectiveRate is missed for Floating object")
+    void reconcile_shouldThrowException_whenRateRebateFloatingEffectiveRateIsMissed() {
+        var floating = FloatingRateDto.builder().effectiveRate(null).build();
+        agreement.getTrade().getRate().getRebate().setFixed(null);
+        agreement.getTrade().getRate().getRebate().setFloating(floating);
+
+        verifyReconciliationFailure();
+    }
+
+    @Test
+    @Order(74)
+    @DisplayName("Throw exception if trade.rate.rebate.fixed.baseRate is missed for Fixed object")
+    void reconcile_shouldThrowException_whenRateRebateFixedBaseRateIsMissed() {
+        agreement.getTrade().getRate().getRebate().setFloating(null);
+        agreement.getTrade().getRate().getRebate().setFixed(new FixedRateDto());
+
+        verifyReconciliationFailure();
+    }
 
     /*
      * Verifies that reconciliation fails because one of the

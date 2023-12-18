@@ -13,15 +13,14 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-public class AgreementReconcileService
-    extends OneSourceSpireReconcileService<AgreementDto, PositionDto> {
+public class AgreementReconcileService extends OneSourceSpireReconcileService<AgreementDto, PositionDto> {
 
     @Override
     public void reconcile(AgreementDto agreementDto, PositionDto positionDto) throws ReconcileException {
         var reconciliationFailMessages = new ArrayList<ExceptionMessageDto>();
         var tradeAgreement = agreementDto.getTrade();
-        validateReconcilableObjects(agreementDto, positionDto, reconciliationFailMessages);
-        reconcileTrade(tradeAgreement, positionDto, reconciliationFailMessages);
+        reconciliationFailMessages.addAll(validateReconcilableObjects(agreementDto, positionDto));
+        reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
         if (!reconciliationFailMessages.isEmpty()) {
             String errorMsg = format(RECONCILE_EXCEPTION, agreementDto.getAgreementId(), positionDto.getId());
             throw new ReconcileException(errorMsg, reconciliationFailMessages);

@@ -81,24 +81,32 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
             reconcileService.reconcile(contractDto, positionDto);
             log.debug(format(LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG,
                 contractDto.getContractId(), contractDto.getMatchingSpirePositionId()));
-            contractDto.setProcessingStatus(RECONCILED);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
+            saveContract(contractDto, RECONCILED);
             log.debug("Loan contract proposal {} is reconciled.", contractDto.getContractId());
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(contractDto.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_VALIDATED, contractDto.getMatchingSpirePositionId());
-            cloudEventRecordService.record(recordRequest);
+            createContractInitiationEvent(contractDto.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED,
+                contractDto.getMatchingSpirePositionId());
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
-            contractDto.setProcessingStatus(DISCREPANCIES);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
-            var eventBuilder = cloudEventRecordService.getFactory()
-                .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(contractDto.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, contractDto.getMatchingSpirePositionId(), e.getErrorList());
-            cloudEventRecordService.record(recordRequest);
+            saveContract(contractDto, DISCREPANCIES);
+            createFailedReconciliationEvent(contractDto, e);
         }
+    }
+
+    private void createFailedReconciliationEvent(ContractDto contractDto, ReconcileException e) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(contractDto.getContractId(),
+            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, contractDto.getMatchingSpirePositionId(), e.getErrorList());
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void saveContract(ContractDto contractDto, ProcessingStatus processingStatus) {
+        log.debug("Set processing status: {} for loan contract proposal {} ",
+            processingStatus, contractDto.getContractId());
+        contractDto.setProcessingStatus(processingStatus);
+        contractDto.setLastUpdateDatetime(LocalDateTime.now());
+        contractRepository.save(eventMapper.toContractEntity(contractDto));
     }
 
     void updateInstruction(ContractDto contract, PartyRole partyRole, PositionDto position,
@@ -127,11 +135,11 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
 
         if (positionDto.getProcessingStatus() == CANCELED) {
             contractDto.setProcessingStatus(MATCHED_CANCELED_POSITION);
-            createContractInitiationCloudEvent(contractDto.getContractId(),
+            createContractInitiationEvent(contractDto.getContractId(),
                 TRADE_AGREEMENT_MATCHED_CANCELED_POSITION, contractDto.getMatchingSpirePositionId());
         } else {
             contractDto.setProcessingStatus(MATCHED_POSITION);
-            createContractInitiationCloudEvent(contractDto.getContractId(),
+            createContractInitiationEvent(contractDto.getContractId(),
                 TRADE_AGREEMENT_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
         }
 
@@ -153,7 +161,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         contractDto.setProcessingStatus(ProcessingStatus.ONESOURCE_ISSUE);
     }
 
-    void createContractInitiationCloudEvent(String record, RecordType recordType, String related) {
+    void createContractInitiationEvent(String record, RecordType recordType, String related) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(record, recordType, related);
         cloudEventRecordService.record(recordRequest);
