@@ -114,10 +114,7 @@ public class OneSourceApiService implements OneSourceService {
 
     private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
         HttpEntity<ContractProposalDto> request) {
-        String agreementId = null;
-        if (agreement != null) {
-            agreementId = agreement.getAgreementId();
-        }
+        String agreementId = agreement == null ? null : agreement.getAgreementId();
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
         try {
             restTemplate.exchange(

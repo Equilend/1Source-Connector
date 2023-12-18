@@ -160,7 +160,7 @@ public class PositionMapper {
     private RebateRateDto buildRebateRateDto(PositionDto positionDto) {
         FloatingRateDto floatingRateDto = null;
         FixedRateDto fixedRateDto = null;
-        String indexName = positionDto.getIndexDto().getIndexName();
+        String indexName = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getIndexName();
         if (indexName == "Fixed Rate") {
             fixedRateDto = buildFixedRateDto(positionDto);
         } else {
