@@ -24,9 +24,11 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.VALID
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
+import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.RecordType;
@@ -43,6 +45,8 @@ import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -153,7 +157,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             oneSourceService.declineContract(contract);
         } else if (contract.getProcessingStatus() == VALIDATED) {
             var settlementDto = oneSourceService.retrieveSettlementInstruction(contract);
-            oneSourceService.updateContract(contract, settlementDto, null);
+            oneSourceService.updateContract(contract, buildInstructionRequest(settlementDto));
             oneSourceService.approveContract(contract, settlementDto);
             if (contract.isProcessedWithoutErrors()) {
                 log.debug("Contract {} was approved by {}!", contract.getContractId(), partyRole);
@@ -161,6 +165,12 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         }
         contract.setFlowStatus(PROCESSED);
         contractRepository.save(eventMapper.toContractEntity(contract));
+    }
+
+    private static HttpEntity<SettlementDto> buildInstructionRequest(SettlementDto settlementDto) {
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        return new HttpEntity<>(settlementDto, headers);
     }
 
     private void recordContractEvent(String recordData, RecordType recordType, String relatedData) {

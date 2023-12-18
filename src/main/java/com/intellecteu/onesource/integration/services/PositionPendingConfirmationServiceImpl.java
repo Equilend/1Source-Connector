@@ -18,6 +18,7 @@ import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGe
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -49,6 +50,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -153,7 +156,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
                 matchingCanceledPosition(positionDto.getCustomValue2());
             } else if (status.equals(OPEN)) {
                 positionDto.setProcessingStatus(SETTLED);
-                List<Contract> contracts = contractRepository.findByVenueRefId(positionDto.getMatching1SourceLoanContractId());
+                List<Contract> contracts = contractRepository.findByVenueRefId(
+                    positionDto.getMatching1SourceLoanContractId());
                 if (!contracts.isEmpty()) {
                     Contract contract = contracts.get(0);
                     contract.setSettlementStatus(SettlementStatus.SETTLED);
@@ -168,7 +172,9 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void updateSettlementStatus(Contract contract) {
         ContractDto contractDto = eventMapper.toContractDto(contract);
-        oneSourceService.updateContract(contractDto, null, new SettlementStatusUpdateDto(SettlementStatus.SETTLED));
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        oneSourceService.updateContract(contractDto, new HttpEntity<>(new SettlementStatusUpdateDto(SettlementStatus.SETTLED), headers));
     }
 
     private void matchingCanceledPosition(String venueRefId) {

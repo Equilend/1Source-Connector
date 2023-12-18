@@ -5,7 +5,6 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -13,6 +12,7 @@ import com.intellecteu.onesource.integration.model.EventType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpEntity;
 
 public interface OneSourceService {
 
@@ -24,7 +24,7 @@ public interface OneSourceService {
 
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 
-    void updateContract(ContractDto contractDto, SettlementDto settlementDto, SettlementStatusUpdateDto settlementStatusUpdateDto);
+    void updateContract(ContractDto contractDto, HttpEntity<?> request);
 
     @Deprecated(since = "1.0.4")
     void approveContract(ContractDto contractDto);

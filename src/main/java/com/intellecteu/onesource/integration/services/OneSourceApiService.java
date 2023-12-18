@@ -37,7 +37,6 @@ import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
-import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
@@ -165,18 +164,9 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public void updateContract(ContractDto contract, SettlementDto settlementDto, SettlementStatusUpdateDto settlementStatusUpdateDto) {
+    public void updateContract(ContractDto contract, HttpEntity<?> request) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        HttpEntity<SettlementDto> instructionUpdateRequest = new HttpEntity<>(settlementDto, headers);
-        HttpEntity<SettlementDto> statusUpdateRequest = new HttpEntity<>(settlementDto, headers);
-
-        if (settlementDto != null) {
-            executeUpdateContract(contract, instructionUpdateRequest);
-        } else if (settlementStatusUpdateDto != null) {
-            executeUpdateContract(contract, statusUpdateRequest);
-        }
+        executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
 
@@ -199,7 +189,7 @@ public class OneSourceApiService implements OneSourceService {
         return settlementDto;
     }
 
-    private void executeUpdateContract(ContractDto contract, HttpEntity<SettlementDto> request) {
+    private void executeUpdateContract(ContractDto contract, HttpEntity<?> request) {
         log.debug("Updating contract. Sending PATCH request to {}/{}",
             onesourceBaseEndpoint + version + CONTRACT_ENDPOINT, contract.getContractId());
         try {
