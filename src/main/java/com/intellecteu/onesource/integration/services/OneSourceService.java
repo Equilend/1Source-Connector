@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.model.EventType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpEntity;
 
 public interface OneSourceService {
 
@@ -23,7 +24,7 @@ public interface OneSourceService {
 
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 
-    void updateContract(ContractDto contractDto, SettlementDto settlementDto);
+    void updateContract(ContractDto contractDto, HttpEntity<?> request);
 
     @Deprecated(since = "1.0.4")
     void approveContract(ContractDto contractDto);

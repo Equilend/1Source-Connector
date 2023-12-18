@@ -18,16 +18,20 @@ import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGe
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -46,6 +50,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -58,10 +64,12 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionMapper positionMapper;
+    private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
     private final SpireService spireService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final OneSourceService oneSourceService;
 
     @Override
     public void processUpdatedPositions() {
@@ -148,16 +156,25 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
                 matchingCanceledPosition(positionDto.getCustomValue2());
             } else if (status.equals(OPEN)) {
                 positionDto.setProcessingStatus(SETTLED);
-                List<Contract> contracts = contractRepository.findByVenueRefId(positionDto.getCustomValue2());
+                List<Contract> contracts = contractRepository.findByVenueRefId(
+                    positionDto.getMatching1SourceLoanContractId());
                 if (!contracts.isEmpty()) {
                     Contract contract = contracts.get(0);
                     contract.setSettlementStatus(SettlementStatus.SETTLED);
+                    updateSettlementStatus(contract);
 
                     contractRepository.save(contract);
                 }
             }
             positionDto.setLastUpdateDateTime(LocalDateTime.now());
         }
+    }
+
+    private void updateSettlementStatus(Contract contract) {
+        ContractDto contractDto = eventMapper.toContractDto(contract);
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        oneSourceService.updateContract(contractDto, new HttpEntity<>(new SettlementStatusUpdateDto(SettlementStatus.SETTLED), headers));
     }
 
     private void matchingCanceledPosition(String venueRefId) {

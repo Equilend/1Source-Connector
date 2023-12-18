@@ -164,12 +164,8 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public void updateContract(ContractDto contract, SettlementDto settlementDto) {
+    public void updateContract(ContractDto contract, HttpEntity<?> request) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        HttpEntity<SettlementDto> request = new HttpEntity<>(settlementDto, headers);
-
         executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
@@ -193,7 +189,7 @@ public class OneSourceApiService implements OneSourceService {
         return settlementDto;
     }
 
-    private void executeUpdateContract(ContractDto contract, HttpEntity<SettlementDto> request) {
+    private void executeUpdateContract(ContractDto contract, HttpEntity<?> request) {
         log.debug("Updating contract. Sending PATCH request to {}/{}",
             onesourceBaseEndpoint + version + CONTRACT_ENDPOINT, contract.getContractId());
         try {
