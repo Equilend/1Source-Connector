@@ -16,11 +16,9 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PositionAccount {
+public class Index {
 
-    private String lei;
-    private String shortName;
-    private String info;
-
+    private String indexName;
+    private Double spread;
 
 }

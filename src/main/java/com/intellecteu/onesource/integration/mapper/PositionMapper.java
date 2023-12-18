@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.mapper;
 
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.PriceUnit.*;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
@@ -15,7 +16,9 @@ import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.FloatingRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
+import com.intellecteu.onesource.integration.dto.InternalReferenceDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.RebateRateDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -25,6 +28,7 @@ import com.intellecteu.onesource.integration.dto.VenuePartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.CollateralType;
 import com.intellecteu.onesource.integration.model.CurrencyCd;
+import com.intellecteu.onesource.integration.model.PriceUnit;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import com.intellecteu.onesource.integration.model.TermType;
 import com.intellecteu.onesource.integration.model.spire.Position;
@@ -89,7 +93,7 @@ public class PositionMapper {
         return TransactingPartyDto.builder()
             .partyRole(LENDER)
             .party(createLenderPartyDto(positionDto))
-            //TODO add internal ref after 1.0.4 implemented
+            .internalRef(createInternalRefDto(positionDto))
             .build();
     }
 
@@ -127,6 +131,13 @@ public class PositionMapper {
             .build();
     }
 
+    private static InternalReferenceDto createInternalRefDto(PositionDto positionDto) {
+        return InternalReferenceDto.builder()
+            .accountId(positionDto.getAccountDto().getInfo())
+            .internalRefId(positionDto.getPositionId())
+            .build();
+    }
+
     public CollateralDto buildCollateralDto(PositionDto positionDto) {
         return CollateralDto.builder()
             .contractPrice(positionDto.getPrice())
@@ -147,21 +158,33 @@ public class PositionMapper {
     }
 
     private RebateRateDto buildRebateRateDto(PositionDto positionDto) {
+        FloatingRateDto floatingRateDto = null;
+        FixedRateDto fixedRateDto = null;
+        String indexName = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getIndexName();
+        if (indexName == "Fixed Rate") {
+            fixedRateDto = buildFixedRateDto(positionDto);
+        } else {
+            floatingRateDto = buildFloatingRateDto(positionDto);
+        }
         return RebateRateDto.builder()
-            .floating(buildFloatingRateDto(positionDto))
-            .fixed(buildFixedRateDto(positionDto))
+            .floating(floatingRateDto)
+            .fixed(fixedRateDto)
             .build();
     }
 
     private FloatingRateDto buildFloatingRateDto(PositionDto positionDto) {
         return FloatingRateDto.builder()
             .effectiveRate(positionDto.getRate())
+            .baseRate(positionDto.getSecurityDetailDto().getBaseRebateRate())
+            .spread(positionDto.getIndexDto().getSpread())
             .build();
     }
 
     private FixedRateDto buildFixedRateDto(PositionDto positionDto) {
         return FixedRateDto.builder()
+            .baseRate(positionDto.getRate())
             .effectiveRate(positionDto.getRate())
+            .effectiveDate(positionDto.getSettleDate().toLocalDate())
             .build();
     }
 
@@ -172,22 +195,42 @@ public class PositionMapper {
             .isin(positionDto.getSecurityDetailDto().getIsin())
             .sedol(positionDto.getSecurityDetailDto().getSedol())
             .quick(positionDto.getSecurityDetailDto().getQuickCode())
-            .figi(positionDto.getSecurityDetailDto().getBloombergId())
+            .description(positionDto.getSecurityDetailDto().getDescription())
+            .price(buildPriceDto(positionDto))
             .build();
     }
 
     private VenueDto buildVenueDto(PositionDto positionDto) {
         return VenueDto.builder()
             .venueRefKey(positionDto.getCustomValue2())
+            .venueParties(List.of(buildLenderVenuePartyDto(positionDto), buildBorrowerVenuePartyDto()))
             .build();
 
     }
 
-    public VenuePartyDto buildVenuePartyDto(PositionDto positionDto) {
+    private PriceDto buildPriceDto(PositionDto positionDto) {
+        return PriceDto.builder()
+            .unit(checkPriceUnit(positionDto))
+            .value(positionDto.getPrice())
+            .currency(positionDto.getCurrency().getCurrencyKy())
+            .build();
+
+    }
+
+    private PriceUnit checkPriceUnit(PositionDto positionDto) {
+        return positionDto.getSecurityDetailDto().getPriceFactor() == 1 ? SHARE : LOT;
+    }
+
+    public VenuePartyDto buildLenderVenuePartyDto(PositionDto positionDto) {
         return VenuePartyDto.builder()
             .partyRole(LENDER)
-            //TODO change to venuePartyRefKey after 1.0.4 implemented
             .venuePartyRefKey(positionDto.getPositionId())
+            .build();
+    }
+
+    public VenuePartyDto buildBorrowerVenuePartyDto() {
+        return VenuePartyDto.builder()
+            .partyRole(BORROWER)
             .build();
     }
 

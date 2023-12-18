@@ -8,8 +8,8 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.exception.LoanContractCancelException.CANCEL_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
@@ -24,6 +24,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCE
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
@@ -277,7 +278,7 @@ public class TradeEventService implements EventService {
                 processTradeEvent(event);
             } else if (event.getEventType().equals(TRADE_CANCELED)) {
                 processTradeCanceledEvent(event);
-            } else if (Set.of(CONTRACT_PENDING, CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED,
+            } else if (Set.of(CONTRACT_PENDING, CONTRACT_DECLINED,
                 CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
                 processContractEvent(event);
             }
@@ -410,13 +411,17 @@ public class TradeEventService implements EventService {
             contractDto.setProcessingStatus(CANCELED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_CANCELED));
         }
-        if (Set.of(CONTRACT_CANCEL_PENDING, CONTRACT_DECLINED).contains(eventType)) {
+        if (eventType == CONTRACT_DECLINED) {
             contractDto.setProcessingStatus(DECLINED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_DECLINED));
         }
         if (eventType == CONTRACT_PENDING) {
             contractDto.setProcessingStatus(APPROVED);
             position.ifPresent(p -> savePositionStatus(p, PROPOSAL_APPROVED));
+        }
+        if (eventType == CONTRACT_OPENED) {
+            contractDto.setProcessingStatus(SETTLED);
+            contractDto.setLastUpdateDatetime(LocalDateTime.now());
         }
     }
 
