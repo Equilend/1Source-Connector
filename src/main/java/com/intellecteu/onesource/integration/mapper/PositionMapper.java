@@ -182,7 +182,7 @@ public class PositionMapper {
 
     private FixedRateDto buildFixedRateDto(PositionDto positionDto) {
         return FixedRateDto.builder()
-            .baseRate(positionDto.getSecurityDetailDto().getBaseRebateRate())
+            .baseRate(positionDto.getRate())
             .effectiveRate(positionDto.getRate())
             .effectiveDate(positionDto.getSettleDate().toLocalDate())
             .build();
