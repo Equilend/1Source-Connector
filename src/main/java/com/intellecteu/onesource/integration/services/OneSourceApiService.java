@@ -37,6 +37,7 @@ import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
+import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
@@ -164,13 +165,18 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public void updateContract(ContractDto contract, SettlementDto settlementDto) {
+    public void updateContract(ContractDto contract, SettlementDto settlementDto, SettlementStatusUpdateDto settlementStatusUpdateDto) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        HttpEntity<SettlementDto> request = new HttpEntity<>(settlementDto, headers);
+        HttpEntity<SettlementDto> instructionUpdateRequest = new HttpEntity<>(settlementDto, headers);
+        HttpEntity<SettlementDto> statusUpdateRequest = new HttpEntity<>(settlementDto, headers);
 
-        executeUpdateContract(contract, request);
+        if (settlementDto != null) {
+            executeUpdateContract(contract, instructionUpdateRequest);
+        } else if (settlementStatusUpdateDto != null) {
+            executeUpdateContract(contract, statusUpdateRequest);
+        }
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
 

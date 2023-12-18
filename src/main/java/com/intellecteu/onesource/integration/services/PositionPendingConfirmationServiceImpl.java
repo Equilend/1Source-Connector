@@ -21,13 +21,16 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -58,10 +61,12 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionMapper positionMapper;
+    private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
     private final SpireService spireService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final OneSourceService oneSourceService;
 
     @Override
     public void processUpdatedPositions() {
@@ -148,16 +153,22 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
                 matchingCanceledPosition(positionDto.getCustomValue2());
             } else if (status.equals(OPEN)) {
                 positionDto.setProcessingStatus(SETTLED);
-                List<Contract> contracts = contractRepository.findByVenueRefId(positionDto.getCustomValue2());
+                List<Contract> contracts = contractRepository.findByVenueRefId(positionDto.getMatching1SourceLoanContractId());
                 if (!contracts.isEmpty()) {
                     Contract contract = contracts.get(0);
                     contract.setSettlementStatus(SettlementStatus.SETTLED);
+                    updateSettlementStatus(contract);
 
                     contractRepository.save(contract);
                 }
             }
             positionDto.setLastUpdateDateTime(LocalDateTime.now());
         }
+    }
+
+    private void updateSettlementStatus(Contract contract) {
+        ContractDto contractDto = eventMapper.toContractDto(contract);
+        oneSourceService.updateContract(contractDto, null, new SettlementStatusUpdateDto(SettlementStatus.SETTLED));
     }
 
     private void matchingCanceledPosition(String venueRefId) {

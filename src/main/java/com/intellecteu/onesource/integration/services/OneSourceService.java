@@ -5,6 +5,7 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
+import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -23,7 +24,7 @@ public interface OneSourceService {
 
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 
-    void updateContract(ContractDto contractDto, SettlementDto settlementDto);
+    void updateContract(ContractDto contractDto, SettlementDto settlementDto, SettlementStatusUpdateDto settlementStatusUpdateDto);
 
     @Deprecated(since = "1.0.4")
     void approveContract(ContractDto contractDto);

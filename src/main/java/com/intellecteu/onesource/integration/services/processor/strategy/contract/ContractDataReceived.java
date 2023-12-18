@@ -42,7 +42,6 @@ import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -154,7 +153,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             oneSourceService.declineContract(contract);
         } else if (contract.getProcessingStatus() == VALIDATED) {
             var settlementDto = oneSourceService.retrieveSettlementInstruction(contract);
-            oneSourceService.updateContract(contract, settlementDto);
+            oneSourceService.updateContract(contract, settlementDto, null);
             oneSourceService.approveContract(contract, settlementDto);
             if (contract.isProcessedWithoutErrors()) {
                 log.debug("Contract {} was approved by {}!", contract.getContractId(), partyRole);
