@@ -167,7 +167,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
-    private static HttpEntity<SettlementDto> buildInstructionRequest(SettlementDto settlementDto) {
+    private HttpEntity<SettlementDto> buildInstructionRequest(SettlementDto settlementDto) {
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
         return new HttpEntity<>(settlementDto, headers);
