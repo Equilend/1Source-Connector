@@ -17,6 +17,7 @@ public enum ProcessingStatus {
     RECONCILED,
     TRADE_DISCREPANCIES,
     TRADE_RECONCILED,
+    TRADE_CANCELED,
     SAVED,
     SETTLED,
     SI_FETCHED,

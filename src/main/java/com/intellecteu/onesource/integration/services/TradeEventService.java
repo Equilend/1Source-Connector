@@ -321,7 +321,7 @@ public class TradeEventService implements EventService {
             agreementId);
         if (!positions.isEmpty()) {
             Position position = positions.get(0);
-            position.setProcessingStatus(CANCELED);
+            position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
             position.setLastUpdateDateTime(LocalDateTime.now());
             positionRepository.save(position);
         }
