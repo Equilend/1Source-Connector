@@ -125,7 +125,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void processUpdatedPosition(PositionDto positionDto) {
         updatePosition(positionDto);
-        savePosition(positionDto, ProcessingStatus.CREATED);
+        savePosition(positionDto, positionDto.getProcessingStatus());
     }
 
     private void processSettlement(PositionDto positionDto) {

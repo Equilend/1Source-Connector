@@ -5,6 +5,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
@@ -136,11 +138,11 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         if (positionDto.getProcessingStatus() == CANCELED) {
             contractDto.setProcessingStatus(MATCHED_CANCELED_POSITION);
             createContractInitiationEvent(contractDto.getContractId(),
-                TRADE_AGREEMENT_MATCHED_CANCELED_POSITION, contractDto.getMatchingSpirePositionId());
+                LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION, contractDto.getMatchingSpirePositionId());
         } else {
             contractDto.setProcessingStatus(MATCHED_POSITION);
             createContractInitiationEvent(contractDto.getContractId(),
-                TRADE_AGREEMENT_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
+                LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
         }
 
         positionRepository.save(positionMapper.toPosition(positionDto));
