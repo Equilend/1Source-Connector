@@ -274,11 +274,11 @@ public class TradeEventService implements EventService {
 
     private void processData(List<TradeEvent> events) {
         for (TradeEvent event : events) {
-            if (Set.of(TRADE_AGREED).contains(event.getEventType())) {
+            if (event.getEventType().equals(TRADE_AGREED)) {
                 processTradeEvent(event);
             } else if (event.getEventType().equals(TRADE_CANCELED)) {
                 processTradeCanceledEvent(event);
-            } else if (Set.of(CONTRACT_PENDING, CONTRACT_DECLINED,
+            } else if (Set.of(CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
                 CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
                 processContractEvent(event);
             }
@@ -353,7 +353,7 @@ public class TradeEventService implements EventService {
         contractDto.setEventType(event.getEventType());
         contractDto.setProcessingStatus(NEW);
         contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
-        processContractByEventType(contractDto, event.getEventType());
+//        processContractByEventType(contractDto, event.getEventType());
         storeContract(contractDto);
         event.setProcessingStatus(PROCESSED);
         tradeEventRepository.save(event);

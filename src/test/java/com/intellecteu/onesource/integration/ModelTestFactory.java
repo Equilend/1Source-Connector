@@ -53,7 +53,6 @@ public class ModelTestFactory {
 
     public static Position buildPosition() {
         return Position.builder()
-            .id(1L)
             .venueRefId("testVenueRefId")
             .positionId("testSpirePositionId")
             .customValue2("customValue2")
