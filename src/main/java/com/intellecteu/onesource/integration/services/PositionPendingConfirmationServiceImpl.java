@@ -157,7 +157,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             } else if (status.equals(OPEN)) {
                 positionDto.setProcessingStatus(SETTLED);
                 List<Contract> contracts = contractRepository.findByVenueRefId(
-                    positionDto.getMatching1SourceLoanContractId());
+                    positionDto.getCustomValue2());
                 if (!contracts.isEmpty()) {
                     Contract contract = contracts.get(0);
                     contract.setSettlementStatus(SettlementStatus.SETTLED);

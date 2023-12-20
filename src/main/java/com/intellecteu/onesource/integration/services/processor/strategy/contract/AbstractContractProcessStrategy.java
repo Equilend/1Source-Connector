@@ -4,20 +4,19 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.S
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
 import static java.lang.String.format;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -146,15 +145,22 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         }
 
         positionRepository.save(positionMapper.toPosition(positionDto));
-        contractRepository.save(eventMapper.toContractEntity(contractDto));
     }
 
     void savePositionRetrievementIssue(ContractDto contract) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.warn("Could not retrieve position by venue {} for the contract {}", venueRefId, contract.getContractId());
-        contract.setProcessingStatus(SPIRE_ISSUE);
+        contract.setProcessingStatus(PROPOSED);
+        contract.setLastUpdateDatetime(LocalDateTime.now());
         contract.setFlowStatus(PROCESSED);
         contractRepository.save(eventMapper.toContractEntity(contract));
+        recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
+    }
+
+    void recordContractCreatedButNotYetMatchedEvent(String contractId) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(LOAN_CONTRACT_PROPOSAL_CREATED, contractId);
+        cloudEventRecordService.record(recordRequest);
     }
 
     void processPartyRoleIssue(String positionType, ContractDto contractDto) {
@@ -167,5 +173,11 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(record, recordType, related);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
+        position.setProcessingStatus(status);
+        position.setLastUpdateDateTime(LocalDateTime.now());
+        positionRepository.save(positionMapper.toPosition(position));
     }
 }

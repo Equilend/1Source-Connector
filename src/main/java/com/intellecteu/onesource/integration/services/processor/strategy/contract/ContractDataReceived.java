@@ -6,23 +6,27 @@ import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_UP
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
@@ -34,6 +38,7 @@ import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -44,6 +49,8 @@ import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.IntegrationUtils;
+import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -70,11 +77,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processContractWithPosition(ContractDto contract, PositionDto position) {
-        if (contract.getEventType() == CONTRACT_PROPOSED) {
-            recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
-            processMatchingPosition(contract, position);
-        }
-        extractPartyRole(position.unwrapPositionType())
+        IntegrationUtils.extractPartyRole(position.unwrapPositionType())
             .ifPresentOrElse(
                 role -> processContractByRole(role, contract, position),
                 () -> persistPartyRoleIssue(contract, position.unwrapPositionType()));
@@ -82,24 +85,45 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     private void processContractByRole(PartyRole partyRole, ContractDto contract, PositionDto positionDto) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
+        EventType eventType = contract.getEventType();
         log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
             positionDto.getPositionId(), partyRole);
-        if (partyRole == BORROWER && contract.getEventType() == CONTRACT_PROPOSED) {
-            processContractForBorrower(contract, venueRefId, partyRole);
+        if (contract.getEventType() == CONTRACT_PROPOSED) {
+            processMatchingPosition(contract, positionDto);
+            if (partyRole == BORROWER) {
+                processContractForBorrower(contract, venueRefId, partyRole);
+            }
         }
-        if ((contract.getEventType() == CONTRACT_PENDING)
+        if ((eventType == CONTRACT_PENDING)
             && contract.getContractStatus() == APPROVED) {
+            //TODO remove wrong logic to overwrite statuses
+            contract.setProcessingStatus(ProcessingStatus.APPROVED);
+            savePositionStatus(positionDto, PROPOSAL_APPROVED);
             processApprovedContract(contract, venueRefId, positionDto, partyRole);
         }
         if (partyRole == BORROWER && MATCHED_POSITION.equals(contract.getProcessingStatus())) {
             reconcile(contract, positionDto);
         }
-        if (partyRole == BORROWER && contract.getEventType() == CONTRACT_CANCELED) {
-            processCanceledContractForBorrower(contract, positionDto);
+        if (eventType == CONTRACT_CANCELED) {
+            contract.setProcessingStatus(CANCELED);
+            savePositionStatus(positionDto, PROPOSAL_CANCELED);
+            if (partyRole == BORROWER) {
+                processCanceledContractForBorrower(contract, positionDto);
+            }
         }
-        if (partyRole == LENDER && contract.getEventType() == CONTRACT_DECLINED) {
-            processDeclinedContractForLender(contract, positionDto);
+        if (eventType == CONTRACT_DECLINED) {
+            contract.setProcessingStatus(DECLINED);
+            savePositionStatus(positionDto, PROPOSAL_DECLINED);
+            if (partyRole == LENDER) {
+                processDeclinedContractForLender(contract, positionDto);
+            }
         }
+        if (eventType == CONTRACT_OPENED) {
+            contract.setProcessingStatus(SETTLED);
+            contract.setLastUpdateDatetime(LocalDateTime.now());
+        }
+        contract.setFlowStatus(PROCESSED);
+        contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
     private void persistPartyRoleIssue(ContractDto contract, String positionType) {
@@ -108,20 +132,12 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
-    private void recordContractCreatedButNotYetMatchedEvent(String contractId) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(LOAN_CONTRACT_PROPOSAL_CREATED, contractId);
-        cloudEventRecordService.record(recordRequest);
-    }
-
     private void processDeclinedContractForLender(ContractDto contract, PositionDto position) {
         String spirePositionId = position.getPositionId();
         log.warn(format(CONTRACT_DECLINE_MSG, contract.getContractId(), spirePositionId));
         contract.setProcessingStatus(DECLINED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED,
             contract.getMatchingSpirePositionId());
-        contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
     private void processCanceledContractForBorrower(ContractDto contract, PositionDto position) {
@@ -129,11 +145,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         log.error("The loan contract proposal (contract identifier: {}) matching with "
                 + "the SPIRE position (position identifier: {}) has been canceled by the Lender",
             contract.getContractId(), spirePositionId);
-        contract.setProcessingStatus(ProcessingStatus.CANCELED);
+        contract.setProcessingStatus(CANCELED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED,
             contract.getMatchingSpirePositionId());
-        contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
     private void processApprovedContract(ContractDto contract, String venueRefId, PositionDto position,
@@ -144,8 +158,6 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         updateInstruction(contract, partyRole, position, venueRefId, CTR_INSTRUCTIONS_RETRIEVED);
         recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
             contract.getMatchingSpirePositionId());
-        contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
     private void processContractForBorrower(ContractDto contract, String venueRefId, PartyRole partyRole) {
@@ -163,8 +175,6 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
                 log.debug("Contract {} was approved by {}!", contract.getContractId(), partyRole);
             }
         }
-        contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
     private HttpEntity<SettlementDto> buildInstructionRequest(SettlementDto settlementDto) {
