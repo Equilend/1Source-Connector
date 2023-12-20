@@ -72,11 +72,11 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             .findFirst()
             .map(positionMapper::toPositionDto)
             .ifPresentOrElse(
-                position -> extractPartyRole(contract, position),
+                position -> processContractWithPosition(contract, position),
                 () -> savePositionRetrievementIssue(contract));
     }
 
-    private void extractPartyRole(ContractDto contract, PositionDto position) {
+    private void processContractWithPosition(ContractDto contract, PositionDto position) {
         IntegrationUtils.extractPartyRole(position.unwrapPositionType())
             .ifPresentOrElse(
                 role -> processContractByRole(role, contract, position),

@@ -353,7 +353,6 @@ public class TradeEventService implements EventService {
         contractDto.setEventType(event.getEventType());
         contractDto.setProcessingStatus(NEW);
         contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
-//        processContractByEventType(contractDto, event.getEventType());
         storeContract(contractDto);
         event.setProcessingStatus(PROCESSED);
         tradeEventRepository.save(event);
@@ -400,34 +399,5 @@ public class TradeEventService implements EventService {
                 agreement.getMatchingSpirePositionId());
             cloudEventRecordService.record(recordRequest);
         }
-    }
-
-    private void processContractByEventType(ContractDto contractDto, EventType eventType) {
-        contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
-        Optional<Position> position = positionRepository.findByVenueRefId(venueRefId).stream().findFirst();
-
-        if (eventType == CONTRACT_CANCELED) {
-            contractDto.setProcessingStatus(CANCELED);
-            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_CANCELED));
-        }
-        if (eventType == CONTRACT_DECLINED) {
-            contractDto.setProcessingStatus(DECLINED);
-            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_DECLINED));
-        }
-        if (eventType == CONTRACT_PENDING) {
-            contractDto.setProcessingStatus(APPROVED);
-            position.ifPresent(p -> savePositionStatus(p, PROPOSAL_APPROVED));
-        }
-        if (eventType == CONTRACT_OPENED) {
-            contractDto.setProcessingStatus(SETTLED);
-            contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        }
-    }
-
-    private void savePositionStatus(@NonNull Position position, @NonNull ProcessingStatus status) {
-        position.setProcessingStatus(status);
-        position.setLastUpdateDateTime(LocalDateTime.now());
-        positionRepository.save(position);
     }
 }

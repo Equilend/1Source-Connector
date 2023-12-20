@@ -178,7 +178,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
         position.setProcessingStatus(status);
         position.setLastUpdateDateTime(LocalDateTime.now());
-        positionMapper.toPosition(position);
         positionRepository.save(positionMapper.toPosition(position));
     }
 }
