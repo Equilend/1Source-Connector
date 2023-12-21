@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class EventNotificationRoute extends RouteBuilder {
+public class EventNotificationProducerRoute extends RouteBuilder {
 
     private final EventNotificationService<CloudEvent> eventNotificationService;
 

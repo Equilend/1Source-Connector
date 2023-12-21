@@ -1,10 +1,10 @@
-package com.intellecteu.onesource.integration.services.processor;
+package com.intellecteu.onesource.integration.routes.processor;
 
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.services.processor.strategy.contract.ContractProcessFlowStrategy;
+import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractProcessFlowStrategy;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,25 +1,26 @@
 package com.intellecteu.onesource.integration.routes;
 
-import com.intellecteu.onesource.integration.services.EventConsumer;
+import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
 import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-public class OneSourceEventRoute extends RouteBuilder {
+public class EventListenerRoute extends RouteBuilder {
 
-    private final EventConsumer eventService;
+    private final EventProcessor eventProcessor;
+    private final boolean isAutoStarted;
 
-    @Value("${camel.route.autostart}")
-    private boolean isAutoStarted;
-
-    public OneSourceEventRoute(EventConsumer eventService) {
-        this.eventService = eventService;
+    @Autowired
+    public EventListenerRoute(EventProcessor eventProcessor, @Value("${camel.route.autostart}") boolean isAutoStarted) {
+        this.eventProcessor = eventProcessor;
+        this.isAutoStarted = isAutoStarted;
     }
 
     @Override
-    public void configure() {
-
+    public void configure() throws Exception {
+        //Retrieve one source events
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("RetrievingNewEventsRoute")
             .autoStartup(isAutoStarted)
@@ -28,8 +29,7 @@ public class OneSourceEventRoute extends RouteBuilder {
             .log("retrieving Events")
             .log("{{camel.timestamp}}")
             .setHeader("timestamp", constant("{{camel.timestamp}}"))
-            .bean(eventService, "consumeEvents")
+            .bean(eventProcessor, "consumeEvents")
             .log("Retrieve Events success");
-
     }
 }

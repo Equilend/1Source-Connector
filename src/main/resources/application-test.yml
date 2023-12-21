@@ -1,5 +1,6 @@
 camel:
   timer: ${CAMEL_TIMER_LOCAL:9000}
+  newPositionTimer: ${CAMEL_TIMER:9000}
   positionTimer: ${CAMEL_TIMER_LOCAL:9000}
   partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
   timestamp: 2023-06-25T09:51:16.111Z

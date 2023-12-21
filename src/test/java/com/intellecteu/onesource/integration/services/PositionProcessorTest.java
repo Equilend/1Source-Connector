@@ -22,6 +22,7 @@ import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.routes.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
@@ -37,7 +38,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
-public class SpireContractInitiationServiceTest {
+public class PositionProcessorTest {
 
     @Mock
     private AgreementRepository agreementRepository;
@@ -62,7 +63,7 @@ public class SpireContractInitiationServiceTest {
     private ReconcileService<AgreementDto, PositionDto> reconcileService;
 
     @InjectMocks
-    private SpireContractInitiationService positionApiService;
+    private PositionProcessor positionApiService;
 
     @BeforeEach
     void setUp() {

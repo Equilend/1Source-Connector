@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.config;
 
 import com.intellecteu.onesource.integration.enums.FlowStatus;
-import com.intellecteu.onesource.integration.services.processor.strategy.contract.ContractProcessFlowStrategy;
+import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractProcessFlowStrategy;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;

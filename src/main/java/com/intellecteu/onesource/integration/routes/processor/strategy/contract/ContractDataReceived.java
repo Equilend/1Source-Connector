@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.CTR_INSTRUCTIONS_RETRIEVED;

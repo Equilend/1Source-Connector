@@ -1,7 +1,5 @@
-package com.intellecteu.onesource.integration.services;
+package com.intellecteu.onesource.integration.routes.processor;
 
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
@@ -14,10 +12,6 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FE
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -26,11 +20,8 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
@@ -42,43 +33,55 @@ import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SpireContractInitiationService implements ContractInitiationService {
+public class PositionProcessor {
 
     private static final String STARTING_POSITION_ID = "0";
 
+    private final PositionService positionService;
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionMapper positionMapper;
     private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
-    private final SpireService spireService;
     private final OneSourceService oneSourceService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
     private final ReconcileService<AgreementDto, PositionDto> reconcileService;
 
-    @Override
+    public void fetchNewPositions() {
+        List<Position> newSpirePositions = positionService.getNewSpirePositions();
+        newSpirePositions.forEach(position -> position.setProcessingStatus(ProcessingStatus.NEW));
+        positionService.savePositions(newSpirePositions);
+    }
+
     public void startContractInitiation() {
         log.debug(">>>>> Starting SPIRE contract initiation process!");
-        List<PositionDto> positionDetails = getPositionDetails();
+        List<PositionDto> positionDetails = getNewPositions();
         positionDetails.forEach(this::processPositionInformation);
         log.debug("<<<<< SPIRE contract initiation process is finished!");
         positionDetails.forEach(this::proceedWithSettlementInstruction);
+    }
+
+    private List<PositionDto> getNewPositions() {
+        List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW);
+        return positions.stream().map(position -> positionMapper.toPositionDto(position)).collect(Collectors.toList());
     }
 
     private void proceedWithSettlementInstruction(PositionDto positionDto) {
@@ -149,17 +152,6 @@ public class SpireContractInitiationService implements ContractInitiationService
         return recordedSettlementDto;
     }
 
-    @Override
-    public List<PositionDto> getPositionDetails() {
-        List<Position> storedPositions = positionRepository.findAll();
-        log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
-        return storedPositions.stream()
-            .max(Comparator.comparingInt(p -> Integer.parseInt(p.getPositionId())))
-            .map(p -> requestPositionDetails(String.valueOf(p.getPositionId())))
-            .orElseGet(() -> requestPositionDetails(STARTING_POSITION_ID));
-    }
-
-    @Override
     public void processPositionInformation(PositionDto positionDto) {
         matchPositionWithCapturedAgreement(positionDto);
         positionDto.setVenueRefId(positionDto.getCustomValue2());
@@ -175,30 +167,6 @@ public class SpireContractInitiationService implements ContractInitiationService
             .stream()
             .findFirst()
             .map(c -> saveContract(positionDto, c));
-    }
-
-    private List<PositionDto> requestPositionDetails(String positionId) {
-        log.debug("Sending POST request for position id: {}", positionId);
-        return requestSpire(positionId);
-    }
-
-    private List<PositionDto> requestSpire(String positionId) {
-        try {
-            ResponseEntity<JsonNode> response = spireService.requestPosition(
-                createGetPositionNQuery(null, AndOr.AND, null,
-                    createListOfTuplesGetPositionWithoutTA(positionId)));
-            return convertPositionResponse(response);
-        } catch (HttpStatusCodeException e) {
-            log.warn("SPIRE error response for {} subprocess. Details: {}",
-                GET_NEW_POSITIONS_PENDING_CONFIRMATION, e.getStatusCode());
-            if (Set.of(UNAUTHORIZED, FORBIDDEN).contains(e.getStatusCode())) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(e,
-                    IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-                cloudEventRecordService.record(recordRequest);
-            }
-            return List.of();
-        }
     }
 
     private SettlementDto proceedWithSettlementInstruction(SettlementDto settlementDto) {

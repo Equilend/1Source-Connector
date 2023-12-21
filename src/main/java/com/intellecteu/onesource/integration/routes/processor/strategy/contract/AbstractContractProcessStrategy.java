@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;

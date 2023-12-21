@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
+package com.intellecteu.onesource.integration.routes.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_RETRIEVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
@@ -31,6 +31,7 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     @Transactional
     public void process(AgreementDto agreement) {
         var positionDto = spireService.getTradePosition(agreement);
+
         if (positionDto == null) {
             log.warn("No position for agreement: {}. Skipping processing", agreement.getAgreementId());
             agreement.getTrade().setProcessingStatus(SPIRE_ISSUE);

@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;

@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services;
+package com.intellecteu.onesource.integration.routes.processor;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
@@ -15,16 +15,10 @@ import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PRO
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROCESSED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
@@ -35,27 +29,26 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.PartyDto;
+import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.Participant;
-import com.intellecteu.onesource.integration.model.ParticipantHolder;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.Timestamp;
 import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,21 +59,19 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class TradeEventService implements EventService {
+public class EventProcessor {
 
     private final TradeEventRepository tradeEventRepository;
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
     private final PositionRepository positionRepository;
     private final TimestampRepository timestampRepository;
-    private final ParticipantHolderRepository participantHolderRepository;
     private final EventMapper eventMapper;
     private final SpireService spireService;
     private final OneSourceService oneSourceService;
@@ -90,8 +81,20 @@ public class TradeEventService implements EventService {
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
     private LocalDateTime timeStamp;
 
-    @Override
-    public void processEventData() {
+    public void consumeEvents() {
+        log.debug(">>>>> Pulling events!");
+        Optional<Timestamp> maxTimestamp = timestampRepository.findFirstByOrderByTimestampDesc();
+        maxTimestamp.ifPresent(timestamp -> timeStamp = timestamp.getTimestamp());
+        log.debug("Timestamp: " + timeStamp);
+        List<TradeEventDto> events = oneSourceService.retrieveEvents(timeStamp);
+        events.forEach(i -> log.debug("Event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
+            i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDatetime()));
+        List<TradeEventDto> newEvents = findNewEvents(events);
+        newEvents.forEach(this::saveEvent); //make batch insert later
+        log.debug("<<<<< Retrieved {} new events!", newEvents.size());
+    }
+
+    public void processEvents() {
         log.debug(">>>>> Process event data!");
         List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(CREATED);
         timeStamp = findMaxDateTimeOfEvents(events);
@@ -101,7 +104,6 @@ public class TradeEventService implements EventService {
         log.debug("<<<<< Processed {} events", events.size());
     }
 
-    @Override
     public void cancelContract() {
         log.debug(">>>>> Starting the Cancel contract process.");
         Map<Contract, String> candidatesForCancelToPositionId = new HashMap<>();
@@ -124,6 +126,20 @@ public class TradeEventService implements EventService {
             oneSourceService.cancelContract(candidateWithPositionId.getKey(), candidateWithPositionId.getValue());
         }
         log.debug("<<<<< Finishing Cancel contract process.");
+    }
+
+    private void saveEvent(TradeEventDto tradeEventDto) {
+        TradeEvent eventEntity = eventMapper.toEventEntity(tradeEventDto);
+        eventEntity.setProcessingStatus(CREATED);
+        tradeEventRepository.save(eventEntity);
+    }
+
+    private List<TradeEventDto> findNewEvents(List<TradeEventDto> events) {
+        return events.stream()
+            .filter(p -> p.getEventDatetime().isAfter(timeStamp))
+            .peek(i -> log.debug("New event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
+                i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDatetime()))
+            .toList();
     }
 
     private boolean isToCancelCandidate(Contract contract, String positionType, ResponseEntity<JsonNode> response) {
@@ -160,100 +176,6 @@ public class TradeEventService implements EventService {
             positionId = jsonNode.get("positionId").toString().replace("\"", "");
         }
         return positionId;
-    }
-
-    @Override
-    public void processParties() {
-        List<PartyDto> partyDtos = oneSourceService.retrieveParties();
-        if (partyDtos == null) {
-            return;
-        }
-        ParticipantHolder holder = participantHolderRepository.findAll().stream().findAny().orElse(null);
-        if (holder == null) {
-            List<Participant> participants = new ArrayList<>();
-            partyDtos.forEach(i -> mapParticipants(participants, i));
-
-            holder = ParticipantHolder.builder().participants(participants).build();
-            ParticipantHolder finalHolder = holder;
-            holder.getParticipants().forEach(participant -> participant.setParticipantHolder(finalHolder));
-            participantHolderRepository.save(holder);
-            return;
-        }
-
-        List<String> retrievedIds = partyDtos.stream().map(PartyDto::getGleifLei).toList();
-        List<String> storedIds = holder.getParticipants().stream().map(Participant::getGleifLei).toList();
-
-        updateParticipants(partyDtos, holder, retrievedIds, storedIds);
-        participantHolderRepository.save(holder);
-    }
-
-    private void updateParticipants(List<PartyDto> retrievedParties, ParticipantHolder holder,
-        List<String> retrievedIds, List<String> storedIds) {
-        List<Participant> participants = holder.getParticipants();
-
-        for (String gleiflei : retrievedIds) {
-            startParticipantActuality(retrievedParties, holder, storedIds, gleiflei);
-        }
-
-        for (String gleiflei : storedIds) {
-            endParticipantActuality(retrievedIds, gleiflei, participants);
-        }
-    }
-
-    private void startParticipantActuality(List<PartyDto> retrievedParties, ParticipantHolder holder,
-        List<String> storedIds, String gleiflei) {
-        List<Participant> participants = holder.getParticipants();
-        if (!storedIds.contains(gleiflei)) {
-            retrievedParties.stream()
-                .filter(p -> p.getGleifLei().equals(gleiflei))
-                .findFirst()
-                .ifPresent(party -> injectParticipantToHolder(party, holder));
-        } else {
-            participants.stream()
-                .filter(p -> gleiflei.equals(p.getGleifLei()))
-                .filter(p -> p.getParticipantEndDate() != null)
-                .findFirst()
-                .ifPresent(participant -> {
-                    participant.setParticipantStartDate(LocalDateTime.now());
-                    participant.setParticipantEndDate(null);
-                });
-        }
-    }
-
-    private void injectParticipantToHolder(PartyDto party, ParticipantHolder holder) {
-        Participant participant = Participant.builder()
-            .partyId(party.getPartyId())
-            .partyName(party.getPartyName())
-            .gleifLei(party.getGleifLei())
-            .internalPartyId(party.getInternalPartyId())
-            .participantStartDate(LocalDateTime.now())
-            .participantEndDate(null)
-            .build();
-
-        holder.addParticipant(participant);
-    }
-
-    private static void endParticipantActuality(List<String> retrievedIds, String gleiflei,
-        List<Participant> participants) {
-        if (!retrievedIds.contains(gleiflei)) {
-            participants.stream()
-                .filter(i -> gleiflei.equals(i.getGleifLei()))
-                .findFirst()
-                .ifPresent(p -> p.setParticipantEndDate(LocalDateTime.now()));
-        }
-    }
-
-    private void mapParticipants(List<Participant> participants, PartyDto partyDto) {
-        Participant participant = Participant.builder()
-            .partyId(partyDto.getPartyId())
-            .partyName(partyDto.getPartyName())
-            .gleifLei(partyDto.getGleifLei())
-            .internalPartyId(partyDto.getInternalPartyId())
-            .participantStartDate(LocalDateTime.now())
-            .participantEndDate(null)
-            .build();
-
-        participants.add(participant);
     }
 
     private boolean isToCancelCandidate(Contract contract, ResponseEntity<JsonNode> response) {

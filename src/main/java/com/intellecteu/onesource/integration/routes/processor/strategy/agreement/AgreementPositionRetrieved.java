@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
+package com.intellecteu.onesource.integration.routes.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 

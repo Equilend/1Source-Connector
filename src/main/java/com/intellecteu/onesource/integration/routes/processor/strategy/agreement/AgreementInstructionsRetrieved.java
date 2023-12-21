@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.agreement;
+package com.intellecteu.onesource.integration.routes.processor.strategy.agreement;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;

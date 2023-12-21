@@ -15,6 +15,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -42,6 +43,7 @@ import com.intellecteu.onesource.integration.dto.spire.Query;
 import com.intellecteu.onesource.integration.dto.spire.SwiftbicDTO;
 import com.intellecteu.onesource.integration.dto.spire.TradeDTO;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.PositionMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
@@ -87,6 +89,48 @@ public class SpireApiService implements SpireService {
     private static final String EDIT_POSITION_ENDPOINT = "/trades/editposition";
     private static final String UPDATE_INSTRUCTION_ENDPOINT = "/rds/static/instruction/{instructionId}";
     private static final String GET_INSTRUCTION_ENDPOINT = "/rds/static/instruction";
+
+    @Override
+    public List<PositionDto> requestNewPositions(String maxPositionId) throws PositionRetrievementException {
+        ResponseEntity<JsonNode> response = requestPosition(
+            createGetPositionNQuery(null, AndOr.AND, null,
+                createListOfTuplesGetPositionWithoutTA(maxPositionId)));
+        if (response.getStatusCode().is2xxSuccessful()
+            && response.getBody() != null && !response.getBody().at("/data/beans").isMissingNode()) {
+            List<PositionDto> positionDtoList = new ArrayList<>();
+            JsonNode positionsJsonNode = response.getBody().at("/data/beans");
+            if (positionsJsonNode.isArray()) {
+                for (JsonNode positionNode : positionsJsonNode) {
+                    try {
+                        positionDtoList.add(positionMapper.jsonToPositionDto(positionNode));
+                    } catch (JsonProcessingException e) {
+                        throw new RuntimeException("Wrong structure of PositionDto.class");
+                    }
+                }
+            }
+            return positionDtoList;
+        } else {
+            throw new PositionRetrievementException(String.valueOf(response.getBody()));
+        }
+    }
+
+    @Override
+    public PositionDto requestPositionByVenueRefId(String venueRefId)
+        throws PositionRetrievementException {
+        ResponseEntity<JsonNode> response = requestPosition(createGetPositionNQuery(null, AndOr.AND, true,
+            createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
+        if (response.getStatusCode().is2xxSuccessful()
+            && response.getBody() != null && !response.getBody().at("/data/beans/0").isMissingNode()) {
+            JsonNode positionJsonNode = response.getBody().at("/data/beans/0");
+            try {
+                return positionMapper.jsonToPositionDto(positionJsonNode);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException("Wrong structure of PositionDto.class");
+            }
+        } else {
+            throw new PositionRetrievementException(response.getBody().toString());
+        }
+    }
 
     @Override
     public PositionDto getTradePosition(AgreementDto agreement) {

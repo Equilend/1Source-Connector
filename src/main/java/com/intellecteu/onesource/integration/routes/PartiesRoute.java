@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.routes;
 
-import com.intellecteu.onesource.integration.services.EventService;
+import com.intellecteu.onesource.integration.routes.processor.PartyProcessor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PartiesRoute extends RouteBuilder {
 
-    private final EventService eventService;
+    private final PartyProcessor partyProcessor;
 
     @Value("${camel.route.autostart}")
     private boolean isAutoStarted;
@@ -16,19 +16,19 @@ public class PartiesRoute extends RouteBuilder {
     @Value("${camel.partyTimer}")
     private String partyTimer;
 
-    public PartiesRoute(EventService eventService) {
-        this.eventService = eventService;
+    public PartiesRoute(PartyProcessor partyProcessor) {
+        this.partyProcessor = partyProcessor;
     }
 
     @Override
     public void configure() {
 
-        from("quartz2://myTimer?cron=" + partyTimer)
+        from("quartz://myTimer?cron=" + partyTimer)
             .log("Start route at 6:00 am every day")
             .routeId("PartiesRoute")
             .autoStartup(isAutoStarted)
             .log("Start retrieving parties")
-            .bean(eventService, "processParties")
+            .bean(partyProcessor, "processParties")
             .log("Retrieving parties success");
 
     }

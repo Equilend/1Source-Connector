@@ -19,6 +19,7 @@ import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -72,7 +73,7 @@ public class ParticipantFlowTests {
 
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
-    private TradeEventService eventService;
+    private EventProcessor eventService;
 
     @BeforeEach
     void setUp() {
@@ -84,7 +85,7 @@ public class ParticipantFlowTests {
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository,
+        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
             positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService,
             oneSourceService, cloudEventRecordService);
     }

@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.CTR_INSTRUCTIONS_RETRIEVED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;

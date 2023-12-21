@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.repository;
 
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,6 +14,8 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
     List<Position> findAllNotCanceledAndSettled();
 
     List<Position> findByVenueRefId(String venueRefId);
+
+    List<Position> findAllByProcessingStatus(ProcessingStatus processingStatus);
 
     List<Position> findByMatching1SourceTradeAgreementId(String agreementId);
 }

@@ -44,7 +44,8 @@ import com.intellecteu.onesource.integration.repository.SettlementTempRepository
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
@@ -114,7 +115,7 @@ public class ContractFlowTest {
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
     private ContractDataReceived contractDataReceived;
-    private TradeEventService eventService;
+    private EventProcessor eventService;
     @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
@@ -149,7 +150,7 @@ public class ContractFlowTest {
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new TradeEventService(eventRepository, agreementRepository, contractRepository,
+        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
             positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService,
             oneSourceService, cloudEventRecordService);
         contract = buildContractDto();
