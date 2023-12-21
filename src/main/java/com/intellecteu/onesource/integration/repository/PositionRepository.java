@@ -10,7 +10,7 @@ public interface PositionRepository extends JpaRepository<Position, Long> {
 
     List<Position> findAll();
 
-    @Query("select p from Position p where p.positionStatus <> 'CANCELED' and p.positionStatus <> 'SETTLED'")
+    @Query("select p from Position p where p.positionStatus <> 'CANCELED' and p.positionStatus <> 'SETTLED' and p.processingStatus <> 'NEW'")
     List<Position> findAllNotCanceledAndSettled();
 
     List<Position> findByVenueRefId(String venueRefId);

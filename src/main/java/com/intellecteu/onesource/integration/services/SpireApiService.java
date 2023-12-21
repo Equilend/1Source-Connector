@@ -12,23 +12,23 @@ import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_POSITION_CANCELED;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.buildRequest;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetInstructionsNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPosition;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesGetPositionWithoutTA;
+import static com.intellecteu.onesource.integration.utils.SpireApiUtils.getDefaultHttpHeaders;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.PUT;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.LocalMarketFieldDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -45,7 +45,7 @@ import com.intellecteu.onesource.integration.dto.spire.TradeDTO;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
@@ -62,10 +62,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @Slf4j
@@ -77,7 +78,7 @@ public class SpireApiService implements SpireService {
     private final PositionRepository positionRepository;
     private final SettlementUpdateRepository settlementUpdateRepository;
     private final EventMapper eventMapper;
-    private final PositionMapper positionMapper;
+    private final SpireMapper spireMapper;
     private final CloudEventRecordService cloudEventRecordService;
 
     @Value("${spire.lenderEndpoint}")
@@ -102,7 +103,7 @@ public class SpireApiService implements SpireService {
             if (positionsJsonNode.isArray()) {
                 for (JsonNode positionNode : positionsJsonNode) {
                     try {
-                        positionDtoList.add(positionMapper.jsonToPositionDto(positionNode));
+                        positionDtoList.add(spireMapper.jsonToPositionDto(positionNode));
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException("Wrong structure of PositionDto.class");
                     }
@@ -123,12 +124,13 @@ public class SpireApiService implements SpireService {
             && response.getBody() != null && !response.getBody().at("/data/beans/0").isMissingNode()) {
             JsonNode positionJsonNode = response.getBody().at("/data/beans/0");
             try {
-                return positionMapper.jsonToPositionDto(positionJsonNode);
+                return spireMapper.jsonToPositionDto(positionJsonNode);
             } catch (JsonProcessingException e) {
                 throw new RuntimeException("Wrong structure of PositionDto.class");
             }
         } else {
-            throw new PositionRetrievementException(response.getBody().toString());
+            var exceptionMessage = response.getBody() == null ? "No body" : response.getBody().toString();
+            throw new PositionRetrievementException(exceptionMessage);
         }
     }
 
@@ -153,7 +155,7 @@ public class SpireApiService implements SpireService {
             saveIssue(msg, trade, SPIRE_POSITION_CANCELED);
             return null;
         }
-        return positionMapper.toPositionDto(position);
+        return spireMapper.toPositionDto(position);
     }
 
     private void validateResponse(ResponseEntity<JsonNode> response, String venueRefId, TradeAgreementDto trade) {
@@ -179,7 +181,7 @@ public class SpireApiService implements SpireService {
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
             JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            return positionMapper.toPosition(jsonNode);
+            return spireMapper.toPosition(jsonNode);
         }
         return null;
     }
@@ -213,27 +215,19 @@ public class SpireApiService implements SpireService {
         return false;
     }
 
-    private HttpEntity<Query> buildRequest(NQuery nQuery) {
-        Query query = Query.builder().nQuery(nQuery).build();
-
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        return new HttpEntity<>(query, headers);
-    }
-
-    private HttpEntity<LoanTradeInputDTO> buildRequest(ContractDto contract, String positionId) {
+    private HttpEntity<LoanTradeInputDTO> createRequest(ContractDto contract, String positionId) {
         LoanTradeInputDTO loanTradeInputDTO = LoanTradeInputDTO.builder()
             .originalTrade(TradeDTO.builder()
                 .positionId(Integer.valueOf(positionId))
-                .positionDTO(new PositionRequestDTO(contract.getContractId()))
+                .positionDTO(new PositionRequestDTO(contract.getContractId()))  // todo check this request
                 .build())
             .build();
 
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
+        final var headers = getDefaultHttpHeaders();
         return new HttpEntity<>(loanTradeInputDTO, headers);
     }
 
+    @Deprecated(since = "1.0.4") // todo discuss the get instruction body changes
     @Override
     public List<SettlementDto> retrieveSettlementDetails(PositionDto position, String venueRefId,
         TradeAgreementDto trade,
@@ -265,6 +259,40 @@ public class SpireApiService implements SpireService {
         return null;
     }
 
+    @Override
+    public ResponseEntity<SettlementDto> requestLenderSettlementDetails(PositionDto position,
+        HttpEntity<Query> request) throws RestClientException {
+        final String endpoint = lenderSpireEndpoint + GET_INSTRUCTION_ENDPOINT;
+        return executePostForSettlementInstructionDetails(position, endpoint, request, LENDER);
+    }
+
+    @Override
+    public ResponseEntity<SettlementDto> requestBorrowerSettlementDetails(PositionDto position,
+        HttpEntity<Query> request) throws RestClientException {
+        final String endpoint = borrowerSpireEndpoint + GET_INSTRUCTION_ENDPOINT;
+        return executePostForSettlementInstructionDetails(position, endpoint, request, BORROWER);
+    }
+
+    // todo reword request process and json parsing after a new architecture flow implemented
+    private ResponseEntity<SettlementDto> executePostForSettlementInstructionDetails(PositionDto position,
+        String endpoint,
+        HttpEntity<Query> request, PartyRole partyRole) throws RestClientException {
+        log.debug("Sending POST request to {}", endpoint);
+        var response = restTemplate.postForEntity(endpoint, request, JsonNode.class);
+        if (response.getBody() != null && response.getBody().get("data") != null
+            && response.getBody().get("data").get("beans") != null
+            && response.getBody().get("data").get("beans").get(0) != null) {
+            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+
+            final List<SettlementDto> settlementList = retrieveInstructions(jsonNode, partyRole,
+                position.getCustomValue2());
+            if (!settlementList.isEmpty()) {
+                return new ResponseEntity<>(settlementList.get(0), response.getHeaders(), response.getStatusCode());
+            }
+        }
+        throw new HttpClientErrorException(NOT_FOUND);
+    }
+
     private ResponseEntity<JsonNode> requestInstruction(String agreementId, String positionId,
         HttpEntity<Query> request, String endpoint) {
         try {
@@ -283,7 +311,7 @@ public class SpireApiService implements SpireService {
 
     @Override
     public void updatePosition(ContractDto contract, String positionId) {
-        HttpEntity<LoanTradeInputDTO> request = buildRequest(contract, positionId);
+        HttpEntity<LoanTradeInputDTO> request = createRequest(contract, positionId);
         log.debug("Updating SPIRE position {}. Sending POST request to {}",
             positionId, lenderSpireEndpoint + EDIT_POSITION_ENDPOINT);
         try {
@@ -301,6 +329,7 @@ public class SpireApiService implements SpireService {
         }
     }
 
+    @Deprecated(since = "Flow II") //todo refine on refactoring
     @Override
     public void updateInstruction(ContractDto contract, PositionDto position, String venueRefId,
         SettlementInstructionDto settlementInstructionDto, PartyRole role) {
@@ -309,9 +338,7 @@ public class SpireApiService implements SpireService {
         SettlementInstructionUpdate settlementInstructionUpdate = settlementUpdateRepository
             .findByVenueRefId(venueRefId).get(0);
 
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        HttpEntity<InstructionDTO> request = new HttpEntity<>(instructionDTO, headers);
+        HttpEntity<InstructionDTO> request = new HttpEntity<>(instructionDTO, getDefaultHttpHeaders());
 
         log.debug("Update instruction for contract: {}, position: {}, venueRefId: {}, party: {}",
             contract.getContractId(), position.getPositionId(), venueRefId, role);
@@ -323,6 +350,19 @@ public class SpireApiService implements SpireService {
         executeUpdateInstructionRequest(url, contract, request, settlementInstructionUpdate);
         log.debug("The Spire settlement instruction was updated! The loan contract: {}, Spire position: {}",
             contract.getContractId(), position.getPositionId());
+    }
+
+    @Override
+    public void updateInstruction(InstructionDTO instructionDto, SettlementDto settlementDto, PartyRole role) {
+        HttpEntity<InstructionDTO> request = new HttpEntity<>(instructionDto, getDefaultHttpHeaders());
+        String url = switch (role) {
+            case LENDER -> lenderSpireEndpoint + UPDATE_INSTRUCTION_ENDPOINT;
+            case BORROWER -> borrowerSpireEndpoint + UPDATE_INSTRUCTION_ENDPOINT;
+            default -> throw new HttpClientErrorException(NOT_FOUND);
+        };
+        final Integer instructionId = settlementDto.getInstructionId();
+        log.debug("Executing PUT request to Update Settlement Instruction: {}, url: {}", instructionId, url);
+        restTemplate.exchange(url, PUT, request, JsonNode.class, instructionId);
     }
 
     private ResponseEntity<JsonNode> executeUpdateInstructionRequest(String url, ContractDto contract,
@@ -345,6 +385,7 @@ public class SpireApiService implements SpireService {
         }
     }
 
+    // todo rework as only one Settlement Instruction expected either for Borrower of for Lender
     private List<SettlementDto> retrieveInstructions(JsonNode jsonNode, PartyRole partyRole, String venueRefId) {
         List<SettlementDto> settlements = new ArrayList<>();
         JsonNode bicDTO = jsonNode.get("bicDTO");
@@ -356,7 +397,7 @@ public class SpireApiService implements SpireService {
         String name = eventMapper.getIfExist(jsonNode, "agentName");
         String agentBic = eventMapper.getIfExist(agentBicDTO, "bic") + eventMapper.getIfExist(agentBicDTO, "branch");
         String agentAcc = eventMapper.getIfExist(jsonNode, "agentSafe");
-        Long dtc = Long.valueOf(eventMapper.getIfExist(accountDTO, "dtc"));
+        String dtc = eventMapper.getIfExist(accountDTO, "dtc");
         SettlementInstructionDto settlementInstruction = toSettlementInstruction(bic, name, agentBic, agentAcc, dtc);
         SettlementDto settlementDto = SettlementDto.builder()
             .partyRole(partyRole)
@@ -366,7 +407,7 @@ public class SpireApiService implements SpireService {
         saveSettlementUpdate(partyRole, venueRefId, instructionId, settlementInstruction);
 
         settlements.add(settlementDto);
-        log.debug("Retrieved {} settlement instructions by {} with venueRefId={}",
+        log.debug("Retrieved {} settlement instructions for {} with venueRefId={}",
             settlements.size(), partyRole, venueRefId);
 
         return settlements;
@@ -399,30 +440,19 @@ public class SpireApiService implements SpireService {
     }
 
     SettlementInstructionDto toSettlementInstruction(String bic, String name, String agentBic, String agentAcc,
-        Long dtc) {
-
-        List<LocalMarketFieldDto> marketFieldDtos = new ArrayList<>();
-        marketFieldDtos.add(toLocalMarketFields("Participant Number", String.valueOf(dtc)));
-
+        String dtc) {
         return SettlementInstructionDto.builder()
             .settlementBic(bic)
             .localAgentName(name)
             .localAgentBic(agentBic)
             .localAgentAcct(agentAcc)
-            .localMarketFields(marketFieldDtos)
-            .build();
-    }
-
-    LocalMarketFieldDto toLocalMarketFields(String name, String value) {
-        return LocalMarketFieldDto.builder()
-            .localFieldName(name)
-            .localFieldValue(value)
+            .dtcParticipantNumber(dtc)
             .build();
     }
 
     private static InstructionDTO fillInstructions(SettlementInstructionDto settlementInstruction) {
         final AccountDto accountDTO = new AccountDto();
-        accountDTO.setDtc(Long.valueOf(settlementInstruction.getLocalMarketFields().get(0).getLocalFieldValue()));
+        accountDTO.setDtc(Long.valueOf(settlementInstruction.getDtcParticipantNumber()));
         return InstructionDTO.builder()
             .agentName(settlementInstruction.getLocalAgentName())
             .agentSafe(settlementInstruction.getLocalAgentAcct())
@@ -442,13 +472,13 @@ public class SpireApiService implements SpireService {
     }
 
     public SpireApiService(RestTemplate restTemplate, PositionRepository positionRepository, EventMapper eventMapper,
-        SettlementUpdateRepository settlementUpdateRepository, PositionMapper positionMapper,
+        SettlementUpdateRepository settlementUpdateRepository, SpireMapper spireMapper,
         CloudEventRecordService cloudEventRecordService) {
         this.restTemplate = restTemplate;
         this.positionRepository = positionRepository;
         this.settlementUpdateRepository = settlementUpdateRepository;
         this.eventMapper = eventMapper;
-        this.positionMapper = positionMapper;
+        this.spireMapper = spireMapper;
         this.cloudEventRecordService = cloudEventRecordService;
     }
 }

@@ -123,9 +123,8 @@ CREATE TABLE IF NOT EXISTS party
 
 CREATE TABLE IF NOT EXISTS position
 (
-    id                    SERIAL NOT NULL,
-    venue_ref_id          VARCHAR(255) NULL,
     spire_position_id     VARCHAR(255) NULL,
+    venue_ref_id          VARCHAR(255) NULL,
     custom_value2         VARCHAR(255) NULL,
     ticker                VARCHAR(255) NULL,
     cusip                 VARCHAR(255) NULL,
@@ -168,7 +167,7 @@ CREATE TABLE IF NOT EXISTS position
     matching_1source_loan_contract_id     VARCHAR(255) NULL,
     applicable_instruction_id      INT          NULL,
     last_update_datetime   timestamp NULL,
-    CONSTRAINT pk_position PRIMARY KEY (id)
+    CONSTRAINT pk_position PRIMARY KEY (spire_position_id)
 );
 
 CREATE TABLE IF NOT EXISTS price

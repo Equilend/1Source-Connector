@@ -1,13 +1,15 @@
 package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
-import static com.intellecteu.onesource.integration.enums.FlowStatus.CTR_INSTRUCTIONS_RETRIEVED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_UPDATED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException.NO_PARTY_ROLE_EXCEPTION;
 import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
@@ -27,7 +29,11 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CA
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.intellecteu.onesource.integration.dto.CollateralDto;
@@ -35,9 +41,11 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
+import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
@@ -47,14 +55,21 @@ import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 
 @Component
 @Slf4j
@@ -70,14 +85,14 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             contract.getLastUpdateDatetime(), venueRefId);
         positionRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()
-            .map(positionMapper::toPositionDto)
+            .map(spireMapper::toPositionDto)
             .ifPresentOrElse(
                 position -> processContractWithPosition(contract, position),
                 () -> savePositionRetrievementIssue(contract));
     }
 
     private void processContractWithPosition(ContractDto contract, PositionDto position) {
-        IntegrationUtils.extractPartyRole(position.unwrapPositionType())
+        extractPartyRole(position.unwrapPositionType())
             .ifPresentOrElse(
                 role -> processContractByRole(role, contract, position),
                 () -> persistPartyRoleIssue(contract, position.unwrapPositionType()));
@@ -99,7 +114,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             //TODO remove wrong logic to overwrite statuses
             contract.setProcessingStatus(ProcessingStatus.APPROVED);
             savePositionStatus(positionDto, PROPOSAL_APPROVED);
-            processApprovedContract(contract, venueRefId, positionDto, partyRole);
+            processApprovedContract(contract, positionDto);
+            recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
+                contract.getMatchingSpirePositionId());
         }
         if (partyRole == BORROWER && MATCHED_POSITION.equals(contract.getProcessingStatus())) {
             reconcile(contract, positionDto);
@@ -150,15 +167,71 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             contract.getMatchingSpirePositionId());
     }
 
-    private void processApprovedContract(ContractDto contract, String venueRefId, PositionDto position,
-        PartyRole partyRole) {
-        log.debug("Retrieving Position by venueRefId: {}", venueRefId);
-        spireService.updatePosition(contract, position.getPositionId());
+    private void processApprovedContract(ContractDto contract, PositionDto position) {
         saveContractWithStage(contract, POSITION_UPDATED);
-        updateInstruction(contract, partyRole, position, venueRefId, CTR_INSTRUCTIONS_RETRIEVED);
-        recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
-            contract.getMatchingSpirePositionId());
+        /* temporary commented update Instruction logic for FLOW I: */
+//        updateInstruction(contract, partyRole, position, venueRefId, CTR_INSTRUCTIONS_RETRIEVED;
+        updateSettlementInstructionForCounterParty(position, contract);
+        spireService.updatePosition(contract, position.getPositionId());
     }
+
+    private void updateSettlementInstructionForCounterParty(PositionDto positionDto, ContractDto contractDto) {
+        var lenderOrBorrowerRole = getLenderOrBorrowerRole(positionDto);
+        var cpPartyRole = lenderOrBorrowerRole == LENDER ? BORROWER : LENDER;
+        log.debug("The current position partyRole is {}. Retrieving Settlement Instruction "
+            + "for the counterparty: {}", lenderOrBorrowerRole, cpPartyRole);
+        var spireCpSI = retrieveSettlementInstruction(contractDto, positionDto, cpPartyRole);
+        var contractCpSI = contractDto.getSettlement().stream()
+            .filter(s -> s.getPartyRole() == cpPartyRole)
+            .findAny();
+        if (spireCpSI.isPresent() && contractCpSI.isPresent()) {
+            updateSettlementInstructionAndRecordOnFail(contractDto, spireCpSI.get(), contractCpSI.get(), cpPartyRole);
+        }
+    }
+
+    private void updateSettlementInstructionAndRecordOnFail(ContractDto contractDto, SettlementDto spireCpSI,
+        SettlementDto contractCpSI, PartyRole cpPartyRole) {
+        try {
+            settlementService.updateSpireInstruction(spireCpSI, contractCpSI, cpPartyRole);
+            log.debug("SPIRE Settlement Instruction id:{} was updated.", spireCpSI.getInstructionId());
+        } catch (RestClientException e) {
+            if (e instanceof HttpStatusCodeException exception) {
+                if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                    recordExceptionEvent(contractDto.getContractId(), exception,
+                        POST_SETTLEMENT_INSTRUCTION_UPDATE, contractDto.getMatchingSpirePositionId());
+                }
+            }
+            log.warn("Unexpected exception during updating SI: {}", e.getMessage());
+        }
+    }
+
+    private static PartyRole getLenderOrBorrowerRole(PositionDto positionDto) {
+        return extractPartyRole(positionDto.getPositionTypeDto().getPositionType())
+            .filter(p -> (p == LENDER || p == BORROWER))
+            .orElseThrow(() -> new NoRequiredPartyRoleException(
+                format(NO_PARTY_ROLE_EXCEPTION, positionDto.getPositionId())));
+    }
+
+    private Optional<SettlementDto> retrieveSettlementInstruction(ContractDto contract,
+        PositionDto positionDto, PartyRole cpPartyRole) {
+        try {
+            final ResponseEntity<SettlementDto> response = settlementService
+                .retrieveSettlementDetails(positionDto, cpPartyRole, positionDto.getCpDto().getInfo());
+            if (HttpStatus.CREATED == response.getStatusCode()) {
+                // temporal throw an exception to record until requirements will be retrieved how to handle 201 status
+                throw new HttpClientErrorException(HttpStatus.CREATED);
+            }
+            return Optional.ofNullable(response.getBody());
+        } catch (RestClientException e) {
+            if (e instanceof HttpStatusCodeException exception) {
+                recordExceptionEvent(contract.getContractId(), exception,
+                    GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION, contract.getMatchingSpirePositionId());
+            }
+            log.warn("Unexpected exception: {}", e.getMessage());
+            return Optional.empty();
+        }
+    }
+
 
     private void processContractForBorrower(ContractDto contract, String venueRefId, PartyRole partyRole) {
         log.debug("Validating contract: {} with venueRefId: {} for party role = {}",
@@ -187,6 +260,17 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
+        log.debug("Recorded event with recordType: {}, recordData: {}, relatedData: {}",
+            recordType, recordData, relatedData);
+    }
+
+    private void recordExceptionEvent(String recordData, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String relatedData) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildExceptionRequest(recordData, exception, subProcess, relatedData);
+        cloudEventRecordService.record(recordRequest);
+        log.debug("Recorded exception event for subProcess: {}, response status: {}, recordData: {}, relatedData: {}",
+            subProcess, exception.getStatusCode(), recordData, relatedData);
     }
 
     private PositionDto matchContract(ContractDto contract, String venueRefId) {
@@ -238,13 +322,13 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     public ContractDataReceived(ContractRepository contractRepository, PositionRepository positionRepository,
-        SettlementTempRepository settlementTempRepository, SpireService spireService,
-        CloudEventRecordService cloudEventRecordService,
+        SettlementTempRepository settlementTempRepository, SettlementService settlementService,
+        SpireService spireService, CloudEventRecordService cloudEventRecordService,
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
-        EventMapper eventMapper, PositionMapper positionMapper,
+        EventMapper eventMapper, SpireMapper spireMapper,
         AgreementRepository agreementRepository, OneSourceService oneSourceService) {
-        super(contractRepository, positionRepository, settlementTempRepository, spireService,
-            cloudEventRecordService, contractReconcileService, eventMapper, positionMapper);
+        super(contractRepository, positionRepository, settlementTempRepository, settlementService, spireService,
+            cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
         this.agreementRepository = agreementRepository;
         this.oneSourceService = oneSourceService;
     }

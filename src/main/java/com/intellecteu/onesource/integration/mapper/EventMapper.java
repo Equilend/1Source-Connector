@@ -164,15 +164,8 @@ public class EventMapper {
     public SettlementInstruction toInstructionEntity(SettlementInstructionDto instructionDto) {
         if (instructionDto == null) {
             return null;
-        } else {
-            return SettlementInstruction.builder()
-                .localAgentAcct(instructionDto.getLocalAgentAcct())
-                .localAgentBic(instructionDto.getLocalAgentBic())
-                .localAgentName(instructionDto.getLocalAgentName())
-                .settlementBic(instructionDto.getSettlementBic())
-                .localMarketField(toMarketFields(instructionDto.getLocalMarketFields()))
-                .build();
         }
+        return objectMapper.convertValue(instructionDto, SettlementInstruction.class);
     }
 
     public List<LocalMarketField> toMarketFields(List<LocalMarketFieldDto> marketFieldDtos) {
@@ -201,13 +194,7 @@ public class EventMapper {
         if (instruction == null) {
             return null;
         }
-        return SettlementInstructionDto.builder()
-            .localAgentAcct(instruction.getLocalAgentAcct())
-            .localAgentBic(instruction.getLocalAgentBic())
-            .localAgentName(instruction.getLocalAgentName())
-            .settlementBic(instruction.getSettlementBic())
-            .localMarketFields(toMarketFieldsDto(instruction.getLocalMarketField()))
-            .build();
+        return objectMapper.convertValue(instruction, SettlementInstructionDto.class);
     }
 
     public LocalMarketFieldDto toMarketDto(LocalMarketField marketField) {

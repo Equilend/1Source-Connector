@@ -23,6 +23,7 @@ import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.dto.PriceDto;
 import com.intellecteu.onesource.integration.dto.RateDto;
 import com.intellecteu.onesource.integration.dto.RebateRateDto;
+import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
@@ -36,11 +37,12 @@ import com.intellecteu.onesource.integration.model.TermType;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class PositionMapper {
+public class SpireMapper {
 
     private final ObjectMapper objectMapper;
 
@@ -240,4 +242,7 @@ public class PositionMapper {
             .build();
     }
 
+    public List<SettlementDto> toSettlementList(ResponseEntity<JsonNode> response) {
+        return null;
+    }
 }

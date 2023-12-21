@@ -17,7 +17,7 @@ import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -45,7 +45,7 @@ public class PositionProcessorTest {
     @Mock
     private ContractRepository contractRepository;
     @Mock
-    private PositionMapper positionMapper;
+    private SpireMapper spireMapper;
     @Mock
     private EventMapper eventMapper;
     @Mock
@@ -90,8 +90,8 @@ public class PositionProcessorTest {
 
         when(positionRepository.findAll()).thenReturn(List.of(position));
         when(spireService.requestPosition(any())).thenReturn(ResponseEntity.ok(jsonNode));
-        when(positionMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
-        when(positionMapper.toPosition(any(PositionDto.class))).thenReturn(position);
+        when(spireMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
+        when(spireMapper.toPosition(any(PositionDto.class))).thenReturn(position);
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -109,10 +109,10 @@ public class PositionProcessorTest {
 
         verify(positionRepository).findAll();
         verify(spireService).requestPosition(any());
-        verify(positionMapper).jsonToPositionDto(any(JsonNode.class));
+        verify(spireMapper).jsonToPositionDto(any(JsonNode.class));
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
-        verify(positionMapper, times(3)).toPosition(any(PositionDto.class));
+        verify(spireMapper, times(3)).toPosition(any(PositionDto.class));
         verify(positionRepository, times(3)).save(any());
         verify(agreementRepository).findByVenueRefId(any());
         verify(contractRepository).findByVenueRefId(any());
@@ -140,8 +140,8 @@ public class PositionProcessorTest {
 
         when(positionRepository.findAll()).thenReturn(List.of(position));
         when(spireService.requestPosition(any())).thenReturn(ResponseEntity.ok(jsonNode));
-        when(positionMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
-        when(positionMapper.toPosition(any(PositionDto.class))).thenReturn(position);
+        when(spireMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
+        when(spireMapper.toPosition(any(PositionDto.class))).thenReturn(position);
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -159,10 +159,10 @@ public class PositionProcessorTest {
 
         verify(positionRepository).findAll();
         verify(spireService).requestPosition(any());
-        verify(positionMapper).jsonToPositionDto(any(JsonNode.class));
+        verify(spireMapper).jsonToPositionDto(any(JsonNode.class));
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
-        verify(positionMapper, times(3)).toPosition(any(PositionDto.class));
+        verify(spireMapper, times(3)).toPosition(any(PositionDto.class));
         verify(positionRepository, times(3)).save(any());
         verify(agreementRepository).findByVenueRefId(any());
         verify(contractRepository).findByVenueRefId(any());

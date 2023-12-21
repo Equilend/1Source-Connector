@@ -24,7 +24,7 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -74,7 +74,7 @@ public class AgreementFlowTest {
     @Mock
     private RestTemplate restTemplate;
     private EventMapper eventMapper;
-    private PositionMapper positionMapper;
+    private SpireMapper spireMapper;
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
@@ -91,7 +91,7 @@ public class AgreementFlowTest {
     void setUp() {
         objectMapper = TestConfig.createTestObjectMapper();
         eventMapper = new EventMapper(objectMapper);
-        positionMapper = new PositionMapper(objectMapper);
+        spireMapper = new SpireMapper(objectMapper);
         reconcileService = new AgreementReconcileService();
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
@@ -102,7 +102,7 @@ public class AgreementFlowTest {
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
-            positionMapper, cloudEventRecordService);
+            spireMapper, cloudEventRecordService);
         agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
             agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
@@ -137,7 +137,7 @@ public class AgreementFlowTest {
         JsonNode instructionNode = objectMapper.readTree(fullInstructionResponse);
         JsonNode node = objectMapper.readTree(fullPositionResponse);
         JsonNode positionEntityNode = objectMapper.readTree(positionEntityResponse);
-        var positionEntity = positionMapper.toPosition(positionEntityNode);
+        var positionEntity = spireMapper.toPosition(positionEntityNode);
         positionEntity.getCurrency().setCurrencyKy("USD");
         final ResponseEntity<JsonNode> response = ResponseEntity.status(201).build();
         final ResponseEntity<JsonNode> positionResponse = new ResponseEntity<>(node, HttpStatus.CREATED);
@@ -178,7 +178,7 @@ public class AgreementFlowTest {
 
         JsonNode node = objectMapper.readTree(fullPositionResponse);
         JsonNode positionEntityNode = objectMapper.readTree(positionEntityResponse);
-        var positionEntity = positionMapper.toPosition(positionEntityNode);
+        var positionEntity = spireMapper.toPosition(positionEntityNode);
         final ResponseEntity<JsonNode> positionResponse = new ResponseEntity<>(node, HttpStatus.CREATED);
 
         when(restTemplate.postForEntity(eq(getPositionUrl), any(), eq(JsonNode.class))).thenReturn(positionResponse);

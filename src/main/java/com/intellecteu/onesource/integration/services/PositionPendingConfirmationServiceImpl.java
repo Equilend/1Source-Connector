@@ -32,7 +32,7 @@ import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
@@ -63,7 +63,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
-    private final PositionMapper positionMapper;
+    private final SpireMapper spireMapper;
     private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
     private final SpireService spireService;
@@ -113,7 +113,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             if (jsonNode.isArray()) {
                 for (JsonNode positionNode : jsonNode) {
                     try {
-                        convertedPositions.add(positionMapper.jsonToPositionDto(positionNode));
+                        convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
                     } catch (JsonProcessingException e) {
                         log.warn("Cannot converted positionNode {}", positionNode.asText());
                     }
@@ -142,8 +142,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private PositionDto savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
         positionDto.setProcessingStatus(processingStatus);
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
-        var savedPosition = positionRepository.save(positionMapper.toPosition(positionDto));
-        return positionMapper.toPositionDto(savedPosition);
+        var savedPosition = positionRepository.save(spireMapper.toPosition(positionDto));
+        return spireMapper.toPositionDto(savedPosition);
     }
 
     private void updatePosition(PositionDto positionDto) {
@@ -174,7 +174,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
         ContractDto contractDto = eventMapper.toContractDto(contract);
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        oneSourceService.updateContract(contractDto, new HttpEntity<>(new SettlementStatusUpdateDto(SettlementStatus.SETTLED), headers));
+        oneSourceService.updateContract(contractDto,
+            new HttpEntity<>(new SettlementStatusUpdateDto(SettlementStatus.SETTLED), headers));
     }
 
     private void matchingCanceledPosition(String venueRefId) {

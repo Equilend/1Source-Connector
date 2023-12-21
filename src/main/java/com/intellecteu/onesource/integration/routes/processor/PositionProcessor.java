@@ -25,7 +25,7 @@ import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
@@ -57,7 +57,7 @@ public class PositionProcessor {
     private final PositionService positionService;
     private final AgreementRepository agreementRepository;
     private final ContractRepository contractRepository;
-    private final PositionMapper positionMapper;
+    private final SpireMapper spireMapper;
     private final EventMapper eventMapper;
     private final PositionRepository positionRepository;
     private final OneSourceService oneSourceService;
@@ -81,7 +81,7 @@ public class PositionProcessor {
 
     private List<PositionDto> getNewPositions() {
         List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW);
-        return positions.stream().map(position -> positionMapper.toPositionDto(position)).collect(Collectors.toList());
+        return positions.stream().map(position -> spireMapper.toPositionDto(position)).collect(Collectors.toList());
     }
 
     private void proceedWithSettlementInstruction(PositionDto positionDto) {
@@ -204,7 +204,7 @@ public class PositionProcessor {
             if (jsonNode.isArray()) {
                 for (JsonNode positionNode : jsonNode) {
                     try {
-                        convertedPositions.add(positionMapper.jsonToPositionDto(positionNode));
+                        convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
                     } catch (JsonProcessingException e) {
                         log.warn("Cannot converted positionNode {}", positionNode.asText());
                     }
@@ -215,7 +215,7 @@ public class PositionProcessor {
     }
 
     private TradeAgreementDto buildTradeAgreementDto(PositionDto positionDto) {
-        return positionMapper.buildTradeAgreementDto(positionDto);
+        return spireMapper.buildTradeAgreementDto(positionDto);
     }
 
     private ContractDto saveContract(PositionDto positionDto, Contract contract) {
@@ -242,7 +242,7 @@ public class PositionProcessor {
     private void savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
         positionDto.setProcessingStatus(processingStatus);
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
-        positionRepository.save(positionMapper.toPosition(positionDto));
+        positionRepository.save(spireMapper.toPosition(positionDto));
         log.debug("Position {} changed processing status to {}", positionDto.getPositionId(), processingStatus);
     }
 

@@ -9,6 +9,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface SettlementRepository extends JpaRepository<Settlement, Long> {
 
-    @Query("select s from SettlementInstructionUpdate s left join fetch s.instruction i left join fetch i.localMarketField l where s.instructionId = :instructionId")
+    @Query("select s from SettlementInstructionUpdate s left join fetch s.instruction i where s.instructionId = :instructionId")
     List<SettlementInstructionUpdate> findByInstructionId(@Param("instructionId") String instructionId);
 }

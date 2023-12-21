@@ -18,6 +18,6 @@ public class AccountDto {
     private String lei;
     private String shortName;
     @JsonProperty("accountId")
-    private String info;
+    private String info; //todo rename to accountId (conflicts with counterpartyDto)
 
 }

@@ -10,11 +10,12 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import lombok.extern.slf4j.Slf4j;
@@ -50,11 +51,11 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
     }
 
     public ContractPositionUpdated(ContractRepository contractRepository, PositionRepository positionRepository,
-        SettlementTempRepository settlementTempRepository, SpireService spireService,
-        CloudEventRecordService cloudEventRecordService,
+        SettlementTempRepository settlementTempRepository, SettlementService settlementService,
+        SpireService spireService, CloudEventRecordService cloudEventRecordService,
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
-        EventMapper eventMapper, PositionMapper positionMapper) {
-        super(contractRepository, positionRepository, settlementTempRepository, spireService,
-            cloudEventRecordService, contractReconcileService, eventMapper, positionMapper);
+        EventMapper eventMapper, SpireMapper spireMapper) {
+        super(contractRepository, positionRepository, settlementTempRepository, settlementService, spireService,
+            cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
     }
 }

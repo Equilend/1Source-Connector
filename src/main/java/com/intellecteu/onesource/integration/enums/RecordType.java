@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.enums;
 
 public enum RecordType {
 
+    GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION,
     LOAN_CONTRACT_PROPOSAL_APPROVED,
     LOAN_CONTRACT_PROPOSAL_CANCELED,
     LOAN_CONTRACT_PROPOSAL_CREATED,

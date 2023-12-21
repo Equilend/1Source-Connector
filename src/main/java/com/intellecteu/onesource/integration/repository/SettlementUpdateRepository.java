@@ -8,6 +8,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface SettlementUpdateRepository extends JpaRepository<SettlementInstructionUpdate, Long> {
 
-    @Query("select s from SettlementInstructionUpdate s left join fetch s.instruction i left join fetch i.localMarketField l where s.venueRefId = :venueRefId")
+    @Query("select s from SettlementInstructionUpdate s left join fetch s.instruction i where s.venueRefId = :venueRefId")
     List<SettlementInstructionUpdate> findByVenueRefId(@Param("venueRefId") String venueRefId);
 }

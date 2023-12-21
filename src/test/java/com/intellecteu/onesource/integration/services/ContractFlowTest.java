@@ -29,7 +29,7 @@ import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
@@ -107,9 +107,12 @@ public class ContractFlowTest {
     @Mock
     private RestTemplate restTemplate;
 
+    @Mock
+    private SettlementService settlementService;
+
     private EventMapper eventMapper;
 
-    private PositionMapper positionMapper;
+    private SpireMapper spireMapper;
 
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
@@ -132,7 +135,7 @@ public class ContractFlowTest {
     void setUp() {
         objectMapper = TestConfig.createTestObjectMapper();
         eventMapper = new EventMapper(objectMapper);
-        positionMapper = new PositionMapper(objectMapper);
+        spireMapper = new SpireMapper(objectMapper);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
         builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
         builderMap.put(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder());
@@ -142,17 +145,17 @@ public class ContractFlowTest {
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
-            positionMapper, cloudEventRecordService);
+            spireMapper, cloudEventRecordService);
         contractDataReceived = new ContractDataReceived(contractRepository, positionRepository,
-            settlementTempRepository, spireService, cloudEventRecordService, reconcileService,
-            eventMapper, positionMapper, agreementRepository, oneSourceService);
+            settlementTempRepository, settlementService, spireService, cloudEventRecordService, reconcileService,
+            eventMapper, spireMapper, agreementRepository, oneSourceService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
-            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireService,
-            oneSourceService, cloudEventRecordService);
+//        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
+//            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireMapper,
+//            spireService, oneSourceService, cloudEventRecordService, settlementService);
         contract = buildContractDto();
         contractEntity = eventMapper.toContractEntity(contract);
         PositionExposure exposure = new PositionExposure();
@@ -275,7 +278,7 @@ public class ContractFlowTest {
         var getPositionUrl = TEST_ENDPOINT + TEST_GET_POSITION_ENDPOINT;
         JsonNode node = objectMapper.readTree(fullPositionResponse);
         JsonNode positionEntityNode = objectMapper.readTree(positionEntityResponse);
-        var positionEntity = positionMapper.toPosition(positionEntityNode);
+        var positionEntity = spireMapper.toPosition(positionEntityNode);
         positionEntity.getCurrency().setCurrencyKy("USD");
         final ResponseEntity<JsonNode> positionResponse = new ResponseEntity<>(node, HttpStatus.CREATED);
 

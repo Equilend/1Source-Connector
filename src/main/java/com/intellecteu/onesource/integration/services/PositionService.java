@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import java.time.LocalDateTime;
@@ -20,27 +20,27 @@ public class PositionService {
 
     private static final String STARTING_POSITION_ID = "0";
 
-    private PositionRepository positionRepository;
-    private SpireApiService spireApiService;
-    private PositionMapper positionMapper;
+    private final PositionRepository positionRepository;
+    private final SpireApiService spireApiService;
+    private final SpireMapper spireMapper;
 
     @Autowired
     public PositionService(PositionRepository positionRepository, SpireApiService spireApiService,
-        PositionMapper positionMapper) {
+        SpireMapper spireMapper) {
         this.positionRepository = positionRepository;
         this.spireApiService = spireApiService;
-        this.positionMapper = positionMapper;
+        this.spireMapper = spireMapper;
     }
 
     public List<Position> getNewSpirePositions() {
         String maxPositionId = getMaxPositionId().orElse(STARTING_POSITION_ID);
         List<PositionDto> positionDtoList = spireApiService.requestNewPositions(maxPositionId);
-        return positionDtoList.stream().map(positionMapper::toPosition).collect(Collectors.toList());
+        return positionDtoList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
     }
 
     public Optional<Position> fetchSpirePositionByVenueRefId(String venueRefId) {
         try {
-            return Optional.of(positionMapper.toPosition(spireApiService.requestPositionByVenueRefId(venueRefId)));
+            return Optional.of(spireMapper.toPosition(spireApiService.requestPositionByVenueRefId(venueRefId)));
         } catch (PositionRetrievementException e) {
             log.error("Retrieve position by venueRefId.", e);
         }
@@ -65,7 +65,7 @@ public class PositionService {
         List<Position> storedPositions = positionRepository.findAll();
         log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
         return storedPositions.stream().map(Position::getPositionId)
-            .max(Comparator.comparingInt(positionId -> Integer.parseInt(positionId)));
+            .max(Comparator.comparingInt(Integer::parseInt));
     }
 
 }

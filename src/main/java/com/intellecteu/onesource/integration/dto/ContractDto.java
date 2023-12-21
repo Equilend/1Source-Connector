@@ -13,7 +13,6 @@ import com.intellecteu.onesource.integration.model.ContractStatus;
 import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.List;

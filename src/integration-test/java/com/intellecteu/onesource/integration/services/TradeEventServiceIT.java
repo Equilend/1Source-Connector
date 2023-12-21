@@ -43,8 +43,8 @@ import org.springframework.web.client.RestTemplate;
 @Disabled
 public class TradeEventServiceIT extends AbstractTest {
 
-    @Autowired
-    TradeEventService tradeEventService;
+    //    @Autowired
+//    TradeEventService tradeEventService;
     @Autowired
     TradeEventRepository tradeEventRepository;
     @Autowired
@@ -108,7 +108,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
 //        tradeEventService.retrieveNewEvents();
 
-        tradeEventService.processEventData();
+//        tradeEventService.processEventData();
 
         List<Contract> contracts = contractRepository.findAll();
 
@@ -151,7 +151,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
 //        tradeEventService.retrieveNewEvents();
 
-        tradeEventService.processEventData();
+//        tradeEventService.processEventData();
 
         List<Agreement> trades = agreementRepository.findAll();
 

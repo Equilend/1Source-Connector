@@ -13,6 +13,7 @@ public class RecordMessageConstant {
 
             public static final String APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String GET_AGREEMENT_EXCEPTION_1SOURCE = "1Source event id - %s";
+            public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT = "Position - %s";
 
             public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CREATED = "Loan contract proposal - %s";
             public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_DECLINED = "Position - %s";
@@ -65,6 +66,10 @@ public class RecordMessageConstant {
                 The loan contract proposal %s matching with the \
                 SPIRE position %s has been declined by the Borrower \
                 for the following reason.""";
+
+            public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG = """
+                The counterparty settlement instruction for the loan contract %s \
+                (SPIRE position: %s) have not been retrieved from SPIRE for the following reason: %s""";
 
             public static final String DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG = """
                 The loan contract %s matching with the position %s cannot be declined for the following reason: %s""";

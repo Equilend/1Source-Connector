@@ -6,7 +6,7 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
@@ -21,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy {
 
-    private final PositionMapper positionMapper;
+    private final SpireMapper spireMapper;
 
     @Override
     @Transactional
     public void process(AgreementDto agreement) {
         var venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
-        var positionDto = positionMapper.toPositionDto(positionRepository.findByVenueRefId(venueRefId).get(0));
+        var positionDto = spireMapper.toPositionDto(positionRepository.findByVenueRefId(venueRefId).get(0));
         var processingStatus = agreement.getTrade().getProcessingStatus();
         log.debug("Start reconciliation from AgreementPositionRetrieved strategy");
         reconcile(agreement, positionDto);
@@ -44,7 +44,7 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
 
     public AgreementPositionRetrieved(OneSourceService oneSourceService, SpireService spireService,
         ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementRepository agreementRepository,
-        PositionRepository positionRepository, EventMapper eventMapper, PositionMapper positionMapper,
+        PositionRepository positionRepository, EventMapper eventMapper, SpireMapper spireMapper,
         CloudEventRecordService cloudEventRecordService) {
         super(oneSourceService,
             spireService,
@@ -53,6 +53,6 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
             positionRepository,
             eventMapper,
             cloudEventRecordService);
-        this.positionMapper = positionMapper;
+        this.spireMapper = spireMapper;
     }
 }

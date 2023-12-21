@@ -338,7 +338,7 @@ public class DtoTestFactory {
             .localAgentBic("RHBBMYKL")
             .localAgentName("nestname")
             .settlementBic("RHBBMYKL")
-            .localMarketFields(List.of(buildMarketDto()))
+            .dtcParticipantNumber("123")
             .build();
     }
 
@@ -348,7 +348,7 @@ public class DtoTestFactory {
             .localAgentBic("RHBBMYKL")
             .localAgentName("nestname")
             .settlementBic("RHBBMYKL")
-            .localMarketField(List.of(buildMarket()))
+            .dtcParticipantNumber("123")
             .build();
     }
 

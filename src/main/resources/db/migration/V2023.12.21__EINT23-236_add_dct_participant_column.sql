@@ -1,0 +1,1 @@
+ALTER TABLE settlement_instruction ADD COLUMN IF NOT EXISTS dtc_participant_number VARCHAR(255) NULL;

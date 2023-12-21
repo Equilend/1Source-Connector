@@ -145,96 +145,96 @@ class EventMapperTest {
 
     private String getRawAgreement() {
         return """
-            {
-              "agreementId": "32b71278-9ad2-445a-bfb0-b5ada72f7193",
-              "status": "PENDING",
-              "lastUpdateDatetime": "2023-08-11T05:01:12.192Z",
-              "trade": {
-                "executionVenue": {
-                "partyId": "String",
-                "type": "ONPLATFORM",
-                "venueName": "string",
-                "venueRefId": "f7193",
-                "transactionDatetime": "2023-08-11T05:01:12.192Z",
-                "venueParties": [
                 {
-                    "partyRole": "LENDER",
-                    "venuePartyRefKey": "string"
-                }
-            ],
-            "localVenueFields": [
-                {
-                    "localFieldName": "string",
-                    "localFieldValue": "string"
-                }
-            ]
-        },
-                "instrument": {
-                  "ticker": "string",
-                  "cusip": "023135106",
-                  "isin": "US0231351067",
-                  "sedol": "2000019",
-                  "quick": "string",
-                  "figi": "string",
-                  "description": "string",
-                  "price": {
-                    "value": 0,
-                    "currency": "USD",
-                    "unit": "SHARE"
-                  }
-                },
-                "rate": {
-                  "rebate": {
-                    "fixed": {
-                      "baseRate": 0.05,
-                      "effectiveRate": 0,
-                      "effectiveDate": "2023-09-18",
-                      "cutoffTime": "23:54"
+                  "agreementId": "32b71278-9ad2-445a-bfb0-b5ada72f7193",
+                  "status": "PENDING",
+                  "lastUpdateDatetime": "2023-08-11T05:01:12.192Z",
+                  "trade": {
+                    "executionVenue": {
+                    "partyId": "String",
+                    "type": "ONPLATFORM",
+                    "venueName": "string",
+                    "venueRefId": "f7193",
+                    "transactionDatetime": "2023-08-11T05:01:12.192Z",
+                    "venueParties": [
+                    {
+                        "partyRole": "LENDER",
+                        "venuePartyRefKey": "string"
                     }
-                  }
-                },
-                "quantity": 15000.0,
-                "billingCurrency": "USD",
-                "dividendRatePct": 85.0,
-                "tradeDate": "2023-10-25",
-                "termType": "OPEN",
-                "termDate": "2023-08-11",
-                "settlementDate": "2023-10-25",
-                "settlementType": "DVP",
-                "collateral": {
-                  "contractPrice": 119.57,
-                  "contractValue": 17935.5,
-                  "collateralValue": 17935.5,
-                  "currency": "USD",
-                  "type": "CASH",
-                  "descriptionCd": "NONUSAGENCIES",
-                  "margin": 1.02,
-                  "roundingRule": 0,
-                  "roundingMode": "ALWAYSUP"
-                },
-                "transactingParties": [
-                  {
-                    "partyRole": "LENDER",
-                    "party": {
-                      "partyId": "001",
-                      "partyName": "lender_party",
-                      "gleifLei": "f7193",
-                      "internalPartyId": "No data"
+                ],
+                "localVenueFields": [
+                    {
+                        "localFieldName": "string",
+                        "localFieldValue": "string"
                     }
-                  },
-                  {
-                    "partyRole": "BORROWER",
-                    "party": {
-                      "partyId": "002",
-                      "partyName": "borrower_party",
-                      "gleifLei": "f7195",
-                      "internalPartyId": "No data"
-                    }
-                  }
                 ]
-              }
-            }
-            """;
+            },
+                    "instrument": {
+                      "ticker": "string",
+                      "cusip": "023135106",
+                      "isin": "US0231351067",
+                      "sedol": "2000019",
+                      "quick": "string",
+                      "figi": "string",
+                      "description": "string",
+                      "price": {
+                        "value": 0,
+                        "currency": "USD",
+                        "unit": "SHARE"
+                      }
+                    },
+                    "rate": {
+                      "rebate": {
+                        "fixed": {
+                          "baseRate": 0.05,
+                          "effectiveRate": 0,
+                          "effectiveDate": "2023-09-18",
+                          "cutoffTime": "23:54"
+                        }
+                      }
+                    },
+                    "quantity": 15000.0,
+                    "billingCurrency": "USD",
+                    "dividendRatePct": 85.0,
+                    "tradeDate": "2023-10-25",
+                    "termType": "OPEN",
+                    "termDate": "2023-08-11",
+                    "settlementDate": "2023-10-25",
+                    "settlementType": "DVP",
+                    "collateral": {
+                      "contractPrice": 119.57,
+                      "contractValue": 17935.5,
+                      "collateralValue": 17935.5,
+                      "currency": "USD",
+                      "type": "CASH",
+                      "descriptionCd": "NONUSAGENCIES",
+                      "margin": 1.02,
+                      "roundingRule": 0,
+                      "roundingMode": "ALWAYSUP"
+                    },
+                    "transactingParties": [
+                      {
+                        "partyRole": "LENDER",
+                        "party": {
+                          "partyId": "001",
+                          "partyName": "lender_party",
+                          "gleifLei": "f7193",
+                          "internalPartyId": "No data"
+                        }
+                      },
+                      {
+                        "partyRole": "BORROWER",
+                        "party": {
+                          "partyId": "002",
+                          "partyName": "borrower_party",
+                          "gleifLei": "f7195",
+                          "internalPartyId": "No data"
+                        }
+                      }
+                    ]
+                  }
+                }
+                """;
     }
 
     private String getRawContract() {
@@ -343,12 +343,17 @@ class EventMapperTest {
                     "localAgentBic": "string",
                     "localAgentName": "string",
                     "localAgentAcct": "string",
-                    "localMarketFields": [
-                      {
-                        "localFieldName": "string",
-                        "localFieldValue": "0"
-                      }
-                    ]
+                    "dtcParticipantNumber": "testDtcParticipantNumber"
+                  }
+                },
+                {
+                  "partyRole": "LENDER",
+                  "instruction": {
+                    "settlementBic": "string",
+                    "localAgentBic": "string",
+                    "localAgentName": "string",
+                    "localAgentAcct": "string",
+                    "dtcParticipantNumber": "testDtcParticipantNumber"
                   }
                 }
               ]

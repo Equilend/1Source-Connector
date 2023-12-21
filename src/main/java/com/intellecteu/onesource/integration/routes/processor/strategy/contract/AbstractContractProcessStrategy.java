@@ -2,7 +2,6 @@ package com.intellecteu.onesource.integration.routes.processor.strategy.contract
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
-import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
@@ -29,7 +28,7 @@ import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.PositionMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
@@ -37,6 +36,7 @@ import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -54,20 +54,22 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     ContractRepository contractRepository;
     PositionRepository positionRepository;
     SettlementTempRepository settlementTempRepository;
+    SettlementService settlementService;
     SpireService spireService;
     CloudEventRecordService cloudEventRecordService;
     ReconcileService<ContractDto, PositionDto> reconcileService;
     EventMapper eventMapper;
-    PositionMapper positionMapper;
+    SpireMapper spireMapper;
 
     PositionDto retrievePositionByVenue(String venueRefId) {
         List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
-        return positions.isEmpty() ? null : positionMapper.toPositionDto(positions.get(0));
+        return positions.isEmpty() ? null : spireMapper.toPositionDto(positions.get(0));
     }
 
     void saveContractWithStage(ContractDto contract, FlowStatus status) {
         contract.setFlowStatus(status);
         contractRepository.save(eventMapper.toContractEntity(contract));
+        log.debug("Contract id: {} was saved with flow status: {}", contract.getContractId(), status);
     }
 
     void reconcile(ContractDto contractDto, PositionDto positionDto) {
@@ -144,7 +146,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
                 LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
         }
 
-        positionRepository.save(positionMapper.toPosition(positionDto));
+        positionRepository.save(spireMapper.toPosition(positionDto));
     }
 
     void savePositionRetrievementIssue(ContractDto contract) {
@@ -152,7 +154,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         log.warn("Could not retrieve position by venue {} for the contract {}", venueRefId, contract.getContractId());
         contract.setProcessingStatus(PROPOSED);
         contract.setLastUpdateDatetime(LocalDateTime.now());
-        contract.setFlowStatus(PROCESSED);
+//        contract.setFlowStatus(PROCESSED); TODO commented for local development. Ask to C-H how to resolve if we don't have position for this contract
         contractRepository.save(eventMapper.toContractEntity(contract));
         recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
     }
@@ -178,6 +180,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
         position.setProcessingStatus(status);
         position.setLastUpdateDateTime(LocalDateTime.now());
-        positionRepository.save(positionMapper.toPosition(position));
+        positionRepository.save(spireMapper.toPosition(position));
+        log.debug("Saved status: {} for Position: {}", status, position.getPositionId());
     }
 }

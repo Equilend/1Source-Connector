@@ -1,17 +1,28 @@
 package com.intellecteu.onesource.integration.utils;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.NQuery;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.dto.spire.Query;
 import com.intellecteu.onesource.integration.dto.spire.Tuples;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 
 @UtilityClass
 @Slf4j
 public class SpireApiUtils {
+
+    public static HttpHeaders getDefaultHttpHeaders() {
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        return headers;
+    }
 
     public static NQuery createGetInstructionsNQuery(PositionDto position) {
         return NQuery.builder()
@@ -19,6 +30,15 @@ public class SpireApiUtils {
             .andOr(AndOr.AND)
             .empty(true)
             .tuples(createListOfTuplesGetInstruction(position))
+            .build();
+    }
+
+    public static NQuery createCpGetInstructionsNQuery(PositionDto position, String accountId) {
+        return NQuery.builder()
+            .queries(null)
+            .andOr(AndOr.AND)
+            .empty(true)
+            .tuples(createTuplesGetInstruction(position, accountId))
             .build();
     }
 
@@ -58,7 +78,7 @@ public class SpireApiUtils {
         return tuples;
     }
 
-    public static List<Tuples> createListOfTuplesGetInstruction(PositionDto position) {
+    private static List<Tuples> createListOfTuplesGetInstruction(PositionDto position) {
         List<Tuples> tuples = new ArrayList<>();
         tuples.add(createTuples("accountId", "EQUALS", String.valueOf(position.getDepoId()), null));
         tuples.add(createTuples("securityId", "EQUALS", String.valueOf(position.getSecurityId()), null));
@@ -68,6 +88,17 @@ public class SpireApiUtils {
         return tuples;
     }
 
+    private static List<Tuples> createTuplesGetInstruction(PositionDto position, String accountId) {
+        List<Tuples> tuples = new ArrayList<>();
+        tuples.add(createTuples("accountId", "EQUALS", accountId, null));
+        tuples.add(createTuples("depoId", "EQUALS", String.valueOf(position.getDepoId()), null));
+        tuples.add(createTuples("securityId", "EQUALS", String.valueOf(position.getSecurityId()), null));
+        tuples.add(createTuples("positionTypeId", "EQUALS", String.valueOf(position.getPositionTypeId()), null));
+        tuples.add(createTuples("currencyId", "EQUALS", String.valueOf(position.getCurrencyId()), null));
+        return tuples;
+    }
+
+
     public static Tuples createTuples(String lValue, String operator, String rValue1, String rValue2) {
         return Tuples.builder()
             .lValue(lValue)
@@ -75,5 +106,13 @@ public class SpireApiUtils {
             .rValue1(rValue1)
             .rValue2(rValue2)
             .build();
+    }
+
+    public static HttpEntity<Query> buildRequest(NQuery nQuery) {
+        Query query = Query.builder().nQuery(nQuery).build();
+
+        var headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_JSON);
+        return new HttpEntity<>(query, headers);
     }
 }
