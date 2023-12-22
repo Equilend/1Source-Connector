@@ -10,8 +10,13 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
@@ -31,20 +36,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 public class PositionProcessorTest {
 
     @Mock
+    private PositionService positionService;
+    @Mock
     private AgreementRepository agreementRepository;
     @Mock
     private ContractRepository contractRepository;
-    @Mock
     private SpireMapper spireMapper;
     @Mock
     private EventMapper eventMapper;
@@ -62,11 +66,19 @@ public class PositionProcessorTest {
     @Mock
     private ReconcileService<AgreementDto, PositionDto> reconcileService;
 
-    @InjectMocks
-    private PositionProcessor positionApiService;
+    private PositionProcessor positionProcessor;
 
     @BeforeEach
     void setUp() {
+        openMocks(this);
+        var objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        spireMapper = new SpireMapper(objectMapper);
+        positionProcessor = new PositionProcessor(positionService, agreementRepository, contractRepository,
+            spireMapper, eventMapper, positionRepository, oneSourceService, settlementService,
+            cloudEventRecordService, reconcileService);
     }
 
     @Test
@@ -77,6 +89,7 @@ public class PositionProcessorTest {
         var position = ModelTestFactory.buildPosition();
         var positionDto = DtoTestFactory.buildPositionDto();
         position.getPositionType().setPositionType(BORROWER_POSITION_TYPE);
+        position.setMatching1SourceTradeAgreementId("testAgreementId");
         positionDto.getPositionTypeDto().setPositionType(BORROWER_POSITION_TYPE);
         positionDto.setMatching1SourceTradeAgreementId("testAgreementId");
         var agreement = ModelTestFactory.buildAgreement();
@@ -88,10 +101,7 @@ public class PositionProcessorTest {
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
         var settlementDto = DtoTestFactory.buildSettlementDto();
 
-        when(positionRepository.findAll()).thenReturn(List.of(position));
-        when(spireService.requestPosition(any())).thenReturn(ResponseEntity.ok(jsonNode));
-        when(spireMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
-        when(spireMapper.toPosition(any(PositionDto.class))).thenReturn(position);
+        when(positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW)).thenReturn(List.of(position));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -105,14 +115,11 @@ public class PositionProcessorTest {
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
         doNothing().when(reconcileService).reconcile(any(), any());
 
-        positionApiService.startContractInitiation();
+        positionProcessor.startContractInitiation();
 
-        verify(positionRepository).findAll();
-        verify(spireService).requestPosition(any());
-        verify(spireMapper).jsonToPositionDto(any(JsonNode.class));
+        verify(positionRepository).findAllByProcessingStatus(ProcessingStatus.NEW);
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
-        verify(spireMapper, times(3)).toPosition(any(PositionDto.class));
         verify(positionRepository, times(3)).save(any());
         verify(agreementRepository).findByVenueRefId(any());
         verify(contractRepository).findByVenueRefId(any());
@@ -134,14 +141,10 @@ public class PositionProcessorTest {
         var agreement = ModelTestFactory.buildAgreement();
         var agreementDto = DtoTestFactory.buildAgreementDto();
         contractDto.setProcessingStatus(ProcessingStatus.RECONCILED);
-        final JsonNode jsonNode = testEventMapper.getObjectMapper().readTree(getPositionAsJson());
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
         var settlementDto = DtoTestFactory.buildSettlementDto();
 
-        when(positionRepository.findAll()).thenReturn(List.of(position));
-        when(spireService.requestPosition(any())).thenReturn(ResponseEntity.ok(jsonNode));
-        when(spireMapper.jsonToPositionDto(any(JsonNode.class))).thenReturn(positionDto);
-        when(spireMapper.toPosition(any(PositionDto.class))).thenReturn(position);
+        when(positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW)).thenReturn(List.of(position));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -155,14 +158,11 @@ public class PositionProcessorTest {
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
         doNothing().when(oneSourceService).createContract(any(), any(), any());
 
-        positionApiService.startContractInitiation();
+        positionProcessor.startContractInitiation();
 
-        verify(positionRepository).findAll();
-        verify(spireService).requestPosition(any());
-        verify(spireMapper).jsonToPositionDto(any(JsonNode.class));
+        verify(positionRepository).findAllByProcessingStatus(ProcessingStatus.NEW);
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
-        verify(spireMapper, times(3)).toPosition(any(PositionDto.class));
         verify(positionRepository, times(3)).save(any());
         verify(agreementRepository).findByVenueRefId(any());
         verify(contractRepository).findByVenueRefId(any());
