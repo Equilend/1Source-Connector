@@ -12,20 +12,17 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Participant;
 import com.intellecteu.onesource.integration.model.ParticipantHolder;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
-import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.processor.PartyProcessor;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,8 +34,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
 
 @ExtendWith(MockitoExtension.class)
-@Deprecated(since = "Flow II") // need to refine
-@Disabled
 public class ParticipantFlowTests {
 
     private static final String ENDPOINT_FIELD_INJECT = "onesourceBaseEndpoint";
@@ -58,11 +53,7 @@ public class ParticipantFlowTests {
     @Mock
     private ContractRepository contractRepository;
     @Mock
-    private TimestampRepository timestampRepository;
-    @Mock
     private ParticipantHolderRepository participantHolderRepository;
-    @Mock
-    private AgreementRepository agreementRepository;
     @Mock
     private RestTemplate restTemplate;
     @Mock
@@ -73,12 +64,10 @@ public class ParticipantFlowTests {
     private EventMapper eventMapper;
     @Mock
     private SpireMapper spireMapper;
-    @Mock
-    private SettlementService settlementService;
 
     private OneSourceApiService oneSourceService;
     private SpireApiService spireService;
-    private EventProcessor eventService;
+    private PartyProcessor partyProcessor;
 
     @BeforeEach
     void setUp() {
@@ -90,10 +79,7 @@ public class ParticipantFlowTests {
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
-//        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
-//            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireMapper,
-//            spireService,
-//            oneSourceService, cloudEventRecordService, settlementService);
+        partyProcessor = new PartyProcessor(participantHolderRepository, oneSourceService);
     }
 
     @Test
@@ -110,7 +96,7 @@ public class ParticipantFlowTests {
         when(participantHolderRepository.findAll()).thenReturn(new ArrayList<>());
         when(participantHolderRepository.save(any())).thenReturn(new ParticipantHolder());
 
-//        eventService.processParties();
+        partyProcessor.processParties();
 
         verify(participantHolderRepository).findAll();
         verify(participantHolderRepository).save(any());
@@ -143,7 +129,7 @@ public class ParticipantFlowTests {
             }))).thenReturn(response);
         when(participantHolderRepository.findAll()).thenReturn(List.of(participantHolder));
 
-//        eventService.processParties();
+        partyProcessor.processParties();
 
         verify(restTemplate).exchange(eq(partiesUrl), eq(GET), eq(null),
             eq(new ParameterizedTypeReference<List<PartyDto>>() {

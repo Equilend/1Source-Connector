@@ -56,6 +56,7 @@ public class ModelTestFactory {
             .venueRefId("testVenueRefId")
             .positionId("testSpirePositionId")
             .customValue2("customValue2")
+            .termId(1)
             .positionSecurityDetail(buildSecurityDetail())
             .rate(0.1d)
             .quantity(15000.0d)
@@ -67,17 +68,19 @@ public class ModelTestFactory {
             .amount(1.0d)
             .price(100.0d)
             .contractValue(123.0d)
-            .positionCollateralType(new PositionCollateralType("testCollateral"))
+            .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(0.05d, 10, 12))
             .positionType(new PositionType("CASH BORROW"))
             .positionAccount(new PositionAccount("testLei", "testLeiName", "testAccountId"))
             .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName", "testAccountId"))
+            .endDate(LocalDateTime.now())
             .build();
     }
 
     private static PositionSecurityDetail buildSecurityDetail() {
         PositionSecurityDetail securityDetail = new PositionSecurityDetail();
         securityDetail.setTicker("testTicker");
+        securityDetail.setPriceFactor(1);
         return securityDetail;
     }
 
