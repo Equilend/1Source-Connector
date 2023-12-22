@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.internal.parser.PositionTracker;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +68,7 @@ public class PositionProcessor {
 
     public void fetchNewPositions() {
         List<Position> newSpirePositions = positionService.getNewSpirePositions();
-        newSpirePositions.forEach(position -> position.setProcessingStatus(ProcessingStatus.NEW));
+        newSpirePositions.forEach(this::processPosition);
         positionService.savePositions(newSpirePositions);
     }
 
@@ -80,7 +81,7 @@ public class PositionProcessor {
     }
 
     private List<PositionDto> getNewPositions() {
-        List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW);
+        List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.CREATED);
         return positions.stream().map(position -> spireMapper.toPositionDto(position)).collect(Collectors.toList());
     }
 
@@ -155,7 +156,7 @@ public class PositionProcessor {
     public void processPositionInformation(PositionDto positionDto) {
         matchPositionWithCapturedAgreement(positionDto);
         positionDto.setVenueRefId(positionDto.getCustomValue2());
-        savePosition(positionDto, ProcessingStatus.CREATED);
+        positionRepository.save(spireMapper.toPosition(positionDto));
     }
 
     private void matchPositionWithCapturedAgreement(PositionDto positionDto) {
@@ -258,5 +259,10 @@ public class PositionProcessor {
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private void processPosition(Position position) {
+        position.setProcessingStatus(ProcessingStatus.CREATED);
+        position.setLastUpdateDateTime(LocalDateTime.now());
     }
 }
