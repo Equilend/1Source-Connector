@@ -31,6 +31,8 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
+import com.intellecteu.onesource.integration.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
@@ -231,9 +233,11 @@ public class EventProcessor {
         // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/') + 1);
+        Agreement agreement = null;
+        Position position = null;
         List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
         if (!agreements.isEmpty()) {
-            Agreement agreement = agreements.get(0);
+            agreement = agreements.get(0);
             agreement.setLastUpdateDatetime(LocalDateTime.now());
             agreement.setProcessingStatus(CANCELED);
             agreementRepository.save(agreement);
@@ -242,14 +246,17 @@ public class EventProcessor {
         List<Position> positions = positionRepository.findByMatching1SourceTradeAgreementId(
             agreementId);
         if (!positions.isEmpty()) {
-            Position position = positions.get(0);
+            position = positions.get(0);
             position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
             position.setLastUpdateDateTime(LocalDateTime.now());
             positionRepository.save(position);
         }
         event.setProcessingStatus(PROCESSED);
-        final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
-        createCloudEvent(agreements, positions, savedTradeEvent);
+        tradeEventRepository.save(event);
+        if (agreement != null && position != null) {
+            createContractInitiationCloudEvent(agreement.getAgreementId(), position,
+                TRADE_AGREEMENT_CANCELED);
+        }
     }
 
     private void processContractEvent(TradeEvent event) {
@@ -309,17 +316,11 @@ public class EventProcessor {
         return localDateTime;
     }
 
-    private void createCloudEvent(List<Agreement> agreements, List<Position> positions, TradeEvent savedTradeEvent) {
-        if (positions.isEmpty()) {
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CANCELED, savedTradeEvent.getResourceUri());
-            cloudEventRecordService.record(recordRequest);
-        } else if (!agreements.isEmpty()) {
-            Agreement agreement = agreements.get(0);
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(savedTradeEvent.getResourceUri(), TRADE_AGREEMENT_CANCELED,
-                agreement.getMatchingSpirePositionId());
-            cloudEventRecordService.record(recordRequest);
-        }
+    void createContractInitiationCloudEvent(String id, Position position, RecordType recordType) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(id,
+            recordType, position.getPositionId());
+        cloudEventRecordService.record(recordRequest);
     }
 }
