@@ -11,8 +11,6 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;

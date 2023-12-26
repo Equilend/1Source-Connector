@@ -227,6 +227,8 @@ public class EventProcessor {
         // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/') + 1);
+        Agreement agreement = null;
+        Position position = null;
         List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
         Agreement agreement = null;
         Position position = null;
