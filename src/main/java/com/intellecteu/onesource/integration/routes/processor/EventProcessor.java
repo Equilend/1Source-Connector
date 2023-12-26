@@ -230,8 +230,6 @@ public class EventProcessor {
         Agreement agreement = null;
         Position position = null;
         List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
-        Agreement agreement = null;
-        Position position = null;
         if (!agreements.isEmpty()) {
             agreement = agreements.get(0);
             agreement.setLastUpdateDatetime(LocalDateTime.now());
