@@ -9,6 +9,7 @@ import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
@@ -129,14 +130,16 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     }
 
     private void processSettlement(PositionDto positionDto) {
-        final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
-        settlementDtoList.stream()
-            .findFirst()
-            .map(settlementService::persistSettlement)
-            .ifPresent(s -> {
-                positionDto.setApplicableInstructionId(s.getInstructionId());
-                savePosition(positionDto, SI_FETCHED);
-            });
+        if (List.of(CREATED, UPDATED).contains(positionDto.getProcessingStatus())) {
+            final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
+            settlementDtoList.stream()
+                .findFirst()
+                .map(settlementService::persistSettlement)
+                .ifPresent(s -> {
+                    positionDto.setApplicableInstructionId(s.getInstructionId());
+                    savePosition(positionDto, SI_FETCHED);
+                });
+        }
     }
 
     private PositionDto savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
