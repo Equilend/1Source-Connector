@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.DtoTestFactory.getPositionAs
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -23,7 +24,6 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -96,12 +96,12 @@ public class PositionProcessorTest {
         var agreementDto = DtoTestFactory.buildAgreementDto();
         var contractDto = DtoTestFactory.buildContractDto();
         var contract = testEventMapper.toContractEntity(contractDto);
-        contractDto.setProcessingStatus(ProcessingStatus.RECONCILED);
+        contractDto.setProcessingStatus(RECONCILED);
         final JsonNode jsonNode = testEventMapper.getObjectMapper().readTree(getPositionAsJson());
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
         var settlementDto = DtoTestFactory.buildSettlementDto();
 
-        when(positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW)).thenReturn(List.of(position));
+        when(positionRepository.findAllByProcessingStatus(CREATED)).thenReturn(List.of(position));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -117,7 +117,7 @@ public class PositionProcessorTest {
 
         positionProcessor.startContractInitiation();
 
-        verify(positionRepository).findAllByProcessingStatus(ProcessingStatus.NEW);
+        verify(positionRepository).findAllByProcessingStatus(CREATED);
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
         verify(positionRepository, times(3)).save(any());
@@ -136,15 +136,19 @@ public class PositionProcessorTest {
         var positionDto = DtoTestFactory.buildPositionDto();
         position.getPositionType().setPositionType(LENDER_POSITION_TYPE);
         positionDto.getPositionTypeDto().setPositionType(LENDER_POSITION_TYPE);
+        positionDto.setProcessingStatus(SI_FETCHED);
+        positionDto.setMatching1SourceTradeAgreementId("testAgreementId");
+        position.setProcessingStatus(SI_FETCHED);
+        position.setMatching1SourceTradeAgreementId("testAgreementId");
         var contractDto = DtoTestFactory.buildContractDto();
         var contract = testEventMapper.toContractEntity(contractDto);
         var agreement = ModelTestFactory.buildAgreement();
         var agreementDto = DtoTestFactory.buildAgreementDto();
-        contractDto.setProcessingStatus(ProcessingStatus.RECONCILED);
+        contractDto.setProcessingStatus(RECONCILED);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
         var settlementDto = DtoTestFactory.buildSettlementDto();
 
-        when(positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW)).thenReturn(List.of(position));
+        when(positionRepository.findAllByProcessingStatus(CREATED)).thenReturn(List.of(position));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
         when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
@@ -160,7 +164,7 @@ public class PositionProcessorTest {
 
         positionProcessor.startContractInitiation();
 
-        verify(positionRepository).findAllByProcessingStatus(ProcessingStatus.NEW);
+        verify(positionRepository).findAllByProcessingStatus(CREATED);
         verify(settlementService).getSettlementInstruction(any());
         verify(settlementService).persistSettlement(any());
         verify(positionRepository, times(3)).save(any());

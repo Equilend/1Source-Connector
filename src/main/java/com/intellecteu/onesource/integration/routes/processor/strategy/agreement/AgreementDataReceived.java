@@ -1,16 +1,18 @@
 package com.intellecteu.onesource.integration.routes.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_RETRIEVED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -39,16 +41,18 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
             return;
         }
         Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
-        String venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
-        List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
-        processMatchingPosition(agreementEntity, positions);
-        log.debug("Start reconciliation from AgreementDataReceived strategy");
-        reconcile(agreement, positionDto);
+        if (agreement.getProcessingStatus() == ProcessingStatus.CREATED) {
+            String venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
+            List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+            processMatchingPosition(agreementEntity, positions);
+            log.debug("Start reconciliation from AgreementDataReceived strategy");
+            reconcile(agreement, positionDto);
+        }
         if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
             processAgreement(agreement, positionDto);
             agreement.setEventType(EventType.TRADE_AGREED);
             saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
-        } else if (agreement.getTrade().getProcessingStatus() == TO_CANCEL) {
+        } else if (agreement.getTrade().getProcessingStatus() == DISCREPANCIES) {
             agreement.setEventType(EventType.TRADE_AGREED);
             saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
         }
@@ -62,8 +66,8 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     public AgreementDataReceived(OneSourceService oneSourceService, SpireService spireService,
         ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementRepository agreementRepository,
         PositionRepository positionRepository,
-        EventMapper eventMapper, CloudEventRecordService cloudEventRecordService) {
+        EventMapper eventMapper, SpireMapper spireMapper, CloudEventRecordService cloudEventRecordService) {
         super(oneSourceService, spireService, agreementReconcileService, agreementRepository,
-            positionRepository, eventMapper, cloudEventRecordService);
+            positionRepository, eventMapper, spireMapper, cloudEventRecordService);
     }
 }

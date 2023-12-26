@@ -51,11 +51,6 @@ public class PositionService {
         return positionRepository.getById(positionId);
     }
 
-    public Position savePosition(Position position) {
-        position.setLastUpdateDateTime(LocalDateTime.now());
-        return positionRepository.save(position);
-    }
-
     public List<Position> savePositions(List<Position> positions) {
         positions.forEach(position -> position.setLastUpdateDateTime(LocalDateTime.now()));
         return positionRepository.saveAll(positions);

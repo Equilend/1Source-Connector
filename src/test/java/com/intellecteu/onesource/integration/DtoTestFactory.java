@@ -45,6 +45,7 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.LocalMarketField;
 import com.intellecteu.onesource.integration.model.LocalVenueField;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.SettlementType;
 import java.time.LocalDate;
@@ -66,6 +67,7 @@ public class DtoTestFactory {
             .status(CONFIRMED)
             .lastUpdateDatetime(LocalDateTime.now())
             .trade(buildTradeAgreementDto())
+            .processingStatus(ProcessingStatus.CREATED)
             .build();
     }
 

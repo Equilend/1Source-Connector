@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.internal.parser.PositionTracker;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -91,14 +90,15 @@ public class PositionProcessor {
             .findFirst()
             .map(s -> recordInstructionAndPosition(s, positionDto));
 
-        extractPartyRole(positionDto.unwrapPositionType())
-            .filter(role -> role == LENDER)
-            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
-
         if (positionDto.getProcessingStatus() == SI_FETCHED
             && positionDto.getMatching1SourceTradeAgreementId() != null) {
             reconcileMatchingTradeAgreement(positionDto);
         }
+
+        extractPartyRole(positionDto.unwrapPositionType())
+            .filter(role -> role == LENDER)
+            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
+
     }
 
     private void reconcileMatchingTradeAgreement(PositionDto positionDto) {
@@ -179,7 +179,6 @@ public class PositionProcessor {
             && positionDto.getProcessingStatus() == TRADE_RECONCILED)
             || (positionDto.getMatching1SourceTradeAgreementId() == null
             && positionDto.getProcessingStatus() == SI_FETCHED)) {
-            reconcileMatchingTradeAgreement(positionDto);
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);

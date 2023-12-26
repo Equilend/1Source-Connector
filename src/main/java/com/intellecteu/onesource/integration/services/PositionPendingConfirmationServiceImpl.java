@@ -8,11 +8,16 @@ import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CON
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.formattedDateTime;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
@@ -35,6 +40,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
@@ -125,18 +131,53 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void processUpdatedPosition(PositionDto positionDto) {
         updatePosition(positionDto);
+        PartyRole partyRole = null;
+        if (extractPartyRole(positionDto.unwrapPositionType()).isPresent()) {
+            partyRole = extractPartyRole(positionDto.unwrapPositionType()).get();
+        }
+        if (partyRole == LENDER) {
+            processContractCancel(positionDto);
+        } else if (partyRole == BORROWER) {
+            processContractDecline(positionDto);
+        }
         savePosition(positionDto, positionDto.getProcessingStatus());
     }
 
+    private void processContractCancel(PositionDto positionDto) {
+        Contract contract = null;
+        List<Contract> contracts = contractRepository.findByContractId(
+            positionDto.getMatching1SourceLoanContractId());
+        if (!contracts.isEmpty()) {
+            contract = contracts.get(0);
+        }
+        if (contract != null && List.of(MATCHED_CANCELED_POSITION, DISCREPANCIES).contains(contract.getProcessingStatus())) {
+            oneSourceService.cancelContract(contract, positionDto.getPositionId());
+        }
+    }
+
+    private void processContractDecline(PositionDto positionDto) {
+        Contract contract = null;
+        List<Contract> contracts = contractRepository.findByContractId(
+            positionDto.getMatching1SourceLoanContractId());
+        if (!contracts.isEmpty()) {
+            contract = contracts.get(0);
+        }
+        if (contract != null && contract.getProcessingStatus() == DISCREPANCIES) {
+            oneSourceService.declineContract(eventMapper.toContractDto(contract));
+        }
+    }
+
     private void processSettlement(PositionDto positionDto) {
-        final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
-        settlementDtoList.stream()
-            .findFirst()
-            .map(settlementService::persistSettlement)
-            .ifPresent(s -> {
-                positionDto.setApplicableInstructionId(s.getInstructionId());
-                savePosition(positionDto, SI_FETCHED);
-            });
+        if (List.of(CREATED, UPDATED).contains(positionDto.getProcessingStatus())) {
+            final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
+            settlementDtoList.stream()
+                .findFirst()
+                .map(settlementService::persistSettlement)
+                .ifPresent(s -> {
+                    positionDto.setApplicableInstructionId(s.getInstructionId());
+                    savePosition(positionDto, SI_FETCHED);
+                });
+        }
     }
 
     private PositionDto savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
