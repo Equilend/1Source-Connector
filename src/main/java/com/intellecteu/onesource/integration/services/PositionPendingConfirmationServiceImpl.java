@@ -132,6 +132,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private void processUpdatedPosition(PositionDto positionDto) {
         updatePosition(positionDto);
         PartyRole partyRole = null;
+        positionDto.setVenueRefId(positionDto.getCustomValue2());
         if (extractPartyRole(positionDto.unwrapPositionType()).isPresent()) {
             partyRole = extractPartyRole(positionDto.unwrapPositionType()).get();
         }
@@ -150,7 +151,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
         if (!contracts.isEmpty()) {
             contract = contracts.get(0);
         }
-        if (contract != null && List.of(MATCHED_CANCELED_POSITION, DISCREPANCIES).contains(contract.getProcessingStatus())) {
+        if (contract != null && List.of(MATCHED_CANCELED_POSITION, DISCREPANCIES)
+            .contains(contract.getProcessingStatus())) {
             oneSourceService.cancelContract(contract, positionDto.getPositionId());
         }
     }
@@ -206,6 +208,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
                     contractRepository.save(contract);
                 }
+            } else {
+                positionDto.setProcessingStatus(CREATED);
             }
             positionDto.setLastUpdateDateTime(LocalDateTime.now());
         }

@@ -32,6 +32,7 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
 
     @Override
     public void process(ContractDto contract) {
+        //todo remove fault tolerance case
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         PositionDto position = retrievePositionByVenue(venueRefId);
         if (position == null) {
