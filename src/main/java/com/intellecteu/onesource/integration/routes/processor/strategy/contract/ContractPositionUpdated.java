@@ -27,6 +27,7 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
+        //todo remove fault tolerance case
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);

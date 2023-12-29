@@ -4,6 +4,7 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
@@ -35,8 +36,9 @@ public class AgreementInstructionsRetrieved extends AbstractAgreementProcessStra
         AgreementRepository agreementRepository,
         PositionRepository positionRepository,
         EventMapper eventMapper,
+        SpireMapper spireMapper,
         CloudEventRecordService cloudEventRecordService) {
         super(oneSourceService, spireService, agreementReconcileService, agreementRepository, positionRepository,
-            eventMapper, cloudEventRecordService);
+            eventMapper, spireMapper, cloudEventRecordService);
     }
 }

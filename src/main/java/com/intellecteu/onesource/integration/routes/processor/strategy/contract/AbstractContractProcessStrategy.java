@@ -39,6 +39,7 @@ import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -178,8 +179,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
-        position.setProcessingStatus(status);
-        position.setLastUpdateDateTime(LocalDateTime.now());
+        PositionUtils.updatePositionDtoStatus(position, status);
         positionRepository.save(spireMapper.toPosition(position));
         log.debug("Saved status: {} for Position: {}", status, position.getPositionId());
     }

@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
@@ -38,6 +39,7 @@ import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,7 @@ public class PositionProcessor {
 
     public void fetchNewPositions() {
         List<Position> newSpirePositions = positionService.getNewSpirePositions();
-        newSpirePositions.forEach(position -> position.setProcessingStatus(ProcessingStatus.NEW));
+        newSpirePositions.forEach(i -> PositionUtils.updatePositionStatus(i, CREATED));
         positionService.savePositions(newSpirePositions);
     }
 
@@ -80,7 +82,7 @@ public class PositionProcessor {
     }
 
     private List<PositionDto> getNewPositions() {
-        List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.NEW);
+        List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.CREATED);
         return positions.stream().map(position -> spireMapper.toPositionDto(position)).collect(Collectors.toList());
     }
 
@@ -90,14 +92,15 @@ public class PositionProcessor {
             .findFirst()
             .map(s -> recordInstructionAndPosition(s, positionDto));
 
-        extractPartyRole(positionDto.unwrapPositionType())
-            .filter(role -> role == LENDER)
-            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
-
         if (positionDto.getProcessingStatus() == SI_FETCHED
             && positionDto.getMatching1SourceTradeAgreementId() != null) {
             reconcileMatchingTradeAgreement(positionDto);
         }
+
+        extractPartyRole(positionDto.unwrapPositionType())
+            .filter(role -> role == LENDER)
+            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
+
     }
 
     private void reconcileMatchingTradeAgreement(PositionDto positionDto) {
@@ -155,7 +158,7 @@ public class PositionProcessor {
     public void processPositionInformation(PositionDto positionDto) {
         matchPositionWithCapturedAgreement(positionDto);
         positionDto.setVenueRefId(positionDto.getCustomValue2());
-        savePosition(positionDto, ProcessingStatus.CREATED);
+        positionRepository.save(spireMapper.toPosition(positionDto));
     }
 
     private void matchPositionWithCapturedAgreement(PositionDto positionDto) {
@@ -178,7 +181,6 @@ public class PositionProcessor {
             && positionDto.getProcessingStatus() == TRADE_RECONCILED)
             || (positionDto.getMatching1SourceTradeAgreementId() == null
             && positionDto.getProcessingStatus() == SI_FETCHED)) {
-            reconcileMatchingTradeAgreement(positionDto);
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);

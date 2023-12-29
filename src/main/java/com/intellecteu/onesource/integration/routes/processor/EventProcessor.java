@@ -13,7 +13,6 @@ import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPE
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.EventType.TRADE_AGREED;
-import static com.intellecteu.onesource.integration.model.EventType.TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
@@ -50,6 +49,7 @@ import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -200,7 +200,7 @@ public class EventProcessor {
         for (TradeEvent event : events) {
             if (event.getEventType().equals(TRADE_AGREED)) {
                 processTradeEvent(event);
-            } else if (event.getEventType().equals(TRADE_CANCELED)) {
+            } else if (event.getEventType().equals(EventType.TRADE_CANCELED)) {
                 processTradeCanceledEvent(event);
             } else if (Set.of(CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
                 CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
@@ -216,10 +216,10 @@ public class EventProcessor {
         if (agreementDto != null) {
             agreementDto.getTrade().setEventId(event.getEventId());
             agreementDto.getTrade().setResourceUri(event.getResourceUri());
-            agreementDto.getTrade().setProcessingStatus(NEW);
+            agreementDto.setEventType(event.getEventType());
             agreementDto.setEventType(event.getEventType());
             agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
-            storeAgreement(agreementDto, event.getEventType());
+            storeAgreement(agreementDto, event);
             event.setProcessingStatus(PROCESSED);
             final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
@@ -247,8 +247,7 @@ public class EventProcessor {
             agreementId);
         if (!positions.isEmpty()) {
             position = positions.get(0);
-            position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
-            position.setLastUpdateDateTime(LocalDateTime.now());
+            PositionUtils.updatePositionStatus(position, ProcessingStatus.TRADE_CANCELED);
             positionRepository.save(position);
         }
         event.setProcessingStatus(PROCESSED);
@@ -287,12 +286,10 @@ public class EventProcessor {
         tradeEventRepository.save(event);
     }
 
-    private Agreement storeAgreement(AgreementDto agreementDto, EventType eventType) {
+    private Agreement storeAgreement(AgreementDto agreementDto, TradeEvent event) {
         Agreement agreementEntity = eventMapper.toAgreementEntity(agreementDto);
-        if (eventType.equals(TRADE_AGREED)) {
             agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
             agreementEntity.setProcessingStatus(CREATED);
-        }
         return agreementRepository.save(agreementEntity);
     }
 

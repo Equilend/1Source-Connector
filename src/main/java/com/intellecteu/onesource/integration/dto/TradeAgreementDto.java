@@ -69,7 +69,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("resourceUri")
     private String resourceUri;
     @Builder.Default
-    private ProcessingStatus processingStatus = ProcessingStatus.NEW;
+    private ProcessingStatus processingStatus = ProcessingStatus.CREATED;
 
     @JsonCreator
     public TradeAgreementDto(@JsonProperty("executionVenue") VenueDto executionVenue,

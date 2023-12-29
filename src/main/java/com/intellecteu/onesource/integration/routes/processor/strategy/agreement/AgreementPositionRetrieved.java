@@ -52,6 +52,7 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
             agreementRepository,
             positionRepository,
             eventMapper,
+            spireMapper,
             cloudEventRecordService);
         this.spireMapper = spireMapper;
     }

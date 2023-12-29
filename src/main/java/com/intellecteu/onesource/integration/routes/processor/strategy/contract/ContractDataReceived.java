@@ -10,7 +10,6 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException.NO_PARTY_ROLE_EXCEPTION;
-import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPENED;
@@ -20,12 +19,13 @@ import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DECLINED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTLED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
@@ -106,34 +106,21 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         if (contract.getEventType() == CONTRACT_PROPOSED) {
             processMatchingPosition(contract, positionDto);
             if (partyRole == BORROWER) {
+                if (MATCHED_POSITION.equals(contract.getProcessingStatus())) {
+                    reconcile(contract, positionDto);
+                }
                 processContractForBorrower(contract, venueRefId, partyRole);
             }
         }
-        if ((eventType == CONTRACT_PENDING)
-            && contract.getContractStatus() == APPROVED) {
-            //TODO remove wrong logic to overwrite statuses
-            contract.setProcessingStatus(ProcessingStatus.APPROVED);
-            savePositionStatus(positionDto, PROPOSAL_APPROVED);
+        if (eventType == CONTRACT_PENDING) {
             processApprovedContract(contract, positionDto);
-            recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
-                contract.getMatchingSpirePositionId());
-        }
-        if (partyRole == BORROWER && MATCHED_POSITION.equals(contract.getProcessingStatus())) {
-            reconcile(contract, positionDto);
+            processPositionAfterContractApproved(contract, positionDto);
         }
         if (eventType == CONTRACT_CANCELED) {
-            contract.setProcessingStatus(CANCELED);
-            savePositionStatus(positionDto, PROPOSAL_CANCELED);
-            if (partyRole == BORROWER) {
-                processCanceledContractForBorrower(contract, positionDto);
-            }
+            processCanceledContract(contract, positionDto);
         }
         if (eventType == CONTRACT_DECLINED) {
-            contract.setProcessingStatus(DECLINED);
-            savePositionStatus(positionDto, PROPOSAL_DECLINED);
-            if (partyRole == LENDER) {
-                processDeclinedContractForLender(contract, positionDto);
-            }
+            processDeclinedContract(contract, positionDto);
         }
         if (eventType == CONTRACT_OPENED) {
             contract.setProcessingStatus(SETTLED);
@@ -149,20 +136,22 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contractRepository.save(eventMapper.toContractEntity(contract));
     }
 
-    private void processDeclinedContractForLender(ContractDto contract, PositionDto position) {
+    private void processDeclinedContract(ContractDto contract, PositionDto position) {
         String spirePositionId = position.getPositionId();
         log.warn(format(CONTRACT_DECLINE_MSG, contract.getContractId(), spirePositionId));
         contract.setProcessingStatus(DECLINED);
+        savePositionStatus(position, PROPOSAL_DECLINED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED,
             contract.getMatchingSpirePositionId());
     }
 
-    private void processCanceledContractForBorrower(ContractDto contract, PositionDto position) {
+    private void processCanceledContract(ContractDto contract, PositionDto position) {
         String spirePositionId = position.getPositionId();
-        log.error("The loan contract proposal (contract identifier: {}) matching with "
-                + "the SPIRE position (position identifier: {}) has been canceled by the Lender",
+        log.info("The loan contract proposal (contract identifier: {}) matching with "
+                + "the SPIRE position (position identifier: {}) has been canceled",
             contract.getContractId(), spirePositionId);
         contract.setProcessingStatus(CANCELED);
+        savePositionStatus(position, PROPOSAL_CANCELED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED,
             contract.getMatchingSpirePositionId());
     }
@@ -171,6 +160,17 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         saveContractWithStage(contract, POSITION_UPDATED);
         /* temporary commented update Instruction logic for FLOW I: */
 //        updateInstruction(contract, partyRole, position, venueRefId, CTR_INSTRUCTIONS_RETRIEVED;
+        String spirePositionId = position.getPositionId();
+        log.info("The loan contract proposal (contract identifier: {}) matching with "
+                + "the SPIRE position (position identifier: {}) has been approved",
+            contract.getContractId(), spirePositionId);
+        contract.setProcessingStatus(ProcessingStatus.APPROVED);
+        savePositionStatus(position, PROPOSAL_APPROVED);
+        recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
+            contract.getMatchingSpirePositionId());
+    }
+
+    private void processPositionAfterContractApproved(ContractDto contract, PositionDto position) {
         updateSettlementInstructionForCounterParty(position, contract);
         spireService.updatePosition(contract, position.getPositionId());
     }
@@ -237,10 +237,11 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         log.debug("Validating contract: {} with venueRefId: {} for party role = {}",
             contract.getContractId(), venueRefId, partyRole);
 //        final PositionDto matchedPosition = matchContract(contract, venueRefId); // todo is this matching still required?
-        if (contract.getProcessingStatus() == TO_DECLINE) {
+        if (contract.getProcessingStatus() == DISCREPANCIES) {
             log.debug("Declining contract: {} as a {}", contract.getContractId(), partyRole);
             oneSourceService.declineContract(contract);
-        } else if (contract.getProcessingStatus() == VALIDATED) {
+        } else if (contract.getProcessingStatus() == RECONCILED) {
+            //todo check if settlement instruction and update needed
             var settlementDto = oneSourceService.retrieveSettlementInstruction(contract);
             oneSourceService.updateContract(contract, buildInstructionRequest(settlementDto));
             oneSourceService.approveContract(contract, settlementDto);
@@ -296,7 +297,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
                 contract.getContractId(), collateral.getRoundingRule(), collateral.getRoundingMode(),
                 position.getCpMarkRoundTo());
             contract.setProcessingStatus(TO_DECLINE);
-        } else if (agreementProcessingStatus == TO_CANCEL) {
+        } else if (agreementProcessingStatus == DISCREPANCIES) {
             log.error("The loan contract proposal {} is matching a canceled trade agreement",
                 contract.getContractId());
             contract.setProcessingStatus(TO_DECLINE);

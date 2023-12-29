@@ -9,11 +9,13 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
@@ -28,6 +30,7 @@ import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.spire.Position;
@@ -37,6 +40,7 @@ import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -55,6 +59,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     AgreementRepository agreementRepository;
     PositionRepository positionRepository;
     EventMapper eventMapper;
+    SpireMapper spireMapper;
     CloudEventRecordService cloudEventRecordService;
 
     Agreement saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
@@ -75,6 +80,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.debug(
                 format(RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG, agreement.getAgreementId(), position.getPositionId()));
             agreement.getTrade().setProcessingStatus(RECONCILED);
+            PositionUtils.updatePositionDtoStatus(position, TRADE_RECONCILED);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
@@ -83,13 +89,15 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
-            agreement.getTrade().setProcessingStatus(TO_CANCEL);
+            agreement.getTrade().setProcessingStatus(DISCREPANCIES);
+            PositionUtils.updatePositionDtoStatus(position, TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
                 agreement.getMatchingSpirePositionId(), e.getErrorList());
             cloudEventRecordService.record(recordRequest);
         }
+        positionRepository.save(spireMapper.toPosition(position));
     }
 
     void processAgreement(AgreementDto agreementDto, PositionDto positionDto) {

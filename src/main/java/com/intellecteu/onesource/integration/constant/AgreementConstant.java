@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.constant;
 
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.TO_CANCEL;
 
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import java.util.Set;
@@ -10,7 +10,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class AgreementConstant {
 
-    public static final Set<ProcessingStatus> SKIP_RECONCILIATION_STATUSES = Set.of(RECONCILED, TO_CANCEL);
+    public static final Set<ProcessingStatus> SKIP_RECONCILIATION_STATUSES = Set.of(RECONCILED, DISCREPANCIES);
     public static final String FIXED_RATE = "Fixed Rate";
 
     public static class Field {

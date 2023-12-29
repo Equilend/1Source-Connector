@@ -104,7 +104,7 @@ public class AgreementFlowTest {
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             spireMapper, cloudEventRecordService);
         agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
-            agreementRepository, positionRepository, eventMapper, cloudEventRecordService);
+            agreementRepository, positionRepository, eventMapper, spireMapper, cloudEventRecordService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
@@ -155,7 +155,7 @@ public class AgreementFlowTest {
         verify(restTemplate).postForEntity(eq(getPositionUrl), any(), eq(JsonNode.class));
         verify(positionRepository).findByVenueRefId(any());
         verify(cloudEventRecordService, times(2)).record(any());
-        verify(positionRepository, times(2)).save(any());
+        verify(positionRepository, times(3)).save(any());
         verify(agreementRepository, times(3)).save(any());
         verify(restTemplate).postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class));
     }
