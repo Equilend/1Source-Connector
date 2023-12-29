@@ -16,7 +16,7 @@ public class PositionUtils {
         position.setLastUpdateDateTime(LocalDateTime.now());
     }
 
-    public static void updatepositionDtoStatus(PositionDto position, ProcessingStatus status) {
+    public static void updatePositionDtoStatus(PositionDto position, ProcessingStatus status) {
         position.setProcessingStatus(status);
         position.setLastUpdateDateTime(LocalDateTime.now());
     }
