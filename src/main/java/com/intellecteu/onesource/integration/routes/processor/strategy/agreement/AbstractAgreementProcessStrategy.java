@@ -40,6 +40,7 @@ import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -79,8 +80,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.debug(
                 format(RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG, agreement.getAgreementId(), position.getPositionId()));
             agreement.getTrade().setProcessingStatus(RECONCILED);
-            position.setLastUpdateDateTime(LocalDateTime.now());
-            position.setProcessingStatus(TRADE_RECONCILED);
+            PositionUtils.processPositionDto(position, TRADE_RECONCILED);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
@@ -90,8 +90,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
             agreement.getTrade().setProcessingStatus(DISCREPANCIES);
-            position.setLastUpdateDateTime(LocalDateTime.now());
-            position.setProcessingStatus(TRADE_DISCREPANCIES);
+            PositionUtils.processPositionDto(position, TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,

@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREE
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
@@ -38,6 +39,7 @@ import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +69,7 @@ public class PositionProcessor {
 
     public void fetchNewPositions() {
         List<Position> newSpirePositions = positionService.getNewSpirePositions();
-        newSpirePositions.forEach(this::processPosition);
+        newSpirePositions.forEach(i -> PositionUtils.processPosition(i, CREATED));
         positionService.savePositions(newSpirePositions);
     }
 
@@ -258,10 +260,5 @@ public class PositionProcessor {
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
-    }
-
-    private void processPosition(Position position) {
-        position.setProcessingStatus(ProcessingStatus.CREATED);
-        position.setLastUpdateDateTime(LocalDateTime.now());
     }
 }
