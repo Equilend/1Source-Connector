@@ -147,7 +147,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private void processContractCancel(PositionDto positionDto) {
         Contract contract = null;
         //todo change List to Optional after fixing mock data
-        List<Contract> contracts = contractRepository.findByContractId(
+        List<Contract> contracts = contractRepository.findAllByContractId(
             positionDto.getMatching1SourceLoanContractId());
         if (!contracts.isEmpty()) {
             contract = contracts.get(0);
@@ -160,7 +160,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void processContractDecline(PositionDto positionDto) {
         Contract contract = null;
-        List<Contract> contracts = contractRepository.findByContractId(
+        List<Contract> contracts = contractRepository.findAllByContractId(
             positionDto.getMatching1SourceLoanContractId());
         if (!contracts.isEmpty()) {
             contract = contracts.get(0);
