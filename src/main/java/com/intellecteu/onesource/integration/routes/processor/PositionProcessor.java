@@ -69,7 +69,7 @@ public class PositionProcessor {
 
     public void fetchNewPositions() {
         List<Position> newSpirePositions = positionService.getNewSpirePositions();
-        newSpirePositions.forEach(i -> PositionUtils.processPosition(i, CREATED));
+        newSpirePositions.forEach(i -> PositionUtils.updatePositionStatus(i, CREATED));
         positionService.savePositions(newSpirePositions);
     }
 

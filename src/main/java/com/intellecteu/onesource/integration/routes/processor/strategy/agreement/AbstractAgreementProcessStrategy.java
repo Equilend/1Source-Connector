@@ -80,7 +80,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.debug(
                 format(RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG, agreement.getAgreementId(), position.getPositionId()));
             agreement.getTrade().setProcessingStatus(RECONCILED);
-            PositionUtils.processPositionDto(position, TRADE_RECONCILED);
+            PositionUtils.updatepositionDtoStatus(position, TRADE_RECONCILED);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
@@ -90,7 +90,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
             agreement.getTrade().setProcessingStatus(DISCREPANCIES);
-            PositionUtils.processPositionDto(position, TRADE_DISCREPANCIES);
+            PositionUtils.updatepositionDtoStatus(position, TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,

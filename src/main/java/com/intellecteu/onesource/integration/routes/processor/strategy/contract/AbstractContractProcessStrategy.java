@@ -179,7 +179,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
-        PositionUtils.processPositionDto(position, status);
+        PositionUtils.updatepositionDtoStatus(position, status);
         positionRepository.save(spireMapper.toPosition(position));
         log.debug("Saved status: {} for Position: {}", status, position.getPositionId());
     }
