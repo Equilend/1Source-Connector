@@ -64,6 +64,7 @@ public class EventMapper {
 
     public TradeEvent toEventEntity(TradeEventDto tradeEventDto) {
         return TradeEvent.builder()
+            .id(tradeEventDto.getId())
             .eventDatetime(tradeEventDto.getEventDatetime())
             .eventId(tradeEventDto.getEventId())
             .eventType(tradeEventDto.getEventType())
@@ -74,6 +75,7 @@ public class EventMapper {
 
     public TradeEventDto toEventDto(TradeEvent tradeEvent) {
         return TradeEventDto.builder()
+            .id(tradeEvent.getId())
             .eventDatetime(tradeEvent.getEventDatetime())
             .eventId(tradeEvent.getEventId())
             .eventType(tradeEvent.getEventType())
@@ -313,6 +315,7 @@ public class EventMapper {
 
     public Venue toVenueEntity(VenueDto venueDto) {
         return Venue.builder()
+            .id(venueDto.getId())
             .partyId(venueDto.getPartyId())
             .venueName(venueDto.getVenueName())
             .venueRefKey(venueDto.getVenueRefKey())
@@ -347,6 +350,7 @@ public class EventMapper {
 
     public Instrument toInstrumentEntity(InstrumentDto instrumentDto) {
         return Instrument.builder()
+            .id(instrumentDto.getId())
             .cusip(instrumentDto.getCusip())
             .figi(instrumentDto.getFigi())
             .quick(instrumentDto.getQuick())
@@ -480,6 +484,7 @@ public class EventMapper {
 
     public VenueDto toVenueDto(Venue venue) {
         return VenueDto.builder()
+            .id(venue.getId())
             .venueRefKey(venue.getVenueRefKey())
             .venueName(venue.getVenueName())
             .partyId(venue.getPartyId())
@@ -514,6 +519,7 @@ public class EventMapper {
 
     public InstrumentDto toInstrumentDto(Instrument instrument) {
         return InstrumentDto.builder()
+            .id(instrument.getId())
             .cusip(instrument.getCusip())
             .figi(instrument.getFigi())
             .quick(instrument.getQuick())

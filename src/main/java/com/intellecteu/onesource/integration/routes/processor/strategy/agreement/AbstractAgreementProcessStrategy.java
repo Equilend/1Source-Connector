@@ -124,7 +124,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     }
 
     private void persistIssueStatus(AgreementDto agreementDto, PositionDto positionDto) {
-        log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreementDto.getAgreementId(), positionDto.getId(),
+        log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreementDto.getAgreementId(), positionDto.getPositionId(),
             positionDto.unwrapPositionStatus()));
         agreementDto.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
     }

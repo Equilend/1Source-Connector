@@ -4,7 +4,9 @@ import static com.intellecteu.onesource.integration.DtoTestFactory.getPositionAs
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.never;
@@ -151,12 +153,9 @@ public class PositionProcessorTest {
         when(positionRepository.findAllByProcessingStatus(CREATED)).thenReturn(List.of(position));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of());
         when(agreementRepository.findByAgreementId(any())).thenReturn(List.of(agreement));
-        when(contractRepository.findByVenueRefId(any())).thenReturn(List.of(contract));
-        when(contractRepository.save(any())).thenReturn(contract);
         when(positionRepository.save(any())).thenReturn(position);
         when(settlementService.getSettlementInstruction(any())).thenReturn(List.of(settlementDto));
         when(settlementService.persistSettlement(any())).thenReturn(settlementDto);
-        when(eventMapper.toContractDto(any())).thenReturn(contractDto);
         when(eventMapper.toAgreementDto(any())).thenReturn(agreementDto);
         when(cloudEventRecordService.getFactory()).thenReturn(eventFactoryMock);
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
@@ -169,7 +168,6 @@ public class PositionProcessorTest {
         verify(settlementService).persistSettlement(any());
         verify(positionRepository, times(3)).save(any());
         verify(agreementRepository).findByVenueRefId(any());
-        verify(contractRepository).findByVenueRefId(any());
         verify(oneSourceService).createContract(any(), any(), any());
         verify(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
     }

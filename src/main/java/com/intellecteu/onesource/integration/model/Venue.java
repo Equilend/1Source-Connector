@@ -33,7 +33,7 @@ public class Venue {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "partyId")
     private String partyId;
     @Column(name = "type")

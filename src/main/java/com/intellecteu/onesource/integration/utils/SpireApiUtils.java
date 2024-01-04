@@ -62,10 +62,10 @@ public class SpireApiUtils {
 
     public static List<Tuples> createListOfTuplesGetPositionWithoutTA(String positionId) {
         List<Tuples> tuples = new ArrayList<>();
+        tuples.add(createTuples("positionId", "GREATER_THAN", positionId, null));
         tuples.add(createTuples("status", "IN", "FUTURE", null));
         tuples.add(createTuples("positionType", "IN", "CASH LOAN,CASH BORROW", null));
         tuples.add(createTuples("depoKy", "IN", "DTC", null));
-        tuples.add(createTuples("positionId", "GREATER_THAN", positionId, null));
 
         return tuples;
     }

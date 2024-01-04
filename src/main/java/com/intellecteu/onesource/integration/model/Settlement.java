@@ -29,7 +29,7 @@ public class Settlement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "instruction_id")
     private Integer instructionId;
     @Column(name = "party_role")

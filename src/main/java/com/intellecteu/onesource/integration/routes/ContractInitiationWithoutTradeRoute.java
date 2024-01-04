@@ -29,34 +29,34 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
         //TODO read new position move to PositionUpdateRoute. Here leave processing new positions from database
         from("timer://eventTimer?period={{camel.positionTimer}}")
             .routeId("ContractInitiationRoute")
-            .log("Start retrieved positions for matching")
+            .log(">>>>> Start retrieved positions for matching")
             .bean(positionProcessor, "startContractInitiation")
-            .log("ContractInitiationRoute is processed");
+            .log("<<<<< ContractInitiationRoute is processed");
 
         //Process positions (steps 7a, 12a, 19a in business flow)
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("retrievingEventData")
             .log("Call for event data")
             .log("{{camel.timer}}")
-            .log("processing Event Data")
+            .log(">>>>> Processing Event Data")
             .bean(eventProcessor, "processEvents")
-            .log("Process Event Data success");
+            .log("<<<<< Process Event Data success");
 
         //Process contract (steps 8-... in business flow)
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("ContractProcessingRoute")
-            .log("Start processing contract data")
+            .log(">>>>> Start processing contract data")
             .setHeader("timestamp", constant("{{camel.timestamp}}"))
             .bean(contractProcessor, "processTradeData")
-            .log("Contract processing success");
+            .log("<<<<< Contract processing success");
 
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("ContractCancellation")
             .log("Call for cancel routes")
             .log("{{camel.timer}}")
-            .log("cancelContract")
+            .log(">>>>> Start cancelContract processing")
             .bean(eventProcessor, "cancelContract")
-            .log("Cancel Contract success");
+            .log("<<<<< Cancel Contract success");
 
     }
 }

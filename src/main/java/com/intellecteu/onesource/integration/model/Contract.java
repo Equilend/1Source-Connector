@@ -34,7 +34,7 @@ public class Contract {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "contract_id")
     private String contractId;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

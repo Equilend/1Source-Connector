@@ -130,7 +130,6 @@ public class DtoTestFactory {
 
     public static PositionDto buildPositionDtoFromTradeAgreement(TradeAgreementDto tradeAgreement) {
         return PositionDto.builder()
-            .id(tradeAgreement.getId())
             .positionId("testSpirePositionId")
             .customValue2(tradeAgreement.getExecutionVenue().getVenueRefKey())
             .securityDetailDto(buildSecurityDetailDto(tradeAgreement))
@@ -280,6 +279,7 @@ public class DtoTestFactory {
 
     public static InstrumentDto buildInstrumentDto() {
         return InstrumentDto.builder()
+            .id(9999L)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")
@@ -301,6 +301,7 @@ public class DtoTestFactory {
 
     public static VenueDto buildVenueDto() {
         return VenueDto.builder()
+            .id(99999L)
             .partyId("testPartyId")
             .type(ONPLATFORM)
             .venueName("testVenueName")

@@ -24,7 +24,7 @@ public class FixedRate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "base_rate")
     private Double baseRate;
     @Column(name = "effective_rate")

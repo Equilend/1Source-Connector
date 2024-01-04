@@ -3,12 +3,15 @@ package com.intellecteu.onesource.integration.repository;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface PositionRepository extends JpaRepository<Position, Long> {
+public interface PositionRepository extends JpaRepository<Position, String> {
 
     List<Position> findAll();
+
+    Optional<Position> getByPositionId(String positionId);
 
     @Query("select p from Position p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
     List<Position> findAllNotCanceledAndSettled();

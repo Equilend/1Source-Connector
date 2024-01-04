@@ -24,9 +24,11 @@ public class ContractProcessor implements TradeDataProcessor {
     @Override
     @Transactional
     public void processTradeData() {
+        log.info(">>>>> Starting processing trade data");
         contractRepository.findAllNotProcessed().stream()
             .map(eventMapper::toContractDto)
             .forEach(this::processContract);
+        log.info("<<<<<< Finished processing trade data");
     }
 
     private void processContract(ContractDto contract) {

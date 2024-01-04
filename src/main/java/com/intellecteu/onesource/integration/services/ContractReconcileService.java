@@ -22,7 +22,9 @@ public class ContractReconcileService extends OneSourceSpireReconcileService<Con
         reconciliationFailMessages.addAll(validateReconcilableObjects(contractDto, positionDto));
         reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
         if (!reconciliationFailMessages.isEmpty()) {
-            throw new ReconcileException(format(RECONCILE_EXCEPTION, contractDto.getContractId(), positionDto.getId()),
+            reconciliationFailMessages.forEach(msg -> log.debug(msg.getExceptionMessage()));
+            throw new ReconcileException(
+                format(RECONCILE_EXCEPTION, contractDto.getContractId(), positionDto.getPositionId()),
                 reconciliationFailMessages);
         }
     }

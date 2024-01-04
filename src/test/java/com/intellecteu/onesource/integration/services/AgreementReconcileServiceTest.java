@@ -873,7 +873,7 @@ class AgreementReconcileServiceTest {
      */
     private void verifyReconciliationFailure() {
         var agreementId = agreement.getAgreementId();
-        var positionId = position.getId();
+        var positionId = position.getPositionId();
 
         var exception = assertThrows(
             ReconcileException.class,

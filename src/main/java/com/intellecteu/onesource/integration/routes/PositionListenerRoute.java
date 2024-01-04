@@ -23,15 +23,15 @@ public class PositionListenerRoute extends RouteBuilder {
         from("timer://eventTimer?period={{camel.newPositionTimer}}")
             .routeId("NewPositionsRoute")
             .autoStartup(isAutoStarted)
-            .log("Start fetching new positions")
+            .log(">>>>> Started fetching new positions!")
             .bean(positionProcessor, "fetchNewPositions")
-            .log("Fetching new positions is finished");
+            .log("<<<<< Finished fetching new positions!");
 
         from("timer://eventTimer?period={{camel.positionTimer}}")
             .routeId("PositionUpdateRoute")
             .autoStartup(isAutoStarted)
-            .log("Start processing updated positions")
+            .log(">>>>> Started processing updated positions.")
             .bean(updatePositionService, "processUpdatedPositions")
-            .log("Updated positions successfully updated");
+            .log("<<<<< Finished updated positions.");
     }
 }

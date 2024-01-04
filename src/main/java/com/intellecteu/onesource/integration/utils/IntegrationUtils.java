@@ -6,6 +6,8 @@ import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -64,6 +66,20 @@ public class IntegrationUtils {
             return Optional.of(BORROWER);
         }
         return Optional.empty();
+    }
 
+    /**
+     * Retrieve Lender or Borrower or throw NoRequiredPartyRoleException exception otherwise.
+     *
+     * @param positionDto PositionDto
+     * @return Lender or Borrower PartyRole
+     */
+    public static PartyRole extractLenderOrBorrower(@Nullable PositionDto positionDto) {
+        if (positionDto == null) {
+            throw new NoRequiredPartyRoleException();
+        }
+        return extractPartyRole(positionDto.unwrapPositionType())
+            .filter(role -> role == LENDER || role == BORROWER)
+            .orElseThrow(() -> new NoRequiredPartyRoleException(positionDto.getPositionId()));
     }
 }

@@ -34,7 +34,7 @@ public class Agreement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "agreement_id") //ToDo: Shall it be unique?
     private String agreementId;
     @Column(name = "status")

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Builder
 public class AgreementDto implements Reconcilable {
 
-    private long id;
+    private Long id;
     private String agreementId;
     @JsonProperty("status")
     private AgreementStatus status;

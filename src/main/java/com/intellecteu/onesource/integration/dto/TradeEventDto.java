@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class TradeEventDto {
 
+    private Long id;
     @JsonProperty("eventId")
     private Long eventId;
     @JsonProperty("eventType")

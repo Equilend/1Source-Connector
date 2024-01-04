@@ -40,7 +40,13 @@ logging:
     com:
       intellecteu:
         onesource:
-          integration: DEBUG
+          integration:
+            config: INFO
+            mapper: DEBUG
+            dto: DEBUG
+            routes: DEBUG
+            services: DEBUG
+            utils: DEBUG
     org:
       apache:
         kafka: WARN

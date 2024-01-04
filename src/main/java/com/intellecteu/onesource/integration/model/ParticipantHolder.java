@@ -26,7 +26,7 @@ public class ParticipantHolder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "participantHolder", orphanRemoval = true)
     private List<Participant> participants;
 

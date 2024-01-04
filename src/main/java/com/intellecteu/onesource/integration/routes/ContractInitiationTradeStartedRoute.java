@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value="integration-toolkit.flow-Version",
+    value = "integration-toolkit.flow-Version",
     havingValue = "F1")
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
@@ -25,9 +25,9 @@ public class ContractInitiationTradeStartedRoute extends RouteBuilder {
         //Process one source events (steps 3-5 in business flow F1)
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("AgreementProcessingRoute")
-            .log("Start processing Agreement data")
+            .log(">>>>> Start processing Agreement data")
             .setHeader("timestamp", constant("{{camel.timestamp}}"))
             .bean(agreementProcessor, "processTradeData")
-            .log("Agreement processing success");
+            .log("<<<<< Agreement processing success");
     }
 }

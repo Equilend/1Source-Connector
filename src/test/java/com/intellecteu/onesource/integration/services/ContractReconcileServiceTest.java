@@ -814,7 +814,7 @@ class ContractReconcileServiceTest {
      */
     private void verifyReconciliationFailure() {
         var contractDtoId = contractDto.getContractId();
-        var positionId = position.getId();
+        var positionId = position.getPositionId();
 
         var exception = assertThrows(
             ReconcileException.class,

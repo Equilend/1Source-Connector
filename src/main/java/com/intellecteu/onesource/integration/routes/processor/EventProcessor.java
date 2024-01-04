@@ -27,7 +27,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
@@ -62,6 +61,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
@@ -89,13 +89,15 @@ public class EventProcessor {
         maxTimestamp.ifPresent(timestamp -> timeStamp = timestamp.getTimestamp());
         log.debug("Timestamp: " + timeStamp);
         List<TradeEventDto> events = oneSourceService.retrieveEvents(timeStamp);
-        events.forEach(i -> log.debug("Event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
-            i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDatetime()));
         List<TradeEventDto> newEvents = findNewEvents(events);
-        newEvents.forEach(this::saveEvent); //make batch insert later
+        newEvents.forEach(e -> {
+            e.setProcessingStatus(CREATED);
+            saveEvent(e);
+        }); // make batch insert later
         log.debug("<<<<< Retrieved {} new events!", newEvents.size());
     }
 
+    @Transactional // temp fix for detached trade event persistence issue
     public void processEvents() {
         log.debug(">>>>> Process event data!");
         List<TradeEvent> events = tradeEventRepository.findAllByProcessingStatus(CREATED);
@@ -119,7 +121,7 @@ public class EventProcessor {
                     createListOfTuplesGetPosition("customValue2", "EQUALS", venueRefId, null)));
             var positionType = extractPositionType(response);
             var positionId = extractPositionId(response);
-            if (isToCancelCandidate(contract, positionType, response)) {
+            if (positionId != null && isToCancelCandidate(contract, positionType, response)) {
                 candidatesForCancelToPositionId.put(contract, positionId);
             }
         }
@@ -132,7 +134,6 @@ public class EventProcessor {
 
     private void saveEvent(TradeEventDto tradeEventDto) {
         TradeEvent eventEntity = eventMapper.toEventEntity(tradeEventDto);
-        eventEntity.setProcessingStatus(CREATED);
         tradeEventRepository.save(eventEntity);
     }
 
@@ -160,37 +161,45 @@ public class EventProcessor {
         if (response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            JsonNode positionTypeDTO = jsonNode.get("positiontypeDTO");
-            if (positionTypeDTO != null && positionTypeDTO.get("positionType") != null) {
-                return positionTypeDTO.get("positionType").toString().trim();
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+                JsonNode positionTypeDTO = jsonNode.get("positiontypeDTO");
+                if (positionTypeDTO != null && positionTypeDTO.get("positionType") != null) {
+                    return positionTypeDTO.get("positionType").toString().trim();
+                }
             }
         }
         return "";
     }
 
     private String extractPositionId(ResponseEntity<JsonNode> response) {
-        String positionId = "";
         if (response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            positionId = jsonNode.get("positionId").toString().replace("\"", "");
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+                return jsonNode.get("positionId").toString().replace("\"", "");
+            }
         }
-        return positionId;
+        return null;
     }
 
     private boolean isToCancelCandidate(Contract contract, ResponseEntity<JsonNode> response) {
         if (response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            JsonNode statusDTO = jsonNode.get("statusDTO");
-            String status = eventMapper.getIfExist(statusDTO, "status");
-            if (status.equalsIgnoreCase("CANCELED") || status.equalsIgnoreCase("FAILED")) {
-                log.debug("Position has status {}! Submitting cancellation for contract: {}", status,
-                    contract.getContractId());
-                return true;
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+                JsonNode statusDTO = jsonNode.get("statusDTO");
+                String status = eventMapper.getIfExist(statusDTO, "status");
+                if (status.equalsIgnoreCase("CANCELED") || status.equalsIgnoreCase("FAILED")) {
+                    log.debug("Position has status {}! Submitting cancellation for contract: {}", status,
+                        contract.getContractId());
+                    return true;
+                }
             }
         }
         return false;
@@ -205,6 +214,7 @@ public class EventProcessor {
             } else if (Set.of(CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
                 CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
                 processContractEvent(event);
+                updateEventStatus(event, PROCESSED);
             }
         }
     }
@@ -263,7 +273,7 @@ public class EventProcessor {
         String resourceUri = event.getResourceUri();
         try {
             oneSourceService.findContract(resourceUri)
-                .ifPresent(contractDto -> processContract(contractDto, event));
+                .ifPresent(contract -> processContract(contract, event));
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not found. Details: {} ", resourceUri, e.getMessage());
             if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
@@ -275,27 +285,33 @@ public class EventProcessor {
         }
     }
 
-    private void processContract(ContractDto contractDto, TradeEvent event) {
-        contractDto.getTrade().setEventId(event.getEventId());
-        contractDto.getTrade().setResourceUri(event.getResourceUri());
-        contractDto.setEventType(event.getEventType());
-        contractDto.setProcessingStatus(NEW);
-        contractDto.setFlowStatus(TRADE_DATA_RECEIVED);
-        storeContract(contractDto);
-        event.setProcessingStatus(PROCESSED);
+    private void processContract(Contract contract, TradeEvent event) {
+        contract.getTrade().setEventId(event.getEventId());
+        contract.getTrade().setResourceUri(event.getResourceUri());
+        contract.setEventType(event.getEventType());
+        contract.setProcessingStatus(NEW);
+        contract.setFlowStatus(TRADE_DATA_RECEIVED);
+        contract.setLastEvent(event);
+        storeContract(contract);
+    }
+
+    private void updateEventStatus(TradeEvent event, ProcessingStatus status) {
+        event.setProcessingStatus(status);
         tradeEventRepository.save(event);
     }
 
     private Agreement storeAgreement(AgreementDto agreementDto, TradeEvent event) {
         Agreement agreementEntity = eventMapper.toAgreementEntity(agreementDto);
-            agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
-            agreementEntity.setProcessingStatus(CREATED);
+        agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
+        agreementEntity.setProcessingStatus(CREATED);
         return agreementRepository.save(agreementEntity);
     }
 
-    private Contract storeContract(ContractDto contractDto) {
-        Contract contractEntity = eventMapper.toContractEntity(contractDto);
-        return contractRepository.save(contractEntity);
+    private Contract storeContract(Contract contract) {
+        final Contract savedContract = contractRepository.save(contract);
+        log.debug("Contract: {} with processingStatus: {} was saved!",
+            contract.getContractId(), contract.getProcessingStatus());
+        return savedContract;
     }
 
     private void storeTimestamp(LocalDateTime timestamp) {

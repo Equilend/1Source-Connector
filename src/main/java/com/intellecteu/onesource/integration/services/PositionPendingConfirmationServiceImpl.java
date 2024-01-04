@@ -115,13 +115,16 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans");
-            if (jsonNode.isArray()) {
-                for (JsonNode positionNode : jsonNode) {
-                    try {
-                        convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
-                    } catch (JsonProcessingException e) {
-                        log.warn("Cannot converted positionNode {}", positionNode.asText());
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans");
+                if (jsonNode.isArray()) {
+                    for (JsonNode positionNode : jsonNode) {
+                        try {
+                            convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
+                        } catch (JsonProcessingException e) {
+                            log.warn("Cannot converted positionNode {}", positionNode.asText());
+                        }
                     }
                 }
             }

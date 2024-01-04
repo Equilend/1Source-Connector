@@ -23,7 +23,7 @@ public class SettlementInstruction {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "settlement_bic")
     private String settlementBic;
     @Column(name = "local_agent_bic")

@@ -34,6 +34,7 @@ public class ModelTestFactory {
 
     public static Instrument buildInstrument() {
         return Instrument.builder()
+            .id(9999L)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")

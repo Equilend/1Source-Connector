@@ -25,7 +25,7 @@ public class Collateral {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "contract_price")
     private Double contractPrice;
     @Column(name = "contract_value")

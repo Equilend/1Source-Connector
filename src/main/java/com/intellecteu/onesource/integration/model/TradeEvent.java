@@ -26,7 +26,7 @@ public class TradeEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "event_id")
     private Long eventId;
     @Column(name = "event_type")

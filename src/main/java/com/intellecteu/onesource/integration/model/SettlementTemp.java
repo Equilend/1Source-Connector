@@ -28,7 +28,7 @@ public class SettlementTemp {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "contract_id")
     private String contractId;
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

@@ -35,7 +35,7 @@ public class TradeAgreement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "venue_id")
     @JsonProperty("executionVenue")

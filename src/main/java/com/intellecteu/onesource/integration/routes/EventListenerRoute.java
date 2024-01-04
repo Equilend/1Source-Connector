@@ -24,12 +24,10 @@ public class EventListenerRoute extends RouteBuilder {
         from("timer://eventTimer?period={{camel.timer}}")
             .routeId("RetrievingNewEventsRoute")
             .autoStartup(isAutoStarted)
-            .log("Call for new events")
+            .log(">>>>> Consuming new events.")
             .log("{{camel.timer}}")
-            .log("retrieving Events")
-            .log("{{camel.timestamp}}")
             .setHeader("timestamp", constant("{{camel.timestamp}}"))
             .bean(eventProcessor, "consumeEvents")
-            .log("Retrieve Events success");
+            .log("<<<<< Finished consuming events!");
     }
 }

@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.mapper;
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstrumentDto;
 import static com.intellecteu.onesource.integration.ModelTestFactory.buildInstrument;
 import static com.intellecteu.onesource.integration.ModelTestFactory.buildVenueParty;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -141,6 +142,28 @@ class EventMapperTest {
         final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
 
         assertNotNull(contractDto.getLastUpdateDatetime());
+    }
+
+    @Test
+    @DisplayName("Test agreement mapping for trade.venue inner object")
+    void testAgreementDtoMapping_shouldMapVenueId() {
+        var agreementDto = DtoTestFactory.buildAgreementDto();
+        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+
+        assertEquals(
+            agreementDto.getTrade().getExecutionVenue().getId(),
+            agreementEntity.getTrade().getVenue().getId());
+    }
+
+    @Test
+    @DisplayName("Test agreement mapping for trade.instrument inner object")
+    void testAgreementDtoMapping_shouldMapInstrumentId() {
+        var agreementDto = DtoTestFactory.buildAgreementDto();
+        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+
+        assertEquals(
+            agreementDto.getTrade().getInstrument().getId(),
+            agreementEntity.getTrade().getInstrument().getId());
     }
 
     private String getRawAgreement() {

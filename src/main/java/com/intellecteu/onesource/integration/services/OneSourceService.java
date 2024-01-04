@@ -20,7 +20,7 @@ public interface OneSourceService {
 
     AgreementDto findTradeAgreement(String agreementId, EventType eventType);
 
-    Optional<ContractDto> findContract(String contractId);
+    Optional<Contract> findContract(String contractId);
 
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 

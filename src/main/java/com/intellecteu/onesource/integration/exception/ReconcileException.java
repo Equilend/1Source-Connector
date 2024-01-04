@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ReconcileException extends Exception {
 
     public static final String RECONCILE_EXCEPTION = "The trade agreement %s is in discrepancies "
-        + "with the position %d in Spire";
+        + "with the position %s in Spire";
 
     public static final String RECONCILE_MISMATCH = "Reconciliation mismatch. OneSource %s:%s "
         + "is not matched with Spire %s:%s";

@@ -9,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface TradeEventRepository extends JpaRepository<TradeEvent, Long> {
 
-    Optional<TradeEvent> findById(Long aLong);
+    Optional<TradeEvent> findById(Long id);
 
     List<TradeEvent> findAllByProcessingStatus(ProcessingStatus status);
 

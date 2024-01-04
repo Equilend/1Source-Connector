@@ -23,7 +23,7 @@ public class Party {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "party_id")
     private String partyId;
     @Column(name = "party_name")

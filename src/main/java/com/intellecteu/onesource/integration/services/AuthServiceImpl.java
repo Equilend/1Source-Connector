@@ -50,10 +50,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private AuthToken obtainAuthToken() {
-        log.debug("Obtaining a new access token from the authorization server.");
+        log.trace("Obtaining a new access token from the authorization server.");
         var accessTokenResponse = authClient.obtainAccessToken(userName, password);
         authToken = authMapper.mapToAuthToken(accessTokenResponse);
-        log.debug("A new access token {} is valid until {}",
+        log.trace("A new access token {} is valid until {}",
             authToken.getAccessToken().substring(authToken.getAccessToken().length() - 20), authToken.getExpiresAt());
         return authToken;
     }

@@ -27,7 +27,7 @@ public class Instrument {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "ticker")
     private String ticker;
     @Column(name = "cusip")

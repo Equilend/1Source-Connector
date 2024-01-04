@@ -47,10 +47,6 @@ public class PositionService {
         return Optional.empty();
     }
 
-    public Position getById(Long positionId) {
-        return positionRepository.getById(positionId);
-    }
-
     public List<Position> savePositions(List<Position> positions) {
         positions.forEach(position -> position.setLastUpdateDateTime(LocalDateTime.now()));
         return positionRepository.saveAll(positions);
@@ -58,7 +54,6 @@ public class PositionService {
 
     public Optional<String> getMaxPositionId() {
         List<Position> storedPositions = positionRepository.findAll();
-        log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
         return storedPositions.stream().map(Position::getPositionId)
             .max(Comparator.comparingInt(Integer::parseInt));
     }

@@ -21,14 +21,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Slf4j
 public class ContractDto implements Reconcilable {
 
-    private long id;
+    private Long id;
     @JsonProperty("contractId")
     private String contractId;
     @JsonProperty("lastEvent")
@@ -58,5 +60,10 @@ public class ContractDto implements Reconcilable {
     public void validateForReconciliation() throws ValidationException {
         throwIfFieldMissedException(trade, TRADE);
         trade.validateForReconciliation();
+    }
+
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
+        this.processingStatus = processingStatus;
+        log.debug("Updated processing status to {} for contract: {}", processingStatus, contractId);
     }
 }

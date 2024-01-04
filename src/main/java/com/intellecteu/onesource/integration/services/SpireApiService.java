@@ -56,7 +56,6 @@ import com.intellecteu.onesource.integration.services.record.CloudEventRecordSer
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -93,26 +92,30 @@ public class SpireApiService implements SpireService {
 
     @Override
     public List<PositionDto> requestNewPositions(String maxPositionId) throws PositionRetrievementException {
+        log.debug("Request new positions started from position id: {}", maxPositionId);
         ResponseEntity<JsonNode> response = requestPosition(
             createGetPositionNQuery(null, AndOr.AND, null,
                 createListOfTuplesGetPositionWithoutTA(maxPositionId)));
         if (response.getStatusCode().is2xxSuccessful()
-            && response.getBody() != null && !response.getBody().at("/data/beans").isMissingNode()) {
-            List<PositionDto> positionDtoList = new ArrayList<>();
-            JsonNode positionsJsonNode = response.getBody().at("/data/beans");
-            if (positionsJsonNode.isArray()) {
-                for (JsonNode positionNode : positionsJsonNode) {
-                    try {
-                        positionDtoList.add(spireMapper.jsonToPositionDto(positionNode));
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException("Wrong structure of PositionDto.class");
+            && response.getBody() != null
+            && !response.getBody().at("/data/beans").isMissingNode()) {
+            var totalRowsCount = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRowsCount)) {
+                List<PositionDto> positionDtoList = new ArrayList<>();
+                JsonNode positionsJsonNode = response.getBody().at("/data/beans");
+                if (positionsJsonNode.isArray()) {
+                    for (JsonNode positionNode : positionsJsonNode) {
+                        try {
+                            positionDtoList.add(spireMapper.jsonToPositionDto(positionNode));
+                        } catch (JsonProcessingException e) {
+                            throw new RuntimeException("Wrong structure of PositionDto.class");
+                        }
                     }
                 }
+                return positionDtoList;
             }
-            return positionDtoList;
-        } else {
-            throw new PositionRetrievementException(String.valueOf(response.getBody()));
         }
+        return List.of();
     }
 
     @Override
@@ -180,8 +183,11 @@ public class SpireApiService implements SpireService {
             && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
-            return spireMapper.toPosition(jsonNode);
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+                return spireMapper.toPosition(jsonNode);
+            }
         }
         return null;
     }
@@ -191,9 +197,14 @@ public class SpireApiService implements SpireService {
         final HttpEntity<Query> request = buildRequest(query);
 
         var lenderResponse = requestPosition(request, lenderSpireEndpoint + GET_POSITION_ENDPOINT, LENDER);
-        return isPositionFound(lenderResponse) ?
-            lenderResponse :
-            requestPosition(request, borrowerSpireEndpoint + GET_POSITION_ENDPOINT, BORROWER);
+        if (isPositionFound(lenderResponse)) {
+            return lenderResponse;
+        }
+        var borrowerResp = requestPosition(request, borrowerSpireEndpoint + GET_POSITION_ENDPOINT, BORROWER);
+        if (isPositionFound(borrowerResp)) {
+            return borrowerResp;
+        }
+        return borrowerResp; // temporary solution instead of returning an empty response
     }
 
     private ResponseEntity<JsonNode> requestPosition(HttpEntity<Query> request, String endpoint, PartyRole role) {
@@ -252,9 +263,12 @@ public class SpireApiService implements SpireService {
         if (response != null && response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
 
-            return retrieveInstructions(jsonNode, roleForRequest, venueRefId);
+                return retrieveInstructions(jsonNode, roleForRequest, venueRefId);
+            }
         }
         return null;
     }
@@ -282,12 +296,15 @@ public class SpireApiService implements SpireService {
         if (response.getBody() != null && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
 
-            final List<SettlementDto> settlementList = retrieveInstructions(jsonNode, partyRole,
-                position.getCustomValue2());
-            if (!settlementList.isEmpty()) {
-                return new ResponseEntity<>(settlementList.get(0), response.getHeaders(), response.getStatusCode());
+                final List<SettlementDto> settlementList = retrieveInstructions(jsonNode, partyRole,
+                    position.getCustomValue2());
+                if (!settlementList.isEmpty()) {
+                    return new ResponseEntity<>(settlementList.get(0), response.getHeaders(), response.getStatusCode());
+                }
             }
         }
         throw new HttpClientErrorException(NOT_FOUND);
@@ -427,10 +444,12 @@ public class SpireApiService implements SpireService {
     private Position savePosition(ResponseEntity<JsonNode> response, String venueRefId,
         TradeAgreementDto trade) {
         try {
-            final Position entity = Objects.requireNonNull(extractPositionFromJson(response));
-            entity.setVenueRefId(venueRefId);
-            entity.setLastUpdateDateTime(LocalDateTime.now());
-            return positionRepository.save(entity);
+            final Position entity = extractPositionFromJson(response);
+            if (entity != null) {
+                entity.setVenueRefId(venueRefId);
+                entity.setLastUpdateDateTime(LocalDateTime.now());
+                return positionRepository.save(entity);
+            }
         } catch (JsonProcessingException | NullPointerException e) {
             var msg = format(TRADE_RELATED_EXCEPTION, venueRefId, trade.retrieveVenueName(),
                 trade.getTradeDate(), "Parse data exception!");

@@ -110,6 +110,7 @@ public class OneSourceApiService implements OneSourceService {
         HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
 
         executeCreateContractRequest(agreement, position, request);
+        log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
     }
 
     private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
@@ -119,7 +120,6 @@ public class OneSourceApiService implements OneSourceService {
         try {
             restTemplate.exchange(
                 onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST, request, JsonNode.class);
-            log.debug("The contract was created!");
         } catch (HttpStatusCodeException e) {
             log.warn(
                 "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: "
@@ -154,13 +154,13 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public Optional<ContractDto> findContract(String contractUri) {
+    public Optional<Contract> findContract(String contractUri) {
         log.debug("Retrieving contract: {}", contractUri);
         return Optional.ofNullable(findContractViaHttpRequest(contractUri));
     }
 
-    private ContractDto findContractViaHttpRequest(String contractUri) throws HttpStatusCodeException {
-        return restTemplate.getForObject(onesourceBaseEndpoint + contractUri, ContractDto.class);
+    private Contract findContractViaHttpRequest(String contractUri) throws HttpStatusCodeException {
+        return restTemplate.getForObject(onesourceBaseEndpoint + contractUri, Contract.class);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class OneSourceApiService implements OneSourceService {
         try {
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
                 request, JsonNode.class, contract.getContractId());
-            log.debug("Contract id: {} approval  was sent.", contract.getContractId());
+            log.debug("Contract id: {} approval was sent.", contract.getContractId());
         } catch (HttpStatusCodeException e) {
             var positionId = contract.getMatchingSpirePositionId();
             log.error(

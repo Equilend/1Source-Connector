@@ -86,7 +86,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
             log.debug(format(LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG,
                 contractDto.getContractId(), contractDto.getMatchingSpirePositionId()));
             saveContract(contractDto, RECONCILED);
-            log.debug("Loan contract proposal {} is reconciled.", contractDto.getContractId());
             createContractInitiationEvent(contractDto.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED,
                 contractDto.getMatchingSpirePositionId());
         } catch (ReconcileException e) {
@@ -106,8 +105,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     private void saveContract(ContractDto contractDto, ProcessingStatus processingStatus) {
-        log.debug("Set processing status: {} for loan contract proposal {} ",
-            processingStatus, contractDto.getContractId());
         contractDto.setProcessingStatus(processingStatus);
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
         contractRepository.save(eventMapper.toContractEntity(contractDto));
@@ -131,6 +128,8 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void processMatchingPosition(@NonNull ContractDto contractDto, @NonNull PositionDto positionDto) {
+        log.debug("Matching position: {} with a contract: {}.",
+            positionDto.getPositionId(), contractDto.getContractId());
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
         contractDto.setMatchingSpirePositionId(positionDto.getPositionId());
 

@@ -22,7 +22,8 @@ public class AgreementReconcileService extends OneSourceSpireReconcileService<Ag
         reconciliationFailMessages.addAll(validateReconcilableObjects(agreementDto, positionDto));
         reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
         if (!reconciliationFailMessages.isEmpty()) {
-            String errorMsg = format(RECONCILE_EXCEPTION, agreementDto.getAgreementId(), positionDto.getId());
+            String errorMsg = format(RECONCILE_EXCEPTION, agreementDto.getAgreementId(), positionDto.getPositionId());
+            reconciliationFailMessages.forEach(msg -> log.debug(msg.getExceptionMessage()));
             throw new ReconcileException(errorMsg, reconciliationFailMessages);
         }
     }

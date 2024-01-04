@@ -25,7 +25,7 @@ public class Price {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "value")
     private Double value;
     @Column(name = "currency")

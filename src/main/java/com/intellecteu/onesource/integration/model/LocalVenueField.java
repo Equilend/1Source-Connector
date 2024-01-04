@@ -23,7 +23,7 @@ public class LocalVenueField {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "local_field_name")
     private String localFieldName;
     @Column(name = "local_field_value")

@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
+import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
@@ -12,7 +13,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECON
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractLenderOrBorrower;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -29,6 +30,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -69,21 +71,28 @@ public class PositionProcessor {
 
     public void fetchNewPositions() {
         List<Position> newSpirePositions = positionService.getNewSpirePositions();
-        newSpirePositions.forEach(i -> PositionUtils.updatePositionStatus(i, CREATED));
+        newSpirePositions.stream()
+            .filter(this::isStatusShouldBeUpdated)
+            .forEach(p -> PositionUtils.updatePositionStatus(p, CREATED));
         positionService.savePositions(newSpirePositions);
+        if (newSpirePositions.isEmpty()) {
+            log.debug("No new positions were found.");
+        } else {
+            log.debug("Saved {} new positions!", newSpirePositions.size());
+        }
     }
 
     public void startContractInitiation() {
-        log.debug(">>>>> Starting SPIRE contract initiation process!");
+        log.info(">>>>> Starting SPIRE contract initiation process!");
         List<PositionDto> positionDetails = getNewPositions();
         positionDetails.forEach(this::processPositionInformation);
-        log.debug("<<<<< SPIRE contract initiation process is finished!");
         positionDetails.forEach(this::proceedWithSettlementInstruction);
+        log.info("<<<<< SPIRE contract initiation process is finished!");
     }
 
     private List<PositionDto> getNewPositions() {
         List<Position> positions = positionRepository.findAllByProcessingStatus(ProcessingStatus.CREATED);
-        return positions.stream().map(position -> spireMapper.toPositionDto(position)).collect(Collectors.toList());
+        return positions.stream().map(spireMapper::toPositionDto).collect(Collectors.toList());
     }
 
     private void proceedWithSettlementInstruction(PositionDto positionDto) {
@@ -92,15 +101,18 @@ public class PositionProcessor {
             .findFirst()
             .map(s -> recordInstructionAndPosition(s, positionDto));
 
-        if (positionDto.getProcessingStatus() == SI_FETCHED
-            && positionDto.getMatching1SourceTradeAgreementId() != null) {
-            reconcileMatchingTradeAgreement(positionDto);
+        PartyRole partyRole = extractLenderOrBorrower(positionDto);
+
+        if (partyRole == BORROWER) {
+            if (positionDto.getProcessingStatus() == SI_FETCHED
+                && positionDto.getMatching1SourceTradeAgreementId() != null) {
+                reconcileMatchingTradeAgreement(positionDto);
+            }
         }
-
-        extractPartyRole(positionDto.unwrapPositionType())
-            .filter(role -> role == LENDER)
-            .ifPresent(role -> instructLoanContractProposal(positionDto, settlementDtoList));
-
+        if (partyRole == LENDER) {
+            reconcileMatchingTradeAgreement(positionDto);
+            instructLoanContractProposal(positionDto, settlementDtoList);
+        }
     }
 
     private void reconcileMatchingTradeAgreement(PositionDto positionDto) {
@@ -118,19 +130,18 @@ public class PositionProcessor {
             reconcileService.reconcile(agreementDto, positionDto);
             log.debug("Agreement {} is reconciled with position {}", agreementDto.getAgreementId(),
                 positionDto.getPositionId());
-            saveAgreement(agreementDto, RECONCILED);
+            saveMatchedPositionForAgreement(agreementDto, RECONCILED);
             savePosition(positionDto, TRADE_RECONCILED);
             recordSuccessReconciliationCloudEvent(agreementDto);
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
-            saveAgreement(agreementDto, DISCREPANCIES);
+            saveMatchedPositionForAgreement(agreementDto, DISCREPANCIES);
             savePosition(positionDto, TRADE_DISCREPANCIES);
             recordFailReconciliationCloudEvent(agreementDto, e);
         }
     }
 
     private void recordFailReconciliationCloudEvent(AgreementDto agreementDto, ReconcileException exception) {
-        exception.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(agreementDto.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
@@ -147,7 +158,7 @@ public class PositionProcessor {
     }
 
     private SettlementDto recordInstructionAndPosition(SettlementDto settlementDto, PositionDto positionDto) {
-        final SettlementDto recordedSettlementDto = proceedWithSettlementInstruction(settlementDto);
+        final SettlementDto recordedSettlementDto = settlementService.persistSettlement(settlementDto);
         positionDto.setApplicableInstructionId(recordedSettlementDto.getInstructionId());
         savePosition(positionDto, SI_FETCHED);
         log.debug("Settlement instruction id {} was saved as {} for position id {}",
@@ -156,24 +167,27 @@ public class PositionProcessor {
     }
 
     public void processPositionInformation(PositionDto positionDto) {
-        matchPositionWithCapturedAgreement(positionDto);
         positionDto.setVenueRefId(positionDto.getCustomValue2());
+        PartyRole partyRole = extractLenderOrBorrower(positionDto);
+        lookupTradeAgreement(positionDto);
+        if (partyRole == BORROWER) {
+            lookupContractProposal(positionDto);
+        }
         positionRepository.save(spireMapper.toPosition(positionDto));
     }
 
-    private void matchPositionWithCapturedAgreement(PositionDto positionDto) {
-        agreementRepository.findByVenueRefId(positionDto.getCustomValue2()).stream()
+    private void lookupTradeAgreement(PositionDto positionDto) {
+        final List<Agreement> res = agreementRepository.findByVenueRefId(positionDto.getCustomValue2());
+        res.stream()//todo use service instead
             .findFirst()
-            .ifPresent(a -> saveAgreement(positionDto, a));
-
-        contractRepository.findByVenueRefId(positionDto.getCustomValue2())
-            .stream()
-            .findFirst()
-            .map(c -> saveContract(positionDto, c));
+            .ifPresent(a -> saveMatchedPositionForAgreement(positionDto, a));
     }
 
-    private SettlementDto proceedWithSettlementInstruction(SettlementDto settlementDto) {
-        return settlementService.persistSettlement(settlementDto);
+    private void lookupContractProposal(PositionDto positionDto) {
+        contractRepository.findByVenueRefId(positionDto.getCustomValue2())//todo use service instead
+            .stream()
+            .findFirst()
+            .map(c -> saveMatchedPositionForContractProposal(positionDto, c));
     }
 
     public void instructLoanContractProposal(PositionDto positionDto, List<SettlementDto> settlementDtos) {
@@ -184,7 +198,6 @@ public class PositionProcessor {
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
                 buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);
-            log.debug("Loan contract proposal was created for position id: {}", positionDto.getPositionId());
         }
     }
 
@@ -202,13 +215,16 @@ public class PositionProcessor {
             && response.getBody().get("data") != null
             && response.getBody().get("data").get("beans") != null
             && response.getBody().get("data").get("beans").get(0) != null) {
-            JsonNode jsonNode = response.getBody().get("data").get("beans");
-            if (jsonNode.isArray()) {
-                for (JsonNode positionNode : jsonNode) {
-                    try {
-                        convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
-                    } catch (JsonProcessingException e) {
-                        log.warn("Cannot converted positionNode {}", positionNode.asText());
+            var totalRows = response.getBody().at("/data/totalRows").asText();
+            if (!"0".equals(totalRows)) {
+                JsonNode jsonNode = response.getBody().get("data").get("beans");
+                if (jsonNode.isArray()) {
+                    for (JsonNode positionNode : jsonNode) {
+                        try {
+                            convertedPositions.add(spireMapper.jsonToPositionDto(positionNode));
+                        } catch (JsonProcessingException e) {
+                            log.warn("Cannot converted positionNode {}", positionNode.asText());
+                        }
                     }
                 }
             }
@@ -220,7 +236,7 @@ public class PositionProcessor {
         return spireMapper.buildTradeAgreementDto(positionDto);
     }
 
-    private ContractDto saveContract(PositionDto positionDto, Contract contract) {
+    private ContractDto saveMatchedPositionForContractProposal(PositionDto positionDto, Contract contract) {
         positionDto.setMatching1SourceLoanContractId(contract.getContractId());
         contract.setMatchingSpirePositionId(positionDto.getPositionId());
         contract.setLastUpdateDatetime(LocalDateTime.now());
@@ -228,30 +244,36 @@ public class PositionProcessor {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
             contract.getMatchingSpirePositionId());
 
-        return eventMapper.toContractDto(contractRepository.save(contract));
+        log.debug("Contract proposal: {} with matched position: {} was saved!",
+            contract.getContractId(), positionDto.getPositionId());
+        return eventMapper.toContractDto(contractRepository.save(contract)); // todo use service instead
     }
 
-    private void saveAgreement(PositionDto positionDto, Agreement agreement) {
+    private void saveMatchedPositionForAgreement(PositionDto positionDto, Agreement agreement) {
         positionDto.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
         agreement.setMatchingSpirePositionId(positionDto.getPositionId());
         agreement.setLastUpdateDatetime(LocalDateTime.now());
         agreement.setProcessingStatus(MATCHED_POSITION);
         createContractInitiationCloudEvent(agreement.getAgreementId(),
             TRADE_AGREEMENT_MATCHED_POSITION, agreement.getMatchingSpirePositionId());
-        agreementRepository.save(agreement);
+        agreementRepository.save(agreement); // todo use service instead
+        log.debug("Agreement: {} with matched position: {} was saved!", agreement.getAgreementId(),
+            positionDto.getPositionId());
     }
 
     private void savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
         positionDto.setProcessingStatus(processingStatus);
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
         positionRepository.save(spireMapper.toPosition(positionDto));
-        log.debug("Position {} changed processing status to {}", positionDto.getPositionId(), processingStatus);
+        log.debug("Position: {} with the processing status: {} was saved!", positionDto.getPositionId(),
+            processingStatus);
     }
 
-    private void saveAgreement(AgreementDto agreementDto, ProcessingStatus processingStatus) {
+    private void saveMatchedPositionForAgreement(AgreementDto agreementDto, ProcessingStatus processingStatus) {
         agreementDto.setProcessingStatus(processingStatus);
         agreementDto.setLastUpdateDatetime(LocalDateTime.now());
-        agreementRepository.save(eventMapper.toAgreementEntity(agreementDto));
+        final Agreement agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+        agreementRepository.save(agreementEntity);
         log.debug("Agreement {} changed processing status to {}", agreementDto.getAgreementId(), processingStatus);
     }
 
@@ -260,5 +282,9 @@ public class PositionProcessor {
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private boolean isStatusShouldBeUpdated(Position position) {
+        return position.getProcessingStatus() == null;
     }
 }

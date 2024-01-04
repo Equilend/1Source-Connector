@@ -108,7 +108,7 @@
       "responses": [
         {
           "uuid": "bcdd1f13-6bc2-4533-98be-2e74fba21175",
-          "body": "[\n  {\n    \"eventId\": 1,\n    \"eventType\": \"TRADE_AGREED\",\n    \"eventDateTime\": \"2023-07-27T15:51:40.011Z\",\n    \"resourceUri\": \"/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7193\"\n  },\n  {\n    \"eventId\": 2,\n    \"eventType\": \"TRADE_AGREED\",\n    \"eventDateTime\": \"2023-07-27T15:51:40.011Z\",\n    \"resourceUri\": \"/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7195\"\n  },\n  {\n    \"eventId\": 3,\n    \"eventType\": \"CONTRACT_PROPOSED\",\n    \"eventDateTime\": \"2023-07-28T15:55:45.011Z\",\n    \"resourceUri\": \"/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7194\"\n  },\n  {\n    \"eventId\": 4,\n    \"eventType\": \"CONTRACT_PENDING\",\n    \"eventDateTime\": \"2023-07-29T17:51:40.011Z\",\n    \"resourceUri\": \"/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7194\"\n  }\n]",
+          "body": "[\n\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "Read collection of events. With no parameters returns events since start of current day.",
@@ -344,10 +344,10 @@
       "responses": [
         {
           "uuid": "e2da66a2-2b88-4a6c-bf78-27d0fa830e9b",
-          "body": "{\n  \"contractId\": \"{{urlParam 'contractId'}}\",\n  \"lastEvent\": {\n    \"eventId\": 1,\n    \"eventType\": \"TRADE_AGREED\",\n    \"eventDateTime\": \"2023-07-27T15:51:40.011Z\",\n    \"resourceUri\": \"/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7193\"\n  },\n  \"contractStatus\": \"APPROVED\",\n  \"settlementStatus\": \"NONE\",\n  \"lastUpdatePartyId\": \"string\",\n  \"lastUpdateDatetime\": \"2023-07-27T17:22:46.245\",\n  \"trade\": {\n    \"executionVenue\": {\n      \"partyId\": \"String\",\n      \"type\": \"ONPLATFORM\",\n      \"venueName\": \"string\",\n      \"venueRefKey\": \"f7195\",\n      \"transactionDatetime\": \"2023-08-11T05:01:12.192Z\",\n      \"venueParties\": [\n        {\n          \"partyRole\": \"BORROWER\",\n          \"venuePartyRefKey\": \"string\"\n        }\n      ],\n      \"localVenueFields\": [\n        {\n          \"localFieldName\": \"string\",\n          \"localFieldValue\": \"string\"\n        }\n      ]\n    },\n    \"instrument\": {\n      \"ticker\": \"string\",\n      \"cusip\": \"023135106\",\n      \"isin\": \"US0231351067\",\n      \"sedol\": \"2000019\",\n      \"quick\": \"string\",\n      \"figi\": \"string\",\n      \"description\": \"string\",\n      \"price\": {\n        \"value\": 0,\n        \"currency\": \"USD\",\n        \"unit\": \"LOT\"\n      }\n    },\n    \"rate\": {\n      \"rebate\": {\n        \"floating\": {\n          \"spread\": 10.05,\n          \"effectiveRate\": 0.05,\n          \"cutoffTime\": \"23:54\"\n        }\n      }\n    },\n    \"quantity\": 15000.0,\n    \"billingCurrency\": \"USD\",\n    \"dividendRatePct\": 85.0,\n    \"tradeDate\": \"2023-10-25\",\n    \"termType\": \"OPEN\",\n    \"termDate\": \"2023-08-11\",\n    \"settlementDate\": \"2023-10-25\",\n    \"settlementType\": \"DVP\",\n    \"collateral\": {\n      \"contractPrice\": 119.57,\n      \"contractValue\": 17935.5,\n      \"collateralValue\": 17935.5,\n      \"currency\": \"USD\",\n      \"type\": \"CASH\",\n      \"descriptionCd\": \"NONUSAGENCIES\",\n      \"margin\": 102,\n      \"roundingRule\": 0,\n      \"roundingMode\": \"ALWAYSUP\"\n    },\n    \"transactingParties\": [\n      {\n        \"partyRole\": \"LENDER\",\n        \"party\": {\n          \"partyId\": \"001\",\n          \"partyName\": \"lender_party\",\n          \"gleifLei\": \"f7193\",\n          \"internalPartyId\": \"No data\"\n        }\n      },\n      {\n        \"partyRole\": \"BORROWER\",\n        \"party\": {\n          \"partyId\": \"002\",\n          \"partyName\": \"borrower_party\",\n          \"gleifLei\": \"f7195\",\n          \"internalPartyId\": \"No data\"\n        }\n      }\n    ]\n  },\n  \"settlement\": [\n    {\n      \"partyRole\": \"BORROWER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    },\n    {\n      \"partyRole\": \"LENDER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    }\n  ]\n}",
+          "body": "{\n  \"contractId\": \"{{urlParam 'contractId'}}\",\n  \"lastEvent\": {\n    \"eventId\": 1,\n    \"eventType\": \"TRADE_AGREED\",\n    \"eventDateTime\": \"2023-07-27T15:51:40.011Z\",\n    \"resourceUri\": \"/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7194\"\n  },\n  \"contractStatus\": \"APPROVED\",\n  \"settlementStatus\": \"NONE\",\n  \"lastUpdatePartyId\": \"string\",\n  \"lastUpdateDatetime\": \"2023-07-27T17:22:46.245\",\n  \"trade\": {\n    \"executionVenue\": {\n      \"partyId\": \"String\",\n      \"type\": \"ONPLATFORM\",\n      \"venueName\": \"string\",\n      \"venueRefKey\": \"7777\",\n      \"transactionDatetime\": \"2023-08-11T05:01:12.192Z\",\n      \"venueParties\": [\n        {\n          \"partyRole\": \"BORROWER\",\n          \"venuePartyRefKey\": \"string\"\n        }\n      ],\n      \"localVenueFields\": [\n        {\n          \"localFieldName\": \"string\",\n          \"localFieldValue\": \"string\"\n        }\n      ]\n    },\n    \"instrument\": {\n      \"ticker\": \"123\",\n      \"cusip\": \"023135107\",\n      \"isin\": \"US0231351068\",\n      \"sedol\": \"2000010\",\n      \"quick\": \"456\",\n      \"figi\": \"string\",\n      \"description\": \"string\",\n      \"price\": {\n        \"value\": 0,\n        \"currency\": \"USD\",\n        \"unit\": \"LOT\"\n      }\n    },\n    \"rate\": {\n      \"rebate\": {\n        \"floating\": {\n          \"spread\": 10.05,\n          \"effectiveRate\": 0.05,\n          \"cutoffTime\": \"23:54\"\n        }\n      }\n    },\n    \"quantity\": 9999.0,\n    \"billingCurrency\": \"USD\",\n    \"dividendRatePct\": 85.0,\n    \"tradeDate\": \"2023-10-25\",\n    \"termType\": \"OPEN\",\n    \"termDate\": \"2023-08-11\",\n    \"settlementDate\": \"2023-10-25\",\n    \"settlementType\": \"DVP\",\n    \"collateral\": {\n      \"contractPrice\": 119.57,\n      \"contractValue\": 17935.5,\n      \"collateralValue\": 17935.5,\n      \"currency\": \"USD\",\n      \"type\": \"CASH\",\n      \"descriptionCd\": \"NONUSAGENCIES\",\n      \"margin\": 102,\n      \"roundingRule\": 0,\n      \"roundingMode\": \"ALWAYSUP\"\n    },\n    \"transactingParties\": [\n      {\n        \"partyRole\": \"LENDER\",\n        \"party\": {\n          \"partyId\": \"001\",\n          \"partyName\": \"lender_party\",\n          \"gleifLei\": \"7777\",\n          \"internalPartyId\": \"No data\"\n        }\n      },\n      {\n        \"partyRole\": \"BORROWER\",\n        \"party\": {\n          \"partyId\": \"002\",\n          \"partyName\": \"borrower_party\",\n          \"gleifLei\": \"8888\",\n          \"internalPartyId\": \"No data\"\n        }\n      }\n    ]\n  },\n  \"settlement\": [\n    {\n      \"partyRole\": \"BORROWER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    },\n    {\n      \"partyRole\": \"LENDER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    }\n  ]\n}",
           "latency": 0,
           "statusCode": 200,
-          "label": "Read a specific contract the user is authorized to access",
+          "label": "Read a specific contract",
           "headers": [
             {
               "key": "Content-Type",
@@ -1309,6 +1309,228 @@
       ],
       "enabled": true,
       "responseMode": null
+    },
+    {
+      "uuid": "9d257509-d738-49f8-b88d-fb687a4a0f7e",
+      "type": "http",
+      "documentation": "get contract",
+      "method": "get",
+      "endpoint": "contracts/32b71278-9ad2-445a-bfb0-b5ada72f7777",
+      "responses": [
+        {
+          "uuid": "e35a1f5f-9ec7-4fe0-b14c-5c852b2d6d9b",
+          "body": "{\n  \"contractId\": \"32b71278-9ad2-445a-bfb0-b5ada72f7777\",\n  \"lastEvent\": null,\n  \"contractStatus\": \"APPROVED\",\n  \"settlementStatus\": \"NONE\",\n  \"lastUpdatePartyId\": \"string\",\n  \"lastUpdateDatetime\": \"2023-07-27T17:22:46.245\",\n  \"trade\": {\n    \"executionVenue\": {\n      \"partyId\": \"String\",\n      \"type\": \"ONPLATFORM\",\n      \"venueName\": \"string\",\n      \"venueRefKey\": \"7777\",\n      \"transactionDatetime\": \"2023-08-11T05:01:12.192Z\",\n      \"venueParties\": [\n        {\n          \"partyRole\": \"LENDER\",\n          \"venuePartyRefKey\": \"string\"\n        }\n      ],\n      \"localVenueFields\": [\n        {\n          \"localFieldName\": \"string\",\n          \"localFieldValue\": \"string\"\n        }\n      ]\n    },\n    \"instrument\": {\n      \"ticker\": \"123\",\n      \"cusip\": \"023135107\",\n      \"isin\": \"US0231351068\",\n      \"sedol\": \"2000010\",\n      \"quick\": \"456\",\n      \"figi\": \"string\",\n      \"description\": \"string\",\n      \"price\": {\n        \"value\": 0,\n        \"currency\": \"USD\",\n        \"unit\": \"LOT\"\n      }\n    },\n    \"rate\": {\n      \"rebate\": {\n        \"floating\": {\n          \"spread\": 10.05,\n          \"effectiveRate\": 0.05,\n          \"cutoffTime\": \"23:54\"\n        }\n      }\n    },\n    \"quantity\": 9999.0,\n    \"billingCurrency\": \"USD\",\n    \"dividendRatePct\": 85.0,\n    \"tradeDate\": \"2023-10-25\",\n    \"termType\": \"OPEN\",\n    \"termDate\": \"2023-08-11\",\n    \"settlementDate\": \"2023-10-25\",\n    \"settlementType\": \"DVP\",\n    \"collateral\": {\n      \"contractPrice\": 119.57,\n      \"contractValue\": 17935.5,\n      \"collateralValue\": 17935.5,\n      \"currency\": \"USD\",\n      \"type\": \"CASH\",\n      \"descriptionCd\": \"NONUSAGENCIES\",\n      \"margin\": 102,\n      \"roundingRule\": 0,\n      \"roundingMode\": \"ALWAYSUP\"\n    },\n    \"transactingParties\": [\n      {\n        \"partyRole\": \"LENDER\",\n        \"party\": {\n          \"partyId\": \"001\",\n          \"partyName\": \"lender_party\",\n          \"gleifLei\": \"7777\",\n          \"internalPartyId\": \"No data\"\n        }\n      },\n      {\n        \"partyRole\": \"BORROWER\",\n        \"party\": {\n          \"partyId\": \"002\",\n          \"partyName\": \"borrower_party\",\n          \"gleifLei\": \"8888\",\n          \"internalPartyId\": \"No data\"\n        }\n      }\n    ]\n  },\n  \"settlement\": [\n    {\n      \"partyRole\": \"BORROWER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    },\n    {\n      \"partyRole\": \"LENDER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Read a specific contract for Lender",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "ec1f07f9-f1f5-451e-ae37-52aadcc525d8",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 401,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Not authorized to do this operation",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "fd908107-cae2-4f1c-85f4-8ab6fef3e7f2",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 404,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Resource not found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "contractId",
+              "value": "999",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "041d1410-523e-412e-b7fb-9d5b4ee8a271",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 500,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "An error occurred",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    },
+    {
+      "uuid": "fcd79134-23e7-4aa1-805e-c6c09187f3ec",
+      "type": "http",
+      "documentation": "get contract",
+      "method": "get",
+      "endpoint": "contracts/32b71278-9ad2-445a-bfb0-b5ada72f8888",
+      "responses": [
+        {
+          "uuid": "2f5f8fb3-0093-48aa-882c-634049ae8582",
+          "body": "{\n  \"contractId\": \"32b71278-9ad2-445a-bfb0-b5ada72f8888\",\n  \"lastEvent\": {\n    \"eventId\": 6,\n    \"eventType\": \"CONTRACT_PROPOSED\",\n    \"eventDateTime\": \"2023-09-29T17:51:40.011Z\",\n    \"resourceUri\": \"/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f8888\"\n  },\n  \"contractStatus\": \"PROPOSED\",\n  \"settlementStatus\": \"NONE\",\n  \"lastUpdatePartyId\": \"string\",\n  \"lastUpdateDatetime\": \"2023-07-27T17:22:46.245\",\n  \"trade\": {\n    \"executionVenue\": {\n      \"partyId\": \"String\",\n      \"type\": \"ONPLATFORM\",\n      \"venueName\": \"string\",\n      \"venueRefKey\": \"8888\",\n      \"transactionDatetime\": \"2023-08-11T05:01:12.192Z\",\n      \"venueParties\": [\n        {\n          \"partyRole\": \"BORROWER\",\n          \"venuePartyRefKey\": \"string\"\n        }\n      ],\n      \"localVenueFields\": [\n        {\n          \"localFieldName\": \"string\",\n          \"localFieldValue\": \"string\"\n        }\n      ]\n    },\n    \"instrument\": {\n      \"ticker\": \"123\",\n      \"cusip\": \"023135106\",\n      \"isin\": \"US0231351067\",\n      \"sedol\": \"2000019\",\n      \"quick\": \"457\",\n      \"figi\": \"string\",\n      \"description\": \"string\",\n      \"price\": {\n        \"value\": 0,\n        \"currency\": \"USD\",\n        \"unit\": \"LOT\"\n      }\n    },\n    \"rate\": {\n      \"rebate\": {\n        \"floating\": {\n          \"spread\": 10.05,\n          \"effectiveRate\": 0.05,\n          \"cutoffTime\": \"23:54\"\n        }\n      }\n    },\n    \"quantity\": 15000,\n    \"billingCurrency\": \"USD\",\n    \"dividendRatePct\": 85.0,\n    \"tradeDate\": \"2023-10-25\",\n    \"termType\": \"OPEN\",\n    \"termDate\": \"2023-08-11\",\n    \"settlementDate\": \"2023-10-25\",\n    \"settlementType\": \"DVP\",\n    \"collateral\": {\n      \"contractPrice\": 119.57,\n      \"contractValue\": 17935.5,\n      \"collateralValue\": 17935.5,\n      \"currency\": \"USD\",\n      \"type\": \"CASH\",\n      \"descriptionCd\": \"NONUSAGENCIES\",\n      \"margin\": 102,\n      \"roundingRule\": 0,\n      \"roundingMode\": \"ALWAYSUP\"\n    },\n    \"transactingParties\": [\n      {\n        \"partyRole\": \"LENDER\",\n        \"party\": {\n          \"partyId\": \"001\",\n          \"partyName\": \"lender_party\",\n          \"gleifLei\": \"7777\",\n          \"internalPartyId\": \"No data\"\n        }\n      },\n      {\n        \"partyRole\": \"BORROWER\",\n        \"party\": {\n          \"partyId\": \"002\",\n          \"partyName\": \"borrower_party\",\n          \"gleifLei\": \"8888\",\n          \"internalPartyId\": \"No data\"\n        }\n      }\n    ]\n  },\n  \"settlement\": [\n    {\n      \"partyRole\": \"BORROWER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    },\n    {\n      \"partyRole\": \"LENDER\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic\",\n        \"localAgentBic\": \"localAgentBic\",\n        \"localAgentName\": \"localAgentName\",\n        \"localAgentAcct\": \"localAgentAcct\",\n        \"dtcParticipantNumber\": \"123\"\n      }\n    }\n  ]\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Read a specific contract for Lender",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "36f81b4c-beb5-4b56-91e8-568aec6f19b3",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 401,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Not authorized to do this operation",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "dab49b91-9a16-447e-bed2-3a9774c60e2b",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 404,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Resource not found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "contractId",
+              "value": "999",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        },
+        {
+          "uuid": "a5a17cdc-a76d-4a0c-a648-3a6e3a0ab8be",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:04:18.694Z\",\r\n  \"status\": 500,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "An error occurred",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id"
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1335,6 +1557,14 @@
     {
       "type": "route",
       "uuid": "b76ae53a-c95a-4321-a59e-4f3e8adf0d4d"
+    },
+    {
+      "type": "route",
+      "uuid": "9d257509-d738-49f8-b88d-fb687a4a0f7e"
+    },
+    {
+      "type": "route",
+      "uuid": "fcd79134-23e7-4aa1-805e-c6c09187f3ec"
     },
     {
       "type": "route",

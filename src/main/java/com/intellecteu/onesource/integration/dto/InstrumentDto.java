@@ -24,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InstrumentDto implements Reconcilable {
 
+    private Long id;
     private String ticker;
     private String cusip;
     private String isin;

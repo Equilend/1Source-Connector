@@ -21,9 +21,9 @@ public class EventNotificationProducerRoute extends RouteBuilder {
         from("timer://eventTimer?period={{notification.timer}}")
             .routeId("EventNotificationRoute")
             .autoStartup(isEnabled)
-            .log("Sending events...")
+            .log(">>>> Sending notifications...")
             .setHeader("timestamp", constant("{{notification.timer}}"))
             .bean(eventNotificationService, "sendAllEvents")
-            .log("Sending events process was finished!");
+            .log("<<<<< Sending events process was finished!");
     }
 }

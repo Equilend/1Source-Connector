@@ -12,6 +12,7 @@ import lombok.Data;
 @Builder
 public class VenueDto {
 
+    private Long id;
     @JsonProperty("partyId")
     private String partyId;
     @JsonProperty("type")
@@ -28,9 +29,13 @@ public class VenueDto {
     private List<LocalVenueFieldsDto> localVenueFields;
 
     @JsonCreator
-    public VenueDto(@JsonProperty("partyId") String partyId, @JsonProperty("type") VenueType type, @JsonProperty("venueName") String venueName, @JsonProperty("venueRefKey") String venueRefKey,
+    public VenueDto(@JsonProperty("id") Long id, @JsonProperty("partyId") String partyId,
+        @JsonProperty("type") VenueType type,
+        @JsonProperty("venueName") String venueName, @JsonProperty("venueRefKey") String venueRefKey,
         @JsonProperty("transactionDatetime") LocalDateTime transactionDatetime,
-        @JsonProperty("venueParties") List<VenuePartyDto> venueParties, @JsonProperty("localVenueFields") List<LocalVenueFieldsDto> localVenueFields) {
+        @JsonProperty("venueParties") List<VenuePartyDto> venueParties,
+        @JsonProperty("localVenueFields") List<LocalVenueFieldsDto> localVenueFields) {
+        this.id = id;
         this.partyId = partyId;
         this.type = type;
         this.venueName = venueName;

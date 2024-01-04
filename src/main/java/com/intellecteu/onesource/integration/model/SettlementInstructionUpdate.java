@@ -37,7 +37,7 @@ public class SettlementInstructionUpdate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "venue_ref_id")
     private String venueRefId;
     @Column(name = "instruction_id")

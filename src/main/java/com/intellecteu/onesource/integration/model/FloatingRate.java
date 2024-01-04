@@ -26,7 +26,7 @@ public class FloatingRate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "benchmark")
     @Enumerated(value = EnumType.STRING)
     private Benchmark benchmark;

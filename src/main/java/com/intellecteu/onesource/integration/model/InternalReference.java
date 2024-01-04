@@ -23,7 +23,7 @@ public class InternalReference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "broker")
     private String brokerCd;
     @Column(name = "account_id")

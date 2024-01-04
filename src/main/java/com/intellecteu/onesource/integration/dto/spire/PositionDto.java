@@ -41,9 +41,8 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionDto implements Reconcilable {
 
-    private long id;
-    private String venueRefId;
     private String positionId;
+    private String venueRefId;
     private String customValue2;
     private Double rate;
     private Double quantity;
