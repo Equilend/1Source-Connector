@@ -58,8 +58,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
@@ -95,11 +97,15 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             ResponseEntity<JsonNode> response = spireService.requestPosition(
                 createGetPositionNQuery(null, AndOr.AND, null,
                     createListOfTuplesUpdatedPositions(formattedDateTime(lastUpdatedDateTime), ids)));
+            if (HttpStatus.CREATED == response.getStatusCode()) {
+                // temporal throw an exception to record until requirements will be retrieved how to handle 201 status
+                throw new HttpClientErrorException(HttpStatus.CREATED);
+            }
             return convertPositionResponse(response);
         } catch (HttpStatusCodeException e) {
             log.warn("SPIRE error response for {} subprocess. Details: {}",
                 GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, e.getStatusCode());
-            if (Set.of(UNAUTHORIZED, FORBIDDEN).contains(e.getStatusCode())) {
+            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(e.getStatusCode())) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(e,
                     IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);

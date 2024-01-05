@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
@@ -10,11 +9,10 @@ import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.InstructionDTO;
 import com.intellecteu.onesource.integration.dto.spire.NQuery;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.dto.spire.Query;
+import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
@@ -46,7 +44,7 @@ public interface SpireService {
     void updateInstruction(ContractDto contract, PositionDto position, String venueRefId,
         SettlementInstructionDto settlementInstructionDto, PartyRole partyRole);
 
-    List<PositionDto> requestNewPositions(String maxPositionId) throws PositionRetrievementException;
+    List<PositionDto> requestNewPositions(String maxPositionId) throws RestClientException;
 
     PositionDto requestPositionByVenueRefId(String venueRefId) throws PositionRetrievementException;
 
