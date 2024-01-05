@@ -86,7 +86,7 @@ public class RecordMessageConstant {
                 cannot be retrieved from SPIRE for the following reason: %s""";
 
             public static final String GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG = """
-                “The details of the trade agreement %s cannot be retrieved \
+                The details of the trade agreement %s cannot be retrieved \
                 from 1Source for the following reason: %s""";
 
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVE_MSG = """
