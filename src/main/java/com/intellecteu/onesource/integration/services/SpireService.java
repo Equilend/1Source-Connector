@@ -28,6 +28,11 @@ public interface SpireService {
     List<SettlementDto> retrieveSettlementDetails(PositionDto position, String venueRefId, TradeAgreementDto trade,
         PartyRole partyRole);
 
+    List<SettlementDto> retrieveSettlementDetails(String positionId, Integer accountId, Long securityId,
+        Integer positionTypeId, Integer currencyId, String venueRefId,
+        TradeAgreementDto trade,
+        PartyRole roleForRequest);
+
     // temporary method for to request Lender SPIRE side. Will be refactored after new flow Route creation
     ResponseEntity<SettlementDto> requestLenderSettlementDetails(PositionDto position,
         HttpEntity<Query> request) throws RestClientException;

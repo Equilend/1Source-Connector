@@ -24,14 +24,16 @@ public class SpireApiUtils {
         return headers;
     }
 
-    public static NQuery createGetInstructionsNQuery(PositionDto position) {
+    public static NQuery createGetInstructionsNQuery(Integer accountId, Long securityId,
+        Integer positionTypeId, Integer currencyId) {
         return NQuery.builder()
             .queries(null)
             .andOr(AndOr.AND)
             .empty(true)
-            .tuples(createListOfTuplesGetInstruction(position))
+            .tuples(createListOfTuplesGetInstruction(accountId, securityId, positionTypeId, currencyId))
             .build();
     }
+
 
     public static NQuery createCpGetInstructionsNQuery(PositionDto position, String accountId) {
         return NQuery.builder()
@@ -78,13 +80,13 @@ public class SpireApiUtils {
         return tuples;
     }
 
-    private static List<Tuples> createListOfTuplesGetInstruction(PositionDto position) {
+    public static List<Tuples> createListOfTuplesGetInstruction(Integer accountId, Long securityId,
+        Integer positionTypeId, Integer currencyId) {
         List<Tuples> tuples = new ArrayList<>();
-        tuples.add(createTuples("accountId", "EQUALS", String.valueOf(position.getDepoId()), null));
-        tuples.add(createTuples("securityId", "EQUALS", String.valueOf(position.getSecurityId()), null));
-        tuples.add(createTuples("positionTypeId", "EQUALS", String.valueOf(position.getPositionTypeId()), null));
-        tuples.add(createTuples("currencyId", "EQUALS", String.valueOf(position.getCurrencyId()), null));
-
+        tuples.add(createTuples("accountId", "EQUALS", String.valueOf(accountId), null));
+        tuples.add(createTuples("securityId", "EQUALS", String.valueOf(securityId), null));
+        tuples.add(createTuples("positionTypeId", "EQUALS", String.valueOf(positionTypeId), null));
+        tuples.add(createTuples("currencyId", "EQUALS", String.valueOf(currencyId), null));
         return tuples;
     }
 

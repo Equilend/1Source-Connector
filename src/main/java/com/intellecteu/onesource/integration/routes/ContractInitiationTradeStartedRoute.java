@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value = "integration-toolkit.flow-Version",
-    havingValue = "F1")
+        value = "integration-toolkit.flow-version",
+        havingValue = "F1")
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
     private final AgreementProcessor agreementProcessor;

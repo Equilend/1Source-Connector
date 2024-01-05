@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException.NO_PARTY_ROLE_EXCEPTION;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.buildRequest;
 import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createCpGetInstructionsNQuery;
 import static java.lang.String.format;
@@ -17,6 +16,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.Settlement;
 import com.intellecteu.onesource.integration.repository.SettlementRepository;
+import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -39,11 +39,35 @@ public class SettlementServiceImpl implements SettlementService {
     private final EventMapper eventMapper;
 
     @Override
-    public List<SettlementDto> getSettlementInstruction(PositionDto positionDto) {
-        final Optional<PartyRole> partyRole = extractPartyRole(positionDto.unwrapPositionType());
+    public List<SettlementDto> getSettlementInstructions(PositionDto positionDto) {
+        return getSettlementInstructions(positionDto.getPositionId(), positionDto.getDepoId(),
+            positionDto.getSecurityId(), positionDto.getPositionTypeId(),
+            positionDto.unwrapPositionType(), positionDto.getCurrencyId(), positionDto.getVenueRefId());
+    }
+
+    @Override
+    public List<SettlementDto> getSettlementInstructions(String positionId, Integer accountId, Long securityId,
+        Integer positionTypeId, String positionType, Integer currencyId, String venueRefId) {
+        final Optional<PartyRole> partyRole = IntegrationUtils.extractPartyRole(positionType);
         return partyRole
-            .map(p -> requestSettlementDetails(p, positionDto))
+            .map(
+                p -> requestSettlementDetails(positionId, accountId, securityId, positionTypeId, currencyId, venueRefId,
+                    p))
             .orElse(List.of());
+    }
+
+    public Optional<Settlement> getSettlementInstruction(String positionId, Integer accountId, Long securityId,
+        Integer positionTypeId, String positionType, Integer currencyId, String venueRefId) {
+        final Optional<PartyRole> partyRole = IntegrationUtils.extractPartyRole(positionType);
+        if (partyRole.isPresent()) {
+            List<SettlementDto> settlementDtos = requestSettlementDetails(positionId, accountId, securityId,
+                positionTypeId, currencyId, venueRefId,
+                partyRole.get());
+            return settlementDtos.stream().findFirst()
+                .map(settlementDto -> eventMapper.toSettlementEntity(settlementDto));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -68,6 +92,16 @@ public class SettlementServiceImpl implements SettlementService {
     public SettlementDto persistSettlement(SettlementDto settlementDto) {
         final Settlement persistedSettlement = settlementRepository.save(eventMapper.toSettlementEntity(settlementDto));
         return eventMapper.toSettlementDto(persistedSettlement);
+    }
+
+    @Override
+    public List<Settlement> getSettlementByInstructionId(Integer instructionId) {
+        return settlementRepository.findByInstructionId(instructionId);
+    }
+
+    @Override
+    public Settlement persistSettlement(Settlement settlement) {
+        return settlementRepository.save(settlement);
     }
 
     @Override
@@ -102,5 +136,13 @@ public class SettlementServiceImpl implements SettlementService {
         log.debug("Retrieving Settlement Instruction by position from Spire as a {}", partyRole);
         return spireService.retrieveSettlementDetails(positionDto,
             positionDto.getCustomValue2(), null, partyRole);
+    }
+
+    private List<SettlementDto> requestSettlementDetails(String positionId, Integer accountId, Long securityId,
+        Integer positionTypeId, Integer currencyId, String venueRefId, PartyRole partyRole) {
+        log.debug("Retrieving Settlement Instruction by position from Spire as a {}", partyRole);
+        return spireService.retrieveSettlementDetails(positionId, accountId, securityId, positionTypeId,
+            currencyId,
+            venueRefId, null, partyRole);
     }
 }

@@ -257,7 +257,7 @@ public class EventProcessor {
             agreementId);
         if (!positions.isEmpty()) {
             position = positions.get(0);
-            PositionUtils.updatePositionStatus(position, ProcessingStatus.TRADE_CANCELED);
+            position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
             positionRepository.save(position);
         }
         event.setProcessingStatus(PROCESSED);

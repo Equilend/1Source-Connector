@@ -11,13 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PositionUtils {
 
-    public static void updatePositionStatus(Position position, ProcessingStatus status) {
-        position.setProcessingStatus(status);
-        position.setLastUpdateDateTime(LocalDateTime.now());
-    }
-
     public static void updatePositionDtoStatus(PositionDto position, ProcessingStatus status) {
-        position.setProcessingStatus(status);
         position.setLastUpdateDateTime(LocalDateTime.now());
+        position.setProcessingStatus(status);
     }
 }

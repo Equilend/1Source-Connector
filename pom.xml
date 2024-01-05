@@ -372,8 +372,10 @@
 <!--                <artifactId>swagger-codegen-maven-plugin</artifactId>-->
 <!--                <version>2.4.37</version>-->
 <!--                <configuration>-->
-<!--                    <language>spring</language>-->
-<!--                    <library>spring-cloud</library>-->
+<!--                    <language>java</language>-->
+<!--                    <library>resttemplate</library>-->
+<!--&lt;!&ndash;                    <language>spring</language>&ndash;&gt;-->
+<!--&lt;!&ndash;                    <library>spring-cloud</library>&ndash;&gt;-->
 <!--                    <inputSpec>mockApi/spire-swagger/spire-swagger.json</inputSpec>-->
 <!--                    <output>${project.build.directory}/generated-sources/swagger</output>-->
 <!--                    <modelPackage>${project.groupId}.onesource.integration.services.client.spire.dto</modelPackage>-->

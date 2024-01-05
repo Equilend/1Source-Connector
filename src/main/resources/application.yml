@@ -74,7 +74,7 @@ cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
 
 integration-toolkit:
-  flow-Version: F1
+  flow-version: F1
   uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
 
 notification:

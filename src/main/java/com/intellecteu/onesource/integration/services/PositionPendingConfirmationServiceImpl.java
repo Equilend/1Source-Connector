@@ -175,7 +175,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void processSettlement(PositionDto positionDto) {
         if (List.of(CREATED, UPDATED).contains(positionDto.getProcessingStatus())) {
-            final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstruction(positionDto);
+            final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstructions(positionDto);
             settlementDtoList.stream()
                 .findFirst()
                 .map(settlementService::persistSettlement)
