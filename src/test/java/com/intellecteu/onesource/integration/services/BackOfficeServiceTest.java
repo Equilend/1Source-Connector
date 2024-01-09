@@ -3,11 +3,13 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
@@ -27,7 +29,7 @@ import org.springframework.web.client.HttpClientErrorException;
 class BackOfficeServiceTest {
 
     @Mock
-    private SpireApiService spireApiService;
+    private PositionSpireApiClient positionSpireApiClient;
     @Mock
     private SpireMapper spireMapper;
     @Mock
@@ -47,7 +49,7 @@ class BackOfficeServiceTest {
 
         var argumentCaptor = ArgumentCaptor.forClass(CloudEventBuildRequest.class);
 
-        when(spireApiService.requestNewPositions("0"))
+        when(positionSpireApiClient.getPositions(any()))
             .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
@@ -69,7 +71,7 @@ class BackOfficeServiceTest {
 
         var argumentCaptor = ArgumentCaptor.forClass(CloudEventBuildRequest.class);
 
-        when(spireApiService.requestNewPositions("0"))
+        when(positionSpireApiClient.getPositions(any()))
             .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN));
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());

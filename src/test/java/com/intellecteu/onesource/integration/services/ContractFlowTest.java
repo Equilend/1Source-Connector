@@ -38,11 +38,9 @@ import com.intellecteu.onesource.integration.model.spire.PositionAccount;
 import com.intellecteu.onesource.integration.model.spire.PositionExposure;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
-import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
@@ -97,10 +95,7 @@ public class ContractFlowTest {
 
     @Mock
     private ContractRepository contractRepository;
-    @Mock
-    private TimestampRepository timestampRepository;
-    @Mock
-    private ParticipantHolderRepository participantHolderRepository;
+
     @Mock
     private AgreementRepository agreementRepository;
 
@@ -109,6 +104,12 @@ public class ContractFlowTest {
 
     @Mock
     private SettlementService settlementService;
+
+    @Mock
+    private BackOfficeService borrowerBackOfficeService;
+
+    @Mock
+    private BackOfficeService lenderBackOfficeService;
 
     private EventMapper eventMapper;
 
@@ -147,7 +148,7 @@ public class ContractFlowTest {
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             spireMapper, cloudEventRecordService);
         contractDataReceived = new ContractDataReceived(contractRepository, positionRepository,
-            settlementTempRepository, settlementService, spireService, cloudEventRecordService, reconcileService,
+            settlementTempRepository, settlementService, spireService,borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService, reconcileService,
             eventMapper, spireMapper, agreementRepository, oneSourceService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);

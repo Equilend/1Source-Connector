@@ -27,6 +27,7 @@ import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
@@ -69,6 +70,10 @@ class ContractDataReceivedTest {
     AgreementRepository agreementRepository;
     @Mock
     OneSourceService oneSourceService;
+    @Mock
+    BackOfficeService borrowerBackOfficeService;
+    @Mock
+    BackOfficeService lenderBackOfficeService;
     EventMapper eventMapper;
     SpireMapper spireMapper;
     ContractDataReceived service;
@@ -105,7 +110,7 @@ class ContractDataReceivedTest {
         verify(contractRepository, times(2)).save(any());
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService).updateSpireInstruction(any(), any(), any());
-        verify(spireService).updatePosition(any(), any());
+        verify(borrowerBackOfficeService).update1SourceLoanContractIdentifier(any());
         verify(cloudEventRecordService).record(any());
     }
 
@@ -140,7 +145,7 @@ class ContractDataReceivedTest {
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService, never()).updateSpireInstruction(any(), any(), any());
         verify(spireService, never()).updateInstruction(any(), any(), any());
-        verify(spireService).updatePosition(any(), any());
+        verify(borrowerBackOfficeService).update1SourceLoanContractIdentifier(any());
         verify(cloudEventRecordService, times(2)).record(any());
     }
 
@@ -152,7 +157,7 @@ class ContractDataReceivedTest {
         spireMapper = new SpireMapper(TestConfig.createTestObjectMapper());
         service = new ContractDataReceived(contractRepository, positionRepository,
             settlementTempRepository, settlementService,
-            spireService, cloudEventRecordService,
+            spireService, borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService,
             reconcileService, eventMapper, spireMapper,
             agreementRepository, oneSourceService);
     }

@@ -51,11 +51,6 @@
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.cloud</groupId>-->
-<!--            <artifactId>spring-cloud-starter-openfeign</artifactId>-->
-<!--            <version>3.1.8</version>-->
-<!--        </dependency>-->
 
         <!--Camel-->
         <dependency>
@@ -104,16 +99,11 @@
         </dependency>
 
         <!--Swagger-->
-<!--        <dependency>-->
-<!--            <groupId>io.swagger</groupId>-->
-<!--            <artifactId>swagger-annotations</artifactId>-->
-<!--            <version>1.5.24</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>com.github.joschi.jackson</groupId>-->
-<!--            <artifactId>jackson-datatype-threetenbp</artifactId>-->
-<!--            <version>2.6.4</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.5.24</version>
+        </dependency>
 
         <!-- Other-->
         <dependency>
@@ -367,22 +357,23 @@
                 </executions>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>io.swagger</groupId>-->
-<!--                <artifactId>swagger-codegen-maven-plugin</artifactId>-->
-<!--                <version>2.4.37</version>-->
-<!--                <configuration>-->
-<!--                    <language>java</language>-->
-<!--                    <library>resttemplate</library>-->
-<!--&lt;!&ndash;                    <language>spring</language>&ndash;&gt;-->
-<!--&lt;!&ndash;                    <library>spring-cloud</library>&ndash;&gt;-->
-<!--                    <inputSpec>mockApi/spire-swagger/spire-swagger.json</inputSpec>-->
-<!--                    <output>${project.build.directory}/generated-sources/swagger</output>-->
-<!--                    <modelPackage>${project.groupId}.onesource.integration.services.client.spire.dto</modelPackage>-->
-<!--                    <apiPackage>${project.groupId}.onesource.integration.services.client.spire.api</apiPackage>-->
-<!--                    <invokerPackage>${project.groupId}.onesource.integration.services.client.spire.invoker-->
-<!--                    </invokerPackage>-->
-<!--                </configuration>-->
+            <plugin>
+                <groupId>io.swagger</groupId>
+                <artifactId>swagger-codegen-maven-plugin</artifactId>
+                <version>2.4.37</version>
+                <configuration>
+                    <language>java</language>
+                    <library>resttemplate</library>
+                    <inputSpec>mockApi/spire-swagger/spire-trade-swagger.json</inputSpec>
+                    <output>${project.build.directory}/generated-sources/swagger</output>
+                    <modelPackage>${project.groupId}.onesource.integration.services.client.spire.dto</modelPackage>
+                    <apiPackage>${project.groupId}.onesource.integration.services.client.spire.api</apiPackage>
+                    <invokerPackage>${project.groupId}.onesource.integration.services.client.spire.invoker
+                    </invokerPackage>
+                    <configOptions>
+                        <dateLibrary>java8-localdatetime</dateLibrary>
+                    </configOptions>
+                </configuration>
 <!--                <executions>-->
 <!--                    <execution>-->
 <!--                        <goals>-->
@@ -390,7 +381,7 @@
 <!--                        </goals>-->
 <!--                    </execution>-->
 <!--                </executions>-->
-<!--            </plugin>-->
+            </plugin>
 
         </plugins>
     </build>

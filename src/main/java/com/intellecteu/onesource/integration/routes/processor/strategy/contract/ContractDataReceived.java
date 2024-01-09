@@ -53,6 +53,7 @@ import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
@@ -62,6 +63,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -77,6 +79,8 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     private final AgreementRepository agreementRepository;
     private final OneSourceService oneSourceService;
+    private final BackOfficeService borrowerBackOfficeService;
+    private final BackOfficeService lenderBackOfficeService;
 
     @Override
     public void process(ContractDto contract) {
@@ -114,7 +118,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         }
         if (eventType == CONTRACT_PENDING) {
             processApprovedContract(contract, positionDto);
-            processPositionAfterContractApproved(contract, positionDto);
+            processPositionAfterContractApproved(contract, positionDto, partyRole);
         }
         if (eventType == CONTRACT_CANCELED) {
             processCanceledContract(contract, positionDto);
@@ -170,22 +174,29 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             contract.getMatchingSpirePositionId());
     }
 
-    private void processPositionAfterContractApproved(ContractDto contract, PositionDto position) {
+    private void processPositionAfterContractApproved(ContractDto contract, PositionDto position, PartyRole partyRole) {
         updateSettlementInstructionForCounterParty(position, contract);
-        spireService.updatePosition(contract, position.getPositionId());
+        if (BORROWER.equals(partyRole)) {
+            borrowerBackOfficeService.update1SourceLoanContractIdentifier(spireMapper.toPosition(position));
+        } else if (LENDER.equals(partyRole)) {
+            lenderBackOfficeService.update1SourceLoanContractIdentifier(spireMapper.toPosition(position));
+        } else {
+            throw new NotImplementedException("Unsupported role: " + partyRole);
+        }
     }
 
     private void updateSettlementInstructionForCounterParty(PositionDto positionDto, ContractDto contractDto) {
         var lenderOrBorrowerRole = getLenderOrBorrowerRole(positionDto);
-        var cpPartyRole = lenderOrBorrowerRole == LENDER ? BORROWER : LENDER;
+        var counterPartyRole = lenderOrBorrowerRole == LENDER ? BORROWER : LENDER;
         log.debug("The current position partyRole is {}. Retrieving Settlement Instruction "
-            + "for the counterparty: {}", lenderOrBorrowerRole, cpPartyRole);
-        var spireCpSI = retrieveSettlementInstruction(contractDto, positionDto, cpPartyRole);
+            + "for the counterparty: {}", lenderOrBorrowerRole, counterPartyRole);
+        var spireCpSI = retrieveSettlementInstruction(contractDto, positionDto, counterPartyRole);
         var contractCpSI = contractDto.getSettlement().stream()
-            .filter(s -> s.getPartyRole() == cpPartyRole)
+            .filter(s -> s.getPartyRole() == counterPartyRole)
             .findAny();
         if (spireCpSI.isPresent() && contractCpSI.isPresent()) {
-            updateSettlementInstructionAndRecordOnFail(contractDto, spireCpSI.get(), contractCpSI.get(), cpPartyRole);
+            updateSettlementInstructionAndRecordOnFail(contractDto, spireCpSI.get(), contractCpSI.get(),
+                counterPartyRole);
         }
     }
 
@@ -322,9 +333,12 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         return FlowStatus.TRADE_DATA_RECEIVED;
     }
 
+
     public ContractDataReceived(ContractRepository contractRepository, PositionRepository positionRepository,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
-        SpireService spireService, CloudEventRecordService cloudEventRecordService,
+        SpireService spireService, BackOfficeService borrowerBackOfficeService,
+        BackOfficeService lenderBackOfficeService,
+        CloudEventRecordService cloudEventRecordService,
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
         EventMapper eventMapper, SpireMapper spireMapper,
         AgreementRepository agreementRepository, OneSourceService oneSourceService) {
@@ -332,5 +346,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
         this.agreementRepository = agreementRepository;
         this.oneSourceService = oneSourceService;
+        this.borrowerBackOfficeService = borrowerBackOfficeService;
+        this.lenderBackOfficeService = lenderBackOfficeService;
     }
 }

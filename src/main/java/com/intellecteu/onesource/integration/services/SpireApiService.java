@@ -92,6 +92,8 @@ public class SpireApiService implements SpireService {
     private static final String GET_INSTRUCTION_ENDPOINT = "/rds/static/instruction";
 
     @Override
+    @Deprecated(since = "refactoring")
+    // new method @see BackOfficeService#getNewSpirePositions and PositionSpireApiClient#getPositions
     public List<PositionDto> requestNewPositions(String maxPositionId) throws RestClientException {
         try {
             log.debug("Request new positions started from position id: {}", maxPositionId);
@@ -349,6 +351,8 @@ public class SpireApiService implements SpireService {
     }
 
     @Override
+    @Deprecated(since = "refactoring")
+    //new method @see BackOfficeService#update1SourceLoanContractIdentifier and PositionSpireApiClient#editPosition
     public void updatePosition(ContractDto contract, String positionId) {
         HttpEntity<LoanTradeInputDTO> request = createRequest(contract, positionId);
         log.debug("Updating SPIRE position {}. Sending POST request to {}",
