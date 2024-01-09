@@ -26,6 +26,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.AndOr;
@@ -48,7 +49,6 @@ import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -195,7 +195,7 @@ public class EventProcessor {
                 JsonNode jsonNode = response.getBody().get("data").get("beans").get(0);
                 JsonNode statusDTO = jsonNode.get("statusDTO");
                 String status = eventMapper.getIfExist(statusDTO, "status");
-                if (status.equalsIgnoreCase("CANCELED") || status.equalsIgnoreCase("FAILED")) {
+                if (status.equalsIgnoreCase(PositionStatus.CANCEL) || status.equalsIgnoreCase(PositionStatus.FAILED)) {
                     log.debug("Position has status {}! Submitting cancellation for contract: {}", status,
                         contract.getContractId());
                     return true;

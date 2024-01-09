@@ -5,20 +5,19 @@ import com.intellecteu.onesource.integration.routes.processor.ContractProcessor;
 import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 @Component
 public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT =
-            "jpa://com.intellecteu.onesource.integration.model.spire.Position?"
-                    + "consumeLockEntity=false&consumeDelete=false&"
-                    + "nativeQuery=SELECT * FROM Position WHERE processing_status IN ('%s')";
+        "jpa://com.intellecteu.onesource.integration.model.spire.Position?"
+            + "consumeLockEntity=false&consumeDelete=false&"
+            + "nativeQuery=SELECT * FROM Position WHERE processing_status IN ('%s')";
 
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
@@ -26,7 +25,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     @Autowired
     public ContractInitiationWithoutTradeRoute(PositionProcessor positionProcessor, EventProcessor eventProcessor,
-                                               ContractProcessor contractProcessor) {
+        ContractProcessor contractProcessor) {
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
         this.contractProcessor = contractProcessor;
@@ -104,6 +103,6 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     private String createPositionSQLEndpoint(ProcessingStatus... status) {
         return String.format(POSITION_SQL_ENDPOINT,
-                Arrays.stream(status).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+            Arrays.stream(status).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
     }
 }

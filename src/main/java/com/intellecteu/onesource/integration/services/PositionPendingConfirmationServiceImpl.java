@@ -41,12 +41,9 @@ import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -70,10 +67,10 @@ import org.springframework.web.client.HttpStatusCodeException;
 public class PositionPendingConfirmationServiceImpl implements PositionPendingConfirmationService {
 
     private final AgreementRepository agreementRepository;
-    private final ContractRepository contractRepository;
+    private final ContractService contractService;
     private final SpireMapper spireMapper;
     private final EventMapper eventMapper;
-    private final PositionRepository positionRepository;
+    private final PositionService positionService;
     private final SpireService spireService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
@@ -81,7 +78,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     @Override
     public void processUpdatedPositions() {
-        List<Position> positions = positionRepository.findAllNotCanceledAndSettled();
+        List<Position> positions = positionService.findAllNotCanceledAndSettled();
         final List<PositionDto> updatedPositions = findLastUpdatedDateTime(positions)
             .map(lastUpdated -> requestUpdatedPositions(lastUpdated, positions))
             .orElse(List.of());
@@ -139,24 +136,30 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     }
 
     private void processUpdatedPosition(PositionDto positionDto) {
-        updatePosition(positionDto);
-        PartyRole partyRole = null;
         positionDto.setVenueRefId(positionDto.getCustomValue2());
-        if (extractPartyRole(positionDto.unwrapPositionType()).isPresent()) {
-            partyRole = extractPartyRole(positionDto.unwrapPositionType()).get();
-        }
+        updatePositionByProcessingStatus(positionDto);
+        processPositionMatchedContracts(positionDto);
+
+        positionService.savePosition(spireMapper.toPosition(positionDto));
+    }
+
+    private void processPositionMatchedContracts(PositionDto positionDto) {
+        extractPartyRole(positionDto.unwrapPositionType())
+            .ifPresent(role -> processContractsByRole(role, positionDto));
+    }
+
+    private void processContractsByRole(PartyRole partyRole, PositionDto positionDto) {
         if (partyRole == LENDER) {
             processContractCancel(positionDto);
         } else if (partyRole == BORROWER) {
             processContractDecline(positionDto);
         }
-        savePosition(positionDto, positionDto.getProcessingStatus());
     }
 
     private void processContractCancel(PositionDto positionDto) {
         Contract contract = null;
         //todo change List to Optional after fixing mock data
-        List<Contract> contracts = contractRepository.findAllByContractId(
+        List<Contract> contracts = contractService.findAllByContractId(
             positionDto.getMatching1SourceLoanContractId());
         if (!contracts.isEmpty()) {
             contract = contracts.get(0);
@@ -169,7 +172,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
 
     private void processContractDecline(PositionDto positionDto) {
         Contract contract = null;
-        List<Contract> contracts = contractRepository.findAllByContractId(
+        List<Contract> contracts = contractService.findAllByContractId(
             positionDto.getMatching1SourceLoanContractId());
         if (!contracts.isEmpty()) {
             contract = contracts.get(0);
@@ -187,45 +190,39 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
                 .map(settlementService::persistSettlement)
                 .ifPresent(s -> {
                     positionDto.setApplicableInstructionId(s.getInstructionId());
-                    savePosition(positionDto, SI_FETCHED);
+                    positionDto.setProcessingStatus(SI_FETCHED);
+                    positionService.savePosition(spireMapper.toPosition(positionDto));
                 });
         }
     }
 
-    private PositionDto savePosition(PositionDto positionDto, ProcessingStatus processingStatus) {
-        positionDto.setProcessingStatus(processingStatus);
-        positionDto.setLastUpdateDateTime(LocalDateTime.now());
-        var savedPosition = positionRepository.save(spireMapper.toPosition(positionDto));
-        return spireMapper.toPositionDto(savedPosition);
-    }
-
-    private void updatePosition(PositionDto positionDto) {
+    private void updatePositionByProcessingStatus(PositionDto positionDto) {
         if (positionDto != null && positionDto.unwrapPositionStatus() != null) {
             String status = positionDto.unwrapPositionStatus();
-            if (status.equals(FUTURE)) {
+            if (FUTURE.equals(status)) {
                 positionDto.setProcessingStatus(UPDATED);
             } else if (Set.of(CANCEL, FAILED).contains(status)) {
                 positionDto.setProcessingStatus(CANCELED);
                 matchingCanceledPosition(positionDto.getCustomValue2());
-            } else if (status.equals(OPEN)) {
+            } else if (OPEN.equals(status)) {
                 positionDto.setProcessingStatus(SETTLED);
-                List<Contract> contracts = contractRepository.findByVenueRefId(
-                    positionDto.getCustomValue2());
-                if (!contracts.isEmpty()) {
-                    Contract contract = contracts.get(0);
-                    contract.setSettlementStatus(SettlementStatus.SETTLED);
-                    updateSettlementStatus(contract);
-
-                    contractRepository.save(contract);
-                }
+                processSettledStatusForContract(positionDto);
             } else {
                 positionDto.setProcessingStatus(CREATED);
             }
-            positionDto.setLastUpdateDateTime(LocalDateTime.now());
         }
     }
 
-    private void updateSettlementStatus(Contract contract) {
+    private void processSettledStatusForContract(PositionDto positionDto) {
+        contractService.findByVenueRefId(positionDto.getCustomValue2())
+            .ifPresent(contract -> {
+                contract.setSettlementStatus(SettlementStatus.SETTLED);
+                executeSettledContractUpdate(contract);
+                contractService.save(contract);
+            });
+    }
+
+    private void executeSettledContractUpdate(Contract contract) {
         ContractDto contractDto = eventMapper.toContractDto(contract);
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
@@ -238,25 +235,24 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             .findFirst()
             .ifPresent(this::processAgreementMatchedCanceledPosition);
 
-        contractRepository.findByVenueRefId(venueRefId).stream()
-            .findFirst()
+        contractService.findByVenueRefId(venueRefId)
             .ifPresent(this::processContractMatchedCanceledPosition);
     }
 
     private void processAgreementMatchedCanceledPosition(Agreement agreement) {
         agreement.setLastUpdateDatetime(LocalDateTime.now());
         agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
+        agreementRepository.save(agreement);
         createContractInitiationCloudEvent(agreement.getAgreementId(),
             TRADE_AGREEMENT_MATCHED_CANCELED_POSITION, agreement.getMatchingSpirePositionId());
-        agreementRepository.save(agreement);
     }
 
     private void processContractMatchedCanceledPosition(Contract contract) {
         contract.setLastUpdateDatetime(LocalDateTime.now());
         contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
+        contractService.save(contract);
         createContractInitiationCloudEvent(contract.getContractId(),
             LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION, contract.getMatchingSpirePositionId());
-        contractRepository.save(contract);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

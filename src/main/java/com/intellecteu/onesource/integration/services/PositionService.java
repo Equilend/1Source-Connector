@@ -2,14 +2,13 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
@@ -36,11 +35,15 @@ public class PositionService {
         return positionRepository.saveAll(positions);
     }
 
+    public List<Position> findAllNotCanceledAndSettled() {
+        return positionRepository.findAllNotCanceledAndSettled();
+    }
+
     public Optional<String> getMaxPositionId() {
         List<Position> storedPositions = positionRepository.findAll();
         log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
         return storedPositions.stream().map(Position::getPositionId)
-                .max(Comparator.comparingInt(Integer::parseInt));
+            .max(Comparator.comparingInt(Integer::parseInt));
     }
 
 }

@@ -12,7 +12,7 @@ public interface ContractRepository extends JpaRepository<Contract, Long> {
     @Query("select c from Contract c join fetch c.trade")
     List<Contract> findAll();
 
-    @Query("select c from Contract c left join fetch c.lastEvent e left join fetch c.trade t left join fetch t.venue v left join fetch t.transactingParties prt where c.contractStatus = :status")
+    @Query("select c from Contract c join fetch c.lastEvent e join fetch c.trade t join fetch t.venue v where c.contractStatus = :status")
     List<Contract> findAllByContractStatus(ContractStatus status);
 
     @Query("select distinct c from Contract c left join fetch c.lastEvent e left join fetch c.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where c.flowStatus <> 'PROCESSED'")

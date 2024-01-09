@@ -18,6 +18,7 @@ public class CloudEventRecordServiceImpl implements CloudEventRecordService {
     @Override
     public void record(CloudEventBuildRequest buildRequest) {
         final IntegrationCloudEvent record = createEvent(buildRequest);
+        log.debug("A cloud event for related sub process: {} was recorded.", buildRequest.getRelatedSubProcess());
         record(record);
     }
 

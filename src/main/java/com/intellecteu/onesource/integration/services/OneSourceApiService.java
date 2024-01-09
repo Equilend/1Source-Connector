@@ -283,7 +283,7 @@ public class OneSourceApiService implements OneSourceService {
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
-                    CANCEL_LOAN_CONTRACT_PROPOSAL, contract.getMatchingSpirePositionId());
+                    CANCEL_LOAN_CONTRACT_PROPOSAL, positionId);
                 cloudEventRecordService.record(recordRequest);
             }
         }
