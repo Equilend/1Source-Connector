@@ -5,8 +5,10 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Po
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FUTURE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
@@ -219,6 +221,8 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
                 contract.setSettlementStatus(SettlementStatus.SETTLED);
                 executeSettledContractUpdate(contract);
                 contractService.save(contract);
+                recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_SETTLED,
+                    contract.getMatchingSpirePositionId(), CONTRACT_SETTLEMENT);
             });
     }
 
@@ -243,23 +247,25 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
         agreement.setLastUpdateDatetime(LocalDateTime.now());
         agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
         agreementRepository.save(agreement);
-        createContractInitiationCloudEvent(agreement.getAgreementId(),
-            TRADE_AGREEMENT_MATCHED_CANCELED_POSITION, agreement.getMatchingSpirePositionId());
+        recordCloudEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED_CANCELED_POSITION,
+            agreement.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }
 
     private void processContractMatchedCanceledPosition(Contract contract) {
         contract.setLastUpdateDatetime(LocalDateTime.now());
         contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
         contractService.save(contract);
-        createContractInitiationCloudEvent(contract.getContractId(),
-            LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION, contract.getMatchingSpirePositionId());
+        recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION,
+            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }
 
-    private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+    private void recordCloudEvent(String recordData, RecordType recordType, String relatedData,
+        IntegrationProcess integrationProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(integrationProcess);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
+        log.debug("Recorded event with recordType: {}, recordData: {}, relatedData: {}",
+            recordType, recordData, relatedData);
     }
 
     private Optional<LocalDateTime> findLastUpdatedDateTime(List<Position> positions) {
