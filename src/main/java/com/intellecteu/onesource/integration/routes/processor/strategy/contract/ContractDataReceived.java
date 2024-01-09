@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_UPDATED;
 import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
@@ -41,6 +42,7 @@ import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
+import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
@@ -50,9 +52,10 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
@@ -107,7 +110,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         EventType eventType = contract.getEventType();
         log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
             positionDto.getPositionId(), partyRole);
-        if (contract.getEventType() == CONTRACT_PROPOSED) {
+        if (eventType == CONTRACT_PROPOSED) {
             processMatchingPosition(contract, positionDto);
             if (partyRole == BORROWER) {
                 if (MATCHED_POSITION.equals(contract.getProcessingStatus())) {
@@ -127,17 +130,23 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             processDeclinedContract(contract, positionDto);
         }
         if (eventType == CONTRACT_OPENED) {
-            contract.setProcessingStatus(SETTLED);
-            contract.setLastUpdateDatetime(LocalDateTime.now());
+            processSettledContract(contract);
         }
         contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
+        contractService.save(eventMapper.toContractEntity(contract));
+    }
+
+    private void processSettledContract(ContractDto contract) {
+        contract.setProcessingStatus(SETTLED);
+        contract.setLastUpdateDatetime(LocalDateTime.now());
+        recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_SETTLED,
+            contract.getMatchingSpirePositionId(), CONTRACT_SETTLEMENT);
     }
 
     private void persistPartyRoleIssue(ContractDto contract, String positionType) {
         processPartyRoleIssue(positionType, contract);
         contract.setFlowStatus(PROCESSED);
-        contractRepository.save(eventMapper.toContractEntity(contract));
+        contractService.save(eventMapper.toContractEntity(contract));
     }
 
     private void processDeclinedContract(ContractDto contract, PositionDto position) {
@@ -146,7 +155,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(DECLINED);
         savePositionStatus(position, PROPOSAL_DECLINED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED,
-            contract.getMatchingSpirePositionId());
+            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }
 
     private void processCanceledContract(ContractDto contract, PositionDto position) {
@@ -157,7 +166,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(CANCELED);
         savePositionStatus(position, PROPOSAL_CANCELED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED,
-            contract.getMatchingSpirePositionId());
+            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }
 
     private void processApprovedContract(ContractDto contract, PositionDto position) {
@@ -171,7 +180,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(ProcessingStatus.APPROVED);
         savePositionStatus(position, PROPOSAL_APPROVED);
         recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
-            contract.getMatchingSpirePositionId());
+            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }
 
     private void processPositionAfterContractApproved(ContractDto contract, PositionDto position, PartyRole partyRole) {
@@ -268,8 +277,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         return new HttpEntity<>(settlementDto, headers);
     }
 
-    private void recordContractEvent(String recordData, RecordType recordType, String relatedData) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+    private void recordContractEvent(String recordData, RecordType recordType, String relatedData,
+        IntegrationProcess integrationProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(integrationProcess);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
         log.debug("Recorded event with recordType: {}, recordData: {}, relatedData: {}",
@@ -334,7 +344,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
 
-    public ContractDataReceived(ContractRepository contractRepository, PositionRepository positionRepository,
+    public ContractDataReceived(ContractService contractService, PositionRepository positionRepository,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
         SpireService spireService, BackOfficeService borrowerBackOfficeService,
         BackOfficeService lenderBackOfficeService,
@@ -342,7 +352,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
         EventMapper eventMapper, SpireMapper spireMapper,
         AgreementRepository agreementRepository, OneSourceService oneSourceService) {
-        super(contractRepository, positionRepository, settlementTempRepository, settlementService, spireService,
+        super(contractService, positionRepository, settlementTempRepository, settlementService, spireService,
             cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
         this.agreementRepository = agreementRepository;
         this.oneSourceService = oneSourceService;

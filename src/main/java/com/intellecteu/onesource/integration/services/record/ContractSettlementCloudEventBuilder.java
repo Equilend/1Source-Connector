@@ -1,8 +1,11 @@
 package com.intellecteu.onesource.integration.services.record;
 
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.LOAN_CONTRACT_SETTLED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.POST_LOAN_CONTRACT_UPDATE_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.Subject.LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.Subject.POST_LOAN_CONTRACT_UPDATE_EXCEPTION;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static java.lang.String.format;
 
@@ -49,7 +52,21 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
 
     @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
-        return null;
+        return switch (recordType) {
+            case LOAN_CONTRACT_SETTLED -> loanContractSettled(recorded, recordType, related);
+            default -> null;
+        };
+    }
+
+    private CloudEventBuildRequest loanContractSettled(String recorded, RecordType recordType, String related) {
+        String dataMessage = format(LOAN_CONTRACT_SETTLED_MSG, recorded);
+        return createRecordRequest(
+            recordType,
+            format(LOAN_CONTRACT_SETTLED, related),
+            CONTRACT_SETTLEMENT,
+            GET_LOAN_CONTRACT_SETTLED,
+            createEventData(dataMessage, getLoanProposalRelatedToPosition(recorded, related))
+        );
     }
 
 }

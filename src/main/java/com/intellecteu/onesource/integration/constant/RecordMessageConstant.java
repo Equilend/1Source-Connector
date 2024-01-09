@@ -159,11 +159,16 @@ public class RecordMessageConstant {
 
         public static class Subject {
 
+            public static final String LOAN_CONTRACT_SETTLED = "Position - %s";
+
             public static final String GET_POSITION_SETTLEMENT_EXCEPTION_SPIRE = "Position - %s";
             public static final String POST_LOAN_CONTRACT_UPDATE_EXCEPTION = "Position - %s";
         }
 
         public static class DataMsg {
+
+            public static final String LOAN_CONTRACT_SETTLED_MSG = """
+                The 1Source loan contract: %s has been updated as settled.""";
 
             public static final String POST_LOAN_CONTRACT_UPDATE_EXCEPTION_MSG = """
                 The settlement status of the loan contract: %s (SPIRE position: %s) \

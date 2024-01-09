@@ -32,9 +32,9 @@ import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
+import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
@@ -52,7 +52,7 @@ import org.springframework.lang.NonNull;
 @FieldDefaults(makeFinal = true, level = PROTECTED)
 public abstract class AbstractContractProcessStrategy implements ContractProcessFlowStrategy {
 
-    ContractRepository contractRepository;
+    ContractService contractService;
     PositionRepository positionRepository;
     SettlementTempRepository settlementTempRepository;
     SettlementService settlementService;
@@ -69,7 +69,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
 
     void saveContractWithStage(ContractDto contract, FlowStatus status) {
         contract.setFlowStatus(status);
-        contractRepository.save(eventMapper.toContractEntity(contract));
+        contractService.save(eventMapper.toContractEntity(contract));
         log.debug("Contract id: {} was saved with flow status: {}", contract.getContractId(), status);
     }
 
@@ -107,7 +107,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     private void saveContract(ContractDto contractDto, ProcessingStatus processingStatus) {
         contractDto.setProcessingStatus(processingStatus);
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        contractRepository.save(eventMapper.toContractEntity(contractDto));
+        contractService.save(eventMapper.toContractEntity(contractDto));
     }
 
     void updateInstruction(ContractDto contract, PartyRole partyRole, PositionDto position,
@@ -155,7 +155,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         contract.setProcessingStatus(PROPOSED);
         contract.setLastUpdateDatetime(LocalDateTime.now());
 //        contract.setFlowStatus(PROCESSED); TODO commented for local development. Ask to C-H how to resolve if we don't have position for this contract
-        contractRepository.save(eventMapper.toContractEntity(contract));
+        contractService.save(eventMapper.toContractEntity(contract));
         recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
     }
 

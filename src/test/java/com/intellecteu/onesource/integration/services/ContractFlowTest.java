@@ -97,6 +97,10 @@ public class ContractFlowTest {
     private ContractRepository contractRepository;
 
     @Mock
+    private ContractService contractService;
+
+
+    @Mock
     private AgreementRepository agreementRepository;
 
     @Mock
@@ -147,8 +151,9 @@ public class ContractFlowTest {
             settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             spireMapper, cloudEventRecordService);
-        contractDataReceived = new ContractDataReceived(contractRepository, positionRepository,
-            settlementTempRepository, settlementService, spireService,borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService, reconcileService,
+        contractDataReceived = new ContractDataReceived(contractService, positionRepository,
+            settlementTempRepository, settlementService, spireService, borrowerBackOfficeService,
+            lenderBackOfficeService, cloudEventRecordService, reconcileService,
             eventMapper, spireMapper, agreementRepository, oneSourceService);
         ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);

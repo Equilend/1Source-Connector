@@ -23,11 +23,11 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
@@ -53,7 +53,7 @@ import org.springframework.web.client.HttpClientErrorException;
 class ContractDataReceivedTest {
 
     @Mock
-    ContractRepository contractRepository;
+    ContractService contractService;
     @Mock
     PositionRepository positionRepository;
     @Mock
@@ -96,7 +96,7 @@ class ContractDataReceivedTest {
 
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
         when(positionRepository.save(any())).thenReturn(null);
-        when(contractRepository.save(any())).thenReturn(null);
+        when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenReturn(
             settlementResponse);
         when(cloudEventRecordService.getFactory()).thenReturn(eventFactoryMock);
@@ -107,7 +107,7 @@ class ContractDataReceivedTest {
 
         verify(positionRepository).findByVenueRefId(any());
         verify(positionRepository).save(any());
-        verify(contractRepository, times(2)).save(any());
+        verify(contractService, times(2)).save(any());
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService).updateSpireInstruction(any(), any(), any());
         verify(borrowerBackOfficeService).update1SourceLoanContractIdentifier(any());
@@ -130,7 +130,7 @@ class ContractDataReceivedTest {
 
         when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
         when(positionRepository.save(any())).thenReturn(null);
-        when(contractRepository.save(any())).thenReturn(null);
+        when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenThrow(
             new HttpClientErrorException(HttpStatus.FORBIDDEN));
         when(cloudEventRecordService.getFactory()).thenReturn(eventFactoryMock);
@@ -141,7 +141,7 @@ class ContractDataReceivedTest {
 
         verify(positionRepository).findByVenueRefId(any());
         verify(positionRepository).save(any());
-        verify(contractRepository, times(2)).save(any());
+        verify(contractService, times(2)).save(any());
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService, never()).updateSpireInstruction(any(), any(), any());
         verify(spireService, never()).updateInstruction(any(), any(), any());
@@ -155,7 +155,7 @@ class ContractDataReceivedTest {
         positionDto = DtoTestFactory.buildPositionDtoFromTradeAgreement(contractDto.getTrade());
         eventMapper = new EventMapper(TestConfig.createTestObjectMapper());
         spireMapper = new SpireMapper(TestConfig.createTestObjectMapper());
-        service = new ContractDataReceived(contractRepository, positionRepository,
+        service = new ContractDataReceived(contractService, positionRepository,
             settlementTempRepository, settlementService,
             spireService, borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService,
             reconcileService, eventMapper, spireMapper,
