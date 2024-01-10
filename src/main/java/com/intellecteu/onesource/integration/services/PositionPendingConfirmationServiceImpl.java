@@ -209,7 +209,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             } else if (OPEN.equals(status)) {
                 positionDto.setProcessingStatus(SETTLED);
                 processSettledStatusForContract(positionDto);
-            } else {
+            } else if (positionDto.getProcessingStatus() == null) {
                 positionDto.setProcessingStatus(CREATED);
             }
         }

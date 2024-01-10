@@ -110,7 +110,6 @@ public class OneSourceApiService implements OneSourceService {
         HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
 
         executeCreateContractRequest(agreement, position, request);
-        log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
     }
 
     private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
@@ -239,6 +238,7 @@ public class OneSourceApiService implements OneSourceService {
         headers.setContentType(APPLICATION_JSON);
         HttpEntity<SettlementInstructionUpdateDto> request = new HttpEntity<>(settlementInstructionUpdateDto, headers);
         try {
+            log.debug("Sending {} request to {}:", POST, onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT);
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
                 request, JsonNode.class, contract.getContractId());
             log.debug("Contract id: {} approval was sent.", contract.getContractId());

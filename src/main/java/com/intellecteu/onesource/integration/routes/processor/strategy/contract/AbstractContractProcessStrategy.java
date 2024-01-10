@@ -32,14 +32,13 @@ import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.utils.PositionUtils;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -53,7 +52,7 @@ import org.springframework.lang.NonNull;
 public abstract class AbstractContractProcessStrategy implements ContractProcessFlowStrategy {
 
     ContractService contractService;
-    PositionRepository positionRepository;
+    PositionService positionService;
     SettlementTempRepository settlementTempRepository;
     SettlementService settlementService;
     SpireService spireService;
@@ -63,7 +62,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     SpireMapper spireMapper;
 
     PositionDto retrievePositionByVenue(String venueRefId) {
-        List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
+        List<Position> positions = positionService.findByVenueRefId(venueRefId);
         return positions.isEmpty() ? null : spireMapper.toPositionDto(positions.get(0));
     }
 
@@ -146,7 +145,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
                 LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
         }
 
-        positionRepository.save(spireMapper.toPosition(positionDto));
+        positionService.savePosition(spireMapper.toPosition(positionDto));
     }
 
     void savePositionRetrievementIssue(ContractDto contract) {
@@ -178,8 +177,8 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void savePositionStatus(@NonNull PositionDto position, @NonNull ProcessingStatus status) {
-        PositionUtils.updatePositionDtoStatus(position, status);
-        positionRepository.save(spireMapper.toPosition(position));
+        position.setProcessingStatus(status);
+        positionService.savePosition(spireMapper.toPosition(position));
         log.debug("Saved status: {} for Position: {}", status, position.getPositionId());
     }
 }

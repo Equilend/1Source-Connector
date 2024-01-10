@@ -83,7 +83,7 @@ public class BackOfficeService {
         LoanTradeInputDTO loanTradeInputDTO = new LoanTradeInputDTO().originalTrade(originalTrade);
         try {
             ResponseEntity<SResponsePositionDTO> response = positionSpireApiClient.editPosition(loanTradeInputDTO);
-            return response.getBody().isSuccess();
+            return response.getBody() != null && response.getBody().isSuccess();
         } catch (RestClientException e) {
             if (e instanceof HttpStatusCodeException exception) {
                 if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {

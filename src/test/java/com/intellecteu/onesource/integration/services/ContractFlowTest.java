@@ -94,11 +94,13 @@ public class ContractFlowTest {
     private PositionRepository positionRepository;
 
     @Mock
+    private PositionService positionService;
+
+    @Mock
     private ContractRepository contractRepository;
 
     @Mock
     private ContractService contractService;
-
 
     @Mock
     private AgreementRepository agreementRepository;
@@ -151,7 +153,7 @@ public class ContractFlowTest {
             settlementUpdateRepository, eventMapper, eventRepository);
         spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
             spireMapper, cloudEventRecordService);
-        contractDataReceived = new ContractDataReceived(contractService, positionRepository,
+        contractDataReceived = new ContractDataReceived(contractService, positionService,
             settlementTempRepository, settlementService, spireService, borrowerBackOfficeService,
             lenderBackOfficeService, cloudEventRecordService, reconcileService,
             eventMapper, spireMapper, agreementRepository, oneSourceService);
@@ -192,7 +194,7 @@ public class ContractFlowTest {
             eq("testId"))).thenReturn(response);
         when(restTemplate.exchange(eq(contractUrl), eq(PATCH), any(), eq(JsonNode.class), eq("testId"))).thenReturn(
             response);
-        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
         when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
         when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of(eventMapper.toAgreementEntity(agreement)));
         doNothing().when(cloudEventRecordService).record(any());
@@ -214,7 +216,7 @@ public class ContractFlowTest {
 
         when(restTemplate.exchange(eq(declineContractUrl), eq(POST), any(), eq(JsonNode.class),
             eq("testId"))).thenReturn(response);
-        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(any(CloudEventBuildRequest.class));
 
@@ -258,7 +260,7 @@ public class ContractFlowTest {
             response);
         when(restTemplate.postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class))).thenReturn(
             instructionResponse);
-        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
         when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);

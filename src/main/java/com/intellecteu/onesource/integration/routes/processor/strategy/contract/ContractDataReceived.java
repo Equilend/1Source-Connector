@@ -52,12 +52,11 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
-import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
@@ -90,7 +89,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Contract Id {} Contract Datetime {}, venueRefId: {}", contract.getContractId(),
             contract.getLastUpdateDatetime(), venueRefId);
-        positionRepository.findByVenueRefId(venueRefId).stream()
+        positionService.findByVenueRefId(venueRefId).stream()
             .findFirst()
             .map(spireMapper::toPositionDto)
             .ifPresentOrElse(
@@ -344,7 +343,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
 
-    public ContractDataReceived(ContractService contractService, PositionRepository positionRepository,
+    public ContractDataReceived(ContractService contractService, PositionService positionService,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
         SpireService spireService, BackOfficeService borrowerBackOfficeService,
         BackOfficeService lenderBackOfficeService,
@@ -352,7 +351,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
         EventMapper eventMapper, SpireMapper spireMapper,
         AgreementRepository agreementRepository, OneSourceService oneSourceService) {
-        super(contractService, positionRepository, settlementTempRepository, settlementService, spireService,
+        super(contractService, positionService, settlementTempRepository, settlementService, spireService,
             cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
         this.agreementRepository = agreementRepository;
         this.oneSourceService = oneSourceService;

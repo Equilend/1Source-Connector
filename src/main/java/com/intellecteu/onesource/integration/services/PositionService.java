@@ -26,6 +26,10 @@ public class PositionService {
         return positionRepository.save(position);
     }
 
+    public List<Position> findByVenueRefId(String venueRefId) {
+        return positionRepository.findByVenueRefId(venueRefId);
+    }
+
     public Position getById(Long positionId) {
         return positionRepository.getById(String.valueOf(positionId));
     }

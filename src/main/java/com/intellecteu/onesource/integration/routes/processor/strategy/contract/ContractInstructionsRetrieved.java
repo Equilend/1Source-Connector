@@ -15,9 +15,9 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.SettlementTemp;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
@@ -72,12 +72,12 @@ public class ContractInstructionsRetrieved extends AbstractContractProcessStrate
         return CTR_INSTRUCTIONS_RETRIEVED;
     }
 
-    public ContractInstructionsRetrieved(ContractService contractService, PositionRepository positionRepository,
+    public ContractInstructionsRetrieved(ContractService contractService, PositionService positionService,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
         SpireService spireService, CloudEventRecordService cloudEventRecordService,
         ReconcileService<ContractDto, PositionDto> contractReconcileService, EventMapper eventMapper,
         SpireMapper spireMapper) {
-        super(contractService, positionRepository, settlementTempRepository, settlementService, spireService,
+        super(contractService, positionService, settlementTempRepository, settlementService, spireService,
             cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
     }
 }

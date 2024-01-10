@@ -23,12 +23,12 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.SpireService;
@@ -55,7 +55,7 @@ class ContractDataReceivedTest {
     @Mock
     ContractService contractService;
     @Mock
-    PositionRepository positionRepository;
+    PositionService positionService;
     @Mock
     SettlementTempRepository settlementTempRepository;
     @Mock
@@ -94,8 +94,8 @@ class ContractDataReceivedTest {
         var settlementResponse = new ResponseEntity<>(settlementDto, HttpStatus.OK);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
 
-        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
-        when(positionRepository.save(any())).thenReturn(null);
+        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.savePosition(any())).thenReturn(null);
         when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenReturn(
             settlementResponse);
@@ -105,8 +105,8 @@ class ContractDataReceivedTest {
 
         service.process(contractDto);
 
-        verify(positionRepository).findByVenueRefId(any());
-        verify(positionRepository).save(any());
+        verify(positionService).findByVenueRefId(any());
+        verify(positionService).savePosition(any());
         verify(contractService, times(2)).save(any());
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService).updateSpireInstruction(any(), any(), any());
@@ -128,8 +128,8 @@ class ContractDataReceivedTest {
         settlementDto.setPartyRole(PartyRole.LENDER);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
 
-        when(positionRepository.findByVenueRefId(any())).thenReturn(List.of(position));
-        when(positionRepository.save(any())).thenReturn(null);
+        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.savePosition(any())).thenReturn(null);
         when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenThrow(
             new HttpClientErrorException(HttpStatus.FORBIDDEN));
@@ -139,8 +139,8 @@ class ContractDataReceivedTest {
 
         service.process(contractDto);
 
-        verify(positionRepository).findByVenueRefId(any());
-        verify(positionRepository).save(any());
+        verify(positionService).findByVenueRefId(any());
+        verify(positionService).savePosition(any());
         verify(contractService, times(2)).save(any());
         verify(settlementService).retrieveSettlementDetails(any(), any(), any());
         verify(settlementService, never()).updateSpireInstruction(any(), any(), any());
@@ -155,7 +155,7 @@ class ContractDataReceivedTest {
         positionDto = DtoTestFactory.buildPositionDtoFromTradeAgreement(contractDto.getTrade());
         eventMapper = new EventMapper(TestConfig.createTestObjectMapper());
         spireMapper = new SpireMapper(TestConfig.createTestObjectMapper());
-        service = new ContractDataReceived(contractService, positionRepository,
+        service = new ContractDataReceived(contractService, positionService,
             settlementTempRepository, settlementService,
             spireService, borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService,
             reconcileService, eventMapper, spireMapper,
