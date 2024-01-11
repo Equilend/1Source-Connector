@@ -45,7 +45,6 @@ import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -68,7 +67,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 @RequiredArgsConstructor
 public class PositionPendingConfirmationServiceImpl implements PositionPendingConfirmationService {
 
-    private final AgreementRepository agreementRepository;
+    private final AgreementService agreementService;
     private final ContractService contractService;
     private final SpireMapper spireMapper;
     private final EventMapper eventMapper;
@@ -235,7 +234,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     }
 
     private void matchingCanceledPosition(String venueRefId) {
-        agreementRepository.findByVenueRefId(venueRefId).stream()
+        agreementService.findByVenueRefId(venueRefId).stream()
             .findFirst()
             .ifPresent(this::processAgreementMatchedCanceledPosition);
 
@@ -246,7 +245,7 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private void processAgreementMatchedCanceledPosition(Agreement agreement) {
         agreement.setLastUpdateDatetime(LocalDateTime.now());
         agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
-        agreementRepository.save(agreement);
+        agreementService.saveAgreement(agreement);
         recordCloudEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED_CANCELED_POSITION,
             agreement.getMatchingSpirePositionId(), CONTRACT_INITIATION);
     }

@@ -75,6 +75,7 @@ public class ModelTestFactory {
             .positionAccount(new PositionAccount("testLei", "testLeiName", "testAccountId"))
             .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName", "testAccountId"))
             .endDate(LocalDateTime.now())
+            .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();
     }
 
