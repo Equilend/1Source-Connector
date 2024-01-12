@@ -1,5 +1,12 @@
 package com.intellecteu.onesource.integration.routes.processor;
 
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE_RECONCILED;
+
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
@@ -11,17 +18,18 @@ import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.Settlement;
 import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.services.*;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
+import com.intellecteu.onesource.integration.services.AgreementService;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
@@ -38,9 +46,10 @@ public class PositionProcessor {
     private final EventMapper eventMapper;
 
     public PositionProcessor(PositionService positionService,
-                             BackOfficeService borrowerBackOfficeService,
-                             BackOfficeService lenderBackOfficeService,
-                             AgreementService agreementService, ContractService contractService, OneSourceService oneSourceService, SettlementService settlementService, SpireMapper spireMapper, EventMapper eventMapper) {
+        BackOfficeService borrowerBackOfficeService,
+        BackOfficeService lenderBackOfficeService,
+        AgreementService agreementService, ContractService contractService, OneSourceService oneSourceService,
+        SettlementService settlementService, SpireMapper spireMapper, EventMapper eventMapper) {
         this.positionService = positionService;
         this.borrowerBackOfficeService = borrowerBackOfficeService;
         this.lenderBackOfficeService = lenderBackOfficeService;
@@ -74,12 +83,11 @@ public class PositionProcessor {
     }
 
     public Position matchTradeAgreement(Position position) {
-        Optional<Agreement> agreementOptional = agreementService.findByVenueRefId(position.getVenueRefId());
-        if (agreementOptional.isPresent()) {
-            Agreement agreement = agreementOptional.get();
-            position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
-            agreementService.markAgreementAsMatched(agreement, position.getPositionId());
-        }
+        agreementService.findByVenueRefId(position.getVenueRefId())
+            .ifPresent(agreement -> {
+                position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
+                agreementService.markAgreementAsMatched(agreement, position.getPositionId());
+            });
         return position;
     }
 
@@ -96,8 +104,8 @@ public class PositionProcessor {
         Integer accountId = position.getExposure() != null ? position.getExposure().getDepoId() : null;
         String positionType = position.getPositionType() != null ? position.getPositionType().getPositionType() : null;
         Optional<Settlement> settlementInstructionOpt = settlementService.getSettlementInstruction(
-                position.getPositionId(), accountId, position.getSecurityId(), position.getPositionTypeId(), positionType,
-                position.getCurrencyId(), position.getVenueRefId());
+            position.getPositionId(), accountId, position.getSecurityId(), position.getPositionTypeId(), positionType,
+            position.getCurrencyId(), position.getVenueRefId());
         if (settlementInstructionOpt.isPresent()) {
             Settlement settlement = settlementInstructionOpt.get();
             settlementService.persistSettlement(settlement);
@@ -109,36 +117,38 @@ public class PositionProcessor {
     }
 
     public ProcessingStatus reconcileWithAgreement(Position position) {
-        if (position.getMatching1SourceTradeAgreementId() != null) {
-            Optional<Agreement> agreementOptional = agreementService.findByAgreementId(position.getMatching1SourceTradeAgreementId());
-            if (agreementOptional.isPresent()) {
-                Agreement agreement = agreementOptional.get();
-                agreement = agreementService.reconcile(agreement, position);
-                log.debug("Agreement {} changed processing status to {}", agreement.getAgreementId(),
-                        agreement.getProcessingStatus());
-                agreementService.saveAgreement(agreement);
-                if (agreement.getProcessingStatus().equals(RECONCILED)) {
-                    return TRADE_RECONCILED;
-                } else if (agreement.getProcessingStatus().equals(DISCREPANCIES)) {
-                    return TRADE_DISCREPANCIES;
-                }
-            }
+        if (position.getMatching1SourceTradeAgreementId() == null || position.getProcessingStatus() != SI_FETCHED) {
+            return position.getProcessingStatus();
         }
-        return SI_FETCHED;
+        return agreementService.findByAgreementId(position.getMatching1SourceTradeAgreementId())
+            .map(agreement -> agreementService.reconcile(agreement, position))
+            .map(agreementService::saveAgreement)
+            .map(agreement -> retrieveProcessingStatus(position, agreement))
+            .orElse(position.getProcessingStatus());
+    }
+
+    private ProcessingStatus retrieveProcessingStatus(Position position, Agreement agreement) {
+        if (agreement.getProcessingStatus().equals(RECONCILED)) {
+            return TRADE_RECONCILED;
+        }
+        if (agreement.getProcessingStatus().equals(DISCREPANCIES)) {
+            return TRADE_DISCREPANCIES;
+        }
+        return position.getProcessingStatus();
     }
 
     public Position instructLoanContractProposal(Position position) {
         if ((position.getMatching1SourceTradeAgreementId() != null
-                && position.getProcessingStatus() == TRADE_RECONCILED)
-                || (position.getMatching1SourceTradeAgreementId() == null
-                && position.getProcessingStatus() == SI_FETCHED)) {
+            && position.getProcessingStatus() == TRADE_RECONCILED)
+            || (position.getMatching1SourceTradeAgreementId() == null
+            && position.getProcessingStatus() == SI_FETCHED)) {
             List<Settlement> settlementList = settlementService.getSettlementByInstructionId(
-                    position.getApplicableInstructionId());
+                position.getApplicableInstructionId());
             PositionDto positionDto = spireMapper.toPositionDto(position);
             List<SettlementDto> settlementDtos = settlementList.stream().map(eventMapper::toSettlementDto).collect(
-                    Collectors.toList());
+                Collectors.toList());
             ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
-                    spireMapper.buildTradeAgreementDto(positionDto));
+                spireMapper.buildTradeAgreementDto(positionDto));
             oneSourceService.createContract(null, contractProposalDto, positionDto);
             log.debug("Loan contract proposal was created for position id: {}", positionDto.getPositionId());
         }
@@ -146,10 +156,10 @@ public class PositionProcessor {
     }
 
     private ContractProposalDto buildLoanContractProposal(List<SettlementDto> settlementDtos,
-                                                          TradeAgreementDto tradeAgreementDto) {
+        TradeAgreementDto tradeAgreementDto) {
         return ContractProposalDto.builder()
-                .settlement(settlementDtos)
-                .trade(tradeAgreementDto)
-                .build();
+            .settlement(settlementDtos)
+            .trade(tradeAgreementDto)
+            .build();
     }
 }

@@ -75,6 +75,8 @@ public class AgreementService {
             log.debug("Agreement {} is reconciled with position {}", agreement.getAgreementId(),
                 position.getPositionId());
             agreement.setProcessingStatus(RECONCILED);
+            log.debug("Agreement {} changed processing status to {}", agreement.getAgreementId(),
+                agreement.getProcessingStatus());
             recordSuccessReconciliationCloudEvent(agreement);
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());

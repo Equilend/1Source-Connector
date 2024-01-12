@@ -16,7 +16,7 @@ public interface PositionRepository extends JpaRepository<Position, String> {
     @Query("select p from Position p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
     List<Position> findAllNotCanceledAndSettled();
 
-    List<Position> findByVenueRefId(String venueRefId);
+    Optional<Position> findByVenueRefId(String venueRefId);
 
     List<Position> findAllByProcessingStatus(ProcessingStatus processingStatus);
 

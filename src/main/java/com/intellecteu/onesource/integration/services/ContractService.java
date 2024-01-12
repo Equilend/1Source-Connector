@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCH
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.model.Contract;
+import com.intellecteu.onesource.integration.model.ContractStatus;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -19,8 +20,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ContractService {
 
-    private ContractRepository contractRepository;
-    private CloudEventRecordService cloudEventRecordService;
+    private final ContractRepository contractRepository;
+    private final CloudEventRecordService cloudEventRecordService;
 
     @Autowired
     public ContractService(ContractRepository contractRepository, CloudEventRecordService cloudEventRecordService) {
@@ -38,6 +39,10 @@ public class ContractService {
 
     public List<Contract> findAllByContractId(String contractId) {
         return contractRepository.findAllByContractId(contractId);
+    }
+
+    public List<Contract> findAllByContractStatus(ContractStatus status) {
+        return contractRepository.findAllByContractStatus(status);
     }
 
     public Contract markContractAsMatched(Contract contract, String positionId) {

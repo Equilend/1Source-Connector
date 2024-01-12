@@ -35,7 +35,7 @@ import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
-import java.util.List;
+import java.util.Optional;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,7 +94,7 @@ class ContractDataReceivedTest {
         var settlementResponse = new ResponseEntity<>(settlementDto, HttpStatus.OK);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
 
-        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(position));
         when(positionService.savePosition(any())).thenReturn(null);
         when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenReturn(
@@ -128,7 +128,7 @@ class ContractDataReceivedTest {
         settlementDto.setPartyRole(PartyRole.LENDER);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
 
-        when(positionService.findByVenueRefId(any())).thenReturn(List.of(position));
+        when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(position));
         when(positionService.savePosition(any())).thenReturn(null);
         when(contractService.save(any())).thenReturn(null);
         when(settlementService.retrieveSettlementDetails(any(), eq(PartyRole.LENDER), any())).thenThrow(

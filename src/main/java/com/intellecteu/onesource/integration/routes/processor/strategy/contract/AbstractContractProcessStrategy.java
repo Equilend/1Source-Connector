@@ -31,7 +31,6 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
@@ -41,6 +40,7 @@ import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
@@ -61,9 +61,8 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     EventMapper eventMapper;
     SpireMapper spireMapper;
 
-    PositionDto retrievePositionByVenue(String venueRefId) {
-        List<Position> positions = positionService.findByVenueRefId(venueRefId);
-        return positions.isEmpty() ? null : spireMapper.toPositionDto(positions.get(0));
+    Optional<PositionDto> retrievePositionByVenue(String venueRefId) {
+        return positionService.findByVenueRefId(venueRefId).map(spireMapper::toPositionDto);
     }
 
     void saveContractWithStage(ContractDto contract, FlowStatus status) {
@@ -160,7 +159,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
 
     void recordContractCreatedButNotYetMatchedEvent(String contractId) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(LOAN_CONTRACT_PROPOSAL_CREATED, contractId);
+        var recordRequest = eventBuilder.buildRequest(contractId, LOAN_CONTRACT_PROPOSAL_CREATED);
         cloudEventRecordService.record(recordRequest);
     }
 

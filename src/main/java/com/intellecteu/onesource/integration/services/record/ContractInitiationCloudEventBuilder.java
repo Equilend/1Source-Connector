@@ -157,11 +157,6 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     @Override
-    public CloudEventBuildRequest buildRequest(RecordType recordType, String record) {
-        return buildRequest(record, recordType, null);
-    }
-
-    @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
         List<ExceptionMessageDto> exceptionData) {
         return switch (recordType) {

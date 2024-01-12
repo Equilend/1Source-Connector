@@ -33,20 +33,18 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.utils.PositionUtils;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @AllArgsConstructor
@@ -56,18 +54,19 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     OneSourceService oneSourceService;
     SpireService spireService;
     ReconcileService<AgreementDto, PositionDto> reconcileService;
-    AgreementRepository agreementRepository;
-    PositionRepository positionRepository;
+    AgreementService agreementService;
+    PositionService positionService;
     EventMapper eventMapper;
     SpireMapper spireMapper;
     CloudEventRecordService cloudEventRecordService;
 
     Agreement saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
         agreement.setFlowStatus(status);
-        return agreementRepository.save(eventMapper.toAgreementEntity(agreement));
+        return agreementService.saveAgreement(eventMapper.toAgreementEntity(agreement));
     }
 
-    void reconcile(AgreementDto agreement, PositionDto position) {
+    @Transactional
+    public void reconcile(AgreementDto agreement, PositionDto position) {
         try {
             var processingStatus = agreement.getTrade().getProcessingStatus();
             if (processingStatus != null && SKIP_RECONCILIATION_STATUSES.contains(processingStatus)) {
@@ -80,7 +79,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.debug(
                 format(RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG, agreement.getAgreementId(), position.getPositionId()));
             agreement.getTrade().setProcessingStatus(RECONCILED);
-            PositionUtils.updatePositionDtoStatus(position, TRADE_RECONCILED);
+            position.setProcessingStatus(TRADE_RECONCILED);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
@@ -90,14 +89,14 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
             agreement.getTrade().setProcessingStatus(DISCREPANCIES);
-            PositionUtils.updatePositionDtoStatus(position, TRADE_DISCREPANCIES);
+            position.setProcessingStatus(TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
                 agreement.getMatchingSpirePositionId(), e.getErrorList());
             cloudEventRecordService.record(recordRequest);
         }
-        positionRepository.save(spireMapper.toPosition(position));
+        positionService.savePosition(spireMapper.toPosition(position));
     }
 
     void processAgreement(AgreementDto agreementDto, PositionDto positionDto) {
@@ -129,32 +128,23 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         agreementDto.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
     }
 
-    void processMatchingPosition(Agreement agreementEntity, List<Position> positions) {
-        if (!positions.isEmpty()) {
-            Position position = positions.get(0);
-            if (position.getProcessingStatus() == CANCELED) {
-                agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
-                agreementEntity.setProcessingStatus(MATCHED_CANCELED_POSITION);
-                agreementEntity.setMatchingSpirePositionId(position.getPositionId());
-
-                position.setLastUpdateDateTime(LocalDateTime.now());
-                position.setMatching1SourceTradeAgreementId(agreementEntity.getAgreementId());
-                createContractInitiationCloudEvent(agreementEntity.getAgreementId(), position,
-                    TRADE_AGREEMENT_MATCHED_CANCELED_POSITION);
-            } else {
-                agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
-                agreementEntity.setProcessingStatus(MATCHED_POSITION);
-                agreementEntity.setMatchingSpirePositionId(position.getPositionId());
-
-                position.setLastUpdateDateTime(LocalDateTime.now());
-                position.setMatching1SourceTradeAgreementId(agreementEntity.getAgreementId());
-                createContractInitiationCloudEvent(agreementEntity.getAgreementId(), position,
-                    TRADE_AGREEMENT_MATCHED_POSITION);
-            }
-
-            positionRepository.save(position);
-            agreementRepository.save(agreementEntity);
+    public void processMatchingPosition(AgreementDto agreementDto, PositionDto positionDto) {
+        RecordType recordType = null;
+        if (positionDto.getProcessingStatus() == CANCELED) {
+            agreementDto.setProcessingStatus(MATCHED_CANCELED_POSITION);
+            recordType = TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+        } else {
+            agreementDto.setProcessingStatus(MATCHED_POSITION);
+            recordType = TRADE_AGREEMENT_MATCHED_POSITION;
         }
+
+        agreementDto.setMatchingSpirePositionId(positionDto.getPositionId());
+        positionDto.setMatching1SourceTradeAgreementId(agreementDto.getAgreementId());
+
+        agreementService.saveAgreement(eventMapper.toAgreementEntity(agreementDto));
+        positionService.savePosition(spireMapper.toPosition(positionDto));
+
+        recordCloudEvent(agreementDto.getAgreementId(), recordType, positionDto.getPositionId());
     }
 
     ContractProposalDto buildContract(AgreementDto agreement, PositionDto positionDto,
@@ -168,11 +158,9 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             .build();
     }
 
-    void createContractInitiationCloudEvent(String id, Position position, RecordType recordType) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(id,
-            recordType, position.getPositionId());
+    void recordCloudEvent(String recorded, RecordType recordType, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(recorded, recordType, related);
         cloudEventRecordService.record(recordRequest);
     }
 }

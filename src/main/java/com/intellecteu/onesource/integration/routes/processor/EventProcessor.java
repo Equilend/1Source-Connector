@@ -41,12 +41,12 @@ import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.Timestamp;
 import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.AgreementService;
+import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -70,9 +70,9 @@ import org.springframework.web.client.HttpStatusCodeException;
 public class EventProcessor {
 
     private final TradeEventRepository tradeEventRepository;
-    private final AgreementRepository agreementRepository;
-    private final ContractRepository contractRepository;
-    private final PositionRepository positionRepository;
+    private final AgreementService agreementService;
+    private final ContractService contractService;
+    private final PositionService positionService;
     private final TimestampRepository timestampRepository;
     private final EventMapper eventMapper;
     private final SpireService spireService;
@@ -104,14 +104,14 @@ public class EventProcessor {
         timeStamp = findMaxDateTimeOfEvents(events);
         storeTimestamp(timeStamp);
         log.debug("The latest timestamp: {}", timeStamp);
-        processData(events);
+        processTradeEvent(events);
         log.debug("<<<<< Processed {} events", events.size());
     }
 
     public void cancelContract() {
         log.debug(">>>>> Starting the Cancel contract process.");
         Map<Contract, String> candidatesForCancelToPositionId = new HashMap<>();
-        List<Contract> proposedContracts = contractRepository.findAllByContractStatus(PROPOSED);
+        List<Contract> proposedContracts = contractService.findAllByContractStatus(PROPOSED);
         log.debug("Retrieved {} candidatesToCancel in Proposed status.", proposedContracts.size());
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
@@ -205,12 +205,14 @@ public class EventProcessor {
         return false;
     }
 
-    private void processData(List<TradeEvent> events) {
+    private void processTradeEvent(List<TradeEvent> events) {
         for (TradeEvent event : events) {
             if (event.getEventType().equals(TRADE_AGREED)) {
                 processTradeEvent(event);
+                updateEventStatus(event, PROCESSED);
             } else if (event.getEventType().equals(EventType.TRADE_CANCELED)) {
                 processTradeCanceledEvent(event);
+                updateEventStatus(event, PROCESSED);
             } else if (Set.of(CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
                 CONTRACT_PROPOSED, CONTRACT_CANCELED).contains(event.getEventType())) {
                 processContractEvent(event);
@@ -222,50 +224,45 @@ public class EventProcessor {
     private void processTradeEvent(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77010
         String eventUri = event.getResourceUri();
-        AgreementDto agreementDto = oneSourceService.findTradeAgreement(eventUri, event.getEventType());
-        if (agreementDto != null) {
-            agreementDto.getTrade().setEventId(event.getEventId());
-            agreementDto.getTrade().setResourceUri(event.getResourceUri());
-            agreementDto.setEventType(event.getEventType());
-            agreementDto.setEventType(event.getEventType());
-            agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
-            storeAgreement(agreementDto, event);
-            event.setProcessingStatus(PROCESSED);
-            final TradeEvent savedTradeEvent = tradeEventRepository.save(event);
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildRequest(TRADE_AGREEMENT_CREATED,
-                savedTradeEvent.getResourceUri());
-            cloudEventRecordService.record(recordRequest);
-        }
+        oneSourceService.findTradeAgreement(eventUri, event.getEventType())
+            .ifPresent(agreementDto -> {
+                configureAndSaveAgreement(event, agreementDto);
+                recordCloudEvent(eventUri);
+            });
+    }
+
+    private void recordCloudEvent(String record) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(record, TRADE_AGREEMENT_CREATED);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void configureAndSaveAgreement(TradeEvent event, AgreementDto agreementDto) {
+        agreementDto.getTrade().setEventId(event.getEventId());
+        agreementDto.getTrade().setResourceUri(event.getResourceUri());
+        agreementDto.setEventType(event.getEventType());
+        agreementDto.setFlowStatus(TRADE_DATA_RECEIVED);
+        agreementDto.setProcessingStatus(CREATED);
+        agreementService.saveAgreement(eventMapper.toAgreementEntity(agreementDto));
     }
 
     private void processTradeCanceledEvent(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         String agreementId = resourceUri.substring(resourceUri.lastIndexOf('/') + 1);
-        Agreement agreement = null;
-        Position position = null;
-        List<Agreement> agreements = agreementRepository.findByAgreementId(agreementId);
-        if (!agreements.isEmpty()) {
-            agreement = agreements.get(0);
-            agreement.setLastUpdateDatetime(LocalDateTime.now());
+        Optional<Agreement> agreementOptional = agreementService.findByAgreementId(agreementId);
+        agreementOptional.ifPresent(agreement -> {
+            agreement.setEventType(event.getEventType());
             agreement.setProcessingStatus(CANCELED);
-            agreementRepository.save(agreement);
-        }
+            agreementService.saveAgreement(agreement);
+        });
 
-        List<Position> positions = positionRepository.findByMatching1SourceTradeAgreementId(
-            agreementId);
-        if (!positions.isEmpty()) {
-            position = positions.get(0);
+        List<Position> positions = positionService.getByMatchingTradeAgreementId(agreementId);
+        positions.forEach(position -> {
             position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
-            positionRepository.save(position);
-        }
-        event.setProcessingStatus(PROCESSED);
-        tradeEventRepository.save(event);
-        if (agreement != null && position != null) {
-            createContractInitiationCloudEvent(agreement.getAgreementId(), position,
-                TRADE_AGREEMENT_CANCELED);
-        }
+            positionService.savePosition(position);
+            recordCloudEvent(agreementId, position, TRADE_AGREEMENT_CANCELED);
+        });
     }
 
     private void processContractEvent(TradeEvent event) {
@@ -300,15 +297,8 @@ public class EventProcessor {
         tradeEventRepository.save(event);
     }
 
-    private Agreement storeAgreement(AgreementDto agreementDto, TradeEvent event) {
-        Agreement agreementEntity = eventMapper.toAgreementEntity(agreementDto);
-        agreementEntity.setLastUpdateDatetime(LocalDateTime.now());
-        agreementEntity.setProcessingStatus(CREATED);
-        return agreementRepository.save(agreementEntity);
-    }
-
     private Contract storeContract(Contract contract) {
-        final Contract savedContract = contractRepository.save(contract);
+        final Contract savedContract = contractService.save(contract);
         log.debug("Contract: {} with processingStatus: {} was saved!",
             contract.getContractId(), contract.getProcessingStatus());
         return savedContract;
@@ -329,7 +319,7 @@ public class EventProcessor {
         return localDateTime;
     }
 
-    void createContractInitiationCloudEvent(String id, Position position, RecordType recordType) {
+    void recordCloudEvent(String id, Position position, RecordType recordType) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(id,

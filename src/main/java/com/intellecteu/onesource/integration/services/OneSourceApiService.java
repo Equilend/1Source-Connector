@@ -63,6 +63,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -134,22 +135,24 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public AgreementDto findTradeAgreement(String agreementUri, EventType eventType) {
+    public Optional<AgreementDto> findTradeAgreement(String agreementUri, EventType eventType) {
         log.debug("Retrieving Trade Agreement from 1Source.");
-        AgreementDto agreementDto = null;
         try {
             Agreement agreement = restTemplate.getForObject(onesourceBaseEndpoint + agreementUri, Agreement.class);
-            agreementDto = eventMapper.toAgreementDto(agreement);
-        } catch (HttpStatusCodeException e) {
+            return Optional.ofNullable(eventMapper.toAgreementDto(agreement));
+        } catch (RestClientException e) {
             log.warn("Trade Agreement {} was not found. Details: {} ", agreementUri, e.getMessage());
-            if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-                String eventId = retrieveEventId(agreementUri, eventType);
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                var recordRequest = eventBuilder.buildExceptionRequest(agreementUri, e, GET_TRADE_AGREEMENT, eventId);
-                cloudEventRecordService.record(recordRequest);
+            if (e instanceof HttpStatusCodeException exception) {
+                if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(exception.getStatusCode())) {
+                    String eventId = retrieveEventId(agreementUri, eventType);
+                    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                    var recordRequest = eventBuilder.buildExceptionRequest(agreementUri, exception, GET_TRADE_AGREEMENT,
+                        eventId);
+                    cloudEventRecordService.record(recordRequest);
+                }
             }
+            return Optional.empty();
         }
-        return agreementDto;
     }
 
     @Override

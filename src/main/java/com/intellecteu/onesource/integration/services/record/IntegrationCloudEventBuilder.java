@@ -59,8 +59,8 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return null;
     }
 
-    public CloudEventBuildRequest buildRequest(RecordType recordType, String resourceUri) {
-        return null;
+    public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType) {
+        return buildRequest(recorded, recordType, null);
     }
 
     public abstract CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related);

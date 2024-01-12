@@ -295,7 +295,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private PositionDto matchContract(ContractDto contract, String venueRefId) {
-        PositionDto position = retrievePositionByVenue(venueRefId);
+        PositionDto position = retrievePositionByVenue(venueRefId).orElse(null);
         ProcessingStatus agreementProcessingStatus = agreementRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()
             .map(agreement -> agreement.getTrade().getProcessingStatus())

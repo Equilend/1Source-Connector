@@ -23,8 +23,6 @@ public class ReconcileException extends Exception {
         super();
     }
 
-    ;
-
     public ReconcileException(String message) {
         super(message);
     }

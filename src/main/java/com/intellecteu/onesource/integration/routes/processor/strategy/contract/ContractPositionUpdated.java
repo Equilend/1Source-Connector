@@ -31,7 +31,7 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
             log.debug("Retrieving Position by venueRefId: {}", venueRefId);
-            PositionDto position = retrievePositionByVenue(venueRefId);
+            PositionDto position = retrievePositionByVenue(venueRefId).orElse(null);
             if (position == null) {
                 savePositionRetrievementIssue(contract);
                 return;

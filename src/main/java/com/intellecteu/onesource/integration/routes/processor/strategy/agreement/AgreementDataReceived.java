@@ -1,8 +1,6 @@
 package com.intellecteu.onesource.integration.routes.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.POSITION_RETRIEVED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SPIRE_ISSUE;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
@@ -10,17 +8,13 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,22 +34,26 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
             saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
             return;
         }
-        Agreement agreementEntity = saveAgreementWithStage(agreement, POSITION_RETRIEVED);
+        saveAgreementWithStage(agreement, POSITION_RETRIEVED);
         if (agreement.getProcessingStatus() == ProcessingStatus.CREATED) {
             String venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
-            List<Position> positions = positionRepository.findByVenueRefId(venueRefId);
-            processMatchingPosition(agreementEntity, positions);
-            log.debug("Start reconciliation from AgreementDataReceived strategy");
-            reconcile(agreement, positionDto);
+            positionService.findByVenueRefId(venueRefId)
+                .ifPresent(position -> {
+                    processMatchingPosition(agreement, spireMapper.toPositionDto(position));
+//                    log.debug("Start reconciliation from AgreementDataReceived strategy");
+//                    reconcile(agreement, spireMapper.toPositionDto(position));
+                });
         }
-        if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
-            processAgreement(agreement, positionDto);
-            agreement.setEventType(EventType.TRADE_AGREED);
-            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
-        } else if (agreement.getTrade().getProcessingStatus() == DISCREPANCIES) {
-            agreement.setEventType(EventType.TRADE_AGREED);
-            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
-        }
+// todo temporary commented out potentially obsolete flow
+
+//        if (agreement.getTrade().getProcessingStatus() == RECONCILED) {
+//            processAgreement(agreement, positionDto);
+//            agreement.setEventType(EventType.TRADE_AGREED);
+//            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+//        } else if (agreement.getTrade().getProcessingStatus() == DISCREPANCIES) {
+//            agreement.setEventType(EventType.TRADE_AGREED);
+//            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+//        }
     }
 
     @Override
@@ -64,10 +62,10 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     }
 
     public AgreementDataReceived(OneSourceService oneSourceService, SpireService spireService,
-        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementRepository agreementRepository,
-        PositionRepository positionRepository,
+        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementService agreementService,
+        PositionService positionService,
         EventMapper eventMapper, SpireMapper spireMapper, CloudEventRecordService cloudEventRecordService) {
-        super(oneSourceService, spireService, agreementReconcileService, agreementRepository,
-            positionRepository, eventMapper, spireMapper, cloudEventRecordService);
+        super(oneSourceService, spireService, agreementReconcileService, agreementService,
+            positionService, eventMapper, spireMapper, cloudEventRecordService);
     }
 }

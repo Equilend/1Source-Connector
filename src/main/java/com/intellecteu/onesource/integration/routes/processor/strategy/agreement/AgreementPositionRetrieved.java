@@ -7,9 +7,9 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.repository.PositionRepository;
+import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
@@ -27,14 +27,17 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
     @Transactional
     public void process(AgreementDto agreement) {
         var venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
-        var positionDto = spireMapper.toPositionDto(positionRepository.findByVenueRefId(venueRefId).get(0));
-        var processingStatus = agreement.getTrade().getProcessingStatus();
-        log.debug("Start reconciliation from AgreementPositionRetrieved strategy");
-        reconcile(agreement, positionDto);
-        if (processingStatus == RECONCILED) {
-            processAgreement(agreement, positionDto);
-        }
-        saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+        positionService.findByVenueRefId(venueRefId)
+            .ifPresent(position -> {
+                var positionDto = spireMapper.toPositionDto(position);
+                var processingStatus = agreement.getTrade().getProcessingStatus();
+                log.debug("Start reconciliation from AgreementPositionRetrieved strategy");
+                reconcile(agreement, positionDto);
+                if (processingStatus == RECONCILED) {
+                    processAgreement(agreement, positionDto);
+                }
+                saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
+            });
     }
 
     @Override
@@ -43,14 +46,14 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
     }
 
     public AgreementPositionRetrieved(OneSourceService oneSourceService, SpireService spireService,
-        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementRepository agreementRepository,
-        PositionRepository positionRepository, EventMapper eventMapper, SpireMapper spireMapper,
+        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementService agreementService,
+        PositionService positionService, EventMapper eventMapper, SpireMapper spireMapper,
         CloudEventRecordService cloudEventRecordService) {
         super(oneSourceService,
             spireService,
             agreementReconcileService,
-            agreementRepository,
-            positionRepository,
+            agreementService,
+            positionService,
             eventMapper,
             spireMapper,
             cloudEventRecordService);
