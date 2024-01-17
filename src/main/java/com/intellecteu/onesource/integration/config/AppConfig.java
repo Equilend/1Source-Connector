@@ -8,10 +8,14 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
+import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.mapper.RerateTradeMapper;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -23,10 +27,6 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 @Configuration
 @ComponentScan("com.intellecteu.onesource.integration")
@@ -84,16 +84,34 @@ public class AppConfig {
         return new PositionSpireApiClient(borrowerApiClient, clientId);
     }
 
+    @Bean
+    public TradeSpireApiClient lenderTradeSpireApiClient(ApiClient lenderApiClient,
+        @Value("${spire.username}") String clientId) {
+        return new TradeSpireApiClient(lenderApiClient, clientId);
+    }
+
+    @Bean
+    public TradeSpireApiClient borrowerTradeSpireApiClient(ApiClient borrowerApiClient,
+        @Value("${spire.username}") String clientId) {
+        return new TradeSpireApiClient(borrowerApiClient, clientId);
+    }
+
     @Bean("lenderBackOfficeService")
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
-        SpireMapper spireMapper, CloudEventRecordService cloudEventRecordService) {
-        return new BackOfficeService(lenderPositionSpireApiClient, spireMapper, cloudEventRecordService);
+        TradeSpireApiClient lenderTradeSpireApiClient,
+        SpireMapper spireMapper, RerateTradeMapper rerateTradeMapper, CloudEventRecordService cloudEventRecordService) {
+        return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, spireMapper,
+            rerateTradeMapper,
+            cloudEventRecordService);
     }
 
     @Bean("borrowerBackOfficeService")
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
-        SpireMapper spireMapper, CloudEventRecordService cloudEventRecordService) {
-        return new BackOfficeService(borrowerPositionSpireApiClient, spireMapper, cloudEventRecordService);
+        TradeSpireApiClient borrowerTradeSpireApiClient,
+        SpireMapper spireMapper, RerateTradeMapper rerateTradeMapper, CloudEventRecordService cloudEventRecordService) {
+        return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, spireMapper,
+            rerateTradeMapper,
+            cloudEventRecordService);
     }
 
     private List<ClientHttpRequestInterceptor> getHttpRequestInterceptors(

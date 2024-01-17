@@ -185,12 +185,14 @@ public class RecordMessageConstant {
                 + "or Position - %s";
             public static final String GET_EVENTS_TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s, or Position - %s";
             public static final String GET_EVENTS_TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s, or Position - %s";
+            public static final String GET_TRADE_EVENTS_PENDING_CONFIRMATION = "SPIRE trade event capture - %s";
         }
 
         public static class DataMsg {
 
             public static final String GET_EVENTS_EXCEPTION_1SOURCE_MSG = "Events cannot be retrieved from 1Source "
                 + "for the following reason: %s";
+            public static final String GET_TRADE_EVENTS_PENDING_CONFIRMATION_MSG = "SPIRE TRADE Events cannot be retrieved from SPIRE for the following reason: %s";
         }
     }
 

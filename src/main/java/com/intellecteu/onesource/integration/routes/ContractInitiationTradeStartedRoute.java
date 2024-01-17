@@ -7,9 +7,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConditionalOnProperty(
-        value = "integration-toolkit.flow-version",
-        havingValue = "F1")
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
     private final AgreementProcessor agreementProcessor;

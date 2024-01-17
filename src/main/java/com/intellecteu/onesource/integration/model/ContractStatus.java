@@ -1,5 +1,5 @@
 package com.intellecteu.onesource.integration.model;
 
 public enum ContractStatus {
-    PROPOSED, APPROVED, CANCELED, DECLINED
+    PROPOSED, APPROVED, CANCELED, DECLINED, OPEN
 }

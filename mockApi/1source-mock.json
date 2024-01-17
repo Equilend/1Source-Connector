@@ -1,6 +1,6 @@
 {
   "uuid": "a46bf1d2-f098-41fd-a39e-374cf52f322e",
-  "lastMigration": 28,
+  "lastMigration": 32,
   "name": "1Source Ledger API mock",
   "endpointPrefix": "ledger",
   "latency": 0,
@@ -17,7 +17,7 @@
       "responses": [
         {
           "uuid": "a410c047-1c13-4232-a566-45a47473a8e8",
-          "body": "[\n  {\n    \"agreementId\": \"{{faker 'datatype.uuid'}}\",\n    \"lastUpdateDatetime\": \"{{faker 'date.recent' 365}}\",\n    \"trade\": {\n      \"executionVenue\": {\n        \"platform\": {\n          \"gleifLei\": \"{{faker 'random.alphaNumeric' 16}}\",\n          \"legalName\": \"{{faker 'random.alphaNumeric' 16}}\",\n          \"mic\": \"{{faker 'random.alphaNumeric' 16}}\",\n          \"transactionDatetime\": \"{{faker 'date.recent' 365}}\",\n          \"venueName\": \"{{faker 'random.alphaNumeric' 16}}\",\n          \"venueRefId\": \"{{faker 'random.alphaNumeric' 16}}\"\n        },\n        \"type\": \"{{oneOf (array 'ONPLATFORM' 'OFFPLATFORM')}}\",\n        \"venueParties\": [\n          {\n            \"internalRef\": {\n              \"accountId\": \"{{faker 'random.alphaNumeric' 16}}\",\n              \"brokerCd\": \"{{faker 'random.alphaNumeric' 16}}\",\n              \"internalRefId\": \"{{faker 'random.alphaNumeric' 16}}\"\n            },\n            \"partyRole\": \"{{oneOf (array 'BORROWER' 'LENDER' 'TRIPARTY' 'CCP')}}\",\n            \"venuePartyRefKey\": \"{{faker 'random.alphaNumeric' 16}}\"\n          }\n        ]\n      },\n      \"instrument\": {\n        \"cusip\": \"023135106\",\n        \"description\": \"{{faker 'random.alphaNumeric' 16}}\",\n        \"figi\": \"{{faker 'random.alphaNumeric' 16}}\",\n        \"isin\": \"US0231351067\",\n        \"price\": {\n          \"currency\": \"USD\",\n          \"unit\": \"{{oneOf (array 'SHARE' 'LOT')}}\",\n          \"value\": {{faker 'datatype.float'}}\n        },\n        \"quick\": \"{{faker 'random.alphaNumeric' 16}}\",\n        \"sedol\": \"2000019\",\n        \"ticker\": \"{{faker 'random.alphaNumeric' 16}}\"\n      },\n      \"rate\": {\n        \"rebate\": {\n          \"fixed\": {\n            \"baseRate\": 0.05,\n            \"effectiveDate\" : \"2023-10-25\"\n          }\n        }\n      },\n      \"quantity\": 15000.0,\n      \"billingCurrency\": \"{{oneOf (array 'USD' 'EUR' 'GBP' 'JPY' 'AUD' 'HKD' 'CAD' 'CHF' 'SEK' 'SGD' 'NOK' 'DKK')}}\",\n      \"dividendRatePct\": {{faker 'datatype.float'}},\n      \"tradeDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"termType\": \"{{oneOf (array 'OPEN' 'TERM')}}\",\n      \"termDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"settlementDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"settlementType\": \"{{oneOf (array 'DVP' 'FOP')}}\",\n      \"collateral\": {\n        \"collateralValue\": {{faker 'datatype.float'}},\n        \"contractPrice\": {{faker 'datatype.float'}},\n        \"contractValue\": {{faker 'datatype.float'}},\n        \"currency\": \"USD\",\n        \"descriptionCd\": \"{{oneOf (array 'NONUSAGENCIES' 'AGENCIES' 'CANADIANBONDS' 'CANADIANPROVINCIALS' 'CORPORATES' 'DEBT' 'EMUDEBTAAA' 'EMUDEBT' 'AUSTRALIANEQUITIES' 'EQUITIES' 'GOVTDEBT105' 'G10DEBT' 'G3DEBT' 'G8DEBT' 'UKGILTS' 'GOVERNMENTISSUES' 'GOVERNMENTISSUESAAA' 'HIGHGRADEEQUITIES' 'INVESTMENTGRADECORPORATES' 'JAPANESEGOVERNMENTBONDS')}}\",\n        \"margin\": 102,\n        \"type\": \"{{oneOf (array 'CASH' 'NONCASH' 'CASHPOOL' 'TRIPARTY')}}\"\n      },\n      \"transactingParties\": [\n        {\n          \"party\": {\n            \"gleifLei\": \"{{faker 'random.alphaNumeric' 16}}\",\n            \"internalPartyId\": \"{{faker 'random.alphaNumeric' 16}}\",\n            \"partyId\": \"{{faker 'datatype.uuid'}}\",\n            \"partyName\": \"{{faker 'random.alphaNumeric' 16}}\"\n          },\n          \"partyRole\": \"{{oneOf (array 'BORROWER' 'LENDER' 'TRIPARTY' 'CCP')}}\"\n        }\n      ]\n    }\n  }\n]",
+          "body": "[\n  {\n    \"agreementId\": \"{{faker 'string.uuid'}}\",\n    \"lastUpdateDatetime\": \"{{faker 'date.recent' 365}}\",\n    \"trade\": {\n      \"executionVenue\": {\n        \"platform\": {\n          \"gleifLei\": \"{{faker 'string.alphaNumeric' 16}}\",\n          \"legalName\": \"{{faker 'string.alphaNumeric' 16}}\",\n          \"mic\": \"{{faker 'string.alphaNumeric' 16}}\",\n          \"transactionDatetime\": \"{{faker 'date.recent' 365}}\",\n          \"venueName\": \"{{faker 'string.alphaNumeric' 16}}\",\n          \"venueRefId\": \"{{faker 'string.alphaNumeric' 16}}\"\n        },\n        \"type\": \"{{oneOf (array 'ONPLATFORM' 'OFFPLATFORM')}}\",\n        \"venueParties\": [\n          {\n            \"internalRef\": {\n              \"accountId\": \"{{faker 'string.alphaNumeric' 16}}\",\n              \"brokerCd\": \"{{faker 'string.alphaNumeric' 16}}\",\n              \"internalRefId\": \"{{faker 'string.alphaNumeric' 16}}\"\n            },\n            \"partyRole\": \"{{oneOf (array 'BORROWER' 'LENDER' 'TRIPARTY' 'CCP')}}\",\n            \"venuePartyRefKey\": \"{{faker 'string.alphaNumeric' 16}}\"\n          }\n        ]\n      },\n      \"instrument\": {\n        \"cusip\": \"023135106\",\n        \"description\": \"{{faker 'string.alphaNumeric' 16}}\",\n        \"figi\": \"{{faker 'string.alphaNumeric' 16}}\",\n        \"isin\": \"US0231351067\",\n        \"price\": {\n          \"currency\": \"USD\",\n          \"unit\": \"{{oneOf (array 'SHARE' 'LOT')}}\",\n          \"value\": {{faker 'number.float'}}\n        },\n        \"quick\": \"{{faker 'string.alphaNumeric' 16}}\",\n        \"sedol\": \"2000019\",\n        \"ticker\": \"{{faker 'string.alphaNumeric' 16}}\"\n      },\n      \"rate\": {\n        \"rebate\": {\n          \"fixed\": {\n            \"baseRate\": 0.05,\n            \"effectiveDate\" : \"2023-10-25\"\n          }\n        }\n      },\n      \"quantity\": 15000.0,\n      \"billingCurrency\": \"{{oneOf (array 'USD' 'EUR' 'GBP' 'JPY' 'AUD' 'HKD' 'CAD' 'CHF' 'SEK' 'SGD' 'NOK' 'DKK')}}\",\n      \"dividendRatePct\": {{faker 'number.float'}},\n      \"tradeDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"termType\": \"{{oneOf (array 'OPEN' 'TERM')}}\",\n      \"termDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"settlementDate\": \"{{date '2019' (now) 'yyyy-MM-dd'}}\",\n      \"settlementType\": \"{{oneOf (array 'DVP' 'FOP')}}\",\n      \"collateral\": {\n        \"collateralValue\": {{faker 'number.float'}},\n        \"contractPrice\": {{faker 'number.float'}},\n        \"contractValue\": {{faker 'number.float'}},\n        \"currency\": \"USD\",\n        \"descriptionCd\": \"{{oneOf (array 'NONUSAGENCIES' 'AGENCIES' 'CANADIANBONDS' 'CANADIANPROVINCIALS' 'CORPORATES' 'DEBT' 'EMUDEBTAAA' 'EMUDEBT' 'AUSTRALIANEQUITIES' 'EQUITIES' 'GOVTDEBT105' 'G10DEBT' 'G3DEBT' 'G8DEBT' 'UKGILTS' 'GOVERNMENTISSUES' 'GOVERNMENTISSUESAAA' 'HIGHGRADEEQUITIES' 'INVESTMENTGRADECORPORATES' 'JAPANESEGOVERNMENTBONDS')}}\",\n        \"margin\": 102,\n        \"type\": \"{{oneOf (array 'CASH' 'NONCASH' 'CASHPOOL' 'TRIPARTY')}}\"\n      },\n      \"transactingParties\": [\n        {\n          \"party\": {\n            \"gleifLei\": \"{{faker 'string.alphaNumeric' 16}}\",\n            \"internalPartyId\": \"{{faker 'string.alphaNumeric' 16}}\",\n            \"partyId\": \"{{faker 'string.uuid'}}\",\n            \"partyName\": \"{{faker 'string.alphaNumeric' 16}}\"\n          },\n          \"partyRole\": \"{{oneOf (array 'BORROWER' 'LENDER' 'TRIPARTY' 'CCP')}}\"\n        }\n      ]\n    }\n  }\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "List of trade agreements",
@@ -36,11 +36,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "4bc94451-9e9c-47fb-8c5f-89fed6f5dade",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'datatype.number'}},\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'number.int' max=99999}},\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 500,
           "label": "An error occurred",
@@ -59,10 +60,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -93,10 +94,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -135,7 +136,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "d44bdf1a-4f57-4a72-919b-2d3417b3fb38",
@@ -153,7 +155,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "8301d632-373b-4128-92db-9a62edb0881e",
@@ -171,10 +174,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -205,7 +208,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "cc49c381-9cb0-4593-9a74-f331414f7b15",
@@ -223,7 +227,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "b2db8d10-9dd2-4fef-9544-f324ce93ab30",
@@ -241,10 +246,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -275,7 +280,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "ffd37d33-c64c-4061-93f8-d6377f22863a",
@@ -293,7 +299,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "55cb6310-0f4e-4412-ad01-ccb454298fb4",
@@ -311,7 +318,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "63bded89-6f6e-4817-96ec-705436932f2f",
@@ -329,10 +337,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -363,7 +371,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "f26d6de0-1368-410f-923c-2813de19f40d",
@@ -386,7 +395,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "2cc29076-dbcd-4a31-83f6-79e484008a38",
@@ -417,7 +427,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "6a4a15eb-37a1-4755-a530-c1f90c37e6df",
@@ -440,10 +451,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -477,7 +488,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "3ea9f257-7e93-47b6-a27f-98cba6e60212",
@@ -495,7 +507,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "94af81b0-3b84-4a7d-b87e-9ac558c0b534",
@@ -518,7 +531,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "b5de1ed5-23fa-4bea-b739-b6bd15b3a0ae",
@@ -536,7 +550,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "64a235cb-12b6-4907-b245-32be1e6b35c5",
@@ -554,10 +569,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -591,7 +606,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "9ef1b9b3-f528-45c1-a3af-3008c5fa4983",
@@ -609,7 +625,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "58c7b2b1-9a8f-458e-9702-5000fbe53b89",
@@ -627,7 +644,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "007e3c2a-f81a-471a-91fa-613cd2e3281d",
@@ -645,7 +663,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "37cce99f-29f6-4030-8ec2-69043681df0c",
@@ -663,10 +682,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -692,7 +711,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "a6da50ba-af9a-4425-bc19-a7519ef69f1f",
@@ -710,7 +730,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "1bf283cf-b530-418f-817a-189ab005e13b",
@@ -728,7 +749,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "b3ea8a5a-3475-4d6e-ae4d-7fd6fb6ee79d",
@@ -746,7 +768,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "6e967281-4431-432f-a530-f1f6caf8fc4d",
@@ -764,10 +787,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -798,11 +821,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "3e7f8c40-81a4-4fe9-9e59-17f170583bee",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": 500,\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": 500,\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 500,
           "label": "An error occurred",
@@ -821,10 +845,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -855,11 +879,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "327301e5-5b09-42a7-9f13-bd95811800f7",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": 500,\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": 500,\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 500,
           "label": "An error occurred",
@@ -878,7 +903,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "e976e685-093e-4a67-91d8-3051ba37069f",
@@ -901,7 +927,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "6887d96a-d783-4222-888f-b2718319f049",
@@ -924,10 +951,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -958,7 +985,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "33b305e5-2d30-4308-b4f7-aebc5e572de1",
@@ -981,7 +1009,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "eb7e560d-c383-4ff6-bdf7-755791e01b28",
@@ -1012,7 +1041,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "046ddd8d-11d9-4692-ac06-9b0d308d583e",
@@ -1035,10 +1065,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -1064,7 +1094,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "6aa21198-9210-4043-8a4c-b9e34f0c8575",
@@ -1082,7 +1113,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "379f9b6e-c8e5-4679-8331-c45ff3ffb773",
@@ -1100,7 +1132,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "1be72ca0-4d07-4494-8989-0ef5e38872db",
@@ -1118,7 +1151,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "1944235a-6004-446b-a51f-09fd37728aac",
@@ -1136,10 +1170,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -1170,10 +1204,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -1212,11 +1246,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "b7322ebd-d848-4dfe-b7b4-c85fb91fcc83",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'datatype.number'}},\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'number.int' max=99999}},\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 404,
           "label": "Resource not found",
@@ -1235,7 +1270,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "4b5f70d5-17d6-4cbd-98e3-386ba295ac1f",
@@ -1258,11 +1294,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "d3f377cd-250b-4b36-9058-a775011dcf7b",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'datatype.number'}},\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'number.int' max=99999}},\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 401,
           "label": "Not authorized to do this operation",
@@ -1281,11 +1318,12 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "22c27662-874b-4b0a-ad69-d728f6eff043",
-          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'datatype.number'}},\n  \"message\": \"{{faker 'random.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'random.alphaNumeric' 16}}\"\n}",
+          "body": "{\n  \"timestamp\": \"{{faker 'date.recent' 365}}\",\n  \"status\": {{faker 'number.int' max=99999}},\n  \"message\": \"{{faker 'string.alphaNumeric' 16}}\",\n  \"path\": \"{{faker 'string.alphaNumeric' 16}}\"\n}",
           "latency": 0,
           "statusCode": 500,
           "label": "An error occurred",
@@ -1304,10 +1342,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -1338,7 +1376,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "ec1f07f9-f1f5-451e-ae37-52aadcc525d8",
@@ -1361,7 +1400,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "fd908107-cae2-4f1c-85f4-8ab6fef3e7f2",
@@ -1392,7 +1432,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "041d1410-523e-412e-b7fb-9d5b4ee8a271",
@@ -1415,10 +1456,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     },
     {
@@ -1449,7 +1490,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "36f81b4c-beb5-4b56-91e8-568aec6f19b3",
@@ -1472,7 +1514,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "dab49b91-9a16-447e-bed2-3a9774c60e2b",
@@ -1503,7 +1546,8 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         },
         {
           "uuid": "a5a17cdc-a76d-4a0c-a648-3a6e3a0ab8be",
@@ -1526,10 +1570,10 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": false,
-          "crudKey": "id"
+          "crudKey": "id",
+          "callbacks": []
         }
       ],
-      "enabled": true,
       "responseMode": null
     }
   ],
@@ -1629,5 +1673,6 @@
       "value": ""
     }
   ],
-  "data": []
+  "data": [],
+  "callbacks": []
 }

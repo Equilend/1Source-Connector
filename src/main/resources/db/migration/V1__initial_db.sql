@@ -126,6 +126,7 @@ CREATE TABLE IF NOT EXISTS position
     spire_position_id     VARCHAR(255) NULL,
     venue_ref_id          VARCHAR(255) NULL,
     custom_value2         VARCHAR(255) NULL,
+    position_ref          VARCHAR(255) NULL,
     ticker                VARCHAR(255) NULL,
     cusip                 VARCHAR(255) NULL,
     isin                  VARCHAR(255) NULL,
@@ -343,6 +344,32 @@ CREATE TABLE IF NOT EXISTS event_record
     dataContentType       VARCHAR(255) NULL,
     "data"                TEXT NULL,
     processingstatus      VARCHAR(255) NULL
+);
+
+CREATE TABLE IF NOT EXISTS trade_out
+(
+    trade_id                 BIGINT NOT NULL,
+    post_date                TIMESTAMP,
+    settle_date              TIMESTAMP,
+    trade_date               TIMESTAMP,
+    trade_type               VARCHAR(255),
+    trade_type_id            INTEGER,
+    position_spire_position_id     VARCHAR(255) NULL,
+    CONSTRAINT pk_trade_out PRIMARY KEY (trade_id),
+    CONSTRAINT fk_position_out FOREIGN KEY (position_spire_position_id) REFERENCES position (spire_position_id)
+);
+
+CREATE TABLE IF NOT EXISTS rerate_trade
+(
+    trade_id             BIGINT NOT NULL,
+    last_update_datetime TIMESTAMP,
+    matching_rerate_id   INTEGER,
+    processing_status    VARCHAR(255),
+    related_contract_id  VARCHAR(255),
+    related_position_id  BIGINT,
+    trade_out_trade_id   BIGINT,
+    CONSTRAINT pk_rerate_trade PRIMARY KEY (trade_id),
+    CONSTRAINT fk_trade_out FOREIGN KEY (trade_out_trade_id) REFERENCES trade_out (trade_id)
 );
 
 ALTER TABLE agreement DROP CONSTRAINT IF EXISTS FK_AGREEMENT_ON_TRADE;

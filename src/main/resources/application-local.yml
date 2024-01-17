@@ -80,7 +80,13 @@ cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}
 
 integration-toolkit:
-  flow-Version: F1
+  route:
+    rerate:
+      enable: true
+    contract-initiation-trade-started:
+      enable: true
+    contract-initiation-without-trade-route:
+      enable: true
   uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
 
 notification:

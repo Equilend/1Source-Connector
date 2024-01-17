@@ -41,6 +41,9 @@ public class Position {
     @Column(name = "custom_value2")
     private String customValue2;
 
+    @Column(name = "position_ref")
+    private String positionRef;
+
     @Column(name = "rate")
     private Double rate;
 
@@ -170,5 +173,7 @@ public class Position {
     @Embedded
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
+
+
 
 }
