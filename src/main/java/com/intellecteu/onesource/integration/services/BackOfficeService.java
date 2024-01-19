@@ -92,6 +92,29 @@ public class BackOfficeService {
         return List.of();
     }
 
+    public List<Position> getPositionByVenueRefId(String venueRefId) {
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
+            .tuples(createTuplesGetPositionsByCustomeValue2(venueRefId));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
+        try {
+            ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
+                nQueryRequest);
+            if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() > 0) {
+                List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
+                return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
+            }
+        } catch (RestClientException e) {
+            if (e instanceof HttpStatusCodeException exception) {
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
+                    log.error("SPIRE error response for getting position by venueRefId. Details: {}",
+                        exception.getStatusCode());
+                }
+            }
+        }
+        return List.of();
+    }
+
     public List<RerateTrade> getNewBackOfficeTradeEvents(Optional<Long> lastTradeId, List<String> positionIds) {
         Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
@@ -146,6 +169,12 @@ public class BackOfficeService {
         tuples.add(new NQueryTuple().lValue("positionType").operator(NQueryTuple.OperatorEnum.IN)
             .rValue1(String.join(",", positionTypes)));
         tuples.add(new NQueryTuple().lValue("depoKy").operator(NQueryTuple.OperatorEnum.IN).rValue1("DTC"));
+        return tuples;
+    }
+
+    private List<NQueryTuple> createTuplesGetPositionsByCustomeValue2(String venueRefId) {
+        List<NQueryTuple> tuples = new ArrayList<>();
+        tuples.add(new NQueryTuple().lValue("customValue2").operator(OperatorEnum.EQUALS).rValue1(venueRefId));
         return tuples;
     }
 

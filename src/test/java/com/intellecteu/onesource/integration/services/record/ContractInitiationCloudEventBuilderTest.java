@@ -32,11 +32,11 @@ class ContractInitiationCloudEventBuilderTest {
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
-            The trade agreement testId is in discrepancies with the position testSpirePositionId in SPIRE.
+            The trade agreement testId is in discrepancies with the position %s in SPIRE.
             List of discrepancies:
             - First test message
             - Second test message
-            - Third test message""";
+            - Third test message""".formatted(position.getPositionId());
 
         CloudEventBuildRequest actualBuildRequest = builder.buildRequest(agreement.getAgreementId(),
             RecordType.TRADE_AGREEMENT_DISCREPANCIES, position.getPositionId(), discrepancies);
@@ -55,12 +55,12 @@ class ContractInitiationCloudEventBuilderTest {
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
-            Discrepancies have been found between the Lender's loan contract proposal testId \
-            and the matched SPIRE position testSpirePositionId. \n
+            Discrepancies have been found between the Lender's loan contract proposal %s \
+            and the matched SPIRE position %s. \n
             List of discrepancies:
             - First test message
             - Second test message
-            - Third test message""";
+            - Third test message""".formatted(contractDto.getContractId(), position.getPositionId());
 
         CloudEventBuildRequest actualBuildRequest = builder.buildRequest(contractDto.getContractId(),
             RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, position.getPositionId(), discrepancies);

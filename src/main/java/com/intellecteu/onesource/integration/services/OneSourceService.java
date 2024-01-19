@@ -18,9 +18,9 @@ public interface OneSourceService {
 
     void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position);
 
-    Optional<AgreementDto> findTradeAgreement(String agreementId, EventType eventType);
+    Optional<AgreementDto> findTradeAgreement(String agreementUri, EventType eventType);
 
-    Optional<Contract> findContract(String contractId);
+    Optional<Contract> retrieveContract(String contractUri);
 
     SettlementDto retrieveSettlementInstruction(ContractDto contractDto);
 

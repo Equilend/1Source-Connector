@@ -228,9 +228,9 @@ CREATE TABLE IF NOT EXISTS settlement_instruction
 
 CREATE TABLE IF NOT EXISTS timestamp
 (
-    id        SERIAL NOT NULL,
+    type        VARCHAR(255) NOT NULL,
     timestamp timestamp NULL,
-    CONSTRAINT pk_timestamp PRIMARY KEY (id)
+    CONSTRAINT pk_timestamp PRIMARY KEY (type)
 );
 
 CREATE TABLE IF NOT EXISTS trade

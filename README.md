@@ -111,82 +111,81 @@ Integration tests + skip Unit tests:
 
 ## 4. Application configuration
 
-| Name                                    | Required | Default                                          | Description                                                                                        |
-|-----------------------------------------|----------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| camel.timer                             | YES      | 100_000                                          | A scheduled timer for Apache camel to pull the information from external systems, in milliseconds. |
-| camel.timestamp                         | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
-| camel.route.autostart                   | NO       | true                                             | A flag to turn Apache Camel routing off. (As usual used for testing purposes. )                    |
-| spring.datasource.driverClassName       | YES      | org.postgresql.Driver                            | A driver for database. Default is PostgreSQL.                                                      |
-| spring.datasource.url                   | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db. The default is a link to a docker container.             |
-| spring.datasource.username              | YES      | postgres                                         | Username for the db.                                                                               |
-| spring.datasource.password              | YES      | postgres                                         | Password for the db.                                                                               |
-| spring.flyway.locations                 | NO       | classpath:db/migration                           | Location of the SQL migration scripts.                                                             |
-| spring.flyway.baseline-on-migrate       | NO       | true                                             | Turn of the baseline of the migrations.                                                            |
-| spring.flyway.url                       | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db.                                                          |
-| spring.flyway.user                      | YES      | postgres                                         | Username for the db.                                                                               |
-| spring.flyway.password                  | YES      | postgres                                         | Password for the db.                                                                               |
-| spring.flyway.schemas                   | YES      | postgres                                         | The database scheme names managed by Flyway.                                                       |
-| spring.flyway.enabled                   | NO       | true                                             | Turn off migrations.                                                                               |
-| spring.flyway.default-schema            | YES      | postgres                                         | Default schema name managed by Flyway.                                                             |
-| spring.jackson.date-format              | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
-| onesource.baseEndpoint                  | YES      |                                                  | The endpoint for 1Source environment.                                                              |
-| onesource.version                       | YES      |                                                  | The current 1Source version.                                                                       |
-| onesource.auth.server-url               | YES      |                                                  | The 1Source auth server url.                                                                       |
-| onesource.auth.realm                    | YES      |                                                  | The configured realm for authorization.                                                            |
-| onesource.auth.public-client            | NO       | true                                             | If true, the java-adapter will not send credentials for the client to Keycloak .                   |
-| onesource.auth.resource                 | YES      |                                                  | The client-id of the application.                                                                  |
-| onesource.auth.principal-attribute      | YES      |                                                  | Token attribute to populate the userPrincipal name with.                                           |
-| onesource.auth.username                 | YES      |                                                  | User name credentials.                                                                             |
-| onesource.auth.password                 | YES      |                                                  | User password credentials.                                                                         |
-| onesource.auth.credentials.secret       | YES      |                                                  | Client secret.                                                                                     |
-| spire.lenderEndpoint                    | YES      |                                                  | The endpoint for Lender's Spire environment.                                                       |
-| spire.borrowerEndpoint                  | YES      |                                                  | The endpoint for Borrower's Spire environment.                                                     |
-| spire.username                          | YES      |                                                  | Username for SPIRE connection.                                                                     |
-| spire.password                          | YES      |                                                  | Password for Spire connection.                                                                     |
-| cloudevents.specversion                 | NO       | 1.0                                              | Spec version for Cloud Events.                                                                     |
-| integration-toolkit.uri                 | YES      | http://integration.toolkit                       | The Integration toolkit uri for recording events/exceptions.                                       |
-| integration-toolkit.route.rerate.enable | YES      | true                                             | Turn on/off Rerate route                                                                           |
-| notification.enable                     | NO       | false                                            | Turn on/off events notification to SPIRE.                                                          |
-| notification.timer                      | NO       | 100_000                                          | A scheduled timer for the notification process.                                                    |
-| notification.spire.bootstrap-server     | YES      | localhost:9092                                   | A bootstrap server for the Kafka.                                                                  |
-| notification.spire.topic                | YES      | TEST.TOPIC                                       | SPIRE Kafka topic to produce events.                                                               |
-| notification.spire.auth.key             | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
-| notification.spire.auth.secret          | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
+| Name                                              | Required | Default                                          | Description                                                                                        |
+|---------------------------------------------------|----------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| camel.timer                                       | YES      | 100_000                                          | A scheduled timer for Apache camel to pull the information from external systems, in milliseconds. |
+| camel.route.autostart                             | NO       | true                                             | A flag to turn Apache Camel routing off. (As usual used for testing purposes. )                    |
+| spring.datasource.driverClassName                 | YES      | org.postgresql.Driver                            | A driver for database. Default is PostgreSQL.                                                      |
+| spring.datasource.url                             | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db. The default is a link to a docker container.             |
+| spring.datasource.username                        | YES      | postgres                                         | Username for the db.                                                                               |
+| spring.datasource.password                        | YES      | postgres                                         | Password for the db.                                                                               |
+| spring.flyway.locations                           | NO       | classpath:db/migration                           | Location of the SQL migration scripts.                                                             |
+| spring.flyway.baseline-on-migrate                 | NO       | true                                             | Turn of the baseline of the migrations.                                                            |
+| spring.flyway.url                                 | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db.                                                          |
+| spring.flyway.user                                | YES      | postgres                                         | Username for the db.                                                                               |
+| spring.flyway.password                            | YES      | postgres                                         | Password for the db.                                                                               |
+| spring.flyway.schemas                             | YES      | postgres                                         | The database scheme names managed by Flyway.                                                       |
+| spring.flyway.enabled                             | NO       | true                                             | Turn off migrations.                                                                               |
+| spring.flyway.default-schema                      | YES      | postgres                                         | Default schema name managed by Flyway.                                                             |
+| spring.jackson.date-format                        | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
+| onesource.baseEndpoint                            | YES      |                                                  | The endpoint for 1Source environment.                                                              |
+| onesource.version                                 | YES      |                                                  | The current 1Source version.                                                                       |
+| onesource.auth.server-url                         | YES      |                                                  | The 1Source auth server url.                                                                       |
+| onesource.auth.realm                              | YES      |                                                  | The configured realm for authorization.                                                            |
+| onesource.auth.public-client                      | NO       | true                                             | If true, the java-adapter will not send credentials for the client to Keycloak .                   |
+| onesource.auth.resource                           | YES      |                                                  | The client-id of the application.                                                                  |
+| onesource.auth.principal-attribute                | YES      |                                                  | Token attribute to populate the userPrincipal name with.                                           |
+| onesource.auth.username                           | YES      |                                                  | User name credentials.                                                                             |
+| onesource.auth.password                           | YES      |                                                  | User password credentials.                                                                         |
+| onesource.auth.credentials.secret                 | YES      |                                                  | Client secret.                                                                                     |
+| spire.lenderEndpoint                              | YES      |                                                  | The endpoint for Lender's Spire environment.                                                       |
+| spire.borrowerEndpoint                            | YES      |                                                  | The endpoint for Borrower's Spire environment.                                                     |
+| spire.username                                    | YES      |                                                  | Username for SPIRE connection.                                                                     |
+| spire.password                                    | YES      |                                                  | Password for Spire connection.                                                                     |
+| cloudevents.specversion                           | NO       | 1.0                                              | Spec version for Cloud Events.                                                                     |
+| integration-toolkit.uri                           | YES      | http://integration.toolkit                       | The Integration toolkit uri for recording events/exceptions.                                       |
+| integration-toolkit.route.rerate.enable           | YES      | true                                             | Turn on/off Rerate route                                                                           |
+| integration-toolkit.starting-trade-event-datetime | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
+| notification.enable                               | NO       | false                                            | Turn on/off events notification to SPIRE.                                                          |
+| notification.timer                                | NO       | 100_000                                          | A scheduled timer for the notification process.                                                    |
+| notification.spire.bootstrap-server               | YES      | localhost:9092                                   | A bootstrap server for the Kafka.                                                                  |
+| notification.spire.topic                          | YES      | TEST.TOPIC                                       | SPIRE Kafka topic to produce events.                                                               |
+| notification.spire.auth.key                       | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
+| notification.spire.auth.secret                    | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
 
 ### 4.1 System environments for build
 
-| Property Name                       | System environment               |
-|-------------------------------------|----------------------------------|
-| camel.timer                         | CAMEL_TIMER                      |
-| camel.timestamp                     | CAMEL_TIMESTAMP                  | 
-| spring.datasource.driverClassName   | DB_DRIVER                        |
-| spring.datasource.url               | DB_URL                           |
-| spring.datasource.username          | DB_USERNAME                      |
-| spring.datasource.password          | DB_PASSWORD                      |
-| spring.datasource.password          | DB_PASSWORD                      |
-| spring.flyway.url                   | DB_URL                           |
-| spring.flyway.user                  | DB_USERNAME                      |
-| spring.flyway.password              | DB_PASSWORD                      |
-| spring.flyway.schemas               | DB_SCHEMA                        |
-| spring.flyway.default-schema        | DB_SCHEMA                        |
-| onesource.baseEndpoint              | 1SOURCE_ENDPOINT                 |
-| onesource.version                   | 1SOURCE_VERSION                  |
-| onesource.auth.server-url           | 1SOURCE_AUTH_URL                 |
-| onesource.auth.realm                | 1SOURCE_AUTH_REALM               |
-| onesource.auth.resource             | 1SOURCE_AUTH_CLIENT_ID           |
-| onesource.auth.principal-attribute  | 1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE |
-| onesource.auth.username             | 1SOURCE_AUTH_USER_NAME           |
-| onesource.auth.password             | 1SOURCE_AUTH_USER_PASSWORD       |
-| onesource.auth.credentials.secret   | 1SOURCE_AUTH_CLIENT_SECRET       |
-| spire.lenderEndpoint                | SPIRE_LENDER_ENDPOINT            |
-| spire.borrowerEndpoint              | SPIRE_BORROWER_ENDPOINT          |
-| spire.username                      | SPIRE_USERNAME                   |
-| spire.password                      | SPIRE_PASSWORD                   |
-| integration-toolkit.uri             | INTEGRATION_TOOLKIT_URI          |
-| integration-toolkit.uri             | INTEGRATION_TOOLKIT_URI          |
-| notification.enable                 | NOTIFICATION_ENABLE              |
-| notification.timer                  | NOTIFICATION_TIMER               |
-| notification.spire.bootstrap-server | SPIRE_BOOTSTRAP_SERVER           |
-| notification.spire.topic            | NOTIFICATION_SPIRE_TOPIC         |
-| notification.spire.auth.key         | NOTIFICATION_SPIRE_KEY           |
-| notification.spire.auth.secret      | NOTIFICATION_SPIRE_SECRET        |
+| Property Name                                     | System environment               |
+|---------------------------------------------------|----------------------------------|
+| camel.timer                                       | CAMEL_TIMER                      |
+| spring.datasource.driverClassName                 | DB_DRIVER                        |
+| spring.datasource.url                             | DB_URL                           |
+| spring.datasource.username                        | DB_USERNAME                      |
+| spring.datasource.password                        | DB_PASSWORD                      |
+| spring.datasource.password                        | DB_PASSWORD                      |
+| spring.flyway.url                                 | DB_URL                           |
+| spring.flyway.user                                | DB_USERNAME                      |
+| spring.flyway.password                            | DB_PASSWORD                      |
+| spring.flyway.schemas                             | DB_SCHEMA                        |
+| spring.flyway.default-schema                      | DB_SCHEMA                        |
+| onesource.baseEndpoint                            | 1SOURCE_ENDPOINT                 |
+| onesource.version                                 | 1SOURCE_VERSION                  |
+| onesource.auth.server-url                         | 1SOURCE_AUTH_URL                 |
+| onesource.auth.realm                              | 1SOURCE_AUTH_REALM               |
+| onesource.auth.resource                           | 1SOURCE_AUTH_CLIENT_ID           |
+| onesource.auth.principal-attribute                | 1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE |
+| onesource.auth.username                           | 1SOURCE_AUTH_USER_NAME           |
+| onesource.auth.password                           | 1SOURCE_AUTH_USER_PASSWORD       |
+| onesource.auth.credentials.secret                 | 1SOURCE_AUTH_CLIENT_SECRET       |
+| spire.lenderEndpoint                              | SPIRE_LENDER_ENDPOINT            |
+| spire.borrowerEndpoint                            | SPIRE_BORROWER_ENDPOINT          |
+| spire.username                                    | SPIRE_USERNAME                   |
+| spire.password                                    | SPIRE_PASSWORD                   |
+| integration-toolkit.starting-trade-event-datetime | CAMEL_TIMESTAMP                  | 
+| integration-toolkit.uri                           | INTEGRATION_TOOLKIT_URI          |
+| notification.enable                               | NOTIFICATION_ENABLE              |
+| notification.timer                                | NOTIFICATION_TIMER               |
+| notification.spire.bootstrap-server               | SPIRE_BOOTSTRAP_SERVER           |
+| notification.spire.topic                          | NOTIFICATION_SPIRE_TOPIC         |
+| notification.spire.auth.key                       | NOTIFICATION_SPIRE_KEY           |
+| notification.spire.auth.secret                    | NOTIFICATION_SPIRE_SECRET        |

@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.services.record.CloudEventRecordSer
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import javax.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ public class ContractService {
         this.cloudEventRecordService = cloudEventRecordService;
     }
 
+    @Transactional
     public Contract save(Contract contract) {
         return contractRepository.save(contract);
     }

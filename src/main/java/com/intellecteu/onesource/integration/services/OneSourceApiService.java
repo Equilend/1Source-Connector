@@ -156,7 +156,7 @@ public class OneSourceApiService implements OneSourceService {
     }
 
     @Override
-    public Optional<Contract> findContract(String contractUri) {
+    public Optional<Contract> retrieveContract(String contractUri) {
         log.debug("Retrieving contract: {}", contractUri);
         return Optional.ofNullable(findContractViaHttpRequest(contractUri));
     }

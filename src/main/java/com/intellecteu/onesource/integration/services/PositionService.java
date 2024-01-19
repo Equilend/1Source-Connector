@@ -1,11 +1,17 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.CANCEL;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FAILED;
+
+import com.intellecteu.onesource.integration.constant.PositionConstant;
 import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.spire.PositionStatus;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +19,8 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class PositionService {
+
+    public final static Set<String> CANCEL_POSITION_STATUSES = Set.of(CANCEL, FAILED);
 
     private final PositionRepository positionRepository;
 

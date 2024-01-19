@@ -37,6 +37,10 @@ spring:
 
 logging:
   level:
+#    org.hibernate.SQL: DEBUG
+#    org.hibernate.type: TRACE
+#    org.hibernate.engine.transactionю.internal.TransactionImpl: DEBUG
+#    org.springframework.transaction: DEBUG
     com:
       intellecteu:
         onesource:
@@ -80,6 +84,7 @@ cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}
 
 integration-toolkit:
+  starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
   route:
     rerate:
       enable: true

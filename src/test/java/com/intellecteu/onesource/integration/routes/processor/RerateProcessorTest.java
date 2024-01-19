@@ -1,18 +1,18 @@
 package com.intellecteu.onesource.integration.routes.processor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.model.spire.RerateTrade;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -29,8 +29,14 @@ class RerateProcessorTest {
     @Mock
     private RerateTradeService rerateTradeService;
 
-    @InjectMocks
     RerateProcessor rerateProcessor;
+
+    @BeforeEach
+    void setUp() {
+        openMocks(this);
+        rerateProcessor = new RerateProcessor(lenderBackOfficeService, borrowerBackOfficeService, contractService,
+            rerateTradeService);
+    }
 
     @Test
     void fetchNewTradeOut_BackOfficeResponseWithModel_StoredEntity() {

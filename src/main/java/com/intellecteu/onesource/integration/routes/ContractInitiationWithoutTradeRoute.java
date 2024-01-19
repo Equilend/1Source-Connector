@@ -1,5 +1,14 @@
 package com.intellecteu.onesource.integration.routes;
 
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_CANCELED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_OPENED;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
+import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PROPOSED;
+import static com.intellecteu.onesource.integration.model.EventType.TRADE_CANCELED;
+import static com.intellecteu.onesource.integration.model.ProcessingStatus.CREATED;
+
+import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.processor.ContractProcessor;
 import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
@@ -9,15 +18,25 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 @Component
+@ConditionalOnProperty(
+    value="integration-toolkit.route.contract-initiation-without-trade-route.enable",
+    havingValue = "true",
+    matchIfMissing = true)
 public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.model.spire.Position?"
-            + "consumeLockEntity=false&consumeDelete=false&"
-            + "nativeQuery=SELECT * FROM Position WHERE processing_status IN ('%s')";
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&"
+            + "query=SELECT p FROM Position p WHERE p.processingStatus IN ('%s')";
+
+    private static final String TRADE_EVENT_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.model.TradeEvent?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&"
+            + "query=SELECT e FROM TradeEvent e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
 
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
@@ -74,14 +93,22 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
                 .bean(positionProcessor, "savePosition")
                 .log("Finished step 5 for position with id ${body.positionId}");
 
+        from(createTradeEventSQLEndpoint(CREATED, TRADE_CANCELED))
+            .log(">>>>> Started processing TradeCanceledEvent with id ${body.eventId}")
+            .bean(eventProcessor, "processTradeCanceledEvent")
+            .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(eventProcessor, "saveEvent")
+            .log("<<<<< Finished processing TradeCanceledEvent with id ${body.eventId}");
+
         //Process positions (steps 7a, 12a, 19a in business flow)
-        from("timer://eventTimer?period={{camel.timer}}")
-            .routeId("retrievingEventData")
-            .log("Call for event data")
-            .log("{{camel.timer}}")
-            .log(">>>>> Start processing Event Data")
-            .bean(eventProcessor, "processEvents")
-            .log("<<<<< Process Event Data success");
+        from(createTradeEventSQLEndpoint(CREATED, CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
+            CONTRACT_PROPOSED, CONTRACT_CANCELED))
+            .log(">>>>> Started processing ContractEvent with eventId ${body.eventId}")
+            .bean(eventProcessor, "processContractEvent")
+            .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(eventProcessor, "saveEvent")
+            .log("<<<<< Finished processing ContractEvent with eventId ${body.eventId}")
+            .end();
 
         //Process contract (steps 8-... in business flow)
         from("timer://eventTimer?period={{camel.timer}}")
@@ -105,4 +132,10 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
         return String.format(POSITION_SQL_ENDPOINT,
             Arrays.stream(status).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
     }
+
+    private String createTradeEventSQLEndpoint(ProcessingStatus status, EventType... eventTypes) {
+        return String.format(TRADE_EVENT_SQL_ENDPOINT, status,
+            Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
+    }
+
 }

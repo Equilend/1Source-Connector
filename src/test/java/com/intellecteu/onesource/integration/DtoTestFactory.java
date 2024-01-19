@@ -73,7 +73,7 @@ public class DtoTestFactory {
 
     public static ContractDto buildContractDto() {
         return ContractDto.builder()
-            .contractId("testId")
+            .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
             .lastEvent(buildTradeEventDto())
             .lastUpdatePartyId("test")
             .eventType(EventType.CONTRACT_PROPOSED)
@@ -130,7 +130,7 @@ public class DtoTestFactory {
 
     public static PositionDto buildPositionDtoFromTradeAgreement(TradeAgreementDto tradeAgreement) {
         return PositionDto.builder()
-            .positionId("testSpirePositionId")
+            .positionId("9")
             .customValue2(tradeAgreement.getExecutionVenue().getVenueRefKey())
             .securityDetailDto(buildSecurityDetailDto(tradeAgreement))
             .rate(tradeAgreement.getRate().getFee().getBaseRate())
