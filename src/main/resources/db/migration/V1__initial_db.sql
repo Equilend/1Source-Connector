@@ -156,8 +156,10 @@ CREATE TABLE IF NOT EXISTS position
     security_id           BIGINT          NULL,
     position_type_id      INT          NULL,
     position_type         VARCHAR(255) NULL,
+    account_id            BIGINT       NULL,
     account_lei           VARCHAR(255) NULL,
     short_name            VARCHAR(255) NULL,
+    cp_account_id         BIGINT       NULL,
     cp_lei                VARCHAR(255) NULL,
     info                VARCHAR(255) NULL,
     index_name                VARCHAR(255) NULL,
@@ -166,7 +168,7 @@ CREATE TABLE IF NOT EXISTS position
     processing_status     VARCHAR(255) NULL,
     matching_1source_trade_agreement_id     VARCHAR(255) NULL,
     matching_1source_loan_contract_id     VARCHAR(255) NULL,
-    applicable_instruction_id      INT          NULL,
+    applicable_instruction_id      BIGINT          NULL,
     last_update_datetime   timestamp NULL,
     CONSTRAINT pk_position PRIMARY KEY (spire_position_id)
 );

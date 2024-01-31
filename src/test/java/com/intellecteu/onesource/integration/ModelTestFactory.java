@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration;
 
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.model.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.CollateralType.CASH;
 import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
@@ -21,6 +22,7 @@ import com.intellecteu.onesource.integration.model.spire.PositionAccount;
 import com.intellecteu.onesource.integration.model.spire.PositionCollateralType;
 import com.intellecteu.onesource.integration.model.spire.PositionExposure;
 import com.intellecteu.onesource.integration.model.spire.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.spire.PositionStatus;
 import com.intellecteu.onesource.integration.model.spire.PositionType;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -53,6 +55,13 @@ public class ModelTestFactory {
     }
 
     public static Position buildPosition() {
+        return buildPosition(null);
+    }
+
+    public static Position buildPosition(PositionStatus positionStatus) {
+        if (positionStatus == null) {
+            positionStatus = new PositionStatus(OPEN);
+        }
         return Position.builder()
             .venueRefId("testVenueRefId")
             .positionId("testSpirePositionId")
@@ -69,11 +78,12 @@ public class ModelTestFactory {
             .amount(1.0d)
             .price(100.0d)
             .contractValue(123.0d)
+            .positionStatus(positionStatus)
             .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(0.05d, 10, 12))
             .positionType(new PositionType("CASH BORROW"))
-            .positionAccount(new PositionAccount("testLei", "testLeiName", "testAccountId"))
-            .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName", "testAccountId"))
+            .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
+            .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();

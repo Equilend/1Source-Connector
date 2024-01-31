@@ -97,7 +97,7 @@ public class Position {
     private String matching1SourceLoanContractId;
 
     @Column(name = "applicable_instruction_id")
-    private Integer applicableInstructionId;
+    private Long applicableInstructionId;
 
     @Embedded
     @JsonProperty("securityDetailDTO")
@@ -158,6 +158,7 @@ public class Position {
     @AttributeOverrides({
         @AttributeOverride(name = "lei", column = @Column(name = "account_lei")),
         @AttributeOverride(name = "shortName", column = @Column(name = "short_name")),
+        @AttributeOverride(name = "accountId", column = @Column(name = "account_id")),
         @AttributeOverride(name = "info", column = @Column(name = "info", insertable = false, updatable = false))
     })
     private PositionAccount positionAccount;
@@ -166,6 +167,7 @@ public class Position {
     @JsonProperty("counterPartyDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "lei", column = @Column(name = "cp_lei")),
+        @AttributeOverride(name = "accountId", column = @Column(name = "cp_account_id")),
         @AttributeOverride(name = "shortName", column = @Column(name = "short_name", insertable = false, updatable = false))
     })
     private PositionAccount positionCpAccount;
@@ -173,7 +175,6 @@ public class Position {
     @Embedded
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
-
 
 
 }

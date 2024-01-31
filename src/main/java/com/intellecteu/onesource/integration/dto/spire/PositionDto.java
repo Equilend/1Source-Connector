@@ -24,6 +24,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -61,7 +62,7 @@ public class PositionDto implements Reconcilable {
     private LocalDateTime lastUpdateDateTime;
     private String matching1SourceTradeAgreementId;
     private String matching1SourceLoanContractId;
-    private Integer applicableInstructionId;
+    private Long applicableInstructionId;
     @JsonProperty("securityDetailDTO")
     private SecurityDetailDto securityDetailDto;
     @JsonProperty("currencyDTO")
@@ -75,9 +76,9 @@ public class PositionDto implements Reconcilable {
     @JsonProperty("positiontypeDTO")
     private PositionTypeDto positionTypeDto;
     @JsonProperty("accountDTO")
-    private AccountDto accountDto;
+    private AccountDTO accountDto;
     @JsonProperty("counterPartyDTO")
-    private AccountDto cpDto;
+    private AccountDTO cpDto;
     @JsonProperty("statusDTO")
     private PositionStatusDto positionStatusDto;
     @JsonProperty("indexDto")

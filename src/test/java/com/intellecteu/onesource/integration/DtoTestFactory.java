@@ -33,7 +33,6 @@ import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
 import com.intellecteu.onesource.integration.dto.VenuePartyDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEvent;
-import com.intellecteu.onesource.integration.dto.spire.AccountDto;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
 import com.intellecteu.onesource.integration.dto.spire.LoanBorrowDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionCollateralTypeDto;
@@ -46,8 +45,10 @@ import com.intellecteu.onesource.integration.model.LocalMarketField;
 import com.intellecteu.onesource.integration.model.LocalVenueField;
 import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.Settlement;
 import com.intellecteu.onesource.integration.model.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.SettlementType;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -151,10 +152,10 @@ public class DtoTestFactory {
             .build();
     }
 
-    public static AccountDto buildAccountDto(TransactingPartyDto party) {
-        return AccountDto.builder()
-            .lei(retrieveLei(party))
-            .build();
+    public static AccountDTO buildAccountDto(TransactingPartyDto party) {
+        AccountDTO account = new AccountDTO();
+        account.setLei(retrieveLei(party));
+        return account;
     }
 
     public static PositionTypeDto buildPositionTypeDto(TradeAgreementDto tradeAgreement) {
@@ -323,7 +324,7 @@ public class DtoTestFactory {
     public static InternalReferenceDto buildInternalReferenceDto() {
         return InternalReferenceDto.builder()
             .brokerCd("testBrokerCd")
-            .accountId("testAccountId")
+            .accountId(123L)
             .internalRefId("testInternalRefId")
             .build();
     }
@@ -342,6 +343,13 @@ public class DtoTestFactory {
             .localAgentName("nestname")
             .settlementBic("RHBBMYKL")
             .dtcParticipantNumber("123")
+            .build();
+    }
+
+    public static Settlement buildSettlement() {
+        return Settlement.builder()
+            .partyRole(BORROWER)
+            .instruction(buildInstruction())
             .build();
     }
 

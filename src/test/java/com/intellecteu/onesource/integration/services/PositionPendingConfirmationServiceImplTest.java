@@ -13,12 +13,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.dto.spire.NQuery;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.spire.PositionStatus;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 class PositionPendingConfirmationServiceImplTest {
@@ -41,26 +39,27 @@ class PositionPendingConfirmationServiceImplTest {
     @Mock
     private PositionService positionService;
     @Mock
-    private SpireService spireService;
-    @Mock
     private SettlementService settlementService;
     @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private OneSourceService oneSourceService;
+    @Mock
+    private BackOfficeService lenderBackOfficeService;
+    @Mock
+    private BackOfficeService borrowerBackOfficeService;
     private PositionPendingConfirmationService service;
 
     @Test
     @DisplayName("Position should be saved with processing status UPDATED when position status is FUTURE")
-    void testUpdatePosition_shouldSetUpdatedStatus_whenPositionStatusIsFuture() throws Exception {
-        var testPosition = ModelTestFactory.buildPosition();
-        JsonNode jsonNode = createTestObjectMapper().readTree(createTestPositionAsJsonWithStatus(FUTURE));
-        var jsonPositionResponse = ResponseEntity.of(Optional.of(jsonNode));
+    void testUpdatePosition_shouldSetUpdatedStatus_whenPositionStatusIsFuture() {
+        var testPosition = ModelTestFactory.buildPosition(new PositionStatus(FUTURE));
 
         var argumentCaptor = ArgumentCaptor.forClass(Position.class);
 
         when(positionService.findAllNotCanceledAndSettled()).thenReturn(List.of(testPosition));
-        when(spireService.requestPosition(any(NQuery.class))).thenReturn(jsonPositionResponse);
+        when(lenderBackOfficeService.getNewSpirePositions(any(), any())).thenReturn(List.of(testPosition));
+        when(lenderBackOfficeService.retrieveSettlementInstruction(any(), any(), any())).thenReturn(Optional.empty());
 
         service.processUpdatedPositions();
 
@@ -73,15 +72,13 @@ class PositionPendingConfirmationServiceImplTest {
 
     @Test
     @DisplayName("Position should be saved with processing status CANCELED when position status is CANCEL")
-    void testUpdatePosition_shouldSetCanceledStatus_whenPositionStatusIsCancel() throws Exception {
-        var testPosition = ModelTestFactory.buildPosition();
-        JsonNode jsonNode = createTestObjectMapper().readTree(createTestPositionAsJsonWithStatus(CANCEL));
-        var jsonPositionResponse = ResponseEntity.of(Optional.of(jsonNode));
+    void testUpdatePosition_shouldSetCanceledStatus_whenPositionStatusIsCancel() {
+        var testPosition = ModelTestFactory.buildPosition(new PositionStatus(CANCEL));
 
         var argumentCaptor = ArgumentCaptor.forClass(Position.class);
 
         when(positionService.findAllNotCanceledAndSettled()).thenReturn(List.of(testPosition));
-        when(spireService.requestPosition(any(NQuery.class))).thenReturn(jsonPositionResponse);
+        when(lenderBackOfficeService.getNewSpirePositions(any(), any())).thenReturn(List.of(testPosition));
 
         service.processUpdatedPositions();
 
@@ -94,15 +91,13 @@ class PositionPendingConfirmationServiceImplTest {
 
     @Test
     @DisplayName("Position should be saved with processing status CANCELED when position status is FAILED")
-    void testUpdatePosition_shouldSetCanceledStatus_whenPositionStatusIsFailed() throws Exception {
-        var testPosition = ModelTestFactory.buildPosition();
-        JsonNode jsonNode = createTestObjectMapper().readTree(createTestPositionAsJsonWithStatus(FAILED));
-        var jsonPositionResponse = ResponseEntity.of(Optional.of(jsonNode));
+    void testUpdatePosition_shouldSetCanceledStatus_whenPositionStatusIsFailed() {
+        var testPosition = ModelTestFactory.buildPosition(new PositionStatus(FAILED));
 
         var argumentCaptor = ArgumentCaptor.forClass(Position.class);
 
         when(positionService.findAllNotCanceledAndSettled()).thenReturn(List.of(testPosition));
-        when(spireService.requestPosition(any(NQuery.class))).thenReturn(jsonPositionResponse);
+        when(lenderBackOfficeService.getNewSpirePositions(any(), any())).thenReturn(List.of(testPosition));
 
         service.processUpdatedPositions();
 
@@ -116,14 +111,11 @@ class PositionPendingConfirmationServiceImplTest {
     @Test
     @DisplayName("Position should be saved with processing status SETTLED when position status is OPEN")
     void testUpdatePosition_shouldSetSettledStatus_whenPositionStatusIsOpen() throws Exception {
-        var testPosition = ModelTestFactory.buildPosition();
-        JsonNode jsonNode = createTestObjectMapper().readTree(createTestPositionAsJsonWithStatus(OPEN));
-        var jsonPositionResponse = ResponseEntity.of(Optional.of(jsonNode));
-
+        var testPosition = ModelTestFactory.buildPosition(new PositionStatus(OPEN));
         var argumentCaptor = ArgumentCaptor.forClass(Position.class);
 
         when(positionService.findAllNotCanceledAndSettled()).thenReturn(List.of(testPosition));
-        when(spireService.requestPosition(any(NQuery.class))).thenReturn(jsonPositionResponse);
+        when(lenderBackOfficeService.getNewSpirePositions(any(), any())).thenReturn(List.of(testPosition));
 
         service.processUpdatedPositions();
 
@@ -139,7 +131,8 @@ class PositionPendingConfirmationServiceImplTest {
         SpireMapper spireMapper = new SpireMapper(createTestObjectMapper());
         EventMapper eventMapper = new EventMapper(createTestObjectMapper());
         service = new PositionPendingConfirmationServiceImpl(agreementService, contractService, spireMapper,
-            eventMapper, positionService, spireService, settlementService, cloudEventRecordService, oneSourceService);
+            eventMapper, positionService, settlementService, cloudEventRecordService, oneSourceService,
+            lenderBackOfficeService, borrowerBackOfficeService);
     }
 
     private String createTestPositionAsJsonWithStatus(String positionStatus) {

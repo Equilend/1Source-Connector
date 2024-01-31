@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class InternalReferenceDto {
 
     private String brokerCd;
-    private String accountId;
+    private Long accountId;
     private String internalRefId;
 }

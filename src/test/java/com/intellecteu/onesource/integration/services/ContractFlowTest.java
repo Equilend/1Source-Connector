@@ -124,7 +124,6 @@ public class ContractFlowTest {
 
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
-    private SpireApiService spireService;
     private ContractDataReceived contractDataReceived;
     private EventProcessor eventService;
     @Mock
@@ -152,14 +151,11 @@ public class ContractFlowTest {
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
-        spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
-            spireMapper, cloudEventRecordService);
+
         contractDataReceived = new ContractDataReceived(contractService, positionService,
-            settlementTempRepository, settlementService, spireService, borrowerBackOfficeService,
+            settlementTempRepository, settlementService, borrowerBackOfficeService,
             lenderBackOfficeService, cloudEventRecordService, reconcileService,
             eventMapper, spireMapper, agreementRepository, oneSourceService);
-        ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
-        ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
 //        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
@@ -172,7 +168,7 @@ public class ContractFlowTest {
         position = new Position();
         position.setPositionId("testId");
         position.setExposure(exposure);
-        position.setPositionAccount(new PositionAccount("borrower-lei", "test", "testAccountId"));
+        position.setPositionAccount(new PositionAccount(1l, "borrower-lei", "test", "testAccountId"));
     }
 
     @Test
@@ -181,7 +177,7 @@ public class ContractFlowTest {
         var agreement = buildAgreementDto();
 
         SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
-            .instructionId(2)
+            .instructionId(2L)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
             .instruction(buildInstruction())
@@ -238,7 +234,7 @@ public class ContractFlowTest {
         position.setPositionId("2");
 
         SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
-            .instructionId(2)
+            .instructionId(2L)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
             .instruction(buildInstruction())

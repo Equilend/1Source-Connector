@@ -31,7 +31,7 @@ public class Settlement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "instruction_id")
-    private Integer instructionId;
+    private Long instructionId;
     @Column(name = "party_role")
     @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;

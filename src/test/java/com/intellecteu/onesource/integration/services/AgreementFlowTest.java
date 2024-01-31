@@ -85,7 +85,11 @@ public class AgreementFlowTest {
     private ObjectMapper objectMapper;
     private OneSourceApiService oneSourceService;
     @Mock
-    private SpireApiService spireService;
+    private SettlementService settlementService;
+    @Mock
+    private BackOfficeService lenderBackOfficeService;
+    @Mock
+    private BackOfficeService borrowerBackOfficeService;
     @Mock
     private ReconcileService<AgreementDto, PositionDto> reconcileService;
     private AgreementDataReceived agreementDataReceived;
@@ -109,10 +113,9 @@ public class AgreementFlowTest {
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
-        agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
-            agreementService, positionService, eventMapper, spireMapper, cloudEventRecordService);
-        ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
-        ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
+        agreementDataReceived = new AgreementDataReceived(oneSourceService, settlementService, reconcileService,
+            agreementService, positionService, eventMapper, spireMapper, cloudEventRecordService,
+            lenderBackOfficeService, borrowerBackOfficeService);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
     }
@@ -134,7 +137,7 @@ public class AgreementFlowTest {
         positionEntity.getCurrency().setCurrencyKy("USD");
         var positionDto = spireMapper.toPositionDto(positionEntity);
 
-        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
+//        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
         when(agreementService.saveAgreement(any())).thenReturn(agreementEntity);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(positionEntity));
         when(positionService.savePosition(any())).thenReturn(positionEntity);
@@ -166,7 +169,7 @@ public class AgreementFlowTest {
         var positionEntity = spireMapper.toPosition(positionEntityNode);
         var positionDto = spireMapper.toPositionDto(positionEntity);
 
-        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
+//        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
         when(positionService.savePosition(any())).thenReturn(positionEntity);
         var exceptionMsgDto = new ExceptionMessageDto("testValue", "testMsg");
         final ReconcileException reconcileException = new ReconcileException("exception", List.of(exceptionMsgDto));

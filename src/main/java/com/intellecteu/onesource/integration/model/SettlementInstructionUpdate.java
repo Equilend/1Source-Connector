@@ -41,7 +41,7 @@ public class SettlementInstructionUpdate {
     @Column(name = "venue_ref_id")
     private String venueRefId;
     @Column(name = "instruction_id")
-    private Integer instructionId;
+    private Long instructionId;
     @Column(name = "party_role")
     @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
