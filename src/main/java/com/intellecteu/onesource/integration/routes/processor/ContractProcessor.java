@@ -8,7 +8,6 @@ import com.intellecteu.onesource.integration.routes.processor.strategy.contract.
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +35,7 @@ public class ContractProcessor implements TradeDataProcessor {
             contract.getContractId(), contract.getContractStatus(), contract.getProcessingStatus());
         var strategy = strategyByFlow.get(contract.getFlowStatus());
         if (strategy == null) {
-            throw new NotYetImplementedException(
+            throw new RuntimeException(
                 "Strategy is not implemented for the flow: " + contract.getFlowStatus());
         }
         strategy.process(contract);

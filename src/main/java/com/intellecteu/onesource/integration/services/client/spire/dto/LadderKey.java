@@ -21,137 +21,141 @@ import java.util.Objects;
 /**
  * LadderKey
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class LadderKey {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("accountId")
-  private Long accountId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("depoId")
-  private Integer depoId = null;
+    @JsonProperty("accountId")
+    private Long accountId = null;
 
-  @JsonProperty("securityId")
-  private Long securityId = null;
+    @JsonProperty("depoId")
+    private Integer depoId = null;
 
-  public LadderKey qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("securityId")
+    private Long securityId = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public LadderKey accountId(Long accountId) {
-    this.accountId = accountId;
-    return this;
-  }
-
-   /**
-   * Get accountId
-   * @return accountId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getAccountId() {
-    return accountId;
-  }
-
-  public void setAccountId(Long accountId) {
-    this.accountId = accountId;
-  }
-
-  public LadderKey depoId(Integer depoId) {
-    this.depoId = depoId;
-    return this;
-  }
-
-   /**
-   * Get depoId
-   * @return depoId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getDepoId() {
-    return depoId;
-  }
-
-  public void setDepoId(Integer depoId) {
-    this.depoId = depoId;
-  }
-
-  public LadderKey securityId(Long securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Long securityId) {
-    this.securityId = securityId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public LadderKey qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    LadderKey ladderKey = (LadderKey) o;
-    return Objects.equals(this.qualifiedName, ladderKey.qualifiedName) &&
-        Objects.equals(this.accountId, ladderKey.accountId) &&
-        Objects.equals(this.depoId, ladderKey.depoId) &&
-        Objects.equals(this.securityId, ladderKey.securityId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, accountId, depoId, securityId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class LadderKey {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public LadderKey accountId(Long accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    /**
+     * Get accountId
+     *
+     * @return accountId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public LadderKey depoId(Integer depoId) {
+        this.depoId = depoId;
+        return this;
+    }
+
+    /**
+     * Get depoId
+     *
+     * @return depoId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getDepoId() {
+        return depoId;
+    }
+
+    public void setDepoId(Integer depoId) {
+        this.depoId = depoId;
+    }
+
+    public LadderKey securityId(Long securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LadderKey ladderKey = (LadderKey) o;
+        return Objects.equals(this.qualifiedName, ladderKey.qualifiedName) &&
+            Objects.equals(this.accountId, ladderKey.accountId) &&
+            Objects.equals(this.depoId, ladderKey.depoId) &&
+            Objects.equals(this.securityId, ladderKey.securityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, accountId, depoId, securityId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class LadderKey {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

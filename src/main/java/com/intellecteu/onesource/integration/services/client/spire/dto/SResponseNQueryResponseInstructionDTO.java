@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * SResponseNQueryResponseInstructionDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-19T17:56:43.469+02:00")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-19T17:56:43.469+02:00")
 public class SResponseNQueryResponseInstructionDTO {
 
     /**

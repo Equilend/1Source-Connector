@@ -23,145 +23,149 @@ import java.util.Objects;
 /**
  * LRALSuggestionsDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class LRALSuggestionsDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("amount")
-  private Double amount = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("rowCount")
-  private Integer rowCount = null;
+    @JsonProperty("amount")
+    private Double amount = null;
 
-  @JsonProperty("suggestions")
-  private List<LRALSuggestionDTO> suggestions = null;
+    @JsonProperty("rowCount")
+    private Integer rowCount = null;
 
-  public LRALSuggestionsDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("suggestions")
+    private List<LRALSuggestionDTO> suggestions = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public LRALSuggestionsDTO amount(Double amount) {
-    this.amount = amount;
-    return this;
-  }
-
-   /**
-   * Get amount
-   * @return amount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Double amount) {
-    this.amount = amount;
-  }
-
-  public LRALSuggestionsDTO rowCount(Integer rowCount) {
-    this.rowCount = rowCount;
-    return this;
-  }
-
-   /**
-   * Get rowCount
-   * @return rowCount
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getRowCount() {
-    return rowCount;
-  }
-
-  public void setRowCount(Integer rowCount) {
-    this.rowCount = rowCount;
-  }
-
-  public LRALSuggestionsDTO suggestions(List<LRALSuggestionDTO> suggestions) {
-    this.suggestions = suggestions;
-    return this;
-  }
-
-  public LRALSuggestionsDTO addSuggestionsItem(LRALSuggestionDTO suggestionsItem) {
-    if (this.suggestions == null) {
-      this.suggestions = new ArrayList<>();
+    public LRALSuggestionsDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.suggestions.add(suggestionsItem);
-    return this;
-  }
 
-   /**
-   * Get suggestions
-   * @return suggestions
-  **/
-  @ApiModelProperty(value = "")
-  public List<LRALSuggestionDTO> getSuggestions() {
-    return suggestions;
-  }
-
-  public void setSuggestions(List<LRALSuggestionDTO> suggestions) {
-    this.suggestions = suggestions;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    LRALSuggestionsDTO lrALSuggestionsDTO = (LRALSuggestionsDTO) o;
-    return Objects.equals(this.qualifiedName, lrALSuggestionsDTO.qualifiedName) &&
-        Objects.equals(this.amount, lrALSuggestionsDTO.amount) &&
-        Objects.equals(this.rowCount, lrALSuggestionsDTO.rowCount) &&
-        Objects.equals(this.suggestions, lrALSuggestionsDTO.suggestions);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, amount, rowCount, suggestions);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class LRALSuggestionsDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-    sb.append("    rowCount: ").append(toIndentedString(rowCount)).append("\n");
-    sb.append("    suggestions: ").append(toIndentedString(suggestions)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public LRALSuggestionsDTO amount(Double amount) {
+        this.amount = amount;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    /**
+     * Get amount
+     *
+     * @return amount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public LRALSuggestionsDTO rowCount(Integer rowCount) {
+        this.rowCount = rowCount;
+        return this;
+    }
+
+    /**
+     * Get rowCount
+     *
+     * @return rowCount
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getRowCount() {
+        return rowCount;
+    }
+
+    public void setRowCount(Integer rowCount) {
+        this.rowCount = rowCount;
+    }
+
+    public LRALSuggestionsDTO suggestions(List<LRALSuggestionDTO> suggestions) {
+        this.suggestions = suggestions;
+        return this;
+    }
+
+    public LRALSuggestionsDTO addSuggestionsItem(LRALSuggestionDTO suggestionsItem) {
+        if (this.suggestions == null) {
+            this.suggestions = new ArrayList<>();
+        }
+        this.suggestions.add(suggestionsItem);
+        return this;
+    }
+
+    /**
+     * Get suggestions
+     *
+     * @return suggestions
+     **/
+    @ApiModelProperty(value = "")
+    public List<LRALSuggestionDTO> getSuggestions() {
+        return suggestions;
+    }
+
+    public void setSuggestions(List<LRALSuggestionDTO> suggestions) {
+        this.suggestions = suggestions;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        LRALSuggestionsDTO lrALSuggestionsDTO = (LRALSuggestionsDTO) o;
+        return Objects.equals(this.qualifiedName, lrALSuggestionsDTO.qualifiedName) &&
+            Objects.equals(this.amount, lrALSuggestionsDTO.amount) &&
+            Objects.equals(this.rowCount, lrALSuggestionsDTO.rowCount) &&
+            Objects.equals(this.suggestions, lrALSuggestionsDTO.suggestions);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, amount, rowCount, suggestions);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class LRALSuggestionsDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
+        sb.append("    rowCount: ").append(toIndentedString(rowCount)).append("\n");
+        sb.append("    suggestions: ").append(toIndentedString(suggestions)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

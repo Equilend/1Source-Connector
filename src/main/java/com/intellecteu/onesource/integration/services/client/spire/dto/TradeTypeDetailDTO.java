@@ -21,551 +21,575 @@ import java.util.Objects;
 /**
  * TradeTypeDetailDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TradeTypeDetailDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("allowFuture")
-  private Boolean allowFuture = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("allowPast")
-  private Boolean allowPast = null;
+    @JsonProperty("allowFuture")
+    private Boolean allowFuture = null;
 
-  @JsonProperty("cancelId")
-  private Integer cancelId = null;
+    @JsonProperty("allowPast")
+    private Boolean allowPast = null;
 
-  @JsonProperty("cashBalanced")
-  private Boolean cashBalanced = null;
+    @JsonProperty("cancelId")
+    private Integer cancelId = null;
 
-  @JsonProperty("cashFlow")
-  private Boolean cashFlow = null;
+    @JsonProperty("cashBalanced")
+    private Boolean cashBalanced = null;
 
-  @JsonProperty("categoryGroup")
-  private String categoryGroup = null;
+    @JsonProperty("cashFlow")
+    private Boolean cashFlow = null;
 
-  @JsonProperty("changePriceFactor")
-  private Boolean changePriceFactor = null;
+    @JsonProperty("categoryGroup")
+    private String categoryGroup = null;
 
-  @JsonProperty("changeQuantity")
-  private Boolean changeQuantity = null;
+    @JsonProperty("changePriceFactor")
+    private Boolean changePriceFactor = null;
 
-  @JsonProperty("changeStatus")
-  private Boolean changeStatus = null;
-
-  @JsonProperty("drCrIndicator")
-  private Boolean drCrIndicator = null;
-
-  @JsonProperty("failId")
-  private Integer failId = null;
-
-  @JsonProperty("forAccrual")
-  private Boolean forAccrual = null;
-
-  @JsonProperty("groupType")
-  private String groupType = null;
-
-  @JsonProperty("instructed")
-  private Boolean instructed = null;
-
-  @JsonProperty("ledgerAccountId")
-  private Integer ledgerAccountId = null;
-
-  @JsonProperty("positionTypeId")
-  private Integer positionTypeId = null;
-
-  @JsonProperty("quantityFlow")
-  private Boolean quantityFlow = null;
-
-  @JsonProperty("sortTitle")
-  private String sortTitle = null;
-
-  @JsonProperty("sortValue")
-  private String sortValue = null;
-
-  @JsonProperty("tradeType")
-  private String tradeType = null;
-
-  @JsonProperty("tradeTypeId")
-  private Integer tradeTypeId = null;
-
-  public TradeTypeDetailDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
-
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TradeTypeDetailDTO allowFuture(Boolean allowFuture) {
-    this.allowFuture = allowFuture;
-    return this;
-  }
-
-   /**
-   * Get allowFuture
-   * @return allowFuture
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAllowFuture() {
-    return allowFuture;
-  }
-
-  public void setAllowFuture(Boolean allowFuture) {
-    this.allowFuture = allowFuture;
-  }
-
-  public TradeTypeDetailDTO allowPast(Boolean allowPast) {
-    this.allowPast = allowPast;
-    return this;
-  }
-
-   /**
-   * Get allowPast
-   * @return allowPast
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAllowPast() {
-    return allowPast;
-  }
-
-  public void setAllowPast(Boolean allowPast) {
-    this.allowPast = allowPast;
-  }
-
-  public TradeTypeDetailDTO cancelId(Integer cancelId) {
-    this.cancelId = cancelId;
-    return this;
-  }
-
-   /**
-   * Get cancelId
-   * @return cancelId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCancelId() {
-    return cancelId;
-  }
-
-  public void setCancelId(Integer cancelId) {
-    this.cancelId = cancelId;
-  }
-
-  public TradeTypeDetailDTO cashBalanced(Boolean cashBalanced) {
-    this.cashBalanced = cashBalanced;
-    return this;
-  }
-
-   /**
-   * Get cashBalanced
-   * @return cashBalanced
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCashBalanced() {
-    return cashBalanced;
-  }
-
-  public void setCashBalanced(Boolean cashBalanced) {
-    this.cashBalanced = cashBalanced;
-  }
-
-  public TradeTypeDetailDTO cashFlow(Boolean cashFlow) {
-    this.cashFlow = cashFlow;
-    return this;
-  }
-
-   /**
-   * Get cashFlow
-   * @return cashFlow
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCashFlow() {
-    return cashFlow;
-  }
-
-  public void setCashFlow(Boolean cashFlow) {
-    this.cashFlow = cashFlow;
-  }
-
-  public TradeTypeDetailDTO categoryGroup(String categoryGroup) {
-    this.categoryGroup = categoryGroup;
-    return this;
-  }
-
-   /**
-   * Get categoryGroup
-   * @return categoryGroup
-  **/
-  @ApiModelProperty(value = "")
-  public String getCategoryGroup() {
-    return categoryGroup;
-  }
-
-  public void setCategoryGroup(String categoryGroup) {
-    this.categoryGroup = categoryGroup;
-  }
-
-  public TradeTypeDetailDTO changePriceFactor(Boolean changePriceFactor) {
-    this.changePriceFactor = changePriceFactor;
-    return this;
-  }
-
-   /**
-   * Get changePriceFactor
-   * @return changePriceFactor
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isChangePriceFactor() {
-    return changePriceFactor;
-  }
-
-  public void setChangePriceFactor(Boolean changePriceFactor) {
-    this.changePriceFactor = changePriceFactor;
-  }
-
-  public TradeTypeDetailDTO changeQuantity(Boolean changeQuantity) {
-    this.changeQuantity = changeQuantity;
-    return this;
-  }
-
-   /**
-   * Get changeQuantity
-   * @return changeQuantity
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isChangeQuantity() {
-    return changeQuantity;
-  }
-
-  public void setChangeQuantity(Boolean changeQuantity) {
-    this.changeQuantity = changeQuantity;
-  }
-
-  public TradeTypeDetailDTO changeStatus(Boolean changeStatus) {
-    this.changeStatus = changeStatus;
-    return this;
-  }
-
-   /**
-   * Get changeStatus
-   * @return changeStatus
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isChangeStatus() {
-    return changeStatus;
-  }
-
-  public void setChangeStatus(Boolean changeStatus) {
-    this.changeStatus = changeStatus;
-  }
-
-  public TradeTypeDetailDTO drCrIndicator(Boolean drCrIndicator) {
-    this.drCrIndicator = drCrIndicator;
-    return this;
-  }
-
-   /**
-   * Get drCrIndicator
-   * @return drCrIndicator
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDrCrIndicator() {
-    return drCrIndicator;
-  }
-
-  public void setDrCrIndicator(Boolean drCrIndicator) {
-    this.drCrIndicator = drCrIndicator;
-  }
-
-  public TradeTypeDetailDTO failId(Integer failId) {
-    this.failId = failId;
-    return this;
-  }
-
-   /**
-   * Get failId
-   * @return failId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getFailId() {
-    return failId;
-  }
-
-  public void setFailId(Integer failId) {
-    this.failId = failId;
-  }
-
-  public TradeTypeDetailDTO forAccrual(Boolean forAccrual) {
-    this.forAccrual = forAccrual;
-    return this;
-  }
-
-   /**
-   * Get forAccrual
-   * @return forAccrual
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isForAccrual() {
-    return forAccrual;
-  }
-
-  public void setForAccrual(Boolean forAccrual) {
-    this.forAccrual = forAccrual;
-  }
-
-  public TradeTypeDetailDTO groupType(String groupType) {
-    this.groupType = groupType;
-    return this;
-  }
-
-   /**
-   * Get groupType
-   * @return groupType
-  **/
-  @ApiModelProperty(value = "")
-  public String getGroupType() {
-    return groupType;
-  }
-
-  public void setGroupType(String groupType) {
-    this.groupType = groupType;
-  }
-
-  public TradeTypeDetailDTO instructed(Boolean instructed) {
-    this.instructed = instructed;
-    return this;
-  }
-
-   /**
-   * Get instructed
-   * @return instructed
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isInstructed() {
-    return instructed;
-  }
-
-  public void setInstructed(Boolean instructed) {
-    this.instructed = instructed;
-  }
-
-  public TradeTypeDetailDTO ledgerAccountId(Integer ledgerAccountId) {
-    this.ledgerAccountId = ledgerAccountId;
-    return this;
-  }
-
-   /**
-   * Get ledgerAccountId
-   * @return ledgerAccountId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getLedgerAccountId() {
-    return ledgerAccountId;
-  }
-
-  public void setLedgerAccountId(Integer ledgerAccountId) {
-    this.ledgerAccountId = ledgerAccountId;
-  }
-
-  public TradeTypeDetailDTO positionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-    return this;
-  }
-
-   /**
-   * Get positionTypeId
-   * @return positionTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getPositionTypeId() {
-    return positionTypeId;
-  }
-
-  public void setPositionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-  }
-
-  public TradeTypeDetailDTO quantityFlow(Boolean quantityFlow) {
-    this.quantityFlow = quantityFlow;
-    return this;
-  }
-
-   /**
-   * Get quantityFlow
-   * @return quantityFlow
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isQuantityFlow() {
-    return quantityFlow;
-  }
-
-  public void setQuantityFlow(Boolean quantityFlow) {
-    this.quantityFlow = quantityFlow;
-  }
-
-  public TradeTypeDetailDTO sortTitle(String sortTitle) {
-    this.sortTitle = sortTitle;
-    return this;
-  }
-
-   /**
-   * Get sortTitle
-   * @return sortTitle
-  **/
-  @ApiModelProperty(value = "")
-  public String getSortTitle() {
-    return sortTitle;
-  }
-
-  public void setSortTitle(String sortTitle) {
-    this.sortTitle = sortTitle;
-  }
-
-  public TradeTypeDetailDTO sortValue(String sortValue) {
-    this.sortValue = sortValue;
-    return this;
-  }
-
-   /**
-   * Get sortValue
-   * @return sortValue
-  **/
-  @ApiModelProperty(value = "")
-  public String getSortValue() {
-    return sortValue;
-  }
-
-  public void setSortValue(String sortValue) {
-    this.sortValue = sortValue;
-  }
-
-  public TradeTypeDetailDTO tradeType(String tradeType) {
-    this.tradeType = tradeType;
-    return this;
-  }
-
-   /**
-   * Get tradeType
-   * @return tradeType
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradeType() {
-    return tradeType;
-  }
-
-  public void setTradeType(String tradeType) {
-    this.tradeType = tradeType;
-  }
-
-  public TradeTypeDetailDTO tradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-    return this;
-  }
-
-   /**
-   * Get tradeTypeId
-   * @return tradeTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTradeTypeId() {
-    return tradeTypeId;
-  }
-
-  public void setTradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    @JsonProperty("changeQuantity")
+    private Boolean changeQuantity = null;
+
+    @JsonProperty("changeStatus")
+    private Boolean changeStatus = null;
+
+    @JsonProperty("drCrIndicator")
+    private Boolean drCrIndicator = null;
+
+    @JsonProperty("failId")
+    private Integer failId = null;
+
+    @JsonProperty("forAccrual")
+    private Boolean forAccrual = null;
+
+    @JsonProperty("groupType")
+    private String groupType = null;
+
+    @JsonProperty("instructed")
+    private Boolean instructed = null;
+
+    @JsonProperty("ledgerAccountId")
+    private Integer ledgerAccountId = null;
+
+    @JsonProperty("positionTypeId")
+    private Integer positionTypeId = null;
+
+    @JsonProperty("quantityFlow")
+    private Boolean quantityFlow = null;
+
+    @JsonProperty("sortTitle")
+    private String sortTitle = null;
+
+    @JsonProperty("sortValue")
+    private String sortValue = null;
+
+    @JsonProperty("tradeType")
+    private String tradeType = null;
+
+    @JsonProperty("tradeTypeId")
+    private Integer tradeTypeId = null;
+
+    public TradeTypeDetailDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    TradeTypeDetailDTO tradeTypeDetailDTO = (TradeTypeDetailDTO) o;
-    return Objects.equals(this.qualifiedName, tradeTypeDetailDTO.qualifiedName) &&
-        Objects.equals(this.allowFuture, tradeTypeDetailDTO.allowFuture) &&
-        Objects.equals(this.allowPast, tradeTypeDetailDTO.allowPast) &&
-        Objects.equals(this.cancelId, tradeTypeDetailDTO.cancelId) &&
-        Objects.equals(this.cashBalanced, tradeTypeDetailDTO.cashBalanced) &&
-        Objects.equals(this.cashFlow, tradeTypeDetailDTO.cashFlow) &&
-        Objects.equals(this.categoryGroup, tradeTypeDetailDTO.categoryGroup) &&
-        Objects.equals(this.changePriceFactor, tradeTypeDetailDTO.changePriceFactor) &&
-        Objects.equals(this.changeQuantity, tradeTypeDetailDTO.changeQuantity) &&
-        Objects.equals(this.changeStatus, tradeTypeDetailDTO.changeStatus) &&
-        Objects.equals(this.drCrIndicator, tradeTypeDetailDTO.drCrIndicator) &&
-        Objects.equals(this.failId, tradeTypeDetailDTO.failId) &&
-        Objects.equals(this.forAccrual, tradeTypeDetailDTO.forAccrual) &&
-        Objects.equals(this.groupType, tradeTypeDetailDTO.groupType) &&
-        Objects.equals(this.instructed, tradeTypeDetailDTO.instructed) &&
-        Objects.equals(this.ledgerAccountId, tradeTypeDetailDTO.ledgerAccountId) &&
-        Objects.equals(this.positionTypeId, tradeTypeDetailDTO.positionTypeId) &&
-        Objects.equals(this.quantityFlow, tradeTypeDetailDTO.quantityFlow) &&
-        Objects.equals(this.sortTitle, tradeTypeDetailDTO.sortTitle) &&
-        Objects.equals(this.sortValue, tradeTypeDetailDTO.sortValue) &&
-        Objects.equals(this.tradeType, tradeTypeDetailDTO.tradeType) &&
-        Objects.equals(this.tradeTypeId, tradeTypeDetailDTO.tradeTypeId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, allowFuture, allowPast, cancelId, cashBalanced, cashFlow, categoryGroup, changePriceFactor, changeQuantity, changeStatus, drCrIndicator, failId, forAccrual, groupType, instructed, ledgerAccountId, positionTypeId, quantityFlow, sortTitle, sortValue, tradeType, tradeTypeId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TradeTypeDetailDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    allowFuture: ").append(toIndentedString(allowFuture)).append("\n");
-    sb.append("    allowPast: ").append(toIndentedString(allowPast)).append("\n");
-    sb.append("    cancelId: ").append(toIndentedString(cancelId)).append("\n");
-    sb.append("    cashBalanced: ").append(toIndentedString(cashBalanced)).append("\n");
-    sb.append("    cashFlow: ").append(toIndentedString(cashFlow)).append("\n");
-    sb.append("    categoryGroup: ").append(toIndentedString(categoryGroup)).append("\n");
-    sb.append("    changePriceFactor: ").append(toIndentedString(changePriceFactor)).append("\n");
-    sb.append("    changeQuantity: ").append(toIndentedString(changeQuantity)).append("\n");
-    sb.append("    changeStatus: ").append(toIndentedString(changeStatus)).append("\n");
-    sb.append("    drCrIndicator: ").append(toIndentedString(drCrIndicator)).append("\n");
-    sb.append("    failId: ").append(toIndentedString(failId)).append("\n");
-    sb.append("    forAccrual: ").append(toIndentedString(forAccrual)).append("\n");
-    sb.append("    groupType: ").append(toIndentedString(groupType)).append("\n");
-    sb.append("    instructed: ").append(toIndentedString(instructed)).append("\n");
-    sb.append("    ledgerAccountId: ").append(toIndentedString(ledgerAccountId)).append("\n");
-    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-    sb.append("    quantityFlow: ").append(toIndentedString(quantityFlow)).append("\n");
-    sb.append("    sortTitle: ").append(toIndentedString(sortTitle)).append("\n");
-    sb.append("    sortValue: ").append(toIndentedString(sortValue)).append("\n");
-    sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
-    sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TradeTypeDetailDTO allowFuture(Boolean allowFuture) {
+        this.allowFuture = allowFuture;
+        return this;
+    }
+
+    /**
+     * Get allowFuture
+     *
+     * @return allowFuture
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAllowFuture() {
+        return allowFuture;
+    }
+
+    public void setAllowFuture(Boolean allowFuture) {
+        this.allowFuture = allowFuture;
+    }
+
+    public TradeTypeDetailDTO allowPast(Boolean allowPast) {
+        this.allowPast = allowPast;
+        return this;
+    }
+
+    /**
+     * Get allowPast
+     *
+     * @return allowPast
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAllowPast() {
+        return allowPast;
+    }
+
+    public void setAllowPast(Boolean allowPast) {
+        this.allowPast = allowPast;
+    }
+
+    public TradeTypeDetailDTO cancelId(Integer cancelId) {
+        this.cancelId = cancelId;
+        return this;
+    }
+
+    /**
+     * Get cancelId
+     *
+     * @return cancelId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCancelId() {
+        return cancelId;
+    }
+
+    public void setCancelId(Integer cancelId) {
+        this.cancelId = cancelId;
+    }
+
+    public TradeTypeDetailDTO cashBalanced(Boolean cashBalanced) {
+        this.cashBalanced = cashBalanced;
+        return this;
+    }
+
+    /**
+     * Get cashBalanced
+     *
+     * @return cashBalanced
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCashBalanced() {
+        return cashBalanced;
+    }
+
+    public void setCashBalanced(Boolean cashBalanced) {
+        this.cashBalanced = cashBalanced;
+    }
+
+    public TradeTypeDetailDTO cashFlow(Boolean cashFlow) {
+        this.cashFlow = cashFlow;
+        return this;
+    }
+
+    /**
+     * Get cashFlow
+     *
+     * @return cashFlow
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCashFlow() {
+        return cashFlow;
+    }
+
+    public void setCashFlow(Boolean cashFlow) {
+        this.cashFlow = cashFlow;
+    }
+
+    public TradeTypeDetailDTO categoryGroup(String categoryGroup) {
+        this.categoryGroup = categoryGroup;
+        return this;
+    }
+
+    /**
+     * Get categoryGroup
+     *
+     * @return categoryGroup
+     **/
+    @ApiModelProperty(value = "")
+    public String getCategoryGroup() {
+        return categoryGroup;
+    }
+
+    public void setCategoryGroup(String categoryGroup) {
+        this.categoryGroup = categoryGroup;
+    }
+
+    public TradeTypeDetailDTO changePriceFactor(Boolean changePriceFactor) {
+        this.changePriceFactor = changePriceFactor;
+        return this;
+    }
+
+    /**
+     * Get changePriceFactor
+     *
+     * @return changePriceFactor
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isChangePriceFactor() {
+        return changePriceFactor;
+    }
+
+    public void setChangePriceFactor(Boolean changePriceFactor) {
+        this.changePriceFactor = changePriceFactor;
+    }
+
+    public TradeTypeDetailDTO changeQuantity(Boolean changeQuantity) {
+        this.changeQuantity = changeQuantity;
+        return this;
+    }
+
+    /**
+     * Get changeQuantity
+     *
+     * @return changeQuantity
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isChangeQuantity() {
+        return changeQuantity;
+    }
+
+    public void setChangeQuantity(Boolean changeQuantity) {
+        this.changeQuantity = changeQuantity;
+    }
+
+    public TradeTypeDetailDTO changeStatus(Boolean changeStatus) {
+        this.changeStatus = changeStatus;
+        return this;
+    }
+
+    /**
+     * Get changeStatus
+     *
+     * @return changeStatus
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isChangeStatus() {
+        return changeStatus;
+    }
+
+    public void setChangeStatus(Boolean changeStatus) {
+        this.changeStatus = changeStatus;
+    }
+
+    public TradeTypeDetailDTO drCrIndicator(Boolean drCrIndicator) {
+        this.drCrIndicator = drCrIndicator;
+        return this;
+    }
+
+    /**
+     * Get drCrIndicator
+     *
+     * @return drCrIndicator
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDrCrIndicator() {
+        return drCrIndicator;
+    }
+
+    public void setDrCrIndicator(Boolean drCrIndicator) {
+        this.drCrIndicator = drCrIndicator;
+    }
+
+    public TradeTypeDetailDTO failId(Integer failId) {
+        this.failId = failId;
+        return this;
+    }
+
+    /**
+     * Get failId
+     *
+     * @return failId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getFailId() {
+        return failId;
+    }
+
+    public void setFailId(Integer failId) {
+        this.failId = failId;
+    }
+
+    public TradeTypeDetailDTO forAccrual(Boolean forAccrual) {
+        this.forAccrual = forAccrual;
+        return this;
+    }
+
+    /**
+     * Get forAccrual
+     *
+     * @return forAccrual
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isForAccrual() {
+        return forAccrual;
+    }
+
+    public void setForAccrual(Boolean forAccrual) {
+        this.forAccrual = forAccrual;
+    }
+
+    public TradeTypeDetailDTO groupType(String groupType) {
+        this.groupType = groupType;
+        return this;
+    }
+
+    /**
+     * Get groupType
+     *
+     * @return groupType
+     **/
+    @ApiModelProperty(value = "")
+    public String getGroupType() {
+        return groupType;
+    }
+
+    public void setGroupType(String groupType) {
+        this.groupType = groupType;
+    }
+
+    public TradeTypeDetailDTO instructed(Boolean instructed) {
+        this.instructed = instructed;
+        return this;
+    }
+
+    /**
+     * Get instructed
+     *
+     * @return instructed
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isInstructed() {
+        return instructed;
+    }
+
+    public void setInstructed(Boolean instructed) {
+        this.instructed = instructed;
+    }
+
+    public TradeTypeDetailDTO ledgerAccountId(Integer ledgerAccountId) {
+        this.ledgerAccountId = ledgerAccountId;
+        return this;
+    }
+
+    /**
+     * Get ledgerAccountId
+     *
+     * @return ledgerAccountId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getLedgerAccountId() {
+        return ledgerAccountId;
+    }
+
+    public void setLedgerAccountId(Integer ledgerAccountId) {
+        this.ledgerAccountId = ledgerAccountId;
+    }
+
+    public TradeTypeDetailDTO positionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+        return this;
+    }
+
+    /**
+     * Get positionTypeId
+     *
+     * @return positionTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getPositionTypeId() {
+        return positionTypeId;
+    }
+
+    public void setPositionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+    }
+
+    public TradeTypeDetailDTO quantityFlow(Boolean quantityFlow) {
+        this.quantityFlow = quantityFlow;
+        return this;
+    }
+
+    /**
+     * Get quantityFlow
+     *
+     * @return quantityFlow
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isQuantityFlow() {
+        return quantityFlow;
+    }
+
+    public void setQuantityFlow(Boolean quantityFlow) {
+        this.quantityFlow = quantityFlow;
+    }
+
+    public TradeTypeDetailDTO sortTitle(String sortTitle) {
+        this.sortTitle = sortTitle;
+        return this;
+    }
+
+    /**
+     * Get sortTitle
+     *
+     * @return sortTitle
+     **/
+    @ApiModelProperty(value = "")
+    public String getSortTitle() {
+        return sortTitle;
+    }
+
+    public void setSortTitle(String sortTitle) {
+        this.sortTitle = sortTitle;
+    }
+
+    public TradeTypeDetailDTO sortValue(String sortValue) {
+        this.sortValue = sortValue;
+        return this;
+    }
+
+    /**
+     * Get sortValue
+     *
+     * @return sortValue
+     **/
+    @ApiModelProperty(value = "")
+    public String getSortValue() {
+        return sortValue;
+    }
+
+    public void setSortValue(String sortValue) {
+        this.sortValue = sortValue;
+    }
+
+    public TradeTypeDetailDTO tradeType(String tradeType) {
+        this.tradeType = tradeType;
+        return this;
+    }
+
+    /**
+     * Get tradeType
+     *
+     * @return tradeType
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public TradeTypeDetailDTO tradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+        return this;
+    }
+
+    /**
+     * Get tradeTypeId
+     *
+     * @return tradeTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTradeTypeId() {
+        return tradeTypeId;
+    }
+
+    public void setTradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TradeTypeDetailDTO tradeTypeDetailDTO = (TradeTypeDetailDTO) o;
+        return Objects.equals(this.qualifiedName, tradeTypeDetailDTO.qualifiedName) &&
+            Objects.equals(this.allowFuture, tradeTypeDetailDTO.allowFuture) &&
+            Objects.equals(this.allowPast, tradeTypeDetailDTO.allowPast) &&
+            Objects.equals(this.cancelId, tradeTypeDetailDTO.cancelId) &&
+            Objects.equals(this.cashBalanced, tradeTypeDetailDTO.cashBalanced) &&
+            Objects.equals(this.cashFlow, tradeTypeDetailDTO.cashFlow) &&
+            Objects.equals(this.categoryGroup, tradeTypeDetailDTO.categoryGroup) &&
+            Objects.equals(this.changePriceFactor, tradeTypeDetailDTO.changePriceFactor) &&
+            Objects.equals(this.changeQuantity, tradeTypeDetailDTO.changeQuantity) &&
+            Objects.equals(this.changeStatus, tradeTypeDetailDTO.changeStatus) &&
+            Objects.equals(this.drCrIndicator, tradeTypeDetailDTO.drCrIndicator) &&
+            Objects.equals(this.failId, tradeTypeDetailDTO.failId) &&
+            Objects.equals(this.forAccrual, tradeTypeDetailDTO.forAccrual) &&
+            Objects.equals(this.groupType, tradeTypeDetailDTO.groupType) &&
+            Objects.equals(this.instructed, tradeTypeDetailDTO.instructed) &&
+            Objects.equals(this.ledgerAccountId, tradeTypeDetailDTO.ledgerAccountId) &&
+            Objects.equals(this.positionTypeId, tradeTypeDetailDTO.positionTypeId) &&
+            Objects.equals(this.quantityFlow, tradeTypeDetailDTO.quantityFlow) &&
+            Objects.equals(this.sortTitle, tradeTypeDetailDTO.sortTitle) &&
+            Objects.equals(this.sortValue, tradeTypeDetailDTO.sortValue) &&
+            Objects.equals(this.tradeType, tradeTypeDetailDTO.tradeType) &&
+            Objects.equals(this.tradeTypeId, tradeTypeDetailDTO.tradeTypeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, allowFuture, allowPast, cancelId, cashBalanced, cashFlow, categoryGroup,
+            changePriceFactor, changeQuantity, changeStatus, drCrIndicator, failId, forAccrual, groupType, instructed,
+            ledgerAccountId, positionTypeId, quantityFlow, sortTitle, sortValue, tradeType, tradeTypeId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TradeTypeDetailDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    allowFuture: ").append(toIndentedString(allowFuture)).append("\n");
+        sb.append("    allowPast: ").append(toIndentedString(allowPast)).append("\n");
+        sb.append("    cancelId: ").append(toIndentedString(cancelId)).append("\n");
+        sb.append("    cashBalanced: ").append(toIndentedString(cashBalanced)).append("\n");
+        sb.append("    cashFlow: ").append(toIndentedString(cashFlow)).append("\n");
+        sb.append("    categoryGroup: ").append(toIndentedString(categoryGroup)).append("\n");
+        sb.append("    changePriceFactor: ").append(toIndentedString(changePriceFactor)).append("\n");
+        sb.append("    changeQuantity: ").append(toIndentedString(changeQuantity)).append("\n");
+        sb.append("    changeStatus: ").append(toIndentedString(changeStatus)).append("\n");
+        sb.append("    drCrIndicator: ").append(toIndentedString(drCrIndicator)).append("\n");
+        sb.append("    failId: ").append(toIndentedString(failId)).append("\n");
+        sb.append("    forAccrual: ").append(toIndentedString(forAccrual)).append("\n");
+        sb.append("    groupType: ").append(toIndentedString(groupType)).append("\n");
+        sb.append("    instructed: ").append(toIndentedString(instructed)).append("\n");
+        sb.append("    ledgerAccountId: ").append(toIndentedString(ledgerAccountId)).append("\n");
+        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+        sb.append("    quantityFlow: ").append(toIndentedString(quantityFlow)).append("\n");
+        sb.append("    sortTitle: ").append(toIndentedString(sortTitle)).append("\n");
+        sb.append("    sortValue: ").append(toIndentedString(sortValue)).append("\n");
+        sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
+        sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

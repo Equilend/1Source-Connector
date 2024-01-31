@@ -22,91 +22,93 @@ import java.util.Objects;
 /**
  * PositionHistoryKeyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class PositionHistoryKeyDTO {
-  @JsonProperty("histDate")
-  private LocalDateTime histDate = null;
 
-  @JsonProperty("positionId")
-  private Long positionId = null;
+    @JsonProperty("histDate")
+    private LocalDateTime histDate = null;
 
-  public PositionHistoryKeyDTO histDate(LocalDateTime histDate) {
-    this.histDate = histDate;
-    return this;
-  }
+    @JsonProperty("positionId")
+    private Long positionId = null;
 
-   /**
-   * Get histDate
-   * @return histDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getHistDate() {
-    return histDate;
-  }
-
-  public void setHistDate(LocalDateTime histDate) {
-    this.histDate = histDate;
-  }
-
-  public PositionHistoryKeyDTO positionId(Long positionId) {
-    this.positionId = positionId;
-    return this;
-  }
-
-   /**
-   * Get positionId
-   * @return positionId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getPositionId() {
-    return positionId;
-  }
-
-  public void setPositionId(Long positionId) {
-    this.positionId = positionId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public PositionHistoryKeyDTO histDate(LocalDateTime histDate) {
+        this.histDate = histDate;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get histDate
+     *
+     * @return histDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getHistDate() {
+        return histDate;
     }
-    PositionHistoryKeyDTO positionHistoryKeyDTO = (PositionHistoryKeyDTO) o;
-    return Objects.equals(this.histDate, positionHistoryKeyDTO.histDate) &&
-        Objects.equals(this.positionId, positionHistoryKeyDTO.positionId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(histDate, positionId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PositionHistoryKeyDTO {\n");
-    
-    sb.append("    histDate: ").append(toIndentedString(histDate)).append("\n");
-    sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setHistDate(LocalDateTime histDate) {
+        this.histDate = histDate;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public PositionHistoryKeyDTO positionId(Long positionId) {
+        this.positionId = positionId;
+        return this;
+    }
+
+    /**
+     * Get positionId
+     *
+     * @return positionId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionHistoryKeyDTO positionHistoryKeyDTO = (PositionHistoryKeyDTO) o;
+        return Objects.equals(this.histDate, positionHistoryKeyDTO.histDate) &&
+            Objects.equals(this.positionId, positionHistoryKeyDTO.positionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(histDate, positionId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class PositionHistoryKeyDTO {\n");
+
+        sb.append("    histDate: ").append(toIndentedString(histDate)).append("\n");
+        sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

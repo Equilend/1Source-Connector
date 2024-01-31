@@ -18,10 +18,10 @@ spring:
     show-sql: false
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
         default_schema: ${DB_SCHEMA_LOCAL:postgres}
     hibernate:
       ddl-auto: none
+    open-in-view: false
   flyway:
     locations: classpath:db/migration, classpath:local/db/migration
     baseline-on-migrate: true
@@ -34,6 +34,23 @@ spring:
 
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: ${onesource.auth.resource}
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
+            user-name-attribute: ${onesource.auth.principal-attribute}
 
 logging:
   level:
@@ -87,11 +104,11 @@ integration-toolkit:
   starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
   route:
     rerate:
-      enable: true
+      enable: ${RERATE_ROUTE_LOCAL:true}
     contract-initiation-trade-started:
-      enable: true
+      enable: ${CI_WITH_TRADE_ROUTE_LOcAL:true}
     contract-initiation-without-trade-route:
-      enable: true
+      enable: ${CI_WITHOUT_TRADE_ROUTE_LOCAL:true}
   uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
 
 notification:

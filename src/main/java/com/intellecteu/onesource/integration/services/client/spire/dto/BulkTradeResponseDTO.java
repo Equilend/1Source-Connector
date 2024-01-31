@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * BulkTradeResponseDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class BulkTradeResponseDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("positionDTO")
-  private PositionDTO positionDTO = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("tradeRefNo")
-  private String tradeRefNo = null;
+    @JsonProperty("positionDTO")
+    private PositionDTO positionDTO = null;
 
-  public BulkTradeResponseDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("tradeRefNo")
+    private String tradeRefNo = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public BulkTradeResponseDTO positionDTO(PositionDTO positionDTO) {
-    this.positionDTO = positionDTO;
-    return this;
-  }
-
-   /**
-   * Get positionDTO
-   * @return positionDTO
-  **/
-  @ApiModelProperty(value = "")
-  public PositionDTO getPositionDTO() {
-    return positionDTO;
-  }
-
-  public void setPositionDTO(PositionDTO positionDTO) {
-    this.positionDTO = positionDTO;
-  }
-
-  public BulkTradeResponseDTO tradeRefNo(String tradeRefNo) {
-    this.tradeRefNo = tradeRefNo;
-    return this;
-  }
-
-   /**
-   * Get tradeRefNo
-   * @return tradeRefNo
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradeRefNo() {
-    return tradeRefNo;
-  }
-
-  public void setTradeRefNo(String tradeRefNo) {
-    this.tradeRefNo = tradeRefNo;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BulkTradeResponseDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    BulkTradeResponseDTO bulkTradeResponseDTO = (BulkTradeResponseDTO) o;
-    return Objects.equals(this.qualifiedName, bulkTradeResponseDTO.qualifiedName) &&
-        Objects.equals(this.positionDTO, bulkTradeResponseDTO.positionDTO) &&
-        Objects.equals(this.tradeRefNo, bulkTradeResponseDTO.tradeRefNo);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, positionDTO, tradeRefNo);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class BulkTradeResponseDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
-    sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public BulkTradeResponseDTO positionDTO(PositionDTO positionDTO) {
+        this.positionDTO = positionDTO;
+        return this;
+    }
+
+    /**
+     * Get positionDTO
+     *
+     * @return positionDTO
+     **/
+    @ApiModelProperty(value = "")
+    public PositionDTO getPositionDTO() {
+        return positionDTO;
+    }
+
+    public void setPositionDTO(PositionDTO positionDTO) {
+        this.positionDTO = positionDTO;
+    }
+
+    public BulkTradeResponseDTO tradeRefNo(String tradeRefNo) {
+        this.tradeRefNo = tradeRefNo;
+        return this;
+    }
+
+    /**
+     * Get tradeRefNo
+     *
+     * @return tradeRefNo
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradeRefNo() {
+        return tradeRefNo;
+    }
+
+    public void setTradeRefNo(String tradeRefNo) {
+        this.tradeRefNo = tradeRefNo;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BulkTradeResponseDTO bulkTradeResponseDTO = (BulkTradeResponseDTO) o;
+        return Objects.equals(this.qualifiedName, bulkTradeResponseDTO.qualifiedName) &&
+            Objects.equals(this.positionDTO, bulkTradeResponseDTO.positionDTO) &&
+            Objects.equals(this.tradeRefNo, bulkTradeResponseDTO.tradeRefNo);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, positionDTO, tradeRefNo);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class BulkTradeResponseDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
+        sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

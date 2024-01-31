@@ -21,620 +21,648 @@ import java.util.Objects;
 /**
  * TradeTypeDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TradeTypeDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("accounting")
-  private Boolean accounting = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("allowFuture")
-  private Boolean allowFuture = null;
+    @JsonProperty("accounting")
+    private Boolean accounting = null;
 
-  @JsonProperty("allowPast")
-  private Boolean allowPast = null;
+    @JsonProperty("allowFuture")
+    private Boolean allowFuture = null;
 
-  @JsonProperty("borrowTrade")
-  private Boolean borrowTrade = null;
+    @JsonProperty("allowPast")
+    private Boolean allowPast = null;
 
-  @JsonProperty("categoryGroup")
-  private String categoryGroup = null;
+    @JsonProperty("borrowTrade")
+    private Boolean borrowTrade = null;
 
-  @JsonProperty("collateralTrade")
-  private Boolean collateralTrade = null;
+    @JsonProperty("categoryGroup")
+    private String categoryGroup = null;
 
-  @JsonProperty("credit")
-  private Boolean credit = null;
+    @JsonProperty("collateralTrade")
+    private Boolean collateralTrade = null;
 
-  @JsonProperty("debit")
-  private Boolean debit = null;
+    @JsonProperty("credit")
+    private Boolean credit = null;
 
-  @JsonProperty("groupTypeName")
-  private String groupTypeName = null;
+    @JsonProperty("debit")
+    private Boolean debit = null;
 
-  @JsonProperty("investmentTrade")
-  private Boolean investmentTrade = null;
+    @JsonProperty("groupTypeName")
+    private String groupTypeName = null;
 
-  @JsonProperty("isAccounting")
-  private Boolean isAccounting = null;
+    @JsonProperty("investmentTrade")
+    private Boolean investmentTrade = null;
 
-  @JsonProperty("isBorrowTrade")
-  private Boolean isBorrowTrade = null;
+    @JsonProperty("isAccounting")
+    private Boolean isAccounting = null;
 
-  @JsonProperty("isCollateralTrade")
-  private Boolean isCollateralTrade = null;
+    @JsonProperty("isBorrowTrade")
+    private Boolean isBorrowTrade = null;
 
-  @JsonProperty("isCredit")
-  private Boolean isCredit = null;
+    @JsonProperty("isCollateralTrade")
+    private Boolean isCollateralTrade = null;
 
-  @JsonProperty("isDebit")
-  private Boolean isDebit = null;
+    @JsonProperty("isCredit")
+    private Boolean isCredit = null;
 
-  @JsonProperty("isInvestmentTrade")
-  private Boolean isInvestmentTrade = null;
+    @JsonProperty("isDebit")
+    private Boolean isDebit = null;
 
-  @JsonProperty("isLoanTrade")
-  private Boolean isLoanTrade = null;
+    @JsonProperty("isInvestmentTrade")
+    private Boolean isInvestmentTrade = null;
 
-  @JsonProperty("isNetMarkTrade")
-  private Boolean isNetMarkTrade = null;
+    @JsonProperty("isLoanTrade")
+    private Boolean isLoanTrade = null;
 
-  @JsonProperty("loanTrade")
-  private Boolean loanTrade = null;
+    @JsonProperty("isNetMarkTrade")
+    private Boolean isNetMarkTrade = null;
 
-  @JsonProperty("netMarkTrade")
-  private Boolean netMarkTrade = null;
+    @JsonProperty("loanTrade")
+    private Boolean loanTrade = null;
 
-  @JsonProperty("sortTitle")
-  private String sortTitle = null;
+    @JsonProperty("netMarkTrade")
+    private Boolean netMarkTrade = null;
 
-  @JsonProperty("sortValue")
-  private String sortValue = null;
+    @JsonProperty("sortTitle")
+    private String sortTitle = null;
 
-  @JsonProperty("tradeTypeId")
-  private Integer tradeTypeId = null;
+    @JsonProperty("sortValue")
+    private String sortValue = null;
 
-  @JsonProperty("tradeTypeName")
-  private String tradeTypeName = null;
+    @JsonProperty("tradeTypeId")
+    private Integer tradeTypeId = null;
 
-  public TradeTypeDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("tradeTypeName")
+    private String tradeTypeName = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TradeTypeDTO accounting(Boolean accounting) {
-    this.accounting = accounting;
-    return this;
-  }
-
-   /**
-   * Get accounting
-   * @return accounting
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAccounting() {
-    return accounting;
-  }
-
-  public void setAccounting(Boolean accounting) {
-    this.accounting = accounting;
-  }
-
-  public TradeTypeDTO allowFuture(Boolean allowFuture) {
-    this.allowFuture = allowFuture;
-    return this;
-  }
-
-   /**
-   * Get allowFuture
-   * @return allowFuture
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAllowFuture() {
-    return allowFuture;
-  }
-
-  public void setAllowFuture(Boolean allowFuture) {
-    this.allowFuture = allowFuture;
-  }
-
-  public TradeTypeDTO allowPast(Boolean allowPast) {
-    this.allowPast = allowPast;
-    return this;
-  }
-
-   /**
-   * Get allowPast
-   * @return allowPast
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAllowPast() {
-    return allowPast;
-  }
-
-  public void setAllowPast(Boolean allowPast) {
-    this.allowPast = allowPast;
-  }
-
-  public TradeTypeDTO borrowTrade(Boolean borrowTrade) {
-    this.borrowTrade = borrowTrade;
-    return this;
-  }
-
-   /**
-   * Get borrowTrade
-   * @return borrowTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isBorrowTrade() {
-    return borrowTrade;
-  }
-
-  public void setBorrowTrade(Boolean borrowTrade) {
-    this.borrowTrade = borrowTrade;
-  }
-
-  public TradeTypeDTO categoryGroup(String categoryGroup) {
-    this.categoryGroup = categoryGroup;
-    return this;
-  }
-
-   /**
-   * Get categoryGroup
-   * @return categoryGroup
-  **/
-  @ApiModelProperty(value = "")
-  public String getCategoryGroup() {
-    return categoryGroup;
-  }
-
-  public void setCategoryGroup(String categoryGroup) {
-    this.categoryGroup = categoryGroup;
-  }
-
-  public TradeTypeDTO collateralTrade(Boolean collateralTrade) {
-    this.collateralTrade = collateralTrade;
-    return this;
-  }
-
-   /**
-   * Get collateralTrade
-   * @return collateralTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCollateralTrade() {
-    return collateralTrade;
-  }
-
-  public void setCollateralTrade(Boolean collateralTrade) {
-    this.collateralTrade = collateralTrade;
-  }
-
-  public TradeTypeDTO credit(Boolean credit) {
-    this.credit = credit;
-    return this;
-  }
-
-   /**
-   * Get credit
-   * @return credit
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCredit() {
-    return credit;
-  }
-
-  public void setCredit(Boolean credit) {
-    this.credit = credit;
-  }
-
-  public TradeTypeDTO debit(Boolean debit) {
-    this.debit = debit;
-    return this;
-  }
-
-   /**
-   * Get debit
-   * @return debit
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDebit() {
-    return debit;
-  }
-
-  public void setDebit(Boolean debit) {
-    this.debit = debit;
-  }
-
-  public TradeTypeDTO groupTypeName(String groupTypeName) {
-    this.groupTypeName = groupTypeName;
-    return this;
-  }
-
-   /**
-   * Get groupTypeName
-   * @return groupTypeName
-  **/
-  @ApiModelProperty(value = "")
-  public String getGroupTypeName() {
-    return groupTypeName;
-  }
-
-  public void setGroupTypeName(String groupTypeName) {
-    this.groupTypeName = groupTypeName;
-  }
-
-  public TradeTypeDTO investmentTrade(Boolean investmentTrade) {
-    this.investmentTrade = investmentTrade;
-    return this;
-  }
-
-   /**
-   * Get investmentTrade
-   * @return investmentTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isInvestmentTrade() {
-    return investmentTrade;
-  }
-
-  public void setInvestmentTrade(Boolean investmentTrade) {
-    this.investmentTrade = investmentTrade;
-  }
-
-  public TradeTypeDTO isAccounting(Boolean isAccounting) {
-    this.isAccounting = isAccounting;
-    return this;
-  }
-
-   /**
-   * Get isAccounting
-   * @return isAccounting
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsAccounting() {
-    return isAccounting;
-  }
-
-  public void setIsAccounting(Boolean isAccounting) {
-    this.isAccounting = isAccounting;
-  }
-
-  public TradeTypeDTO isBorrowTrade(Boolean isBorrowTrade) {
-    this.isBorrowTrade = isBorrowTrade;
-    return this;
-  }
-
-   /**
-   * Get isBorrowTrade
-   * @return isBorrowTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsBorrowTrade() {
-    return isBorrowTrade;
-  }
-
-  public void setIsBorrowTrade(Boolean isBorrowTrade) {
-    this.isBorrowTrade = isBorrowTrade;
-  }
-
-  public TradeTypeDTO isCollateralTrade(Boolean isCollateralTrade) {
-    this.isCollateralTrade = isCollateralTrade;
-    return this;
-  }
-
-   /**
-   * Get isCollateralTrade
-   * @return isCollateralTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsCollateralTrade() {
-    return isCollateralTrade;
-  }
-
-  public void setIsCollateralTrade(Boolean isCollateralTrade) {
-    this.isCollateralTrade = isCollateralTrade;
-  }
-
-  public TradeTypeDTO isCredit(Boolean isCredit) {
-    this.isCredit = isCredit;
-    return this;
-  }
-
-   /**
-   * Get isCredit
-   * @return isCredit
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsCredit() {
-    return isCredit;
-  }
-
-  public void setIsCredit(Boolean isCredit) {
-    this.isCredit = isCredit;
-  }
-
-  public TradeTypeDTO isDebit(Boolean isDebit) {
-    this.isDebit = isDebit;
-    return this;
-  }
-
-   /**
-   * Get isDebit
-   * @return isDebit
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsDebit() {
-    return isDebit;
-  }
-
-  public void setIsDebit(Boolean isDebit) {
-    this.isDebit = isDebit;
-  }
-
-  public TradeTypeDTO isInvestmentTrade(Boolean isInvestmentTrade) {
-    this.isInvestmentTrade = isInvestmentTrade;
-    return this;
-  }
-
-   /**
-   * Get isInvestmentTrade
-   * @return isInvestmentTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsInvestmentTrade() {
-    return isInvestmentTrade;
-  }
-
-  public void setIsInvestmentTrade(Boolean isInvestmentTrade) {
-    this.isInvestmentTrade = isInvestmentTrade;
-  }
-
-  public TradeTypeDTO isLoanTrade(Boolean isLoanTrade) {
-    this.isLoanTrade = isLoanTrade;
-    return this;
-  }
-
-   /**
-   * Get isLoanTrade
-   * @return isLoanTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsLoanTrade() {
-    return isLoanTrade;
-  }
-
-  public void setIsLoanTrade(Boolean isLoanTrade) {
-    this.isLoanTrade = isLoanTrade;
-  }
-
-  public TradeTypeDTO isNetMarkTrade(Boolean isNetMarkTrade) {
-    this.isNetMarkTrade = isNetMarkTrade;
-    return this;
-  }
-
-   /**
-   * Get isNetMarkTrade
-   * @return isNetMarkTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsNetMarkTrade() {
-    return isNetMarkTrade;
-  }
-
-  public void setIsNetMarkTrade(Boolean isNetMarkTrade) {
-    this.isNetMarkTrade = isNetMarkTrade;
-  }
-
-  public TradeTypeDTO loanTrade(Boolean loanTrade) {
-    this.loanTrade = loanTrade;
-    return this;
-  }
-
-   /**
-   * Get loanTrade
-   * @return loanTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isLoanTrade() {
-    return loanTrade;
-  }
-
-  public void setLoanTrade(Boolean loanTrade) {
-    this.loanTrade = loanTrade;
-  }
-
-  public TradeTypeDTO netMarkTrade(Boolean netMarkTrade) {
-    this.netMarkTrade = netMarkTrade;
-    return this;
-  }
-
-   /**
-   * Get netMarkTrade
-   * @return netMarkTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isNetMarkTrade() {
-    return netMarkTrade;
-  }
-
-  public void setNetMarkTrade(Boolean netMarkTrade) {
-    this.netMarkTrade = netMarkTrade;
-  }
-
-  public TradeTypeDTO sortTitle(String sortTitle) {
-    this.sortTitle = sortTitle;
-    return this;
-  }
-
-   /**
-   * Get sortTitle
-   * @return sortTitle
-  **/
-  @ApiModelProperty(value = "")
-  public String getSortTitle() {
-    return sortTitle;
-  }
-
-  public void setSortTitle(String sortTitle) {
-    this.sortTitle = sortTitle;
-  }
-
-  public TradeTypeDTO sortValue(String sortValue) {
-    this.sortValue = sortValue;
-    return this;
-  }
-
-   /**
-   * Get sortValue
-   * @return sortValue
-  **/
-  @ApiModelProperty(value = "")
-  public String getSortValue() {
-    return sortValue;
-  }
-
-  public void setSortValue(String sortValue) {
-    this.sortValue = sortValue;
-  }
-
-  public TradeTypeDTO tradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-    return this;
-  }
-
-   /**
-   * Get tradeTypeId
-   * @return tradeTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTradeTypeId() {
-    return tradeTypeId;
-  }
-
-  public void setTradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-  }
-
-  public TradeTypeDTO tradeTypeName(String tradeTypeName) {
-    this.tradeTypeName = tradeTypeName;
-    return this;
-  }
-
-   /**
-   * Get tradeTypeName
-   * @return tradeTypeName
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradeTypeName() {
-    return tradeTypeName;
-  }
-
-  public void setTradeTypeName(String tradeTypeName) {
-    this.tradeTypeName = tradeTypeName;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TradeTypeDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    TradeTypeDTO tradeTypeDTO = (TradeTypeDTO) o;
-    return Objects.equals(this.qualifiedName, tradeTypeDTO.qualifiedName) &&
-        Objects.equals(this.accounting, tradeTypeDTO.accounting) &&
-        Objects.equals(this.allowFuture, tradeTypeDTO.allowFuture) &&
-        Objects.equals(this.allowPast, tradeTypeDTO.allowPast) &&
-        Objects.equals(this.borrowTrade, tradeTypeDTO.borrowTrade) &&
-        Objects.equals(this.categoryGroup, tradeTypeDTO.categoryGroup) &&
-        Objects.equals(this.collateralTrade, tradeTypeDTO.collateralTrade) &&
-        Objects.equals(this.credit, tradeTypeDTO.credit) &&
-        Objects.equals(this.debit, tradeTypeDTO.debit) &&
-        Objects.equals(this.groupTypeName, tradeTypeDTO.groupTypeName) &&
-        Objects.equals(this.investmentTrade, tradeTypeDTO.investmentTrade) &&
-        Objects.equals(this.isAccounting, tradeTypeDTO.isAccounting) &&
-        Objects.equals(this.isBorrowTrade, tradeTypeDTO.isBorrowTrade) &&
-        Objects.equals(this.isCollateralTrade, tradeTypeDTO.isCollateralTrade) &&
-        Objects.equals(this.isCredit, tradeTypeDTO.isCredit) &&
-        Objects.equals(this.isDebit, tradeTypeDTO.isDebit) &&
-        Objects.equals(this.isInvestmentTrade, tradeTypeDTO.isInvestmentTrade) &&
-        Objects.equals(this.isLoanTrade, tradeTypeDTO.isLoanTrade) &&
-        Objects.equals(this.isNetMarkTrade, tradeTypeDTO.isNetMarkTrade) &&
-        Objects.equals(this.loanTrade, tradeTypeDTO.loanTrade) &&
-        Objects.equals(this.netMarkTrade, tradeTypeDTO.netMarkTrade) &&
-        Objects.equals(this.sortTitle, tradeTypeDTO.sortTitle) &&
-        Objects.equals(this.sortValue, tradeTypeDTO.sortValue) &&
-        Objects.equals(this.tradeTypeId, tradeTypeDTO.tradeTypeId) &&
-        Objects.equals(this.tradeTypeName, tradeTypeDTO.tradeTypeName);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, accounting, allowFuture, allowPast, borrowTrade, categoryGroup, collateralTrade, credit, debit, groupTypeName, investmentTrade, isAccounting, isBorrowTrade, isCollateralTrade, isCredit, isDebit, isInvestmentTrade, isLoanTrade, isNetMarkTrade, loanTrade, netMarkTrade, sortTitle, sortValue, tradeTypeId, tradeTypeName);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TradeTypeDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    accounting: ").append(toIndentedString(accounting)).append("\n");
-    sb.append("    allowFuture: ").append(toIndentedString(allowFuture)).append("\n");
-    sb.append("    allowPast: ").append(toIndentedString(allowPast)).append("\n");
-    sb.append("    borrowTrade: ").append(toIndentedString(borrowTrade)).append("\n");
-    sb.append("    categoryGroup: ").append(toIndentedString(categoryGroup)).append("\n");
-    sb.append("    collateralTrade: ").append(toIndentedString(collateralTrade)).append("\n");
-    sb.append("    credit: ").append(toIndentedString(credit)).append("\n");
-    sb.append("    debit: ").append(toIndentedString(debit)).append("\n");
-    sb.append("    groupTypeName: ").append(toIndentedString(groupTypeName)).append("\n");
-    sb.append("    investmentTrade: ").append(toIndentedString(investmentTrade)).append("\n");
-    sb.append("    isAccounting: ").append(toIndentedString(isAccounting)).append("\n");
-    sb.append("    isBorrowTrade: ").append(toIndentedString(isBorrowTrade)).append("\n");
-    sb.append("    isCollateralTrade: ").append(toIndentedString(isCollateralTrade)).append("\n");
-    sb.append("    isCredit: ").append(toIndentedString(isCredit)).append("\n");
-    sb.append("    isDebit: ").append(toIndentedString(isDebit)).append("\n");
-    sb.append("    isInvestmentTrade: ").append(toIndentedString(isInvestmentTrade)).append("\n");
-    sb.append("    isLoanTrade: ").append(toIndentedString(isLoanTrade)).append("\n");
-    sb.append("    isNetMarkTrade: ").append(toIndentedString(isNetMarkTrade)).append("\n");
-    sb.append("    loanTrade: ").append(toIndentedString(loanTrade)).append("\n");
-    sb.append("    netMarkTrade: ").append(toIndentedString(netMarkTrade)).append("\n");
-    sb.append("    sortTitle: ").append(toIndentedString(sortTitle)).append("\n");
-    sb.append("    sortValue: ").append(toIndentedString(sortValue)).append("\n");
-    sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
-    sb.append("    tradeTypeName: ").append(toIndentedString(tradeTypeName)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TradeTypeDTO accounting(Boolean accounting) {
+        this.accounting = accounting;
+        return this;
+    }
+
+    /**
+     * Get accounting
+     *
+     * @return accounting
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAccounting() {
+        return accounting;
+    }
+
+    public void setAccounting(Boolean accounting) {
+        this.accounting = accounting;
+    }
+
+    public TradeTypeDTO allowFuture(Boolean allowFuture) {
+        this.allowFuture = allowFuture;
+        return this;
+    }
+
+    /**
+     * Get allowFuture
+     *
+     * @return allowFuture
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAllowFuture() {
+        return allowFuture;
+    }
+
+    public void setAllowFuture(Boolean allowFuture) {
+        this.allowFuture = allowFuture;
+    }
+
+    public TradeTypeDTO allowPast(Boolean allowPast) {
+        this.allowPast = allowPast;
+        return this;
+    }
+
+    /**
+     * Get allowPast
+     *
+     * @return allowPast
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAllowPast() {
+        return allowPast;
+    }
+
+    public void setAllowPast(Boolean allowPast) {
+        this.allowPast = allowPast;
+    }
+
+    public TradeTypeDTO borrowTrade(Boolean borrowTrade) {
+        this.borrowTrade = borrowTrade;
+        return this;
+    }
+
+    /**
+     * Get borrowTrade
+     *
+     * @return borrowTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isBorrowTrade() {
+        return borrowTrade;
+    }
+
+    public void setBorrowTrade(Boolean borrowTrade) {
+        this.borrowTrade = borrowTrade;
+    }
+
+    public TradeTypeDTO categoryGroup(String categoryGroup) {
+        this.categoryGroup = categoryGroup;
+        return this;
+    }
+
+    /**
+     * Get categoryGroup
+     *
+     * @return categoryGroup
+     **/
+    @ApiModelProperty(value = "")
+    public String getCategoryGroup() {
+        return categoryGroup;
+    }
+
+    public void setCategoryGroup(String categoryGroup) {
+        this.categoryGroup = categoryGroup;
+    }
+
+    public TradeTypeDTO collateralTrade(Boolean collateralTrade) {
+        this.collateralTrade = collateralTrade;
+        return this;
+    }
+
+    /**
+     * Get collateralTrade
+     *
+     * @return collateralTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCollateralTrade() {
+        return collateralTrade;
+    }
+
+    public void setCollateralTrade(Boolean collateralTrade) {
+        this.collateralTrade = collateralTrade;
+    }
+
+    public TradeTypeDTO credit(Boolean credit) {
+        this.credit = credit;
+        return this;
+    }
+
+    /**
+     * Get credit
+     *
+     * @return credit
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCredit() {
+        return credit;
+    }
+
+    public void setCredit(Boolean credit) {
+        this.credit = credit;
+    }
+
+    public TradeTypeDTO debit(Boolean debit) {
+        this.debit = debit;
+        return this;
+    }
+
+    /**
+     * Get debit
+     *
+     * @return debit
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDebit() {
+        return debit;
+    }
+
+    public void setDebit(Boolean debit) {
+        this.debit = debit;
+    }
+
+    public TradeTypeDTO groupTypeName(String groupTypeName) {
+        this.groupTypeName = groupTypeName;
+        return this;
+    }
+
+    /**
+     * Get groupTypeName
+     *
+     * @return groupTypeName
+     **/
+    @ApiModelProperty(value = "")
+    public String getGroupTypeName() {
+        return groupTypeName;
+    }
+
+    public void setGroupTypeName(String groupTypeName) {
+        this.groupTypeName = groupTypeName;
+    }
+
+    public TradeTypeDTO investmentTrade(Boolean investmentTrade) {
+        this.investmentTrade = investmentTrade;
+        return this;
+    }
+
+    /**
+     * Get investmentTrade
+     *
+     * @return investmentTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isInvestmentTrade() {
+        return investmentTrade;
+    }
+
+    public void setInvestmentTrade(Boolean investmentTrade) {
+        this.investmentTrade = investmentTrade;
+    }
+
+    public TradeTypeDTO isAccounting(Boolean isAccounting) {
+        this.isAccounting = isAccounting;
+        return this;
+    }
+
+    /**
+     * Get isAccounting
+     *
+     * @return isAccounting
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsAccounting() {
+        return isAccounting;
+    }
+
+    public void setIsAccounting(Boolean isAccounting) {
+        this.isAccounting = isAccounting;
+    }
+
+    public TradeTypeDTO isBorrowTrade(Boolean isBorrowTrade) {
+        this.isBorrowTrade = isBorrowTrade;
+        return this;
+    }
+
+    /**
+     * Get isBorrowTrade
+     *
+     * @return isBorrowTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsBorrowTrade() {
+        return isBorrowTrade;
+    }
+
+    public void setIsBorrowTrade(Boolean isBorrowTrade) {
+        this.isBorrowTrade = isBorrowTrade;
+    }
+
+    public TradeTypeDTO isCollateralTrade(Boolean isCollateralTrade) {
+        this.isCollateralTrade = isCollateralTrade;
+        return this;
+    }
+
+    /**
+     * Get isCollateralTrade
+     *
+     * @return isCollateralTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsCollateralTrade() {
+        return isCollateralTrade;
+    }
+
+    public void setIsCollateralTrade(Boolean isCollateralTrade) {
+        this.isCollateralTrade = isCollateralTrade;
+    }
+
+    public TradeTypeDTO isCredit(Boolean isCredit) {
+        this.isCredit = isCredit;
+        return this;
+    }
+
+    /**
+     * Get isCredit
+     *
+     * @return isCredit
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsCredit() {
+        return isCredit;
+    }
+
+    public void setIsCredit(Boolean isCredit) {
+        this.isCredit = isCredit;
+    }
+
+    public TradeTypeDTO isDebit(Boolean isDebit) {
+        this.isDebit = isDebit;
+        return this;
+    }
+
+    /**
+     * Get isDebit
+     *
+     * @return isDebit
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsDebit() {
+        return isDebit;
+    }
+
+    public void setIsDebit(Boolean isDebit) {
+        this.isDebit = isDebit;
+    }
+
+    public TradeTypeDTO isInvestmentTrade(Boolean isInvestmentTrade) {
+        this.isInvestmentTrade = isInvestmentTrade;
+        return this;
+    }
+
+    /**
+     * Get isInvestmentTrade
+     *
+     * @return isInvestmentTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsInvestmentTrade() {
+        return isInvestmentTrade;
+    }
+
+    public void setIsInvestmentTrade(Boolean isInvestmentTrade) {
+        this.isInvestmentTrade = isInvestmentTrade;
+    }
+
+    public TradeTypeDTO isLoanTrade(Boolean isLoanTrade) {
+        this.isLoanTrade = isLoanTrade;
+        return this;
+    }
+
+    /**
+     * Get isLoanTrade
+     *
+     * @return isLoanTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsLoanTrade() {
+        return isLoanTrade;
+    }
+
+    public void setIsLoanTrade(Boolean isLoanTrade) {
+        this.isLoanTrade = isLoanTrade;
+    }
+
+    public TradeTypeDTO isNetMarkTrade(Boolean isNetMarkTrade) {
+        this.isNetMarkTrade = isNetMarkTrade;
+        return this;
+    }
+
+    /**
+     * Get isNetMarkTrade
+     *
+     * @return isNetMarkTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsNetMarkTrade() {
+        return isNetMarkTrade;
+    }
+
+    public void setIsNetMarkTrade(Boolean isNetMarkTrade) {
+        this.isNetMarkTrade = isNetMarkTrade;
+    }
+
+    public TradeTypeDTO loanTrade(Boolean loanTrade) {
+        this.loanTrade = loanTrade;
+        return this;
+    }
+
+    /**
+     * Get loanTrade
+     *
+     * @return loanTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isLoanTrade() {
+        return loanTrade;
+    }
+
+    public void setLoanTrade(Boolean loanTrade) {
+        this.loanTrade = loanTrade;
+    }
+
+    public TradeTypeDTO netMarkTrade(Boolean netMarkTrade) {
+        this.netMarkTrade = netMarkTrade;
+        return this;
+    }
+
+    /**
+     * Get netMarkTrade
+     *
+     * @return netMarkTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isNetMarkTrade() {
+        return netMarkTrade;
+    }
+
+    public void setNetMarkTrade(Boolean netMarkTrade) {
+        this.netMarkTrade = netMarkTrade;
+    }
+
+    public TradeTypeDTO sortTitle(String sortTitle) {
+        this.sortTitle = sortTitle;
+        return this;
+    }
+
+    /**
+     * Get sortTitle
+     *
+     * @return sortTitle
+     **/
+    @ApiModelProperty(value = "")
+    public String getSortTitle() {
+        return sortTitle;
+    }
+
+    public void setSortTitle(String sortTitle) {
+        this.sortTitle = sortTitle;
+    }
+
+    public TradeTypeDTO sortValue(String sortValue) {
+        this.sortValue = sortValue;
+        return this;
+    }
+
+    /**
+     * Get sortValue
+     *
+     * @return sortValue
+     **/
+    @ApiModelProperty(value = "")
+    public String getSortValue() {
+        return sortValue;
+    }
+
+    public void setSortValue(String sortValue) {
+        this.sortValue = sortValue;
+    }
+
+    public TradeTypeDTO tradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+        return this;
+    }
+
+    /**
+     * Get tradeTypeId
+     *
+     * @return tradeTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTradeTypeId() {
+        return tradeTypeId;
+    }
+
+    public void setTradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+    }
+
+    public TradeTypeDTO tradeTypeName(String tradeTypeName) {
+        this.tradeTypeName = tradeTypeName;
+        return this;
+    }
+
+    /**
+     * Get tradeTypeName
+     *
+     * @return tradeTypeName
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradeTypeName() {
+        return tradeTypeName;
+    }
+
+    public void setTradeTypeName(String tradeTypeName) {
+        this.tradeTypeName = tradeTypeName;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TradeTypeDTO tradeTypeDTO = (TradeTypeDTO) o;
+        return Objects.equals(this.qualifiedName, tradeTypeDTO.qualifiedName) &&
+            Objects.equals(this.accounting, tradeTypeDTO.accounting) &&
+            Objects.equals(this.allowFuture, tradeTypeDTO.allowFuture) &&
+            Objects.equals(this.allowPast, tradeTypeDTO.allowPast) &&
+            Objects.equals(this.borrowTrade, tradeTypeDTO.borrowTrade) &&
+            Objects.equals(this.categoryGroup, tradeTypeDTO.categoryGroup) &&
+            Objects.equals(this.collateralTrade, tradeTypeDTO.collateralTrade) &&
+            Objects.equals(this.credit, tradeTypeDTO.credit) &&
+            Objects.equals(this.debit, tradeTypeDTO.debit) &&
+            Objects.equals(this.groupTypeName, tradeTypeDTO.groupTypeName) &&
+            Objects.equals(this.investmentTrade, tradeTypeDTO.investmentTrade) &&
+            Objects.equals(this.isAccounting, tradeTypeDTO.isAccounting) &&
+            Objects.equals(this.isBorrowTrade, tradeTypeDTO.isBorrowTrade) &&
+            Objects.equals(this.isCollateralTrade, tradeTypeDTO.isCollateralTrade) &&
+            Objects.equals(this.isCredit, tradeTypeDTO.isCredit) &&
+            Objects.equals(this.isDebit, tradeTypeDTO.isDebit) &&
+            Objects.equals(this.isInvestmentTrade, tradeTypeDTO.isInvestmentTrade) &&
+            Objects.equals(this.isLoanTrade, tradeTypeDTO.isLoanTrade) &&
+            Objects.equals(this.isNetMarkTrade, tradeTypeDTO.isNetMarkTrade) &&
+            Objects.equals(this.loanTrade, tradeTypeDTO.loanTrade) &&
+            Objects.equals(this.netMarkTrade, tradeTypeDTO.netMarkTrade) &&
+            Objects.equals(this.sortTitle, tradeTypeDTO.sortTitle) &&
+            Objects.equals(this.sortValue, tradeTypeDTO.sortValue) &&
+            Objects.equals(this.tradeTypeId, tradeTypeDTO.tradeTypeId) &&
+            Objects.equals(this.tradeTypeName, tradeTypeDTO.tradeTypeName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, accounting, allowFuture, allowPast, borrowTrade, categoryGroup,
+            collateralTrade, credit, debit, groupTypeName, investmentTrade, isAccounting, isBorrowTrade,
+            isCollateralTrade, isCredit, isDebit, isInvestmentTrade, isLoanTrade, isNetMarkTrade, loanTrade,
+            netMarkTrade, sortTitle, sortValue, tradeTypeId, tradeTypeName);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TradeTypeDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    accounting: ").append(toIndentedString(accounting)).append("\n");
+        sb.append("    allowFuture: ").append(toIndentedString(allowFuture)).append("\n");
+        sb.append("    allowPast: ").append(toIndentedString(allowPast)).append("\n");
+        sb.append("    borrowTrade: ").append(toIndentedString(borrowTrade)).append("\n");
+        sb.append("    categoryGroup: ").append(toIndentedString(categoryGroup)).append("\n");
+        sb.append("    collateralTrade: ").append(toIndentedString(collateralTrade)).append("\n");
+        sb.append("    credit: ").append(toIndentedString(credit)).append("\n");
+        sb.append("    debit: ").append(toIndentedString(debit)).append("\n");
+        sb.append("    groupTypeName: ").append(toIndentedString(groupTypeName)).append("\n");
+        sb.append("    investmentTrade: ").append(toIndentedString(investmentTrade)).append("\n");
+        sb.append("    isAccounting: ").append(toIndentedString(isAccounting)).append("\n");
+        sb.append("    isBorrowTrade: ").append(toIndentedString(isBorrowTrade)).append("\n");
+        sb.append("    isCollateralTrade: ").append(toIndentedString(isCollateralTrade)).append("\n");
+        sb.append("    isCredit: ").append(toIndentedString(isCredit)).append("\n");
+        sb.append("    isDebit: ").append(toIndentedString(isDebit)).append("\n");
+        sb.append("    isInvestmentTrade: ").append(toIndentedString(isInvestmentTrade)).append("\n");
+        sb.append("    isLoanTrade: ").append(toIndentedString(isLoanTrade)).append("\n");
+        sb.append("    isNetMarkTrade: ").append(toIndentedString(isNetMarkTrade)).append("\n");
+        sb.append("    loanTrade: ").append(toIndentedString(loanTrade)).append("\n");
+        sb.append("    netMarkTrade: ").append(toIndentedString(netMarkTrade)).append("\n");
+        sb.append("    sortTitle: ").append(toIndentedString(sortTitle)).append("\n");
+        sb.append("    sortValue: ").append(toIndentedString(sortValue)).append("\n");
+        sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
+        sb.append("    tradeTypeName: ").append(toIndentedString(tradeTypeName)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

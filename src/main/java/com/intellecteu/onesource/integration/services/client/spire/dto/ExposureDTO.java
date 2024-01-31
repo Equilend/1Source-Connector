@@ -21,643 +21,672 @@ import java.util.Objects;
 /**
  * ExposureDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class ExposureDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("accountId")
-  private Long accountId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("categoryId")
-  private Integer categoryId = null;
+    @JsonProperty("accountId")
+    private Long accountId = null;
 
-  @JsonProperty("counterpartyId")
-  private Long counterpartyId = null;
+    @JsonProperty("categoryId")
+    private Integer categoryId = null;
 
-  @JsonProperty("cpHaircut")
-  private Double cpHaircut = null;
+    @JsonProperty("counterpartyId")
+    private Long counterpartyId = null;
 
-  @JsonProperty("cpMarkRoundTo")
-  private Integer cpMarkRoundTo = null;
+    @JsonProperty("cpHaircut")
+    private Double cpHaircut = null;
 
-  @JsonProperty("cpMaxPrice")
-  private Long cpMaxPrice = null;
+    @JsonProperty("cpMarkRoundTo")
+    private Integer cpMarkRoundTo = null;
 
-  @JsonProperty("cpMinPrice")
-  private Integer cpMinPrice = null;
+    @JsonProperty("cpMaxPrice")
+    private Long cpMaxPrice = null;
 
-  @JsonProperty("cpRoundUpMin")
-  private Double cpRoundUpMin = null;
+    @JsonProperty("cpMinPrice")
+    private Integer cpMinPrice = null;
 
-  @JsonProperty("currencyId")
-  private Integer currencyId = null;
+    @JsonProperty("cpRoundUpMin")
+    private Double cpRoundUpMin = null;
 
-  @JsonProperty("depoId")
-  private Integer depoId = null;
+    @JsonProperty("currencyId")
+    private Integer currencyId = null;
 
-  @JsonProperty("description")
-  private String description = null;
+    @JsonProperty("depoId")
+    private Integer depoId = null;
 
-  @JsonProperty("expModuleId")
-  private Long expModuleId = null;
+    @JsonProperty("description")
+    private String description = null;
 
-  @JsonProperty("exposureId")
-  private Long exposureId = null;
+    @JsonProperty("expModuleId")
+    private Long expModuleId = null;
 
-  @JsonProperty("includeResidualAccruals")
-  private Boolean includeResidualAccruals = null;
+    @JsonProperty("exposureId")
+    private Long exposureId = null;
 
-  @JsonProperty("initMarkRoundTo")
-  private Integer initMarkRoundTo = null;
+    @JsonProperty("includeResidualAccruals")
+    private Boolean includeResidualAccruals = null;
 
-  @JsonProperty("initRoundUpMin")
-  private Double initRoundUpMin = null;
+    @JsonProperty("initMarkRoundTo")
+    private Integer initMarkRoundTo = null;
 
-  @JsonProperty("intInHaircut")
-  private Boolean intInHaircut = null;
+    @JsonProperty("initRoundUpMin")
+    private Double initRoundUpMin = null;
 
-  @JsonProperty("maxMaturity")
-  private Integer maxMaturity = null;
+    @JsonProperty("intInHaircut")
+    private Boolean intInHaircut = null;
 
-  @JsonProperty("minMark")
-  private Double minMark = null;
+    @JsonProperty("maxMaturity")
+    private Integer maxMaturity = null;
 
-  @JsonProperty("minMarkAmount")
-  private Long minMarkAmount = null;
+    @JsonProperty("minMark")
+    private Double minMark = null;
 
-  @JsonProperty("positionTypeId")
-  private Integer positionTypeId = null;
+    @JsonProperty("minMarkAmount")
+    private Long minMarkAmount = null;
 
-  @JsonProperty("xpHaircut")
-  private Double xpHaircut = null;
+    @JsonProperty("positionTypeId")
+    private Integer positionTypeId = null;
 
-  @JsonProperty("xpMarkRoundTo")
-  private Integer xpMarkRoundTo = null;
+    @JsonProperty("xpHaircut")
+    private Double xpHaircut = null;
 
-  @JsonProperty("xpMinPrice")
-  private Integer xpMinPrice = null;
+    @JsonProperty("xpMarkRoundTo")
+    private Integer xpMarkRoundTo = null;
 
-  @JsonProperty("xpRoundUpMin")
-  private Double xpRoundUpMin = null;
+    @JsonProperty("xpMinPrice")
+    private Integer xpMinPrice = null;
 
-  public ExposureDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("xpRoundUpMin")
+    private Double xpRoundUpMin = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public ExposureDTO accountId(Long accountId) {
-    this.accountId = accountId;
-    return this;
-  }
-
-   /**
-   * Get accountId
-   * @return accountId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getAccountId() {
-    return accountId;
-  }
-
-  public void setAccountId(Long accountId) {
-    this.accountId = accountId;
-  }
-
-  public ExposureDTO categoryId(Integer categoryId) {
-    this.categoryId = categoryId;
-    return this;
-  }
-
-   /**
-   * Get categoryId
-   * @return categoryId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCategoryId() {
-    return categoryId;
-  }
-
-  public void setCategoryId(Integer categoryId) {
-    this.categoryId = categoryId;
-  }
-
-  public ExposureDTO counterpartyId(Long counterpartyId) {
-    this.counterpartyId = counterpartyId;
-    return this;
-  }
-
-   /**
-   * Get counterpartyId
-   * @return counterpartyId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getCounterpartyId() {
-    return counterpartyId;
-  }
-
-  public void setCounterpartyId(Long counterpartyId) {
-    this.counterpartyId = counterpartyId;
-  }
-
-  public ExposureDTO cpHaircut(Double cpHaircut) {
-    this.cpHaircut = cpHaircut;
-    return this;
-  }
-
-   /**
-   * Get cpHaircut
-   * @return cpHaircut
-  **/
-  @ApiModelProperty(value = "")
-  public Double getCpHaircut() {
-    return cpHaircut;
-  }
-
-  public void setCpHaircut(Double cpHaircut) {
-    this.cpHaircut = cpHaircut;
-  }
-
-  public ExposureDTO cpMarkRoundTo(Integer cpMarkRoundTo) {
-    this.cpMarkRoundTo = cpMarkRoundTo;
-    return this;
-  }
-
-   /**
-   * Get cpMarkRoundTo
-   * @return cpMarkRoundTo
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCpMarkRoundTo() {
-    return cpMarkRoundTo;
-  }
-
-  public void setCpMarkRoundTo(Integer cpMarkRoundTo) {
-    this.cpMarkRoundTo = cpMarkRoundTo;
-  }
-
-  public ExposureDTO cpMaxPrice(Long cpMaxPrice) {
-    this.cpMaxPrice = cpMaxPrice;
-    return this;
-  }
-
-   /**
-   * Get cpMaxPrice
-   * @return cpMaxPrice
-  **/
-  @ApiModelProperty(value = "")
-  public Long getCpMaxPrice() {
-    return cpMaxPrice;
-  }
-
-  public void setCpMaxPrice(Long cpMaxPrice) {
-    this.cpMaxPrice = cpMaxPrice;
-  }
-
-  public ExposureDTO cpMinPrice(Integer cpMinPrice) {
-    this.cpMinPrice = cpMinPrice;
-    return this;
-  }
-
-   /**
-   * Get cpMinPrice
-   * @return cpMinPrice
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCpMinPrice() {
-    return cpMinPrice;
-  }
-
-  public void setCpMinPrice(Integer cpMinPrice) {
-    this.cpMinPrice = cpMinPrice;
-  }
-
-  public ExposureDTO cpRoundUpMin(Double cpRoundUpMin) {
-    this.cpRoundUpMin = cpRoundUpMin;
-    return this;
-  }
-
-   /**
-   * Get cpRoundUpMin
-   * @return cpRoundUpMin
-  **/
-  @ApiModelProperty(value = "")
-  public Double getCpRoundUpMin() {
-    return cpRoundUpMin;
-  }
-
-  public void setCpRoundUpMin(Double cpRoundUpMin) {
-    this.cpRoundUpMin = cpRoundUpMin;
-  }
-
-  public ExposureDTO currencyId(Integer currencyId) {
-    this.currencyId = currencyId;
-    return this;
-  }
-
-   /**
-   * Get currencyId
-   * @return currencyId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCurrencyId() {
-    return currencyId;
-  }
-
-  public void setCurrencyId(Integer currencyId) {
-    this.currencyId = currencyId;
-  }
-
-  public ExposureDTO depoId(Integer depoId) {
-    this.depoId = depoId;
-    return this;
-  }
-
-   /**
-   * Get depoId
-   * @return depoId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getDepoId() {
-    return depoId;
-  }
-
-  public void setDepoId(Integer depoId) {
-    this.depoId = depoId;
-  }
-
-  public ExposureDTO description(String description) {
-    this.description = description;
-    return this;
-  }
-
-   /**
-   * Get description
-   * @return description
-  **/
-  @ApiModelProperty(value = "")
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public ExposureDTO expModuleId(Long expModuleId) {
-    this.expModuleId = expModuleId;
-    return this;
-  }
-
-   /**
-   * Get expModuleId
-   * @return expModuleId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getExpModuleId() {
-    return expModuleId;
-  }
-
-  public void setExpModuleId(Long expModuleId) {
-    this.expModuleId = expModuleId;
-  }
-
-  public ExposureDTO exposureId(Long exposureId) {
-    this.exposureId = exposureId;
-    return this;
-  }
-
-   /**
-   * Get exposureId
-   * @return exposureId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getExposureId() {
-    return exposureId;
-  }
-
-  public void setExposureId(Long exposureId) {
-    this.exposureId = exposureId;
-  }
-
-  public ExposureDTO includeResidualAccruals(Boolean includeResidualAccruals) {
-    this.includeResidualAccruals = includeResidualAccruals;
-    return this;
-  }
-
-   /**
-   * Get includeResidualAccruals
-   * @return includeResidualAccruals
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIncludeResidualAccruals() {
-    return includeResidualAccruals;
-  }
-
-  public void setIncludeResidualAccruals(Boolean includeResidualAccruals) {
-    this.includeResidualAccruals = includeResidualAccruals;
-  }
-
-  public ExposureDTO initMarkRoundTo(Integer initMarkRoundTo) {
-    this.initMarkRoundTo = initMarkRoundTo;
-    return this;
-  }
-
-   /**
-   * Get initMarkRoundTo
-   * @return initMarkRoundTo
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getInitMarkRoundTo() {
-    return initMarkRoundTo;
-  }
-
-  public void setInitMarkRoundTo(Integer initMarkRoundTo) {
-    this.initMarkRoundTo = initMarkRoundTo;
-  }
-
-  public ExposureDTO initRoundUpMin(Double initRoundUpMin) {
-    this.initRoundUpMin = initRoundUpMin;
-    return this;
-  }
-
-   /**
-   * Get initRoundUpMin
-   * @return initRoundUpMin
-  **/
-  @ApiModelProperty(value = "")
-  public Double getInitRoundUpMin() {
-    return initRoundUpMin;
-  }
-
-  public void setInitRoundUpMin(Double initRoundUpMin) {
-    this.initRoundUpMin = initRoundUpMin;
-  }
-
-  public ExposureDTO intInHaircut(Boolean intInHaircut) {
-    this.intInHaircut = intInHaircut;
-    return this;
-  }
-
-   /**
-   * Get intInHaircut
-   * @return intInHaircut
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIntInHaircut() {
-    return intInHaircut;
-  }
-
-  public void setIntInHaircut(Boolean intInHaircut) {
-    this.intInHaircut = intInHaircut;
-  }
-
-  public ExposureDTO maxMaturity(Integer maxMaturity) {
-    this.maxMaturity = maxMaturity;
-    return this;
-  }
-
-   /**
-   * Get maxMaturity
-   * @return maxMaturity
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getMaxMaturity() {
-    return maxMaturity;
-  }
-
-  public void setMaxMaturity(Integer maxMaturity) {
-    this.maxMaturity = maxMaturity;
-  }
-
-  public ExposureDTO minMark(Double minMark) {
-    this.minMark = minMark;
-    return this;
-  }
-
-   /**
-   * Get minMark
-   * @return minMark
-  **/
-  @ApiModelProperty(value = "")
-  public Double getMinMark() {
-    return minMark;
-  }
-
-  public void setMinMark(Double minMark) {
-    this.minMark = minMark;
-  }
-
-  public ExposureDTO minMarkAmount(Long minMarkAmount) {
-    this.minMarkAmount = minMarkAmount;
-    return this;
-  }
-
-   /**
-   * Get minMarkAmount
-   * @return minMarkAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Long getMinMarkAmount() {
-    return minMarkAmount;
-  }
-
-  public void setMinMarkAmount(Long minMarkAmount) {
-    this.minMarkAmount = minMarkAmount;
-  }
-
-  public ExposureDTO positionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-    return this;
-  }
-
-   /**
-   * Get positionTypeId
-   * @return positionTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getPositionTypeId() {
-    return positionTypeId;
-  }
-
-  public void setPositionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-  }
-
-  public ExposureDTO xpHaircut(Double xpHaircut) {
-    this.xpHaircut = xpHaircut;
-    return this;
-  }
-
-   /**
-   * Get xpHaircut
-   * @return xpHaircut
-  **/
-  @ApiModelProperty(value = "")
-  public Double getXpHaircut() {
-    return xpHaircut;
-  }
-
-  public void setXpHaircut(Double xpHaircut) {
-    this.xpHaircut = xpHaircut;
-  }
-
-  public ExposureDTO xpMarkRoundTo(Integer xpMarkRoundTo) {
-    this.xpMarkRoundTo = xpMarkRoundTo;
-    return this;
-  }
-
-   /**
-   * Get xpMarkRoundTo
-   * @return xpMarkRoundTo
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getXpMarkRoundTo() {
-    return xpMarkRoundTo;
-  }
-
-  public void setXpMarkRoundTo(Integer xpMarkRoundTo) {
-    this.xpMarkRoundTo = xpMarkRoundTo;
-  }
-
-  public ExposureDTO xpMinPrice(Integer xpMinPrice) {
-    this.xpMinPrice = xpMinPrice;
-    return this;
-  }
-
-   /**
-   * Get xpMinPrice
-   * @return xpMinPrice
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getXpMinPrice() {
-    return xpMinPrice;
-  }
-
-  public void setXpMinPrice(Integer xpMinPrice) {
-    this.xpMinPrice = xpMinPrice;
-  }
-
-  public ExposureDTO xpRoundUpMin(Double xpRoundUpMin) {
-    this.xpRoundUpMin = xpRoundUpMin;
-    return this;
-  }
-
-   /**
-   * Get xpRoundUpMin
-   * @return xpRoundUpMin
-  **/
-  @ApiModelProperty(value = "")
-  public Double getXpRoundUpMin() {
-    return xpRoundUpMin;
-  }
-
-  public void setXpRoundUpMin(Double xpRoundUpMin) {
-    this.xpRoundUpMin = xpRoundUpMin;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public ExposureDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    ExposureDTO exposureDTO = (ExposureDTO) o;
-    return Objects.equals(this.qualifiedName, exposureDTO.qualifiedName) &&
-        Objects.equals(this.accountId, exposureDTO.accountId) &&
-        Objects.equals(this.categoryId, exposureDTO.categoryId) &&
-        Objects.equals(this.counterpartyId, exposureDTO.counterpartyId) &&
-        Objects.equals(this.cpHaircut, exposureDTO.cpHaircut) &&
-        Objects.equals(this.cpMarkRoundTo, exposureDTO.cpMarkRoundTo) &&
-        Objects.equals(this.cpMaxPrice, exposureDTO.cpMaxPrice) &&
-        Objects.equals(this.cpMinPrice, exposureDTO.cpMinPrice) &&
-        Objects.equals(this.cpRoundUpMin, exposureDTO.cpRoundUpMin) &&
-        Objects.equals(this.currencyId, exposureDTO.currencyId) &&
-        Objects.equals(this.depoId, exposureDTO.depoId) &&
-        Objects.equals(this.description, exposureDTO.description) &&
-        Objects.equals(this.expModuleId, exposureDTO.expModuleId) &&
-        Objects.equals(this.exposureId, exposureDTO.exposureId) &&
-        Objects.equals(this.includeResidualAccruals, exposureDTO.includeResidualAccruals) &&
-        Objects.equals(this.initMarkRoundTo, exposureDTO.initMarkRoundTo) &&
-        Objects.equals(this.initRoundUpMin, exposureDTO.initRoundUpMin) &&
-        Objects.equals(this.intInHaircut, exposureDTO.intInHaircut) &&
-        Objects.equals(this.maxMaturity, exposureDTO.maxMaturity) &&
-        Objects.equals(this.minMark, exposureDTO.minMark) &&
-        Objects.equals(this.minMarkAmount, exposureDTO.minMarkAmount) &&
-        Objects.equals(this.positionTypeId, exposureDTO.positionTypeId) &&
-        Objects.equals(this.xpHaircut, exposureDTO.xpHaircut) &&
-        Objects.equals(this.xpMarkRoundTo, exposureDTO.xpMarkRoundTo) &&
-        Objects.equals(this.xpMinPrice, exposureDTO.xpMinPrice) &&
-        Objects.equals(this.xpRoundUpMin, exposureDTO.xpRoundUpMin);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, accountId, categoryId, counterpartyId, cpHaircut, cpMarkRoundTo, cpMaxPrice, cpMinPrice, cpRoundUpMin, currencyId, depoId, description, expModuleId, exposureId, includeResidualAccruals, initMarkRoundTo, initRoundUpMin, intInHaircut, maxMaturity, minMark, minMarkAmount, positionTypeId, xpHaircut, xpMarkRoundTo, xpMinPrice, xpRoundUpMin);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ExposureDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
-    sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
-    sb.append("    cpHaircut: ").append(toIndentedString(cpHaircut)).append("\n");
-    sb.append("    cpMarkRoundTo: ").append(toIndentedString(cpMarkRoundTo)).append("\n");
-    sb.append("    cpMaxPrice: ").append(toIndentedString(cpMaxPrice)).append("\n");
-    sb.append("    cpMinPrice: ").append(toIndentedString(cpMinPrice)).append("\n");
-    sb.append("    cpRoundUpMin: ").append(toIndentedString(cpRoundUpMin)).append("\n");
-    sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    expModuleId: ").append(toIndentedString(expModuleId)).append("\n");
-    sb.append("    exposureId: ").append(toIndentedString(exposureId)).append("\n");
-    sb.append("    includeResidualAccruals: ").append(toIndentedString(includeResidualAccruals)).append("\n");
-    sb.append("    initMarkRoundTo: ").append(toIndentedString(initMarkRoundTo)).append("\n");
-    sb.append("    initRoundUpMin: ").append(toIndentedString(initRoundUpMin)).append("\n");
-    sb.append("    intInHaircut: ").append(toIndentedString(intInHaircut)).append("\n");
-    sb.append("    maxMaturity: ").append(toIndentedString(maxMaturity)).append("\n");
-    sb.append("    minMark: ").append(toIndentedString(minMark)).append("\n");
-    sb.append("    minMarkAmount: ").append(toIndentedString(minMarkAmount)).append("\n");
-    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-    sb.append("    xpHaircut: ").append(toIndentedString(xpHaircut)).append("\n");
-    sb.append("    xpMarkRoundTo: ").append(toIndentedString(xpMarkRoundTo)).append("\n");
-    sb.append("    xpMinPrice: ").append(toIndentedString(xpMinPrice)).append("\n");
-    sb.append("    xpRoundUpMin: ").append(toIndentedString(xpRoundUpMin)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public ExposureDTO accountId(Long accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    /**
+     * Get accountId
+     *
+     * @return accountId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public ExposureDTO categoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+        return this;
+    }
+
+    /**
+     * Get categoryId
+     *
+     * @return categoryId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Integer categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public ExposureDTO counterpartyId(Long counterpartyId) {
+        this.counterpartyId = counterpartyId;
+        return this;
+    }
+
+    /**
+     * Get counterpartyId
+     *
+     * @return counterpartyId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getCounterpartyId() {
+        return counterpartyId;
+    }
+
+    public void setCounterpartyId(Long counterpartyId) {
+        this.counterpartyId = counterpartyId;
+    }
+
+    public ExposureDTO cpHaircut(Double cpHaircut) {
+        this.cpHaircut = cpHaircut;
+        return this;
+    }
+
+    /**
+     * Get cpHaircut
+     *
+     * @return cpHaircut
+     **/
+    @ApiModelProperty(value = "")
+    public Double getCpHaircut() {
+        return cpHaircut;
+    }
+
+    public void setCpHaircut(Double cpHaircut) {
+        this.cpHaircut = cpHaircut;
+    }
+
+    public ExposureDTO cpMarkRoundTo(Integer cpMarkRoundTo) {
+        this.cpMarkRoundTo = cpMarkRoundTo;
+        return this;
+    }
+
+    /**
+     * Get cpMarkRoundTo
+     *
+     * @return cpMarkRoundTo
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCpMarkRoundTo() {
+        return cpMarkRoundTo;
+    }
+
+    public void setCpMarkRoundTo(Integer cpMarkRoundTo) {
+        this.cpMarkRoundTo = cpMarkRoundTo;
+    }
+
+    public ExposureDTO cpMaxPrice(Long cpMaxPrice) {
+        this.cpMaxPrice = cpMaxPrice;
+        return this;
+    }
+
+    /**
+     * Get cpMaxPrice
+     *
+     * @return cpMaxPrice
+     **/
+    @ApiModelProperty(value = "")
+    public Long getCpMaxPrice() {
+        return cpMaxPrice;
+    }
+
+    public void setCpMaxPrice(Long cpMaxPrice) {
+        this.cpMaxPrice = cpMaxPrice;
+    }
+
+    public ExposureDTO cpMinPrice(Integer cpMinPrice) {
+        this.cpMinPrice = cpMinPrice;
+        return this;
+    }
+
+    /**
+     * Get cpMinPrice
+     *
+     * @return cpMinPrice
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCpMinPrice() {
+        return cpMinPrice;
+    }
+
+    public void setCpMinPrice(Integer cpMinPrice) {
+        this.cpMinPrice = cpMinPrice;
+    }
+
+    public ExposureDTO cpRoundUpMin(Double cpRoundUpMin) {
+        this.cpRoundUpMin = cpRoundUpMin;
+        return this;
+    }
+
+    /**
+     * Get cpRoundUpMin
+     *
+     * @return cpRoundUpMin
+     **/
+    @ApiModelProperty(value = "")
+    public Double getCpRoundUpMin() {
+        return cpRoundUpMin;
+    }
+
+    public void setCpRoundUpMin(Double cpRoundUpMin) {
+        this.cpRoundUpMin = cpRoundUpMin;
+    }
+
+    public ExposureDTO currencyId(Integer currencyId) {
+        this.currencyId = currencyId;
+        return this;
+    }
+
+    /**
+     * Get currencyId
+     *
+     * @return currencyId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(Integer currencyId) {
+        this.currencyId = currencyId;
+    }
+
+    public ExposureDTO depoId(Integer depoId) {
+        this.depoId = depoId;
+        return this;
+    }
+
+    /**
+     * Get depoId
+     *
+     * @return depoId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getDepoId() {
+        return depoId;
+    }
+
+    public void setDepoId(Integer depoId) {
+        this.depoId = depoId;
+    }
+
+    public ExposureDTO description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return description
+     **/
+    @ApiModelProperty(value = "")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public ExposureDTO expModuleId(Long expModuleId) {
+        this.expModuleId = expModuleId;
+        return this;
+    }
+
+    /**
+     * Get expModuleId
+     *
+     * @return expModuleId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getExpModuleId() {
+        return expModuleId;
+    }
+
+    public void setExpModuleId(Long expModuleId) {
+        this.expModuleId = expModuleId;
+    }
+
+    public ExposureDTO exposureId(Long exposureId) {
+        this.exposureId = exposureId;
+        return this;
+    }
+
+    /**
+     * Get exposureId
+     *
+     * @return exposureId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getExposureId() {
+        return exposureId;
+    }
+
+    public void setExposureId(Long exposureId) {
+        this.exposureId = exposureId;
+    }
+
+    public ExposureDTO includeResidualAccruals(Boolean includeResidualAccruals) {
+        this.includeResidualAccruals = includeResidualAccruals;
+        return this;
+    }
+
+    /**
+     * Get includeResidualAccruals
+     *
+     * @return includeResidualAccruals
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIncludeResidualAccruals() {
+        return includeResidualAccruals;
+    }
+
+    public void setIncludeResidualAccruals(Boolean includeResidualAccruals) {
+        this.includeResidualAccruals = includeResidualAccruals;
+    }
+
+    public ExposureDTO initMarkRoundTo(Integer initMarkRoundTo) {
+        this.initMarkRoundTo = initMarkRoundTo;
+        return this;
+    }
+
+    /**
+     * Get initMarkRoundTo
+     *
+     * @return initMarkRoundTo
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getInitMarkRoundTo() {
+        return initMarkRoundTo;
+    }
+
+    public void setInitMarkRoundTo(Integer initMarkRoundTo) {
+        this.initMarkRoundTo = initMarkRoundTo;
+    }
+
+    public ExposureDTO initRoundUpMin(Double initRoundUpMin) {
+        this.initRoundUpMin = initRoundUpMin;
+        return this;
+    }
+
+    /**
+     * Get initRoundUpMin
+     *
+     * @return initRoundUpMin
+     **/
+    @ApiModelProperty(value = "")
+    public Double getInitRoundUpMin() {
+        return initRoundUpMin;
+    }
+
+    public void setInitRoundUpMin(Double initRoundUpMin) {
+        this.initRoundUpMin = initRoundUpMin;
+    }
+
+    public ExposureDTO intInHaircut(Boolean intInHaircut) {
+        this.intInHaircut = intInHaircut;
+        return this;
+    }
+
+    /**
+     * Get intInHaircut
+     *
+     * @return intInHaircut
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIntInHaircut() {
+        return intInHaircut;
+    }
+
+    public void setIntInHaircut(Boolean intInHaircut) {
+        this.intInHaircut = intInHaircut;
+    }
+
+    public ExposureDTO maxMaturity(Integer maxMaturity) {
+        this.maxMaturity = maxMaturity;
+        return this;
+    }
+
+    /**
+     * Get maxMaturity
+     *
+     * @return maxMaturity
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getMaxMaturity() {
+        return maxMaturity;
+    }
+
+    public void setMaxMaturity(Integer maxMaturity) {
+        this.maxMaturity = maxMaturity;
+    }
+
+    public ExposureDTO minMark(Double minMark) {
+        this.minMark = minMark;
+        return this;
+    }
+
+    /**
+     * Get minMark
+     *
+     * @return minMark
+     **/
+    @ApiModelProperty(value = "")
+    public Double getMinMark() {
+        return minMark;
+    }
+
+    public void setMinMark(Double minMark) {
+        this.minMark = minMark;
+    }
+
+    public ExposureDTO minMarkAmount(Long minMarkAmount) {
+        this.minMarkAmount = minMarkAmount;
+        return this;
+    }
+
+    /**
+     * Get minMarkAmount
+     *
+     * @return minMarkAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Long getMinMarkAmount() {
+        return minMarkAmount;
+    }
+
+    public void setMinMarkAmount(Long minMarkAmount) {
+        this.minMarkAmount = minMarkAmount;
+    }
+
+    public ExposureDTO positionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+        return this;
+    }
+
+    /**
+     * Get positionTypeId
+     *
+     * @return positionTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getPositionTypeId() {
+        return positionTypeId;
+    }
+
+    public void setPositionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+    }
+
+    public ExposureDTO xpHaircut(Double xpHaircut) {
+        this.xpHaircut = xpHaircut;
+        return this;
+    }
+
+    /**
+     * Get xpHaircut
+     *
+     * @return xpHaircut
+     **/
+    @ApiModelProperty(value = "")
+    public Double getXpHaircut() {
+        return xpHaircut;
+    }
+
+    public void setXpHaircut(Double xpHaircut) {
+        this.xpHaircut = xpHaircut;
+    }
+
+    public ExposureDTO xpMarkRoundTo(Integer xpMarkRoundTo) {
+        this.xpMarkRoundTo = xpMarkRoundTo;
+        return this;
+    }
+
+    /**
+     * Get xpMarkRoundTo
+     *
+     * @return xpMarkRoundTo
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getXpMarkRoundTo() {
+        return xpMarkRoundTo;
+    }
+
+    public void setXpMarkRoundTo(Integer xpMarkRoundTo) {
+        this.xpMarkRoundTo = xpMarkRoundTo;
+    }
+
+    public ExposureDTO xpMinPrice(Integer xpMinPrice) {
+        this.xpMinPrice = xpMinPrice;
+        return this;
+    }
+
+    /**
+     * Get xpMinPrice
+     *
+     * @return xpMinPrice
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getXpMinPrice() {
+        return xpMinPrice;
+    }
+
+    public void setXpMinPrice(Integer xpMinPrice) {
+        this.xpMinPrice = xpMinPrice;
+    }
+
+    public ExposureDTO xpRoundUpMin(Double xpRoundUpMin) {
+        this.xpRoundUpMin = xpRoundUpMin;
+        return this;
+    }
+
+    /**
+     * Get xpRoundUpMin
+     *
+     * @return xpRoundUpMin
+     **/
+    @ApiModelProperty(value = "")
+    public Double getXpRoundUpMin() {
+        return xpRoundUpMin;
+    }
+
+    public void setXpRoundUpMin(Double xpRoundUpMin) {
+        this.xpRoundUpMin = xpRoundUpMin;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ExposureDTO exposureDTO = (ExposureDTO) o;
+        return Objects.equals(this.qualifiedName, exposureDTO.qualifiedName) &&
+            Objects.equals(this.accountId, exposureDTO.accountId) &&
+            Objects.equals(this.categoryId, exposureDTO.categoryId) &&
+            Objects.equals(this.counterpartyId, exposureDTO.counterpartyId) &&
+            Objects.equals(this.cpHaircut, exposureDTO.cpHaircut) &&
+            Objects.equals(this.cpMarkRoundTo, exposureDTO.cpMarkRoundTo) &&
+            Objects.equals(this.cpMaxPrice, exposureDTO.cpMaxPrice) &&
+            Objects.equals(this.cpMinPrice, exposureDTO.cpMinPrice) &&
+            Objects.equals(this.cpRoundUpMin, exposureDTO.cpRoundUpMin) &&
+            Objects.equals(this.currencyId, exposureDTO.currencyId) &&
+            Objects.equals(this.depoId, exposureDTO.depoId) &&
+            Objects.equals(this.description, exposureDTO.description) &&
+            Objects.equals(this.expModuleId, exposureDTO.expModuleId) &&
+            Objects.equals(this.exposureId, exposureDTO.exposureId) &&
+            Objects.equals(this.includeResidualAccruals, exposureDTO.includeResidualAccruals) &&
+            Objects.equals(this.initMarkRoundTo, exposureDTO.initMarkRoundTo) &&
+            Objects.equals(this.initRoundUpMin, exposureDTO.initRoundUpMin) &&
+            Objects.equals(this.intInHaircut, exposureDTO.intInHaircut) &&
+            Objects.equals(this.maxMaturity, exposureDTO.maxMaturity) &&
+            Objects.equals(this.minMark, exposureDTO.minMark) &&
+            Objects.equals(this.minMarkAmount, exposureDTO.minMarkAmount) &&
+            Objects.equals(this.positionTypeId, exposureDTO.positionTypeId) &&
+            Objects.equals(this.xpHaircut, exposureDTO.xpHaircut) &&
+            Objects.equals(this.xpMarkRoundTo, exposureDTO.xpMarkRoundTo) &&
+            Objects.equals(this.xpMinPrice, exposureDTO.xpMinPrice) &&
+            Objects.equals(this.xpRoundUpMin, exposureDTO.xpRoundUpMin);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, accountId, categoryId, counterpartyId, cpHaircut, cpMarkRoundTo, cpMaxPrice,
+            cpMinPrice, cpRoundUpMin, currencyId, depoId, description, expModuleId, exposureId, includeResidualAccruals,
+            initMarkRoundTo, initRoundUpMin, intInHaircut, maxMaturity, minMark, minMarkAmount, positionTypeId,
+            xpHaircut, xpMarkRoundTo, xpMinPrice, xpRoundUpMin);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class ExposureDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+        sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
+        sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
+        sb.append("    cpHaircut: ").append(toIndentedString(cpHaircut)).append("\n");
+        sb.append("    cpMarkRoundTo: ").append(toIndentedString(cpMarkRoundTo)).append("\n");
+        sb.append("    cpMaxPrice: ").append(toIndentedString(cpMaxPrice)).append("\n");
+        sb.append("    cpMinPrice: ").append(toIndentedString(cpMinPrice)).append("\n");
+        sb.append("    cpRoundUpMin: ").append(toIndentedString(cpRoundUpMin)).append("\n");
+        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
+        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+        sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    expModuleId: ").append(toIndentedString(expModuleId)).append("\n");
+        sb.append("    exposureId: ").append(toIndentedString(exposureId)).append("\n");
+        sb.append("    includeResidualAccruals: ").append(toIndentedString(includeResidualAccruals)).append("\n");
+        sb.append("    initMarkRoundTo: ").append(toIndentedString(initMarkRoundTo)).append("\n");
+        sb.append("    initRoundUpMin: ").append(toIndentedString(initRoundUpMin)).append("\n");
+        sb.append("    intInHaircut: ").append(toIndentedString(intInHaircut)).append("\n");
+        sb.append("    maxMaturity: ").append(toIndentedString(maxMaturity)).append("\n");
+        sb.append("    minMark: ").append(toIndentedString(minMark)).append("\n");
+        sb.append("    minMarkAmount: ").append(toIndentedString(minMarkAmount)).append("\n");
+        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+        sb.append("    xpHaircut: ").append(toIndentedString(xpHaircut)).append("\n");
+        sb.append("    xpMarkRoundTo: ").append(toIndentedString(xpMarkRoundTo)).append("\n");
+        sb.append("    xpMinPrice: ").append(toIndentedString(xpMinPrice)).append("\n");
+        sb.append("    xpRoundUpMin: ").append(toIndentedString(xpRoundUpMin)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

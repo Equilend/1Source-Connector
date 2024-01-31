@@ -21,91 +21,93 @@ import java.util.Objects;
 /**
  * PositionlimitusedDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class PositionlimitusedDTO {
-  @JsonProperty("id")
-  private PositionlimitusedKeyDTO id = null;
 
-  @JsonProperty("used")
-  private Double used = null;
+    @JsonProperty("id")
+    private PositionlimitusedKeyDTO id = null;
 
-  public PositionlimitusedDTO id(PositionlimitusedKeyDTO id) {
-    this.id = id;
-    return this;
-  }
+    @JsonProperty("used")
+    private Double used = null;
 
-   /**
-   * Get id
-   * @return id
-  **/
-  @ApiModelProperty(value = "")
-  public PositionlimitusedKeyDTO getId() {
-    return id;
-  }
-
-  public void setId(PositionlimitusedKeyDTO id) {
-    this.id = id;
-  }
-
-  public PositionlimitusedDTO used(Double used) {
-    this.used = used;
-    return this;
-  }
-
-   /**
-   * Get used
-   * @return used
-  **/
-  @ApiModelProperty(value = "")
-  public Double getUsed() {
-    return used;
-  }
-
-  public void setUsed(Double used) {
-    this.used = used;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public PositionlimitusedDTO id(PositionlimitusedKeyDTO id) {
+        this.id = id;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get id
+     *
+     * @return id
+     **/
+    @ApiModelProperty(value = "")
+    public PositionlimitusedKeyDTO getId() {
+        return id;
     }
-    PositionlimitusedDTO positionlimitusedDTO = (PositionlimitusedDTO) o;
-    return Objects.equals(this.id, positionlimitusedDTO.id) &&
-        Objects.equals(this.used, positionlimitusedDTO.used);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(id, used);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PositionlimitusedDTO {\n");
-    
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    used: ").append(toIndentedString(used)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setId(PositionlimitusedKeyDTO id) {
+        this.id = id;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public PositionlimitusedDTO used(Double used) {
+        this.used = used;
+        return this;
+    }
+
+    /**
+     * Get used
+     *
+     * @return used
+     **/
+    @ApiModelProperty(value = "")
+    public Double getUsed() {
+        return used;
+    }
+
+    public void setUsed(Double used) {
+        this.used = used;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionlimitusedDTO positionlimitusedDTO = (PositionlimitusedDTO) o;
+        return Objects.equals(this.id, positionlimitusedDTO.id) &&
+            Objects.equals(this.used, positionlimitusedDTO.used);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, used);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class PositionlimitusedDTO {\n");
+
+        sb.append("    id: ").append(toIndentedString(id)).append("\n");
+        sb.append("    used: ").append(toIndentedString(used)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

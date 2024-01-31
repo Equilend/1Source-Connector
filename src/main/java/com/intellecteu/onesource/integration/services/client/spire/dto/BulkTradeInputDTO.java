@@ -23,99 +23,101 @@ import java.util.Objects;
 /**
  * BulkTradeInputDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class BulkTradeInputDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("tradeInputDTOs")
-  private List<PositionTradeInputDTO> tradeInputDTOs = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  public BulkTradeInputDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("tradeInputDTOs")
+    private List<PositionTradeInputDTO> tradeInputDTOs = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public BulkTradeInputDTO tradeInputDTOs(List<PositionTradeInputDTO> tradeInputDTOs) {
-    this.tradeInputDTOs = tradeInputDTOs;
-    return this;
-  }
-
-  public BulkTradeInputDTO addTradeInputDTOsItem(PositionTradeInputDTO tradeInputDTOsItem) {
-    if (this.tradeInputDTOs == null) {
-      this.tradeInputDTOs = new ArrayList<>();
+    public BulkTradeInputDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.tradeInputDTOs.add(tradeInputDTOsItem);
-    return this;
-  }
 
-   /**
-   * Get tradeInputDTOs
-   * @return tradeInputDTOs
-  **/
-  @ApiModelProperty(value = "")
-  public List<PositionTradeInputDTO> getTradeInputDTOs() {
-    return tradeInputDTOs;
-  }
-
-  public void setTradeInputDTOs(List<PositionTradeInputDTO> tradeInputDTOs) {
-    this.tradeInputDTOs = tradeInputDTOs;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    BulkTradeInputDTO bulkTradeInputDTO = (BulkTradeInputDTO) o;
-    return Objects.equals(this.qualifiedName, bulkTradeInputDTO.qualifiedName) &&
-        Objects.equals(this.tradeInputDTOs, bulkTradeInputDTO.tradeInputDTOs);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, tradeInputDTOs);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class BulkTradeInputDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    tradeInputDTOs: ").append(toIndentedString(tradeInputDTOs)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public BulkTradeInputDTO tradeInputDTOs(List<PositionTradeInputDTO> tradeInputDTOs) {
+        this.tradeInputDTOs = tradeInputDTOs;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public BulkTradeInputDTO addTradeInputDTOsItem(PositionTradeInputDTO tradeInputDTOsItem) {
+        if (this.tradeInputDTOs == null) {
+            this.tradeInputDTOs = new ArrayList<>();
+        }
+        this.tradeInputDTOs.add(tradeInputDTOsItem);
+        return this;
+    }
+
+    /**
+     * Get tradeInputDTOs
+     *
+     * @return tradeInputDTOs
+     **/
+    @ApiModelProperty(value = "")
+    public List<PositionTradeInputDTO> getTradeInputDTOs() {
+        return tradeInputDTOs;
+    }
+
+    public void setTradeInputDTOs(List<PositionTradeInputDTO> tradeInputDTOs) {
+        this.tradeInputDTOs = tradeInputDTOs;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BulkTradeInputDTO bulkTradeInputDTO = (BulkTradeInputDTO) o;
+        return Objects.equals(this.qualifiedName, bulkTradeInputDTO.qualifiedName) &&
+            Objects.equals(this.tradeInputDTOs, bulkTradeInputDTO.tradeInputDTOs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, tradeInputDTOs);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class BulkTradeInputDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    tradeInputDTOs: ").append(toIndentedString(tradeInputDTOs)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

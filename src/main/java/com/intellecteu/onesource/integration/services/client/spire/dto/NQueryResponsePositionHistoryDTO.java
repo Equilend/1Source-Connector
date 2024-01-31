@@ -23,130 +23,133 @@ import java.util.Objects;
 /**
  * NQueryResponsePositionHistoryDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class NQueryResponsePositionHistoryDTO {
-  @JsonProperty("beans")
-  private List<PositionHistoryDTO> beans = null;
 
-  @JsonProperty("groups")
-  private List<SGroupPositionHistoryDTO> groups = null;
+    @JsonProperty("beans")
+    private List<PositionHistoryDTO> beans = null;
 
-  @JsonProperty("totalRows")
-  private Integer totalRows = null;
+    @JsonProperty("groups")
+    private List<SGroupPositionHistoryDTO> groups = null;
 
-  public NQueryResponsePositionHistoryDTO beans(List<PositionHistoryDTO> beans) {
-    this.beans = beans;
-    return this;
-  }
+    @JsonProperty("totalRows")
+    private Integer totalRows = null;
 
-  public NQueryResponsePositionHistoryDTO addBeansItem(PositionHistoryDTO beansItem) {
-    if (this.beans == null) {
-      this.beans = new ArrayList<>();
+    public NQueryResponsePositionHistoryDTO beans(List<PositionHistoryDTO> beans) {
+        this.beans = beans;
+        return this;
     }
-    this.beans.add(beansItem);
-    return this;
-  }
 
-   /**
-   * Get beans
-   * @return beans
-  **/
-  @ApiModelProperty(value = "")
-  public List<PositionHistoryDTO> getBeans() {
-    return beans;
-  }
-
-  public void setBeans(List<PositionHistoryDTO> beans) {
-    this.beans = beans;
-  }
-
-  public NQueryResponsePositionHistoryDTO groups(List<SGroupPositionHistoryDTO> groups) {
-    this.groups = groups;
-    return this;
-  }
-
-  public NQueryResponsePositionHistoryDTO addGroupsItem(SGroupPositionHistoryDTO groupsItem) {
-    if (this.groups == null) {
-      this.groups = new ArrayList<>();
+    public NQueryResponsePositionHistoryDTO addBeansItem(PositionHistoryDTO beansItem) {
+        if (this.beans == null) {
+            this.beans = new ArrayList<>();
+        }
+        this.beans.add(beansItem);
+        return this;
     }
-    this.groups.add(groupsItem);
-    return this;
-  }
 
-   /**
-   * Get groups
-   * @return groups
-  **/
-  @ApiModelProperty(value = "")
-  public List<SGroupPositionHistoryDTO> getGroups() {
-    return groups;
-  }
-
-  public void setGroups(List<SGroupPositionHistoryDTO> groups) {
-    this.groups = groups;
-  }
-
-  public NQueryResponsePositionHistoryDTO totalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-    return this;
-  }
-
-   /**
-   * Get totalRows
-   * @return totalRows
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalRows() {
-    return totalRows;
-  }
-
-  public void setTotalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get beans
+     *
+     * @return beans
+     **/
+    @ApiModelProperty(value = "")
+    public List<PositionHistoryDTO> getBeans() {
+        return beans;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setBeans(List<PositionHistoryDTO> beans) {
+        this.beans = beans;
     }
-    NQueryResponsePositionHistoryDTO nqueryResponsePositionHistoryDTO = (NQueryResponsePositionHistoryDTO) o;
-    return Objects.equals(this.beans, nqueryResponsePositionHistoryDTO.beans) &&
-        Objects.equals(this.groups, nqueryResponsePositionHistoryDTO.groups) &&
-        Objects.equals(this.totalRows, nqueryResponsePositionHistoryDTO.totalRows);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(beans, groups, totalRows);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class NQueryResponsePositionHistoryDTO {\n");
-    
-    sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
-    sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
-    sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public NQueryResponsePositionHistoryDTO groups(List<SGroupPositionHistoryDTO> groups) {
+        this.groups = groups;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public NQueryResponsePositionHistoryDTO addGroupsItem(SGroupPositionHistoryDTO groupsItem) {
+        if (this.groups == null) {
+            this.groups = new ArrayList<>();
+        }
+        this.groups.add(groupsItem);
+        return this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return groups
+     **/
+    @ApiModelProperty(value = "")
+    public List<SGroupPositionHistoryDTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<SGroupPositionHistoryDTO> groups) {
+        this.groups = groups;
+    }
+
+    public NQueryResponsePositionHistoryDTO totalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+        return this;
+    }
+
+    /**
+     * Get totalRows
+     *
+     * @return totalRows
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTotalRows() {
+        return totalRows;
+    }
+
+    public void setTotalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NQueryResponsePositionHistoryDTO nqueryResponsePositionHistoryDTO = (NQueryResponsePositionHistoryDTO) o;
+        return Objects.equals(this.beans, nqueryResponsePositionHistoryDTO.beans) &&
+            Objects.equals(this.groups, nqueryResponsePositionHistoryDTO.groups) &&
+            Objects.equals(this.totalRows, nqueryResponsePositionHistoryDTO.totalRows);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beans, groups, totalRows);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class NQueryResponsePositionHistoryDTO {\n");
+
+        sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
+        sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
+        sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

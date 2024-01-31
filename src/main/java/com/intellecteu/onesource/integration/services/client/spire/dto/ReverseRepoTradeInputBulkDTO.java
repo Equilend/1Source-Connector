@@ -23,99 +23,102 @@ import java.util.Objects;
 /**
  * ReverseRepoTradeInputBulkDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class ReverseRepoTradeInputBulkDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("revRepoTradeInputDTOs")
-  private List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  public ReverseRepoTradeInputBulkDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("revRepoTradeInputDTOs")
+    private List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public ReverseRepoTradeInputBulkDTO revRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
-    this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
-    return this;
-  }
-
-  public ReverseRepoTradeInputBulkDTO addRevRepoTradeInputDTOsItem(ReverseRepoTradeInputDTO revRepoTradeInputDTOsItem) {
-    if (this.revRepoTradeInputDTOs == null) {
-      this.revRepoTradeInputDTOs = new ArrayList<>();
+    public ReverseRepoTradeInputBulkDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.revRepoTradeInputDTOs.add(revRepoTradeInputDTOsItem);
-    return this;
-  }
 
-   /**
-   * Get revRepoTradeInputDTOs
-   * @return revRepoTradeInputDTOs
-  **/
-  @ApiModelProperty(value = "")
-  public List<ReverseRepoTradeInputDTO> getRevRepoTradeInputDTOs() {
-    return revRepoTradeInputDTOs;
-  }
-
-  public void setRevRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
-    this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    ReverseRepoTradeInputBulkDTO reverseRepoTradeInputBulkDTO = (ReverseRepoTradeInputBulkDTO) o;
-    return Objects.equals(this.qualifiedName, reverseRepoTradeInputBulkDTO.qualifiedName) &&
-        Objects.equals(this.revRepoTradeInputDTOs, reverseRepoTradeInputBulkDTO.revRepoTradeInputDTOs);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, revRepoTradeInputDTOs);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ReverseRepoTradeInputBulkDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    revRepoTradeInputDTOs: ").append(toIndentedString(revRepoTradeInputDTOs)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public ReverseRepoTradeInputBulkDTO revRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
+        this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public ReverseRepoTradeInputBulkDTO addRevRepoTradeInputDTOsItem(
+        ReverseRepoTradeInputDTO revRepoTradeInputDTOsItem) {
+        if (this.revRepoTradeInputDTOs == null) {
+            this.revRepoTradeInputDTOs = new ArrayList<>();
+        }
+        this.revRepoTradeInputDTOs.add(revRepoTradeInputDTOsItem);
+        return this;
+    }
+
+    /**
+     * Get revRepoTradeInputDTOs
+     *
+     * @return revRepoTradeInputDTOs
+     **/
+    @ApiModelProperty(value = "")
+    public List<ReverseRepoTradeInputDTO> getRevRepoTradeInputDTOs() {
+        return revRepoTradeInputDTOs;
+    }
+
+    public void setRevRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
+        this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ReverseRepoTradeInputBulkDTO reverseRepoTradeInputBulkDTO = (ReverseRepoTradeInputBulkDTO) o;
+        return Objects.equals(this.qualifiedName, reverseRepoTradeInputBulkDTO.qualifiedName) &&
+            Objects.equals(this.revRepoTradeInputDTOs, reverseRepoTradeInputBulkDTO.revRepoTradeInputDTOs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, revRepoTradeInputDTOs);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class ReverseRepoTradeInputBulkDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    revRepoTradeInputDTOs: ").append(toIndentedString(revRepoTradeInputDTOs)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

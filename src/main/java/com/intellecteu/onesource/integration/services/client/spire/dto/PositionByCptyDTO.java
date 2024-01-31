@@ -21,252 +21,262 @@ import java.util.Objects;
 /**
  * PositionByCptyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class PositionByCptyDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("avgRate")
-  private Double avgRate = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("counterparty")
-  private String counterparty = null;
+    @JsonProperty("avgRate")
+    private Double avgRate = null;
 
-  @JsonProperty("positionType")
-  private String positionType = null;
+    @JsonProperty("counterparty")
+    private String counterparty = null;
 
-  @JsonProperty("status")
-  private String status = null;
+    @JsonProperty("positionType")
+    private String positionType = null;
 
-  @JsonProperty("totalAmount")
-  private Double totalAmount = null;
+    @JsonProperty("status")
+    private String status = null;
 
-  @JsonProperty("totalDailyLoss")
-  private Double totalDailyLoss = null;
+    @JsonProperty("totalAmount")
+    private Double totalAmount = null;
 
-  @JsonProperty("totalDailyPAndL")
-  private Double totalDailyPAndL = null;
+    @JsonProperty("totalDailyLoss")
+    private Double totalDailyLoss = null;
 
-  @JsonProperty("totalDailyProfit")
-  private Double totalDailyProfit = null;
+    @JsonProperty("totalDailyPAndL")
+    private Double totalDailyPAndL = null;
 
-  public PositionByCptyDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("totalDailyProfit")
+    private Double totalDailyProfit = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public PositionByCptyDTO avgRate(Double avgRate) {
-    this.avgRate = avgRate;
-    return this;
-  }
-
-   /**
-   * Get avgRate
-   * @return avgRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAvgRate() {
-    return avgRate;
-  }
-
-  public void setAvgRate(Double avgRate) {
-    this.avgRate = avgRate;
-  }
-
-  public PositionByCptyDTO counterparty(String counterparty) {
-    this.counterparty = counterparty;
-    return this;
-  }
-
-   /**
-   * Get counterparty
-   * @return counterparty
-  **/
-  @ApiModelProperty(value = "")
-  public String getCounterparty() {
-    return counterparty;
-  }
-
-  public void setCounterparty(String counterparty) {
-    this.counterparty = counterparty;
-  }
-
-  public PositionByCptyDTO positionType(String positionType) {
-    this.positionType = positionType;
-    return this;
-  }
-
-   /**
-   * Get positionType
-   * @return positionType
-  **/
-  @ApiModelProperty(value = "")
-  public String getPositionType() {
-    return positionType;
-  }
-
-  public void setPositionType(String positionType) {
-    this.positionType = positionType;
-  }
-
-  public PositionByCptyDTO status(String status) {
-    this.status = status;
-    return this;
-  }
-
-   /**
-   * Get status
-   * @return status
-  **/
-  @ApiModelProperty(value = "")
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public PositionByCptyDTO totalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-    return this;
-  }
-
-   /**
-   * Get totalAmount
-   * @return totalAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalAmount() {
-    return totalAmount;
-  }
-
-  public void setTotalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-  }
-
-  public PositionByCptyDTO totalDailyLoss(Double totalDailyLoss) {
-    this.totalDailyLoss = totalDailyLoss;
-    return this;
-  }
-
-   /**
-   * Get totalDailyLoss
-   * @return totalDailyLoss
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyLoss() {
-    return totalDailyLoss;
-  }
-
-  public void setTotalDailyLoss(Double totalDailyLoss) {
-    this.totalDailyLoss = totalDailyLoss;
-  }
-
-  public PositionByCptyDTO totalDailyPAndL(Double totalDailyPAndL) {
-    this.totalDailyPAndL = totalDailyPAndL;
-    return this;
-  }
-
-   /**
-   * Get totalDailyPAndL
-   * @return totalDailyPAndL
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyPAndL() {
-    return totalDailyPAndL;
-  }
-
-  public void setTotalDailyPAndL(Double totalDailyPAndL) {
-    this.totalDailyPAndL = totalDailyPAndL;
-  }
-
-  public PositionByCptyDTO totalDailyProfit(Double totalDailyProfit) {
-    this.totalDailyProfit = totalDailyProfit;
-    return this;
-  }
-
-   /**
-   * Get totalDailyProfit
-   * @return totalDailyProfit
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyProfit() {
-    return totalDailyProfit;
-  }
-
-  public void setTotalDailyProfit(Double totalDailyProfit) {
-    this.totalDailyProfit = totalDailyProfit;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public PositionByCptyDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    PositionByCptyDTO positionByCptyDTO = (PositionByCptyDTO) o;
-    return Objects.equals(this.qualifiedName, positionByCptyDTO.qualifiedName) &&
-        Objects.equals(this.avgRate, positionByCptyDTO.avgRate) &&
-        Objects.equals(this.counterparty, positionByCptyDTO.counterparty) &&
-        Objects.equals(this.positionType, positionByCptyDTO.positionType) &&
-        Objects.equals(this.status, positionByCptyDTO.status) &&
-        Objects.equals(this.totalAmount, positionByCptyDTO.totalAmount) &&
-        Objects.equals(this.totalDailyLoss, positionByCptyDTO.totalDailyLoss) &&
-        Objects.equals(this.totalDailyPAndL, positionByCptyDTO.totalDailyPAndL) &&
-        Objects.equals(this.totalDailyProfit, positionByCptyDTO.totalDailyProfit);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, avgRate, counterparty, positionType, status, totalAmount, totalDailyLoss, totalDailyPAndL, totalDailyProfit);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PositionByCptyDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
-    sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
-    sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
-    sb.append("    totalDailyLoss: ").append(toIndentedString(totalDailyLoss)).append("\n");
-    sb.append("    totalDailyPAndL: ").append(toIndentedString(totalDailyPAndL)).append("\n");
-    sb.append("    totalDailyProfit: ").append(toIndentedString(totalDailyProfit)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public PositionByCptyDTO avgRate(Double avgRate) {
+        this.avgRate = avgRate;
+        return this;
+    }
+
+    /**
+     * Get avgRate
+     *
+     * @return avgRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(Double avgRate) {
+        this.avgRate = avgRate;
+    }
+
+    public PositionByCptyDTO counterparty(String counterparty) {
+        this.counterparty = counterparty;
+        return this;
+    }
+
+    /**
+     * Get counterparty
+     *
+     * @return counterparty
+     **/
+    @ApiModelProperty(value = "")
+    public String getCounterparty() {
+        return counterparty;
+    }
+
+    public void setCounterparty(String counterparty) {
+        this.counterparty = counterparty;
+    }
+
+    public PositionByCptyDTO positionType(String positionType) {
+        this.positionType = positionType;
+        return this;
+    }
+
+    /**
+     * Get positionType
+     *
+     * @return positionType
+     **/
+    @ApiModelProperty(value = "")
+    public String getPositionType() {
+        return positionType;
+    }
+
+    public void setPositionType(String positionType) {
+        this.positionType = positionType;
+    }
+
+    public PositionByCptyDTO status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return status
+     **/
+    @ApiModelProperty(value = "")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public PositionByCptyDTO totalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+        return this;
+    }
+
+    /**
+     * Get totalAmount
+     *
+     * @return totalAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public PositionByCptyDTO totalDailyLoss(Double totalDailyLoss) {
+        this.totalDailyLoss = totalDailyLoss;
+        return this;
+    }
+
+    /**
+     * Get totalDailyLoss
+     *
+     * @return totalDailyLoss
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyLoss() {
+        return totalDailyLoss;
+    }
+
+    public void setTotalDailyLoss(Double totalDailyLoss) {
+        this.totalDailyLoss = totalDailyLoss;
+    }
+
+    public PositionByCptyDTO totalDailyPAndL(Double totalDailyPAndL) {
+        this.totalDailyPAndL = totalDailyPAndL;
+        return this;
+    }
+
+    /**
+     * Get totalDailyPAndL
+     *
+     * @return totalDailyPAndL
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyPAndL() {
+        return totalDailyPAndL;
+    }
+
+    public void setTotalDailyPAndL(Double totalDailyPAndL) {
+        this.totalDailyPAndL = totalDailyPAndL;
+    }
+
+    public PositionByCptyDTO totalDailyProfit(Double totalDailyProfit) {
+        this.totalDailyProfit = totalDailyProfit;
+        return this;
+    }
+
+    /**
+     * Get totalDailyProfit
+     *
+     * @return totalDailyProfit
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyProfit() {
+        return totalDailyProfit;
+    }
+
+    public void setTotalDailyProfit(Double totalDailyProfit) {
+        this.totalDailyProfit = totalDailyProfit;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionByCptyDTO positionByCptyDTO = (PositionByCptyDTO) o;
+        return Objects.equals(this.qualifiedName, positionByCptyDTO.qualifiedName) &&
+            Objects.equals(this.avgRate, positionByCptyDTO.avgRate) &&
+            Objects.equals(this.counterparty, positionByCptyDTO.counterparty) &&
+            Objects.equals(this.positionType, positionByCptyDTO.positionType) &&
+            Objects.equals(this.status, positionByCptyDTO.status) &&
+            Objects.equals(this.totalAmount, positionByCptyDTO.totalAmount) &&
+            Objects.equals(this.totalDailyLoss, positionByCptyDTO.totalDailyLoss) &&
+            Objects.equals(this.totalDailyPAndL, positionByCptyDTO.totalDailyPAndL) &&
+            Objects.equals(this.totalDailyProfit, positionByCptyDTO.totalDailyProfit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, avgRate, counterparty, positionType, status, totalAmount, totalDailyLoss,
+            totalDailyPAndL, totalDailyProfit);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class PositionByCptyDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
+        sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
+        sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
+        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
+        sb.append("    totalDailyLoss: ").append(toIndentedString(totalDailyLoss)).append("\n");
+        sb.append("    totalDailyPAndL: ").append(toIndentedString(totalDailyPAndL)).append("\n");
+        sb.append("    totalDailyProfit: ").append(toIndentedString(totalDailyProfit)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

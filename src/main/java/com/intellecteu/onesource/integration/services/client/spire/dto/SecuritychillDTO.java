@@ -22,183 +22,189 @@ import java.util.Objects;
 /**
  * SecuritychillDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SecuritychillDTO {
-  @JsonProperty("chillEndDate")
-  private LocalDateTime chillEndDate = null;
 
-  @JsonProperty("chillStartDate")
-  private LocalDateTime chillStartDate = null;
+    @JsonProperty("chillEndDate")
+    private LocalDateTime chillEndDate = null;
 
-  @JsonProperty("chillTypeId")
-  private Integer chillTypeId = null;
+    @JsonProperty("chillStartDate")
+    private LocalDateTime chillStartDate = null;
 
-  @JsonProperty("comments")
-  private String comments = null;
+    @JsonProperty("chillTypeId")
+    private Integer chillTypeId = null;
 
-  @JsonProperty("securityChillConfigId")
-  private Long securityChillConfigId = null;
+    @JsonProperty("comments")
+    private String comments = null;
 
-  @JsonProperty("securityId")
-  private Long securityId = null;
+    @JsonProperty("securityChillConfigId")
+    private Long securityChillConfigId = null;
 
-  public SecuritychillDTO chillEndDate(LocalDateTime chillEndDate) {
-    this.chillEndDate = chillEndDate;
-    return this;
-  }
+    @JsonProperty("securityId")
+    private Long securityId = null;
 
-   /**
-   * Get chillEndDate
-   * @return chillEndDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getChillEndDate() {
-    return chillEndDate;
-  }
-
-  public void setChillEndDate(LocalDateTime chillEndDate) {
-    this.chillEndDate = chillEndDate;
-  }
-
-  public SecuritychillDTO chillStartDate(LocalDateTime chillStartDate) {
-    this.chillStartDate = chillStartDate;
-    return this;
-  }
-
-   /**
-   * Get chillStartDate
-   * @return chillStartDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getChillStartDate() {
-    return chillStartDate;
-  }
-
-  public void setChillStartDate(LocalDateTime chillStartDate) {
-    this.chillStartDate = chillStartDate;
-  }
-
-  public SecuritychillDTO chillTypeId(Integer chillTypeId) {
-    this.chillTypeId = chillTypeId;
-    return this;
-  }
-
-   /**
-   * Get chillTypeId
-   * @return chillTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getChillTypeId() {
-    return chillTypeId;
-  }
-
-  public void setChillTypeId(Integer chillTypeId) {
-    this.chillTypeId = chillTypeId;
-  }
-
-  public SecuritychillDTO comments(String comments) {
-    this.comments = comments;
-    return this;
-  }
-
-   /**
-   * Get comments
-   * @return comments
-  **/
-  @ApiModelProperty(value = "")
-  public String getComments() {
-    return comments;
-  }
-
-  public void setComments(String comments) {
-    this.comments = comments;
-  }
-
-  public SecuritychillDTO securityChillConfigId(Long securityChillConfigId) {
-    this.securityChillConfigId = securityChillConfigId;
-    return this;
-  }
-
-   /**
-   * Get securityChillConfigId
-   * @return securityChillConfigId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityChillConfigId() {
-    return securityChillConfigId;
-  }
-
-  public void setSecurityChillConfigId(Long securityChillConfigId) {
-    this.securityChillConfigId = securityChillConfigId;
-  }
-
-  public SecuritychillDTO securityId(Long securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Long securityId) {
-    this.securityId = securityId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public SecuritychillDTO chillEndDate(LocalDateTime chillEndDate) {
+        this.chillEndDate = chillEndDate;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get chillEndDate
+     *
+     * @return chillEndDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getChillEndDate() {
+        return chillEndDate;
     }
-    SecuritychillDTO securitychillDTO = (SecuritychillDTO) o;
-    return Objects.equals(this.chillEndDate, securitychillDTO.chillEndDate) &&
-        Objects.equals(this.chillStartDate, securitychillDTO.chillStartDate) &&
-        Objects.equals(this.chillTypeId, securitychillDTO.chillTypeId) &&
-        Objects.equals(this.comments, securitychillDTO.comments) &&
-        Objects.equals(this.securityChillConfigId, securitychillDTO.securityChillConfigId) &&
-        Objects.equals(this.securityId, securitychillDTO.securityId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(chillEndDate, chillStartDate, chillTypeId, comments, securityChillConfigId, securityId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SecuritychillDTO {\n");
-    
-    sb.append("    chillEndDate: ").append(toIndentedString(chillEndDate)).append("\n");
-    sb.append("    chillStartDate: ").append(toIndentedString(chillStartDate)).append("\n");
-    sb.append("    chillTypeId: ").append(toIndentedString(chillTypeId)).append("\n");
-    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-    sb.append("    securityChillConfigId: ").append(toIndentedString(securityChillConfigId)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setChillEndDate(LocalDateTime chillEndDate) {
+        this.chillEndDate = chillEndDate;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public SecuritychillDTO chillStartDate(LocalDateTime chillStartDate) {
+        this.chillStartDate = chillStartDate;
+        return this;
+    }
+
+    /**
+     * Get chillStartDate
+     *
+     * @return chillStartDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getChillStartDate() {
+        return chillStartDate;
+    }
+
+    public void setChillStartDate(LocalDateTime chillStartDate) {
+        this.chillStartDate = chillStartDate;
+    }
+
+    public SecuritychillDTO chillTypeId(Integer chillTypeId) {
+        this.chillTypeId = chillTypeId;
+        return this;
+    }
+
+    /**
+     * Get chillTypeId
+     *
+     * @return chillTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getChillTypeId() {
+        return chillTypeId;
+    }
+
+    public void setChillTypeId(Integer chillTypeId) {
+        this.chillTypeId = chillTypeId;
+    }
+
+    public SecuritychillDTO comments(String comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return comments
+     **/
+    @ApiModelProperty(value = "")
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public SecuritychillDTO securityChillConfigId(Long securityChillConfigId) {
+        this.securityChillConfigId = securityChillConfigId;
+        return this;
+    }
+
+    /**
+     * Get securityChillConfigId
+     *
+     * @return securityChillConfigId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityChillConfigId() {
+        return securityChillConfigId;
+    }
+
+    public void setSecurityChillConfigId(Long securityChillConfigId) {
+        this.securityChillConfigId = securityChillConfigId;
+    }
+
+    public SecuritychillDTO securityId(Long securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecuritychillDTO securitychillDTO = (SecuritychillDTO) o;
+        return Objects.equals(this.chillEndDate, securitychillDTO.chillEndDate) &&
+            Objects.equals(this.chillStartDate, securitychillDTO.chillStartDate) &&
+            Objects.equals(this.chillTypeId, securitychillDTO.chillTypeId) &&
+            Objects.equals(this.comments, securitychillDTO.comments) &&
+            Objects.equals(this.securityChillConfigId, securitychillDTO.securityChillConfigId) &&
+            Objects.equals(this.securityId, securitychillDTO.securityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(chillEndDate, chillStartDate, chillTypeId, comments, securityChillConfigId, securityId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SecuritychillDTO {\n");
+
+        sb.append("    chillEndDate: ").append(toIndentedString(chillEndDate)).append("\n");
+        sb.append("    chillStartDate: ").append(toIndentedString(chillStartDate)).append("\n");
+        sb.append("    chillTypeId: ").append(toIndentedString(chillTypeId)).append("\n");
+        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+        sb.append("    securityChillConfigId: ").append(toIndentedString(securityChillConfigId)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 
