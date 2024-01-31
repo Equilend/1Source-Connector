@@ -37,10 +37,6 @@ spring:
 
 logging:
   level:
-#    org.hibernate.SQL: DEBUG
-#    org.hibernate.type: TRACE
-#    org.hibernate.engine.transactionю.internal.TransactionImpl: DEBUG
-#    org.springframework.transaction: DEBUG
     com:
       intellecteu:
         onesource:
@@ -54,6 +50,9 @@ logging:
     org:
       apache:
         kafka: WARN
+      hibernate:
+        internal:
+          SessionImpl: ERROR
       springframework:
         web:
           client:
@@ -75,6 +74,7 @@ onesource:
       secret: ${1SOURCE_AUTH_CLIENT_SECRET_LOCAL:secret}
 
 spire:
+  baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083/lender}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_LOCAL:http://localhost:8083/lender}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT_LOCAL:http://localhost:8083/borrower}
   username: ${SPIRE_LENDER_USERNAME_LOCAL:test-user}

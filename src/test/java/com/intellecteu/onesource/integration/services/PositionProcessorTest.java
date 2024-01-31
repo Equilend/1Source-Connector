@@ -55,8 +55,6 @@
 //    @Mock
 //    private PositionRepository positionRepository;
 //    @Mock
-//    private SpireService spireService;
-//    @Mock
 //    private OneSourceService oneSourceService;
 //    @Mock
 //    private CloudEventRecordService cloudEventRecordService;

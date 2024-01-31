@@ -6,7 +6,6 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Po
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
@@ -20,46 +19,41 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.SETTL
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.formattedDateTime;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createGetPositionNQuery;
-import static com.intellecteu.onesource.integration.utils.SpireApiUtils.createListOfTuplesUpdatedPositions;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.spire.AndOr;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.Settlement;
 import com.intellecteu.onesource.integration.model.SettlementStatus;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
@@ -72,10 +66,11 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
     private final SpireMapper spireMapper;
     private final EventMapper eventMapper;
     private final PositionService positionService;
-    private final SpireService spireService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
     private final OneSourceService oneSourceService;
+    private final BackOfficeService lenderBackOfficeService;
+    private final BackOfficeService borrowerBackOfficeService;
 
     @Override
     public void processUpdatedPositions() {
@@ -84,33 +79,18 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
             .map(lastUpdated -> requestUpdatedPositions(lastUpdated, positions))
             .orElse(List.of());
         updatedPositions.forEach(this::processUpdatedPosition);
-        updatedPositions.forEach(this::processSettlement);
+        updatedPositions.forEach(positionDto -> processSettlement(spireMapper.toPosition(positionDto)));
     }
 
     private List<PositionDto> requestUpdatedPositions(LocalDateTime lastUpdatedDateTime, List<Position> positions) {
-        String ids = positions.stream()
-            .map(Position::getPositionId)
-            .collect(Collectors.joining(", "));
-        try {
-            ResponseEntity<JsonNode> response = spireService.requestPosition(
-                createGetPositionNQuery(null, AndOr.AND, null,
-                    createListOfTuplesUpdatedPositions(formattedDateTime(lastUpdatedDateTime), ids)));
-            if (HttpStatus.CREATED == response.getStatusCode()) {
-                // temporal throw an exception to record until requirements will be retrieved how to handle 201 status
-                throw new HttpClientErrorException(HttpStatus.CREATED);
-            }
-            return convertPositionResponse(response);
-        } catch (HttpStatusCodeException e) {
-            log.warn("SPIRE error response for {} subprocess. Details: {}",
-                GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, e.getStatusCode());
-            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(e.getStatusCode())) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(e,
-                    IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
-                cloudEventRecordService.record(recordRequest);
-            }
-            return List.of();
-        }
+        List<PositionDto> positionDtoList = new ArrayList<>();
+        List<Position> newPositionsForLender = lenderBackOfficeService.getNewSpirePositions(lastUpdatedDateTime,
+            positions);
+        List<Position> newPositionsForBorrower = borrowerBackOfficeService.getNewSpirePositions(lastUpdatedDateTime,
+            positions);
+        positionDtoList.addAll(newPositionsForLender.stream().map(spireMapper::toPositionDto).toList());
+        positionDtoList.addAll(newPositionsForBorrower.stream().map(spireMapper::toPositionDto).toList());
+        return positionDtoList;
     }
 
     private List<PositionDto> convertPositionResponse(ResponseEntity<JsonNode> response) {
@@ -183,17 +163,31 @@ public class PositionPendingConfirmationServiceImpl implements PositionPendingCo
         }
     }
 
-    private void processSettlement(PositionDto positionDto) {
-        if (List.of(CREATED, UPDATED).contains(positionDto.getProcessingStatus())) {
-            final List<SettlementDto> settlementDtoList = settlementService.getSettlementInstructions(positionDto);
-            settlementDtoList.stream()
-                .findFirst()
-                .map(settlementService::persistSettlement)
-                .ifPresent(s -> {
-                    positionDto.setApplicableInstructionId(s.getInstructionId());
-                    positionDto.setProcessingStatus(SI_FETCHED);
-                    positionService.savePosition(spireMapper.toPosition(positionDto));
+    private void processSettlement(Position position) {
+        if (Set.of(CREATED, UPDATED).contains(position.getProcessingStatus())) {
+            PartyRole partyRole = IntegrationUtils.extractPartyRole(position).get();
+            try {
+                Optional<Settlement> settlementOptional = lenderBackOfficeService.retrieveSettlementInstruction(
+                    position, partyRole,
+                    position.getPositionAccount().getAccountId());
+                settlementOptional.ifPresent(s -> {
+                    position.setApplicableInstructionId(s.getInstructionId());
+                    position.setProcessingStatus(SI_FETCHED);
+                    positionService.savePosition(position);
+                    settlementService.persistSettlement(s);
                 });
+            } catch (InstructionRetrievementException e) {
+                if (e.getCause() instanceof HttpStatusCodeException exception) {
+                    log.warn("SPIRE error response for request Instruction: " + exception.getStatusCode());
+                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                        var recordRequest = eventBuilder.buildExceptionRequest(
+                            position.getMatching1SourceTradeAgreementId(), exception,
+                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, position.getPositionId());
+                        cloudEventRecordService.record(recordRequest);
+                    }
+                }
+            }
         }
     }
 

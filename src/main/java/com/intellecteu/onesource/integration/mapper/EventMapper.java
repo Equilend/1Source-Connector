@@ -344,7 +344,7 @@ public class EventMapper {
         return InternalReference.builder()
             .internalRefId(internalReferenceDto.getInternalRefId())
             .brokerCd(internalReferenceDto.getBrokerCd())
-            .accountId(internalReferenceDto.getAccountId())
+            .accountId(String.valueOf(internalReferenceDto.getAccountId()))
             .build();
     }
 
@@ -513,7 +513,7 @@ public class EventMapper {
         return InternalReferenceDto.builder()
             .internalRefId(internalReference.getInternalRefId())
             .brokerCd(internalReference.getBrokerCd())
-            .accountId(internalReference.getAccountId())
+            .accountId(Long.valueOf(internalReference.getAccountId()))
             .build();
     }
 

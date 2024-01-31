@@ -11,8 +11,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.mapper.RerateTradeMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.spire.RerateTrade;
+import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryResponseTradeOutDTO;
@@ -22,7 +24,6 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutD
 import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
-import com.intellecteu.onesource.integration.mapper.RerateTradeMapperImpl;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,6 +48,9 @@ class BackOfficeServiceTest {
     private TradeSpireApiClient tradeSpireApiClient;
 
     @Mock
+    private InstructionSpireApiClient instructionClient;
+
+    @Mock
     private SpireMapper spireMapper;
 
     @Mock
@@ -59,8 +63,8 @@ class BackOfficeServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
-        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, spireMapper, rerateTradeMapper,
-            cloudEventRecordService);
+        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient,
+            spireMapper, rerateTradeMapper, cloudEventRecordService);
     }
 
     @Test

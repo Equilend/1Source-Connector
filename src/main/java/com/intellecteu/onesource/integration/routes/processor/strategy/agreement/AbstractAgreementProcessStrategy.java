@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.processor.strategy.agreemen
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
@@ -19,6 +20,9 @@ import static com.intellecteu.onesource.integration.model.ProcessingStatus.TRADE
 import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
@@ -27,24 +31,32 @@ import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.PartyRole;
+import com.intellecteu.onesource.integration.model.Settlement;
+import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
-import com.intellecteu.onesource.integration.services.SpireService;
+import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
 @AllArgsConstructor
@@ -52,10 +64,11 @@ import org.springframework.transaction.annotation.Transactional;
 public abstract class AbstractAgreementProcessStrategy implements AgreementProcessFlowStrategy {
 
     OneSourceService oneSourceService;
-    SpireService spireService;
+    SettlementService settlementService;
     ReconcileService<AgreementDto, PositionDto> reconcileService;
     AgreementService agreementService;
     PositionService positionService;
+    BackOfficeService lenderBackOfficeService;
     EventMapper eventMapper;
     SpireMapper spireMapper;
     CloudEventRecordService cloudEventRecordService;
@@ -109,15 +122,30 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
 
     private void processByParty(PartyRole partyRole, AgreementDto agreementDto, PositionDto positionDto) {
         if (partyRole == LENDER) {
-            String venueRefId = agreementDto.getTrade().getExecutionVenue().getVenueRefKey();
             log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
-            var settlements = spireService.retrieveSettlementDetails(positionDto, venueRefId, agreementDto.getTrade(),
-                partyRole);
-            if (settlements != null) {
-                log.debug("Submitting contract proposal as a {}", partyRole);
-                ContractProposalDto contractProposalDto = buildContract(agreementDto, positionDto, settlements);
-                oneSourceService.createContract(agreementDto, contractProposalDto, positionDto);
-                log.debug("***** Trade Agreement Id: {} was processed successfully", agreementDto.getAgreementId());
+            try {
+                Position position = spireMapper.toPosition(positionDto);
+                Optional<Settlement> settlement = lenderBackOfficeService.retrieveSettlementInstruction(position,
+                    partyRole,
+                    position.getPositionAccount().getAccountId());
+                settlement.ifPresent(s -> {
+                    log.debug("Submitting contract proposal as a {}", partyRole);
+                    ContractProposalDto contractProposalDto = buildContract(agreementDto, positionDto,
+                        eventMapper.toSettlementDto(s));
+                    oneSourceService.createContract(agreementDto, contractProposalDto, positionDto);
+                    log.debug("***** Trade Agreement Id: {} was processed successfully", agreementDto.getAgreementId());
+                });
+            } catch (InstructionRetrievementException e) {
+                if (e.getCause() instanceof HttpStatusCodeException exception) {
+                    log.warn("SPIRE error response for request Instruction: " + exception.getStatusCode());
+                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                        var recordRequest = eventBuilder.buildExceptionRequest(
+                            positionDto.getMatching1SourceTradeAgreementId(), exception,
+                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, positionDto.getPositionId());
+                        cloudEventRecordService.record(recordRequest);
+                    }
+                }
             }
         }
     }
@@ -148,13 +176,13 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     }
 
     ContractProposalDto buildContract(AgreementDto agreement, PositionDto positionDto,
-        List<SettlementDto> settlements) {
+        SettlementDto settlement) {
         TradeAgreementDto trade = agreement.getTrade();
         trade.getCollateral().setRoundingRule(positionDto.getCpMarkRoundTo());
         trade.getCollateral().setRoundingMode(ALWAYSUP);
         return ContractProposalDto.builder()
             .trade(trade)
-            .settlement(settlements)
+            .settlement(List.of(settlement))
             .build();
     }
 

@@ -66,17 +66,12 @@ public class ParticipantFlowTests {
     private SpireMapper spireMapper;
 
     private OneSourceApiService oneSourceService;
-    private SpireApiService spireService;
     private PartyProcessor partyProcessor;
 
     @BeforeEach
     void setUp() {
         oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
-        spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
-            spireMapper, cloudEventRecordService);
-        ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
-        ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
         partyProcessor = new PartyProcessor(participantHolderRepository, oneSourceService);

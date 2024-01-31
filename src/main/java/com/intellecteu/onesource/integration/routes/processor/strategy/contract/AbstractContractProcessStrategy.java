@@ -8,8 +8,6 @@ import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRA
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_CANCELED_POSITION;
@@ -20,8 +18,6 @@ import static java.lang.String.format;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.SettlementInstructionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
 import com.intellecteu.onesource.integration.enums.IntegrationProcess;
@@ -29,17 +25,14 @@ import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.PartyRole;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
-import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -55,7 +48,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     PositionService positionService;
     SettlementTempRepository settlementTempRepository;
     SettlementService settlementService;
-    SpireService spireService;
     CloudEventRecordService cloudEventRecordService;
     ReconcileService<ContractDto, PositionDto> reconcileService;
     EventMapper eventMapper;
@@ -106,23 +98,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         contractDto.setProcessingStatus(processingStatus);
         contractDto.setLastUpdateDatetime(LocalDateTime.now());
         contractService.save(eventMapper.toContractEntity(contractDto));
-    }
-
-    void updateInstruction(ContractDto contract, PartyRole partyRole, PositionDto position,
-        String venueRefId, FlowStatus flowStatus) {
-        PartyRole roleForRequest = null;
-        if (partyRole == LENDER) { // todo - check whether we need to switch roles
-            roleForRequest = BORROWER;
-        } else if (partyRole == BORROWER) {
-            roleForRequest = LENDER;
-        }
-        List<SettlementDto> settlementDtos = spireService.retrieveSettlementDetails(position, venueRefId,
-            contract.getTrade(), roleForRequest);
-        settlementTempRepository.save(eventMapper.toSettlementTempEntity(settlementDtos, contract.getContractId()));
-        SettlementInstructionDto settlementInstruction = settlementDtos.get(0).getInstruction();
-        saveContractWithStage(contract, flowStatus);
-        log.debug("Updating Spire with the counterpart's settlement instruction!");
-        spireService.updateInstruction(contract, position, venueRefId, settlementInstruction, partyRole);
     }
 
     void processMatchingPosition(@NonNull ContractDto contractDto, @NonNull PositionDto positionDto) {

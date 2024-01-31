@@ -1,11 +1,5 @@
 package com.intellecteu.onesource.integration.routes.processor.strategy.contract;
 
-import static com.intellecteu.onesource.integration.enums.FlowStatus.AGR_INSTRUCTIONS_RETRIEVED;
-import static com.intellecteu.onesource.integration.enums.FlowStatus.PROCESSED;
-import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.EventType.CONTRACT_PENDING;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.enums.FlowStatus;
@@ -16,34 +10,34 @@ import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
-import com.intellecteu.onesource.integration.services.SpireService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@Deprecated(since = "flow II refactoring. Fault tolerance support is moved to routes.", forRemoval = true)
 public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     @Override
     public void process(ContractDto contract) {
-        //todo remove fault tolerance case
-        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
-        if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
-            log.debug("Retrieving Position by venueRefId: {}", venueRefId);
-            PositionDto position = retrievePositionByVenue(venueRefId).orElse(null);
-            if (position == null) {
-                savePositionRetrievementIssue(contract);
-                return;
-            }
-            extractPartyRole(position.unwrapPositionType())
-                .ifPresentOrElse(
-                    role -> updateInstruction(contract, role, position, venueRefId, AGR_INSTRUCTIONS_RETRIEVED),
-                    () -> processPartyRoleIssue(position.unwrapPositionType(), contract)
-                );
-        }
-        contract.setFlowStatus(PROCESSED);
-        contractService.save(eventMapper.toContractEntity(contract));
+        log.warn("This is deprecated method! Should be removed soon!");
+//        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
+//        if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
+//            log.debug("Retrieving Position by venueRefId: {}", venueRefId);
+//            PositionDto position = retrievePositionByVenue(venueRefId).orElse(null);
+//            if (position == null) {
+//                savePositionRetrievementIssue(contract);
+//                return;
+//            }
+//            extractPartyRole(position.unwrapPositionType())
+//                .ifPresentOrElse(
+//                    role -> updateInstruction(contract, role, position, venueRefId, AGR_INSTRUCTIONS_RETRIEVED),
+//                    () -> processPartyRoleIssue(position.unwrapPositionType(), contract)
+//                );
+//        }
+//        contract.setFlowStatus(PROCESSED);
+//        contractService.save(eventMapper.toContractEntity(contract));
     }
 
     @Override
@@ -53,10 +47,10 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     public ContractPositionUpdated(ContractService contractService, PositionService positionService,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
-        SpireService spireService, CloudEventRecordService cloudEventRecordService,
+        CloudEventRecordService cloudEventRecordService,
         ReconcileService<ContractDto, PositionDto> contractReconcileService,
         EventMapper eventMapper, SpireMapper spireMapper) {
-        super(contractService, positionService, settlementTempRepository, settlementService, spireService,
+        super(contractService, positionService, settlementTempRepository, settlementService,
             cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
     }
 }
