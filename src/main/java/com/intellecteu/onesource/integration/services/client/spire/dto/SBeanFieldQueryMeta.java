@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * SBeanFieldQueryMeta
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SBeanFieldQueryMeta {
-  @JsonProperty("editable")
-  private Boolean editable = null;
 
-  @JsonProperty("isEditable")
-  private Boolean isEditable = null;
+    @JsonProperty("editable")
+    private Boolean editable = null;
 
-  @JsonProperty("queryable")
-  private Boolean queryable = null;
+    @JsonProperty("isEditable")
+    private Boolean isEditable = null;
 
-  public SBeanFieldQueryMeta editable(Boolean editable) {
-    this.editable = editable;
-    return this;
-  }
+    @JsonProperty("queryable")
+    private Boolean queryable = null;
 
-   /**
-   * Get editable
-   * @return editable
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isEditable() {
-    return editable;
-  }
-
-  public void setEditable(Boolean editable) {
-    this.editable = editable;
-  }
-
-  public SBeanFieldQueryMeta isEditable(Boolean isEditable) {
-    this.isEditable = isEditable;
-    return this;
-  }
-
-   /**
-   * Get isEditable
-   * @return isEditable
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsEditable() {
-    return isEditable;
-  }
-
-  public void setIsEditable(Boolean isEditable) {
-    this.isEditable = isEditable;
-  }
-
-  public SBeanFieldQueryMeta queryable(Boolean queryable) {
-    this.queryable = queryable;
-    return this;
-  }
-
-   /**
-   * Get queryable
-   * @return queryable
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isQueryable() {
-    return queryable;
-  }
-
-  public void setQueryable(Boolean queryable) {
-    this.queryable = queryable;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public SBeanFieldQueryMeta editable(Boolean editable) {
+        this.editable = editable;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get editable
+     *
+     * @return editable
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isEditable() {
+        return editable;
     }
-    SBeanFieldQueryMeta sbeanFieldQueryMeta = (SBeanFieldQueryMeta) o;
-    return Objects.equals(this.editable, sbeanFieldQueryMeta.editable) &&
-        Objects.equals(this.isEditable, sbeanFieldQueryMeta.isEditable) &&
-        Objects.equals(this.queryable, sbeanFieldQueryMeta.queryable);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(editable, isEditable, queryable);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SBeanFieldQueryMeta {\n");
-    
-    sb.append("    editable: ").append(toIndentedString(editable)).append("\n");
-    sb.append("    isEditable: ").append(toIndentedString(isEditable)).append("\n");
-    sb.append("    queryable: ").append(toIndentedString(queryable)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setEditable(Boolean editable) {
+        this.editable = editable;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public SBeanFieldQueryMeta isEditable(Boolean isEditable) {
+        this.isEditable = isEditable;
+        return this;
+    }
+
+    /**
+     * Get isEditable
+     *
+     * @return isEditable
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsEditable() {
+        return isEditable;
+    }
+
+    public void setIsEditable(Boolean isEditable) {
+        this.isEditable = isEditable;
+    }
+
+    public SBeanFieldQueryMeta queryable(Boolean queryable) {
+        this.queryable = queryable;
+        return this;
+    }
+
+    /**
+     * Get queryable
+     *
+     * @return queryable
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isQueryable() {
+        return queryable;
+    }
+
+    public void setQueryable(Boolean queryable) {
+        this.queryable = queryable;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SBeanFieldQueryMeta sbeanFieldQueryMeta = (SBeanFieldQueryMeta) o;
+        return Objects.equals(this.editable, sbeanFieldQueryMeta.editable) &&
+            Objects.equals(this.isEditable, sbeanFieldQueryMeta.isEditable) &&
+            Objects.equals(this.queryable, sbeanFieldQueryMeta.queryable);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(editable, isEditable, queryable);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SBeanFieldQueryMeta {\n");
+
+        sb.append("    editable: ").append(toIndentedString(editable)).append("\n");
+        sb.append("    isEditable: ").append(toIndentedString(isEditable)).append("\n");
+        sb.append("    queryable: ").append(toIndentedString(queryable)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

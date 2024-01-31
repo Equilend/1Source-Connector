@@ -21,275 +21,286 @@ import java.util.Objects;
 /**
  * TopEarningLoansDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TopEarningLoansDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("averageRate")
-  private Double averageRate = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("description")
-  private String description = null;
+    @JsonProperty("averageRate")
+    private Double averageRate = null;
 
-  @JsonProperty("maxAmount")
-  private Double maxAmount = null;
+    @JsonProperty("description")
+    private String description = null;
 
-  @JsonProperty("maxRate")
-  private Double maxRate = null;
+    @JsonProperty("maxAmount")
+    private Double maxAmount = null;
 
-  @JsonProperty("minAmount")
-  private Double minAmount = null;
+    @JsonProperty("maxRate")
+    private Double maxRate = null;
 
-  @JsonProperty("minRate")
-  private Double minRate = null;
+    @JsonProperty("minAmount")
+    private Double minAmount = null;
 
-  @JsonProperty("security")
-  private String security = null;
+    @JsonProperty("minRate")
+    private Double minRate = null;
 
-  @JsonProperty("securityId")
-  private Long securityId = null;
+    @JsonProperty("security")
+    private String security = null;
 
-  @JsonProperty("totalEarnings")
-  private Double totalEarnings = null;
+    @JsonProperty("securityId")
+    private Long securityId = null;
 
-  public TopEarningLoansDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("totalEarnings")
+    private Double totalEarnings = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TopEarningLoansDTO averageRate(Double averageRate) {
-    this.averageRate = averageRate;
-    return this;
-  }
-
-   /**
-   * Get averageRate
-   * @return averageRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAverageRate() {
-    return averageRate;
-  }
-
-  public void setAverageRate(Double averageRate) {
-    this.averageRate = averageRate;
-  }
-
-  public TopEarningLoansDTO description(String description) {
-    this.description = description;
-    return this;
-  }
-
-   /**
-   * Get description
-   * @return description
-  **/
-  @ApiModelProperty(value = "")
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public TopEarningLoansDTO maxAmount(Double maxAmount) {
-    this.maxAmount = maxAmount;
-    return this;
-  }
-
-   /**
-   * Get maxAmount
-   * @return maxAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getMaxAmount() {
-    return maxAmount;
-  }
-
-  public void setMaxAmount(Double maxAmount) {
-    this.maxAmount = maxAmount;
-  }
-
-  public TopEarningLoansDTO maxRate(Double maxRate) {
-    this.maxRate = maxRate;
-    return this;
-  }
-
-   /**
-   * Get maxRate
-   * @return maxRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getMaxRate() {
-    return maxRate;
-  }
-
-  public void setMaxRate(Double maxRate) {
-    this.maxRate = maxRate;
-  }
-
-  public TopEarningLoansDTO minAmount(Double minAmount) {
-    this.minAmount = minAmount;
-    return this;
-  }
-
-   /**
-   * Get minAmount
-   * @return minAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getMinAmount() {
-    return minAmount;
-  }
-
-  public void setMinAmount(Double minAmount) {
-    this.minAmount = minAmount;
-  }
-
-  public TopEarningLoansDTO minRate(Double minRate) {
-    this.minRate = minRate;
-    return this;
-  }
-
-   /**
-   * Get minRate
-   * @return minRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getMinRate() {
-    return minRate;
-  }
-
-  public void setMinRate(Double minRate) {
-    this.minRate = minRate;
-  }
-
-  public TopEarningLoansDTO security(String security) {
-    this.security = security;
-    return this;
-  }
-
-   /**
-   * Get security
-   * @return security
-  **/
-  @ApiModelProperty(value = "")
-  public String getSecurity() {
-    return security;
-  }
-
-  public void setSecurity(String security) {
-    this.security = security;
-  }
-
-  public TopEarningLoansDTO securityId(Long securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Long securityId) {
-    this.securityId = securityId;
-  }
-
-  public TopEarningLoansDTO totalEarnings(Double totalEarnings) {
-    this.totalEarnings = totalEarnings;
-    return this;
-  }
-
-   /**
-   * Get totalEarnings
-   * @return totalEarnings
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalEarnings() {
-    return totalEarnings;
-  }
-
-  public void setTotalEarnings(Double totalEarnings) {
-    this.totalEarnings = totalEarnings;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TopEarningLoansDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    TopEarningLoansDTO topEarningLoansDTO = (TopEarningLoansDTO) o;
-    return Objects.equals(this.qualifiedName, topEarningLoansDTO.qualifiedName) &&
-        Objects.equals(this.averageRate, topEarningLoansDTO.averageRate) &&
-        Objects.equals(this.description, topEarningLoansDTO.description) &&
-        Objects.equals(this.maxAmount, topEarningLoansDTO.maxAmount) &&
-        Objects.equals(this.maxRate, topEarningLoansDTO.maxRate) &&
-        Objects.equals(this.minAmount, topEarningLoansDTO.minAmount) &&
-        Objects.equals(this.minRate, topEarningLoansDTO.minRate) &&
-        Objects.equals(this.security, topEarningLoansDTO.security) &&
-        Objects.equals(this.securityId, topEarningLoansDTO.securityId) &&
-        Objects.equals(this.totalEarnings, topEarningLoansDTO.totalEarnings);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, averageRate, description, maxAmount, maxRate, minAmount, minRate, security, securityId, totalEarnings);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TopEarningLoansDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    averageRate: ").append(toIndentedString(averageRate)).append("\n");
-    sb.append("    description: ").append(toIndentedString(description)).append("\n");
-    sb.append("    maxAmount: ").append(toIndentedString(maxAmount)).append("\n");
-    sb.append("    maxRate: ").append(toIndentedString(maxRate)).append("\n");
-    sb.append("    minAmount: ").append(toIndentedString(minAmount)).append("\n");
-    sb.append("    minRate: ").append(toIndentedString(minRate)).append("\n");
-    sb.append("    security: ").append(toIndentedString(security)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("    totalEarnings: ").append(toIndentedString(totalEarnings)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TopEarningLoansDTO averageRate(Double averageRate) {
+        this.averageRate = averageRate;
+        return this;
+    }
+
+    /**
+     * Get averageRate
+     *
+     * @return averageRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAverageRate() {
+        return averageRate;
+    }
+
+    public void setAverageRate(Double averageRate) {
+        this.averageRate = averageRate;
+    }
+
+    public TopEarningLoansDTO description(String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return description
+     **/
+    @ApiModelProperty(value = "")
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public TopEarningLoansDTO maxAmount(Double maxAmount) {
+        this.maxAmount = maxAmount;
+        return this;
+    }
+
+    /**
+     * Get maxAmount
+     *
+     * @return maxAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getMaxAmount() {
+        return maxAmount;
+    }
+
+    public void setMaxAmount(Double maxAmount) {
+        this.maxAmount = maxAmount;
+    }
+
+    public TopEarningLoansDTO maxRate(Double maxRate) {
+        this.maxRate = maxRate;
+        return this;
+    }
+
+    /**
+     * Get maxRate
+     *
+     * @return maxRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getMaxRate() {
+        return maxRate;
+    }
+
+    public void setMaxRate(Double maxRate) {
+        this.maxRate = maxRate;
+    }
+
+    public TopEarningLoansDTO minAmount(Double minAmount) {
+        this.minAmount = minAmount;
+        return this;
+    }
+
+    /**
+     * Get minAmount
+     *
+     * @return minAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getMinAmount() {
+        return minAmount;
+    }
+
+    public void setMinAmount(Double minAmount) {
+        this.minAmount = minAmount;
+    }
+
+    public TopEarningLoansDTO minRate(Double minRate) {
+        this.minRate = minRate;
+        return this;
+    }
+
+    /**
+     * Get minRate
+     *
+     * @return minRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getMinRate() {
+        return minRate;
+    }
+
+    public void setMinRate(Double minRate) {
+        this.minRate = minRate;
+    }
+
+    public TopEarningLoansDTO security(String security) {
+        this.security = security;
+        return this;
+    }
+
+    /**
+     * Get security
+     *
+     * @return security
+     **/
+    @ApiModelProperty(value = "")
+    public String getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(String security) {
+        this.security = security;
+    }
+
+    public TopEarningLoansDTO securityId(Long securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
+    public TopEarningLoansDTO totalEarnings(Double totalEarnings) {
+        this.totalEarnings = totalEarnings;
+        return this;
+    }
+
+    /**
+     * Get totalEarnings
+     *
+     * @return totalEarnings
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalEarnings() {
+        return totalEarnings;
+    }
+
+    public void setTotalEarnings(Double totalEarnings) {
+        this.totalEarnings = totalEarnings;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TopEarningLoansDTO topEarningLoansDTO = (TopEarningLoansDTO) o;
+        return Objects.equals(this.qualifiedName, topEarningLoansDTO.qualifiedName) &&
+            Objects.equals(this.averageRate, topEarningLoansDTO.averageRate) &&
+            Objects.equals(this.description, topEarningLoansDTO.description) &&
+            Objects.equals(this.maxAmount, topEarningLoansDTO.maxAmount) &&
+            Objects.equals(this.maxRate, topEarningLoansDTO.maxRate) &&
+            Objects.equals(this.minAmount, topEarningLoansDTO.minAmount) &&
+            Objects.equals(this.minRate, topEarningLoansDTO.minRate) &&
+            Objects.equals(this.security, topEarningLoansDTO.security) &&
+            Objects.equals(this.securityId, topEarningLoansDTO.securityId) &&
+            Objects.equals(this.totalEarnings, topEarningLoansDTO.totalEarnings);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, averageRate, description, maxAmount, maxRate, minAmount, minRate, security,
+            securityId, totalEarnings);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TopEarningLoansDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    averageRate: ").append(toIndentedString(averageRate)).append("\n");
+        sb.append("    description: ").append(toIndentedString(description)).append("\n");
+        sb.append("    maxAmount: ").append(toIndentedString(maxAmount)).append("\n");
+        sb.append("    maxRate: ").append(toIndentedString(maxRate)).append("\n");
+        sb.append("    minAmount: ").append(toIndentedString(minAmount)).append("\n");
+        sb.append("    minRate: ").append(toIndentedString(minRate)).append("\n");
+        sb.append("    security: ").append(toIndentedString(security)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("    totalEarnings: ").append(toIndentedString(totalEarnings)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

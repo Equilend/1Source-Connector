@@ -23,176 +23,182 @@ import java.util.Objects;
 /**
  * BalanceByCptyGroupDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class BalanceByCptyGroupDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("balanceByPosType")
-  private Map<String, Double> balanceByPosType = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("counterPartyGroupId")
-  private Long counterPartyGroupId = null;
+    @JsonProperty("balanceByPosType")
+    private Map<String, Double> balanceByPosType = null;
 
-  @JsonProperty("counterPartyGroupIdDTO")
-  private AccountDTO counterPartyGroupIdDTO = null;
+    @JsonProperty("counterPartyGroupId")
+    private Long counterPartyGroupId = null;
 
-  @JsonProperty("positionTypeDTOMap")
-  private Map<String, PositiontypeDTO> positionTypeDTOMap = null;
+    @JsonProperty("counterPartyGroupIdDTO")
+    private AccountDTO counterPartyGroupIdDTO = null;
 
-  public BalanceByCptyGroupDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("positionTypeDTOMap")
+    private Map<String, PositiontypeDTO> positionTypeDTOMap = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public BalanceByCptyGroupDTO balanceByPosType(Map<String, Double> balanceByPosType) {
-    this.balanceByPosType = balanceByPosType;
-    return this;
-  }
-
-  public BalanceByCptyGroupDTO putBalanceByPosTypeItem(String key, Double balanceByPosTypeItem) {
-    if (this.balanceByPosType == null) {
-      this.balanceByPosType = new HashMap<>();
+    public BalanceByCptyGroupDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.balanceByPosType.put(key, balanceByPosTypeItem);
-    return this;
-  }
 
-   /**
-   * Get balanceByPosType
-   * @return balanceByPosType
-  **/
-  @ApiModelProperty(value = "")
-  public Map<String, Double> getBalanceByPosType() {
-    return balanceByPosType;
-  }
-
-  public void setBalanceByPosType(Map<String, Double> balanceByPosType) {
-    this.balanceByPosType = balanceByPosType;
-  }
-
-  public BalanceByCptyGroupDTO counterPartyGroupId(Long counterPartyGroupId) {
-    this.counterPartyGroupId = counterPartyGroupId;
-    return this;
-  }
-
-   /**
-   * Get counterPartyGroupId
-   * @return counterPartyGroupId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getCounterPartyGroupId() {
-    return counterPartyGroupId;
-  }
-
-  public void setCounterPartyGroupId(Long counterPartyGroupId) {
-    this.counterPartyGroupId = counterPartyGroupId;
-  }
-
-  public BalanceByCptyGroupDTO counterPartyGroupIdDTO(AccountDTO counterPartyGroupIdDTO) {
-    this.counterPartyGroupIdDTO = counterPartyGroupIdDTO;
-    return this;
-  }
-
-   /**
-   * Get counterPartyGroupIdDTO
-   * @return counterPartyGroupIdDTO
-  **/
-  @ApiModelProperty(value = "")
-  public AccountDTO getCounterPartyGroupIdDTO() {
-    return counterPartyGroupIdDTO;
-  }
-
-  public void setCounterPartyGroupIdDTO(AccountDTO counterPartyGroupIdDTO) {
-    this.counterPartyGroupIdDTO = counterPartyGroupIdDTO;
-  }
-
-  public BalanceByCptyGroupDTO positionTypeDTOMap(Map<String, PositiontypeDTO> positionTypeDTOMap) {
-    this.positionTypeDTOMap = positionTypeDTOMap;
-    return this;
-  }
-
-  public BalanceByCptyGroupDTO putPositionTypeDTOMapItem(String key, PositiontypeDTO positionTypeDTOMapItem) {
-    if (this.positionTypeDTOMap == null) {
-      this.positionTypeDTOMap = new HashMap<>();
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    this.positionTypeDTOMap.put(key, positionTypeDTOMapItem);
-    return this;
-  }
 
-   /**
-   * Get positionTypeDTOMap
-   * @return positionTypeDTOMap
-  **/
-  @ApiModelProperty(value = "")
-  public Map<String, PositiontypeDTO> getPositionTypeDTOMap() {
-    return positionTypeDTOMap;
-  }
-
-  public void setPositionTypeDTOMap(Map<String, PositiontypeDTO> positionTypeDTOMap) {
-    this.positionTypeDTOMap = positionTypeDTOMap;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public BalanceByCptyGroupDTO balanceByPosType(Map<String, Double> balanceByPosType) {
+        this.balanceByPosType = balanceByPosType;
+        return this;
     }
-    BalanceByCptyGroupDTO balanceByCptyGroupDTO = (BalanceByCptyGroupDTO) o;
-    return Objects.equals(this.qualifiedName, balanceByCptyGroupDTO.qualifiedName) &&
-        Objects.equals(this.balanceByPosType, balanceByCptyGroupDTO.balanceByPosType) &&
-        Objects.equals(this.counterPartyGroupId, balanceByCptyGroupDTO.counterPartyGroupId) &&
-        Objects.equals(this.counterPartyGroupIdDTO, balanceByCptyGroupDTO.counterPartyGroupIdDTO) &&
-        Objects.equals(this.positionTypeDTOMap, balanceByCptyGroupDTO.positionTypeDTOMap);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, balanceByPosType, counterPartyGroupId, counterPartyGroupIdDTO, positionTypeDTOMap);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class BalanceByCptyGroupDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    balanceByPosType: ").append(toIndentedString(balanceByPosType)).append("\n");
-    sb.append("    counterPartyGroupId: ").append(toIndentedString(counterPartyGroupId)).append("\n");
-    sb.append("    counterPartyGroupIdDTO: ").append(toIndentedString(counterPartyGroupIdDTO)).append("\n");
-    sb.append("    positionTypeDTOMap: ").append(toIndentedString(positionTypeDTOMap)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public BalanceByCptyGroupDTO putBalanceByPosTypeItem(String key, Double balanceByPosTypeItem) {
+        if (this.balanceByPosType == null) {
+            this.balanceByPosType = new HashMap<>();
+        }
+        this.balanceByPosType.put(key, balanceByPosTypeItem);
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    /**
+     * Get balanceByPosType
+     *
+     * @return balanceByPosType
+     **/
+    @ApiModelProperty(value = "")
+    public Map<String, Double> getBalanceByPosType() {
+        return balanceByPosType;
+    }
+
+    public void setBalanceByPosType(Map<String, Double> balanceByPosType) {
+        this.balanceByPosType = balanceByPosType;
+    }
+
+    public BalanceByCptyGroupDTO counterPartyGroupId(Long counterPartyGroupId) {
+        this.counterPartyGroupId = counterPartyGroupId;
+        return this;
+    }
+
+    /**
+     * Get counterPartyGroupId
+     *
+     * @return counterPartyGroupId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getCounterPartyGroupId() {
+        return counterPartyGroupId;
+    }
+
+    public void setCounterPartyGroupId(Long counterPartyGroupId) {
+        this.counterPartyGroupId = counterPartyGroupId;
+    }
+
+    public BalanceByCptyGroupDTO counterPartyGroupIdDTO(AccountDTO counterPartyGroupIdDTO) {
+        this.counterPartyGroupIdDTO = counterPartyGroupIdDTO;
+        return this;
+    }
+
+    /**
+     * Get counterPartyGroupIdDTO
+     *
+     * @return counterPartyGroupIdDTO
+     **/
+    @ApiModelProperty(value = "")
+    public AccountDTO getCounterPartyGroupIdDTO() {
+        return counterPartyGroupIdDTO;
+    }
+
+    public void setCounterPartyGroupIdDTO(AccountDTO counterPartyGroupIdDTO) {
+        this.counterPartyGroupIdDTO = counterPartyGroupIdDTO;
+    }
+
+    public BalanceByCptyGroupDTO positionTypeDTOMap(Map<String, PositiontypeDTO> positionTypeDTOMap) {
+        this.positionTypeDTOMap = positionTypeDTOMap;
+        return this;
+    }
+
+    public BalanceByCptyGroupDTO putPositionTypeDTOMapItem(String key, PositiontypeDTO positionTypeDTOMapItem) {
+        if (this.positionTypeDTOMap == null) {
+            this.positionTypeDTOMap = new HashMap<>();
+        }
+        this.positionTypeDTOMap.put(key, positionTypeDTOMapItem);
+        return this;
+    }
+
+    /**
+     * Get positionTypeDTOMap
+     *
+     * @return positionTypeDTOMap
+     **/
+    @ApiModelProperty(value = "")
+    public Map<String, PositiontypeDTO> getPositionTypeDTOMap() {
+        return positionTypeDTOMap;
+    }
+
+    public void setPositionTypeDTOMap(Map<String, PositiontypeDTO> positionTypeDTOMap) {
+        this.positionTypeDTOMap = positionTypeDTOMap;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BalanceByCptyGroupDTO balanceByCptyGroupDTO = (BalanceByCptyGroupDTO) o;
+        return Objects.equals(this.qualifiedName, balanceByCptyGroupDTO.qualifiedName) &&
+            Objects.equals(this.balanceByPosType, balanceByCptyGroupDTO.balanceByPosType) &&
+            Objects.equals(this.counterPartyGroupId, balanceByCptyGroupDTO.counterPartyGroupId) &&
+            Objects.equals(this.counterPartyGroupIdDTO, balanceByCptyGroupDTO.counterPartyGroupIdDTO) &&
+            Objects.equals(this.positionTypeDTOMap, balanceByCptyGroupDTO.positionTypeDTOMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, balanceByPosType, counterPartyGroupId, counterPartyGroupIdDTO,
+            positionTypeDTOMap);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class BalanceByCptyGroupDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    balanceByPosType: ").append(toIndentedString(balanceByPosType)).append("\n");
+        sb.append("    counterPartyGroupId: ").append(toIndentedString(counterPartyGroupId)).append("\n");
+        sb.append("    counterPartyGroupIdDTO: ").append(toIndentedString(counterPartyGroupIdDTO)).append("\n");
+        sb.append("    positionTypeDTOMap: ").append(toIndentedString(positionTypeDTOMap)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

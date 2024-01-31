@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +34,7 @@ public class AgreementProcessor implements TradeDataProcessor {
         log.debug("***** Processing Trade Agreement Id: {}, Agreement last updated datetime: {}",
             agreement.getAgreementId(), agreement.getLastUpdateDatetime());
         var strategy = Optional.ofNullable(strategyByFlow.get(agreement.getFlowStatus())).orElseThrow(
-            () -> new NotYetImplementedException(
+            () -> new RuntimeException(
                 "Strategy is not implemented for the flow: " + agreement.getFlowStatus()));
         strategy.process(agreement);
     }

@@ -498,10 +498,10 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     private CloudEventBuildRequest tradeAgreementExceptionRequest(HttpStatusCodeException exception, String resource,
         String event) {
-        var exceptionMessage = switch (exception.getStatusCode()) {
-            case UNAUTHORIZED -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
+        var exceptionMessage = switch (exception.getStatusCode().value()) {
+            case 401 -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
                 "Not Authorized to do this operation");
-            case NOT_FOUND -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
+            case 404 -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
                 "Resource not found");
             default -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
                 "An error occurred");

@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * StrategyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class StrategyDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("strategy")
-  private String strategy = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("strategyId")
-  private Integer strategyId = null;
+    @JsonProperty("strategy")
+    private String strategy = null;
 
-  public StrategyDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("strategyId")
+    private Integer strategyId = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public StrategyDTO strategy(String strategy) {
-    this.strategy = strategy;
-    return this;
-  }
-
-   /**
-   * Get strategy
-   * @return strategy
-  **/
-  @ApiModelProperty(value = "")
-  public String getStrategy() {
-    return strategy;
-  }
-
-  public void setStrategy(String strategy) {
-    this.strategy = strategy;
-  }
-
-  public StrategyDTO strategyId(Integer strategyId) {
-    this.strategyId = strategyId;
-    return this;
-  }
-
-   /**
-   * Get strategyId
-   * @return strategyId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getStrategyId() {
-    return strategyId;
-  }
-
-  public void setStrategyId(Integer strategyId) {
-    this.strategyId = strategyId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public StrategyDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    StrategyDTO strategyDTO = (StrategyDTO) o;
-    return Objects.equals(this.qualifiedName, strategyDTO.qualifiedName) &&
-        Objects.equals(this.strategy, strategyDTO.strategy) &&
-        Objects.equals(this.strategyId, strategyDTO.strategyId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, strategy, strategyId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class StrategyDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    strategy: ").append(toIndentedString(strategy)).append("\n");
-    sb.append("    strategyId: ").append(toIndentedString(strategyId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public StrategyDTO strategy(String strategy) {
+        this.strategy = strategy;
+        return this;
+    }
+
+    /**
+     * Get strategy
+     *
+     * @return strategy
+     **/
+    @ApiModelProperty(value = "")
+    public String getStrategy() {
+        return strategy;
+    }
+
+    public void setStrategy(String strategy) {
+        this.strategy = strategy;
+    }
+
+    public StrategyDTO strategyId(Integer strategyId) {
+        this.strategyId = strategyId;
+        return this;
+    }
+
+    /**
+     * Get strategyId
+     *
+     * @return strategyId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getStrategyId() {
+        return strategyId;
+    }
+
+    public void setStrategyId(Integer strategyId) {
+        this.strategyId = strategyId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StrategyDTO strategyDTO = (StrategyDTO) o;
+        return Objects.equals(this.qualifiedName, strategyDTO.qualifiedName) &&
+            Objects.equals(this.strategy, strategyDTO.strategy) &&
+            Objects.equals(this.strategyId, strategyDTO.strategyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, strategy, strategyId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class StrategyDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    strategy: ").append(toIndentedString(strategy)).append("\n");
+        sb.append("    strategyId: ").append(toIndentedString(strategyId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

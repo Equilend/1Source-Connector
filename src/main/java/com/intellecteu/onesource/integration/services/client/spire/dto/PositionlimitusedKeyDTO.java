@@ -22,91 +22,93 @@ import java.util.Objects;
 /**
  * PositionlimitusedKeyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class PositionlimitusedKeyDTO {
-  @JsonProperty("asOfDate")
-  private LocalDate asOfDate = null;
 
-  @JsonProperty("positionLimitId")
-  private Long positionLimitId = null;
+    @JsonProperty("asOfDate")
+    private LocalDate asOfDate = null;
 
-  public PositionlimitusedKeyDTO asOfDate(LocalDate asOfDate) {
-    this.asOfDate = asOfDate;
-    return this;
-  }
+    @JsonProperty("positionLimitId")
+    private Long positionLimitId = null;
 
-   /**
-   * Get asOfDate
-   * @return asOfDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDate getAsOfDate() {
-    return asOfDate;
-  }
-
-  public void setAsOfDate(LocalDate asOfDate) {
-    this.asOfDate = asOfDate;
-  }
-
-  public PositionlimitusedKeyDTO positionLimitId(Long positionLimitId) {
-    this.positionLimitId = positionLimitId;
-    return this;
-  }
-
-   /**
-   * Get positionLimitId
-   * @return positionLimitId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getPositionLimitId() {
-    return positionLimitId;
-  }
-
-  public void setPositionLimitId(Long positionLimitId) {
-    this.positionLimitId = positionLimitId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public PositionlimitusedKeyDTO asOfDate(LocalDate asOfDate) {
+        this.asOfDate = asOfDate;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get asOfDate
+     *
+     * @return asOfDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDate getAsOfDate() {
+        return asOfDate;
     }
-    PositionlimitusedKeyDTO positionlimitusedKeyDTO = (PositionlimitusedKeyDTO) o;
-    return Objects.equals(this.asOfDate, positionlimitusedKeyDTO.asOfDate) &&
-        Objects.equals(this.positionLimitId, positionlimitusedKeyDTO.positionLimitId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(asOfDate, positionLimitId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PositionlimitusedKeyDTO {\n");
-    
-    sb.append("    asOfDate: ").append(toIndentedString(asOfDate)).append("\n");
-    sb.append("    positionLimitId: ").append(toIndentedString(positionLimitId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setAsOfDate(LocalDate asOfDate) {
+        this.asOfDate = asOfDate;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public PositionlimitusedKeyDTO positionLimitId(Long positionLimitId) {
+        this.positionLimitId = positionLimitId;
+        return this;
+    }
+
+    /**
+     * Get positionLimitId
+     *
+     * @return positionLimitId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getPositionLimitId() {
+        return positionLimitId;
+    }
+
+    public void setPositionLimitId(Long positionLimitId) {
+        this.positionLimitId = positionLimitId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionlimitusedKeyDTO positionlimitusedKeyDTO = (PositionlimitusedKeyDTO) o;
+        return Objects.equals(this.asOfDate, positionlimitusedKeyDTO.asOfDate) &&
+            Objects.equals(this.positionLimitId, positionlimitusedKeyDTO.positionLimitId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(asOfDate, positionLimitId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class PositionlimitusedKeyDTO {\n");
+
+        sb.append("    asOfDate: ").append(toIndentedString(asOfDate)).append("\n");
+        sb.append("    positionLimitId: ").append(toIndentedString(positionLimitId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

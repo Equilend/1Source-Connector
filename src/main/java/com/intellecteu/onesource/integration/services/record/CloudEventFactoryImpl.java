@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -22,7 +21,7 @@ public class CloudEventFactoryImpl implements CloudEventFactory<IntegrationCloud
     @Override
     public IntegrationCloudEvent createRecord(CloudEventBuildRequest buildRequest) {
         var eventBuilder = Optional.ofNullable(eventBuilderByProcess.get(buildRequest.getRelatedProcess()))
-            .orElseThrow(() -> new NotYetImplementedException(format(
+            .orElseThrow(() -> new RuntimeException(format(
                 "This integration process: %s is not yet implemented", buildRequest.getRelatedProcess())));
         return eventBuilder.build(buildRequest);
     }
@@ -30,7 +29,7 @@ public class CloudEventFactoryImpl implements CloudEventFactory<IntegrationCloud
     @Override
     public IntegrationCloudEventBuilder eventBuilder(IntegrationProcess type) {
         return Optional.ofNullable(eventBuilderByProcess.get(type))
-            .orElseThrow(() -> new NotYetImplementedException(format(
+            .orElseThrow(() -> new RuntimeException(format(
                 "This integration process: %s is not yet implemented", type)));
     }
 }

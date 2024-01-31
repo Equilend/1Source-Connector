@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.model.spire;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

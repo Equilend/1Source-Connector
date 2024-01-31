@@ -9,7 +9,6 @@ import com.intellecteu.onesource.integration.routes.processor.AgreementProcessor
 import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
-import org.apache.camel.CamelContext;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -17,7 +16,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value="integration-toolkit.route.contract-initiation-trade-started.enable",
+    value = "integration-toolkit.route.contract-initiation-trade-started.enable",
     havingValue = "true",
     matchIfMissing = true)
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {

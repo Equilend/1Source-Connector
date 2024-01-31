@@ -21,252 +21,262 @@ import java.util.Objects;
 /**
  * PositionByVenueDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class PositionByVenueDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("avgRate")
-  private Double avgRate = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("positionType")
-  private String positionType = null;
+    @JsonProperty("avgRate")
+    private Double avgRate = null;
 
-  @JsonProperty("status")
-  private String status = null;
+    @JsonProperty("positionType")
+    private String positionType = null;
 
-  @JsonProperty("totalAmount")
-  private Double totalAmount = null;
+    @JsonProperty("status")
+    private String status = null;
 
-  @JsonProperty("totalDailyLoss")
-  private Double totalDailyLoss = null;
+    @JsonProperty("totalAmount")
+    private Double totalAmount = null;
 
-  @JsonProperty("totalDailyPAndL")
-  private Double totalDailyPAndL = null;
+    @JsonProperty("totalDailyLoss")
+    private Double totalDailyLoss = null;
 
-  @JsonProperty("totalDailyProfit")
-  private Double totalDailyProfit = null;
+    @JsonProperty("totalDailyPAndL")
+    private Double totalDailyPAndL = null;
 
-  @JsonProperty("venue")
-  private String venue = null;
+    @JsonProperty("totalDailyProfit")
+    private Double totalDailyProfit = null;
 
-  public PositionByVenueDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("venue")
+    private String venue = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public PositionByVenueDTO avgRate(Double avgRate) {
-    this.avgRate = avgRate;
-    return this;
-  }
-
-   /**
-   * Get avgRate
-   * @return avgRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAvgRate() {
-    return avgRate;
-  }
-
-  public void setAvgRate(Double avgRate) {
-    this.avgRate = avgRate;
-  }
-
-  public PositionByVenueDTO positionType(String positionType) {
-    this.positionType = positionType;
-    return this;
-  }
-
-   /**
-   * Get positionType
-   * @return positionType
-  **/
-  @ApiModelProperty(value = "")
-  public String getPositionType() {
-    return positionType;
-  }
-
-  public void setPositionType(String positionType) {
-    this.positionType = positionType;
-  }
-
-  public PositionByVenueDTO status(String status) {
-    this.status = status;
-    return this;
-  }
-
-   /**
-   * Get status
-   * @return status
-  **/
-  @ApiModelProperty(value = "")
-  public String getStatus() {
-    return status;
-  }
-
-  public void setStatus(String status) {
-    this.status = status;
-  }
-
-  public PositionByVenueDTO totalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-    return this;
-  }
-
-   /**
-   * Get totalAmount
-   * @return totalAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalAmount() {
-    return totalAmount;
-  }
-
-  public void setTotalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-  }
-
-  public PositionByVenueDTO totalDailyLoss(Double totalDailyLoss) {
-    this.totalDailyLoss = totalDailyLoss;
-    return this;
-  }
-
-   /**
-   * Get totalDailyLoss
-   * @return totalDailyLoss
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyLoss() {
-    return totalDailyLoss;
-  }
-
-  public void setTotalDailyLoss(Double totalDailyLoss) {
-    this.totalDailyLoss = totalDailyLoss;
-  }
-
-  public PositionByVenueDTO totalDailyPAndL(Double totalDailyPAndL) {
-    this.totalDailyPAndL = totalDailyPAndL;
-    return this;
-  }
-
-   /**
-   * Get totalDailyPAndL
-   * @return totalDailyPAndL
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyPAndL() {
-    return totalDailyPAndL;
-  }
-
-  public void setTotalDailyPAndL(Double totalDailyPAndL) {
-    this.totalDailyPAndL = totalDailyPAndL;
-  }
-
-  public PositionByVenueDTO totalDailyProfit(Double totalDailyProfit) {
-    this.totalDailyProfit = totalDailyProfit;
-    return this;
-  }
-
-   /**
-   * Get totalDailyProfit
-   * @return totalDailyProfit
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalDailyProfit() {
-    return totalDailyProfit;
-  }
-
-  public void setTotalDailyProfit(Double totalDailyProfit) {
-    this.totalDailyProfit = totalDailyProfit;
-  }
-
-  public PositionByVenueDTO venue(String venue) {
-    this.venue = venue;
-    return this;
-  }
-
-   /**
-   * Get venue
-   * @return venue
-  **/
-  @ApiModelProperty(value = "")
-  public String getVenue() {
-    return venue;
-  }
-
-  public void setVenue(String venue) {
-    this.venue = venue;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public PositionByVenueDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    PositionByVenueDTO positionByVenueDTO = (PositionByVenueDTO) o;
-    return Objects.equals(this.qualifiedName, positionByVenueDTO.qualifiedName) &&
-        Objects.equals(this.avgRate, positionByVenueDTO.avgRate) &&
-        Objects.equals(this.positionType, positionByVenueDTO.positionType) &&
-        Objects.equals(this.status, positionByVenueDTO.status) &&
-        Objects.equals(this.totalAmount, positionByVenueDTO.totalAmount) &&
-        Objects.equals(this.totalDailyLoss, positionByVenueDTO.totalDailyLoss) &&
-        Objects.equals(this.totalDailyPAndL, positionByVenueDTO.totalDailyPAndL) &&
-        Objects.equals(this.totalDailyProfit, positionByVenueDTO.totalDailyProfit) &&
-        Objects.equals(this.venue, positionByVenueDTO.venue);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, avgRate, positionType, status, totalAmount, totalDailyLoss, totalDailyPAndL, totalDailyProfit, venue);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class PositionByVenueDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
-    sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
-    sb.append("    totalDailyLoss: ").append(toIndentedString(totalDailyLoss)).append("\n");
-    sb.append("    totalDailyPAndL: ").append(toIndentedString(totalDailyPAndL)).append("\n");
-    sb.append("    totalDailyProfit: ").append(toIndentedString(totalDailyProfit)).append("\n");
-    sb.append("    venue: ").append(toIndentedString(venue)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public PositionByVenueDTO avgRate(Double avgRate) {
+        this.avgRate = avgRate;
+        return this;
+    }
+
+    /**
+     * Get avgRate
+     *
+     * @return avgRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(Double avgRate) {
+        this.avgRate = avgRate;
+    }
+
+    public PositionByVenueDTO positionType(String positionType) {
+        this.positionType = positionType;
+        return this;
+    }
+
+    /**
+     * Get positionType
+     *
+     * @return positionType
+     **/
+    @ApiModelProperty(value = "")
+    public String getPositionType() {
+        return positionType;
+    }
+
+    public void setPositionType(String positionType) {
+        this.positionType = positionType;
+    }
+
+    public PositionByVenueDTO status(String status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return status
+     **/
+    @ApiModelProperty(value = "")
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public PositionByVenueDTO totalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+        return this;
+    }
+
+    /**
+     * Get totalAmount
+     *
+     * @return totalAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public PositionByVenueDTO totalDailyLoss(Double totalDailyLoss) {
+        this.totalDailyLoss = totalDailyLoss;
+        return this;
+    }
+
+    /**
+     * Get totalDailyLoss
+     *
+     * @return totalDailyLoss
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyLoss() {
+        return totalDailyLoss;
+    }
+
+    public void setTotalDailyLoss(Double totalDailyLoss) {
+        this.totalDailyLoss = totalDailyLoss;
+    }
+
+    public PositionByVenueDTO totalDailyPAndL(Double totalDailyPAndL) {
+        this.totalDailyPAndL = totalDailyPAndL;
+        return this;
+    }
+
+    /**
+     * Get totalDailyPAndL
+     *
+     * @return totalDailyPAndL
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyPAndL() {
+        return totalDailyPAndL;
+    }
+
+    public void setTotalDailyPAndL(Double totalDailyPAndL) {
+        this.totalDailyPAndL = totalDailyPAndL;
+    }
+
+    public PositionByVenueDTO totalDailyProfit(Double totalDailyProfit) {
+        this.totalDailyProfit = totalDailyProfit;
+        return this;
+    }
+
+    /**
+     * Get totalDailyProfit
+     *
+     * @return totalDailyProfit
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalDailyProfit() {
+        return totalDailyProfit;
+    }
+
+    public void setTotalDailyProfit(Double totalDailyProfit) {
+        this.totalDailyProfit = totalDailyProfit;
+    }
+
+    public PositionByVenueDTO venue(String venue) {
+        this.venue = venue;
+        return this;
+    }
+
+    /**
+     * Get venue
+     *
+     * @return venue
+     **/
+    @ApiModelProperty(value = "")
+    public String getVenue() {
+        return venue;
+    }
+
+    public void setVenue(String venue) {
+        this.venue = venue;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        PositionByVenueDTO positionByVenueDTO = (PositionByVenueDTO) o;
+        return Objects.equals(this.qualifiedName, positionByVenueDTO.qualifiedName) &&
+            Objects.equals(this.avgRate, positionByVenueDTO.avgRate) &&
+            Objects.equals(this.positionType, positionByVenueDTO.positionType) &&
+            Objects.equals(this.status, positionByVenueDTO.status) &&
+            Objects.equals(this.totalAmount, positionByVenueDTO.totalAmount) &&
+            Objects.equals(this.totalDailyLoss, positionByVenueDTO.totalDailyLoss) &&
+            Objects.equals(this.totalDailyPAndL, positionByVenueDTO.totalDailyPAndL) &&
+            Objects.equals(this.totalDailyProfit, positionByVenueDTO.totalDailyProfit) &&
+            Objects.equals(this.venue, positionByVenueDTO.venue);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, avgRate, positionType, status, totalAmount, totalDailyLoss, totalDailyPAndL,
+            totalDailyProfit, venue);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class PositionByVenueDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
+        sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
+        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
+        sb.append("    totalDailyLoss: ").append(toIndentedString(totalDailyLoss)).append("\n");
+        sb.append("    totalDailyPAndL: ").append(toIndentedString(totalDailyPAndL)).append("\n");
+        sb.append("    totalDailyProfit: ").append(toIndentedString(totalDailyProfit)).append("\n");
+        sb.append("    venue: ").append(toIndentedString(venue)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

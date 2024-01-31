@@ -21,229 +21,238 @@ import java.util.Objects;
 /**
  * AccrualBalanceDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class AccrualBalanceDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("holdFeeAccrued")
-  private Double holdFeeAccrued = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("holdFeeAccruedNew")
-  private Double holdFeeAccruedNew = null;
+    @JsonProperty("holdFeeAccrued")
+    private Double holdFeeAccrued = null;
 
-  @JsonProperty("loanPremium")
-  private Double loanPremium = null;
+    @JsonProperty("holdFeeAccruedNew")
+    private Double holdFeeAccruedNew = null;
 
-  @JsonProperty("loanPremiumNew")
-  private Double loanPremiumNew = null;
+    @JsonProperty("loanPremium")
+    private Double loanPremium = null;
 
-  @JsonProperty("loanRebate")
-  private Double loanRebate = null;
+    @JsonProperty("loanPremiumNew")
+    private Double loanPremiumNew = null;
 
-  @JsonProperty("loanRebateNew")
-  private Double loanRebateNew = null;
+    @JsonProperty("loanRebate")
+    private Double loanRebate = null;
 
-  @JsonProperty("positionId")
-  private Long positionId = null;
+    @JsonProperty("loanRebateNew")
+    private Double loanRebateNew = null;
 
-  public AccrualBalanceDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("positionId")
+    private Long positionId = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public AccrualBalanceDTO holdFeeAccrued(Double holdFeeAccrued) {
-    this.holdFeeAccrued = holdFeeAccrued;
-    return this;
-  }
-
-   /**
-   * Get holdFeeAccrued
-   * @return holdFeeAccrued
-  **/
-  @ApiModelProperty(value = "")
-  public Double getHoldFeeAccrued() {
-    return holdFeeAccrued;
-  }
-
-  public void setHoldFeeAccrued(Double holdFeeAccrued) {
-    this.holdFeeAccrued = holdFeeAccrued;
-  }
-
-  public AccrualBalanceDTO holdFeeAccruedNew(Double holdFeeAccruedNew) {
-    this.holdFeeAccruedNew = holdFeeAccruedNew;
-    return this;
-  }
-
-   /**
-   * Get holdFeeAccruedNew
-   * @return holdFeeAccruedNew
-  **/
-  @ApiModelProperty(value = "")
-  public Double getHoldFeeAccruedNew() {
-    return holdFeeAccruedNew;
-  }
-
-  public void setHoldFeeAccruedNew(Double holdFeeAccruedNew) {
-    this.holdFeeAccruedNew = holdFeeAccruedNew;
-  }
-
-  public AccrualBalanceDTO loanPremium(Double loanPremium) {
-    this.loanPremium = loanPremium;
-    return this;
-  }
-
-   /**
-   * Get loanPremium
-   * @return loanPremium
-  **/
-  @ApiModelProperty(value = "")
-  public Double getLoanPremium() {
-    return loanPremium;
-  }
-
-  public void setLoanPremium(Double loanPremium) {
-    this.loanPremium = loanPremium;
-  }
-
-  public AccrualBalanceDTO loanPremiumNew(Double loanPremiumNew) {
-    this.loanPremiumNew = loanPremiumNew;
-    return this;
-  }
-
-   /**
-   * Get loanPremiumNew
-   * @return loanPremiumNew
-  **/
-  @ApiModelProperty(value = "")
-  public Double getLoanPremiumNew() {
-    return loanPremiumNew;
-  }
-
-  public void setLoanPremiumNew(Double loanPremiumNew) {
-    this.loanPremiumNew = loanPremiumNew;
-  }
-
-  public AccrualBalanceDTO loanRebate(Double loanRebate) {
-    this.loanRebate = loanRebate;
-    return this;
-  }
-
-   /**
-   * Get loanRebate
-   * @return loanRebate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getLoanRebate() {
-    return loanRebate;
-  }
-
-  public void setLoanRebate(Double loanRebate) {
-    this.loanRebate = loanRebate;
-  }
-
-  public AccrualBalanceDTO loanRebateNew(Double loanRebateNew) {
-    this.loanRebateNew = loanRebateNew;
-    return this;
-  }
-
-   /**
-   * Get loanRebateNew
-   * @return loanRebateNew
-  **/
-  @ApiModelProperty(value = "")
-  public Double getLoanRebateNew() {
-    return loanRebateNew;
-  }
-
-  public void setLoanRebateNew(Double loanRebateNew) {
-    this.loanRebateNew = loanRebateNew;
-  }
-
-  public AccrualBalanceDTO positionId(Long positionId) {
-    this.positionId = positionId;
-    return this;
-  }
-
-   /**
-   * Get positionId
-   * @return positionId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getPositionId() {
-    return positionId;
-  }
-
-  public void setPositionId(Long positionId) {
-    this.positionId = positionId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public AccrualBalanceDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    AccrualBalanceDTO accrualBalanceDTO = (AccrualBalanceDTO) o;
-    return Objects.equals(this.qualifiedName, accrualBalanceDTO.qualifiedName) &&
-        Objects.equals(this.holdFeeAccrued, accrualBalanceDTO.holdFeeAccrued) &&
-        Objects.equals(this.holdFeeAccruedNew, accrualBalanceDTO.holdFeeAccruedNew) &&
-        Objects.equals(this.loanPremium, accrualBalanceDTO.loanPremium) &&
-        Objects.equals(this.loanPremiumNew, accrualBalanceDTO.loanPremiumNew) &&
-        Objects.equals(this.loanRebate, accrualBalanceDTO.loanRebate) &&
-        Objects.equals(this.loanRebateNew, accrualBalanceDTO.loanRebateNew) &&
-        Objects.equals(this.positionId, accrualBalanceDTO.positionId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, holdFeeAccrued, holdFeeAccruedNew, loanPremium, loanPremiumNew, loanRebate, loanRebateNew, positionId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class AccrualBalanceDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    holdFeeAccrued: ").append(toIndentedString(holdFeeAccrued)).append("\n");
-    sb.append("    holdFeeAccruedNew: ").append(toIndentedString(holdFeeAccruedNew)).append("\n");
-    sb.append("    loanPremium: ").append(toIndentedString(loanPremium)).append("\n");
-    sb.append("    loanPremiumNew: ").append(toIndentedString(loanPremiumNew)).append("\n");
-    sb.append("    loanRebate: ").append(toIndentedString(loanRebate)).append("\n");
-    sb.append("    loanRebateNew: ").append(toIndentedString(loanRebateNew)).append("\n");
-    sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public AccrualBalanceDTO holdFeeAccrued(Double holdFeeAccrued) {
+        this.holdFeeAccrued = holdFeeAccrued;
+        return this;
+    }
+
+    /**
+     * Get holdFeeAccrued
+     *
+     * @return holdFeeAccrued
+     **/
+    @ApiModelProperty(value = "")
+    public Double getHoldFeeAccrued() {
+        return holdFeeAccrued;
+    }
+
+    public void setHoldFeeAccrued(Double holdFeeAccrued) {
+        this.holdFeeAccrued = holdFeeAccrued;
+    }
+
+    public AccrualBalanceDTO holdFeeAccruedNew(Double holdFeeAccruedNew) {
+        this.holdFeeAccruedNew = holdFeeAccruedNew;
+        return this;
+    }
+
+    /**
+     * Get holdFeeAccruedNew
+     *
+     * @return holdFeeAccruedNew
+     **/
+    @ApiModelProperty(value = "")
+    public Double getHoldFeeAccruedNew() {
+        return holdFeeAccruedNew;
+    }
+
+    public void setHoldFeeAccruedNew(Double holdFeeAccruedNew) {
+        this.holdFeeAccruedNew = holdFeeAccruedNew;
+    }
+
+    public AccrualBalanceDTO loanPremium(Double loanPremium) {
+        this.loanPremium = loanPremium;
+        return this;
+    }
+
+    /**
+     * Get loanPremium
+     *
+     * @return loanPremium
+     **/
+    @ApiModelProperty(value = "")
+    public Double getLoanPremium() {
+        return loanPremium;
+    }
+
+    public void setLoanPremium(Double loanPremium) {
+        this.loanPremium = loanPremium;
+    }
+
+    public AccrualBalanceDTO loanPremiumNew(Double loanPremiumNew) {
+        this.loanPremiumNew = loanPremiumNew;
+        return this;
+    }
+
+    /**
+     * Get loanPremiumNew
+     *
+     * @return loanPremiumNew
+     **/
+    @ApiModelProperty(value = "")
+    public Double getLoanPremiumNew() {
+        return loanPremiumNew;
+    }
+
+    public void setLoanPremiumNew(Double loanPremiumNew) {
+        this.loanPremiumNew = loanPremiumNew;
+    }
+
+    public AccrualBalanceDTO loanRebate(Double loanRebate) {
+        this.loanRebate = loanRebate;
+        return this;
+    }
+
+    /**
+     * Get loanRebate
+     *
+     * @return loanRebate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getLoanRebate() {
+        return loanRebate;
+    }
+
+    public void setLoanRebate(Double loanRebate) {
+        this.loanRebate = loanRebate;
+    }
+
+    public AccrualBalanceDTO loanRebateNew(Double loanRebateNew) {
+        this.loanRebateNew = loanRebateNew;
+        return this;
+    }
+
+    /**
+     * Get loanRebateNew
+     *
+     * @return loanRebateNew
+     **/
+    @ApiModelProperty(value = "")
+    public Double getLoanRebateNew() {
+        return loanRebateNew;
+    }
+
+    public void setLoanRebateNew(Double loanRebateNew) {
+        this.loanRebateNew = loanRebateNew;
+    }
+
+    public AccrualBalanceDTO positionId(Long positionId) {
+        this.positionId = positionId;
+        return this;
+    }
+
+    /**
+     * Get positionId
+     *
+     * @return positionId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AccrualBalanceDTO accrualBalanceDTO = (AccrualBalanceDTO) o;
+        return Objects.equals(this.qualifiedName, accrualBalanceDTO.qualifiedName) &&
+            Objects.equals(this.holdFeeAccrued, accrualBalanceDTO.holdFeeAccrued) &&
+            Objects.equals(this.holdFeeAccruedNew, accrualBalanceDTO.holdFeeAccruedNew) &&
+            Objects.equals(this.loanPremium, accrualBalanceDTO.loanPremium) &&
+            Objects.equals(this.loanPremiumNew, accrualBalanceDTO.loanPremiumNew) &&
+            Objects.equals(this.loanRebate, accrualBalanceDTO.loanRebate) &&
+            Objects.equals(this.loanRebateNew, accrualBalanceDTO.loanRebateNew) &&
+            Objects.equals(this.positionId, accrualBalanceDTO.positionId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, holdFeeAccrued, holdFeeAccruedNew, loanPremium, loanPremiumNew, loanRebate,
+            loanRebateNew, positionId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class AccrualBalanceDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    holdFeeAccrued: ").append(toIndentedString(holdFeeAccrued)).append("\n");
+        sb.append("    holdFeeAccruedNew: ").append(toIndentedString(holdFeeAccruedNew)).append("\n");
+        sb.append("    loanPremium: ").append(toIndentedString(loanPremium)).append("\n");
+        sb.append("    loanPremiumNew: ").append(toIndentedString(loanPremiumNew)).append("\n");
+        sb.append("    loanRebate: ").append(toIndentedString(loanRebate)).append("\n");
+        sb.append("    loanRebateNew: ").append(toIndentedString(loanRebateNew)).append("\n");
+        sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

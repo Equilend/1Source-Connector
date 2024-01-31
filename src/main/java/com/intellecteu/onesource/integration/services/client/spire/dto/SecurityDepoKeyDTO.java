@@ -21,91 +21,93 @@ import java.util.Objects;
 /**
  * SecurityDepoKeyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SecurityDepoKeyDTO {
-  @JsonProperty("depoId")
-  private Integer depoId = null;
 
-  @JsonProperty("securityId")
-  private Long securityId = null;
+    @JsonProperty("depoId")
+    private Integer depoId = null;
 
-  public SecurityDepoKeyDTO depoId(Integer depoId) {
-    this.depoId = depoId;
-    return this;
-  }
+    @JsonProperty("securityId")
+    private Long securityId = null;
 
-   /**
-   * Get depoId
-   * @return depoId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getDepoId() {
-    return depoId;
-  }
-
-  public void setDepoId(Integer depoId) {
-    this.depoId = depoId;
-  }
-
-  public SecurityDepoKeyDTO securityId(Long securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Long securityId) {
-    this.securityId = securityId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public SecurityDepoKeyDTO depoId(Integer depoId) {
+        this.depoId = depoId;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get depoId
+     *
+     * @return depoId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getDepoId() {
+        return depoId;
     }
-    SecurityDepoKeyDTO securityDepoKeyDTO = (SecurityDepoKeyDTO) o;
-    return Objects.equals(this.depoId, securityDepoKeyDTO.depoId) &&
-        Objects.equals(this.securityId, securityDepoKeyDTO.securityId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(depoId, securityId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SecurityDepoKeyDTO {\n");
-    
-    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setDepoId(Integer depoId) {
+        this.depoId = depoId;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public SecurityDepoKeyDTO securityId(Long securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecurityDepoKeyDTO securityDepoKeyDTO = (SecurityDepoKeyDTO) o;
+        return Objects.equals(this.depoId, securityDepoKeyDTO.depoId) &&
+            Objects.equals(this.securityId, securityDepoKeyDTO.securityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(depoId, securityId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SecurityDepoKeyDTO {\n");
+
+        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

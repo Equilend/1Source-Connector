@@ -23,130 +23,133 @@ import java.util.Objects;
 /**
  * NQueryResponsePositionOutDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class NQueryResponsePositionOutDTO {
-  @JsonProperty("beans")
-  private List<PositionOutDTO> beans = null;
 
-  @JsonProperty("groups")
-  private List<SGroupPositionOutDTO> groups = null;
+    @JsonProperty("beans")
+    private List<PositionOutDTO> beans = null;
 
-  @JsonProperty("totalRows")
-  private Integer totalRows = null;
+    @JsonProperty("groups")
+    private List<SGroupPositionOutDTO> groups = null;
 
-  public NQueryResponsePositionOutDTO beans(List<PositionOutDTO> beans) {
-    this.beans = beans;
-    return this;
-  }
+    @JsonProperty("totalRows")
+    private Integer totalRows = null;
 
-  public NQueryResponsePositionOutDTO addBeansItem(PositionOutDTO beansItem) {
-    if (this.beans == null) {
-      this.beans = new ArrayList<>();
+    public NQueryResponsePositionOutDTO beans(List<PositionOutDTO> beans) {
+        this.beans = beans;
+        return this;
     }
-    this.beans.add(beansItem);
-    return this;
-  }
 
-   /**
-   * Get beans
-   * @return beans
-  **/
-  @ApiModelProperty(value = "")
-  public List<PositionOutDTO> getBeans() {
-    return beans;
-  }
-
-  public void setBeans(List<PositionOutDTO> beans) {
-    this.beans = beans;
-  }
-
-  public NQueryResponsePositionOutDTO groups(List<SGroupPositionOutDTO> groups) {
-    this.groups = groups;
-    return this;
-  }
-
-  public NQueryResponsePositionOutDTO addGroupsItem(SGroupPositionOutDTO groupsItem) {
-    if (this.groups == null) {
-      this.groups = new ArrayList<>();
+    public NQueryResponsePositionOutDTO addBeansItem(PositionOutDTO beansItem) {
+        if (this.beans == null) {
+            this.beans = new ArrayList<>();
+        }
+        this.beans.add(beansItem);
+        return this;
     }
-    this.groups.add(groupsItem);
-    return this;
-  }
 
-   /**
-   * Get groups
-   * @return groups
-  **/
-  @ApiModelProperty(value = "")
-  public List<SGroupPositionOutDTO> getGroups() {
-    return groups;
-  }
-
-  public void setGroups(List<SGroupPositionOutDTO> groups) {
-    this.groups = groups;
-  }
-
-  public NQueryResponsePositionOutDTO totalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-    return this;
-  }
-
-   /**
-   * Get totalRows
-   * @return totalRows
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalRows() {
-    return totalRows;
-  }
-
-  public void setTotalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get beans
+     *
+     * @return beans
+     **/
+    @ApiModelProperty(value = "")
+    public List<PositionOutDTO> getBeans() {
+        return beans;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setBeans(List<PositionOutDTO> beans) {
+        this.beans = beans;
     }
-    NQueryResponsePositionOutDTO nqueryResponsePositionOutDTO = (NQueryResponsePositionOutDTO) o;
-    return Objects.equals(this.beans, nqueryResponsePositionOutDTO.beans) &&
-        Objects.equals(this.groups, nqueryResponsePositionOutDTO.groups) &&
-        Objects.equals(this.totalRows, nqueryResponsePositionOutDTO.totalRows);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(beans, groups, totalRows);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class NQueryResponsePositionOutDTO {\n");
-    
-    sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
-    sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
-    sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public NQueryResponsePositionOutDTO groups(List<SGroupPositionOutDTO> groups) {
+        this.groups = groups;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public NQueryResponsePositionOutDTO addGroupsItem(SGroupPositionOutDTO groupsItem) {
+        if (this.groups == null) {
+            this.groups = new ArrayList<>();
+        }
+        this.groups.add(groupsItem);
+        return this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return groups
+     **/
+    @ApiModelProperty(value = "")
+    public List<SGroupPositionOutDTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<SGroupPositionOutDTO> groups) {
+        this.groups = groups;
+    }
+
+    public NQueryResponsePositionOutDTO totalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+        return this;
+    }
+
+    /**
+     * Get totalRows
+     *
+     * @return totalRows
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTotalRows() {
+        return totalRows;
+    }
+
+    public void setTotalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NQueryResponsePositionOutDTO nqueryResponsePositionOutDTO = (NQueryResponsePositionOutDTO) o;
+        return Objects.equals(this.beans, nqueryResponsePositionOutDTO.beans) &&
+            Objects.equals(this.groups, nqueryResponsePositionOutDTO.groups) &&
+            Objects.equals(this.totalRows, nqueryResponsePositionOutDTO.totalRows);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beans, groups, totalRows);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class NQueryResponsePositionOutDTO {\n");
+
+        sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
+        sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
+        sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

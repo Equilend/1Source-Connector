@@ -21,160 +21,165 @@ import java.util.Objects;
 /**
  * TradingdeskDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TradingdeskDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("calendarId")
-  private Integer calendarId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("timezone")
-  private String timezone = null;
+    @JsonProperty("calendarId")
+    private Integer calendarId = null;
 
-  @JsonProperty("tradingDeskId")
-  private Integer tradingDeskId = null;
+    @JsonProperty("timezone")
+    private String timezone = null;
 
-  @JsonProperty("tradingDeskName")
-  private String tradingDeskName = null;
+    @JsonProperty("tradingDeskId")
+    private Integer tradingDeskId = null;
 
-  public TradingdeskDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("tradingDeskName")
+    private String tradingDeskName = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TradingdeskDTO calendarId(Integer calendarId) {
-    this.calendarId = calendarId;
-    return this;
-  }
-
-   /**
-   * Get calendarId
-   * @return calendarId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCalendarId() {
-    return calendarId;
-  }
-
-  public void setCalendarId(Integer calendarId) {
-    this.calendarId = calendarId;
-  }
-
-  public TradingdeskDTO timezone(String timezone) {
-    this.timezone = timezone;
-    return this;
-  }
-
-   /**
-   * Get timezone
-   * @return timezone
-  **/
-  @ApiModelProperty(value = "")
-  public String getTimezone() {
-    return timezone;
-  }
-
-  public void setTimezone(String timezone) {
-    this.timezone = timezone;
-  }
-
-  public TradingdeskDTO tradingDeskId(Integer tradingDeskId) {
-    this.tradingDeskId = tradingDeskId;
-    return this;
-  }
-
-   /**
-   * Get tradingDeskId
-   * @return tradingDeskId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTradingDeskId() {
-    return tradingDeskId;
-  }
-
-  public void setTradingDeskId(Integer tradingDeskId) {
-    this.tradingDeskId = tradingDeskId;
-  }
-
-  public TradingdeskDTO tradingDeskName(String tradingDeskName) {
-    this.tradingDeskName = tradingDeskName;
-    return this;
-  }
-
-   /**
-   * Get tradingDeskName
-   * @return tradingDeskName
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradingDeskName() {
-    return tradingDeskName;
-  }
-
-  public void setTradingDeskName(String tradingDeskName) {
-    this.tradingDeskName = tradingDeskName;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TradingdeskDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    TradingdeskDTO tradingdeskDTO = (TradingdeskDTO) o;
-    return Objects.equals(this.qualifiedName, tradingdeskDTO.qualifiedName) &&
-        Objects.equals(this.calendarId, tradingdeskDTO.calendarId) &&
-        Objects.equals(this.timezone, tradingdeskDTO.timezone) &&
-        Objects.equals(this.tradingDeskId, tradingdeskDTO.tradingDeskId) &&
-        Objects.equals(this.tradingDeskName, tradingdeskDTO.tradingDeskName);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, calendarId, timezone, tradingDeskId, tradingDeskName);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TradingdeskDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
-    sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
-    sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
-    sb.append("    tradingDeskName: ").append(toIndentedString(tradingDeskName)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TradingdeskDTO calendarId(Integer calendarId) {
+        this.calendarId = calendarId;
+        return this;
+    }
+
+    /**
+     * Get calendarId
+     *
+     * @return calendarId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCalendarId() {
+        return calendarId;
+    }
+
+    public void setCalendarId(Integer calendarId) {
+        this.calendarId = calendarId;
+    }
+
+    public TradingdeskDTO timezone(String timezone) {
+        this.timezone = timezone;
+        return this;
+    }
+
+    /**
+     * Get timezone
+     *
+     * @return timezone
+     **/
+    @ApiModelProperty(value = "")
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public TradingdeskDTO tradingDeskId(Integer tradingDeskId) {
+        this.tradingDeskId = tradingDeskId;
+        return this;
+    }
+
+    /**
+     * Get tradingDeskId
+     *
+     * @return tradingDeskId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTradingDeskId() {
+        return tradingDeskId;
+    }
+
+    public void setTradingDeskId(Integer tradingDeskId) {
+        this.tradingDeskId = tradingDeskId;
+    }
+
+    public TradingdeskDTO tradingDeskName(String tradingDeskName) {
+        this.tradingDeskName = tradingDeskName;
+        return this;
+    }
+
+    /**
+     * Get tradingDeskName
+     *
+     * @return tradingDeskName
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradingDeskName() {
+        return tradingDeskName;
+    }
+
+    public void setTradingDeskName(String tradingDeskName) {
+        this.tradingDeskName = tradingDeskName;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TradingdeskDTO tradingdeskDTO = (TradingdeskDTO) o;
+        return Objects.equals(this.qualifiedName, tradingdeskDTO.qualifiedName) &&
+            Objects.equals(this.calendarId, tradingdeskDTO.calendarId) &&
+            Objects.equals(this.timezone, tradingdeskDTO.timezone) &&
+            Objects.equals(this.tradingDeskId, tradingdeskDTO.tradingDeskId) &&
+            Objects.equals(this.tradingDeskName, tradingdeskDTO.tradingDeskName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, calendarId, timezone, tradingDeskId, tradingDeskName);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TradingdeskDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
+        sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
+        sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
+        sb.append("    tradingDeskName: ").append(toIndentedString(tradingDeskName)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 
