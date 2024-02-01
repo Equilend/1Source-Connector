@@ -2,7 +2,9 @@ package com.intellecteu.onesource.integration.routes.processor;
 
 import static com.intellecteu.onesource.integration.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.model.ContractStatus.PROPOSED;
@@ -20,6 +22,7 @@ import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.model.Agreement;
 import com.intellecteu.onesource.integration.model.Contract;
 import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.Rerate;
 import com.intellecteu.onesource.integration.model.TradeEvent;
 import com.intellecteu.onesource.integration.model.spire.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
@@ -27,6 +30,7 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceServiceTrueService;
 import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -49,6 +53,7 @@ public class EventProcessor {
     private final AgreementService agreementService;
     private final ContractService contractService;
     private final PositionService positionService;
+    private final RerateService rerateService;
     private final CloudEventRecordService cloudEventRecordService;
 
     public TradeEvent saveEvent(TradeEvent event) {
@@ -120,6 +125,25 @@ public class EventProcessor {
             positionService.savePosition(position);
             recordCloudEvent(agreementId, position, TRADE_AGREEMENT_CANCELED);
         });
+    }
+
+    public void processRerateEvent(TradeEvent event){
+        // expected format for resourceUri: /v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        try {
+            oneSourceService.retrieveRerate(resourceUri)
+                .ifPresent(rerate -> {
+                    rerate.setProcessingStatus(CREATED);
+                    rerateService.saveRerate(rerate);
+                });
+        } catch (HttpStatusCodeException e) {
+            log.debug("Rerate {} was not found. Details: {} ", resourceUri, e.getMessage());
+            if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(RERATE);
+                var recordRequest = eventBuilder.buildExceptionRequest(e, GET_RERATE_PROPOSAL, resourceUri);
+                cloudEventRecordService.record(recordRequest);
+            }
+        }
     }
 
     public void cancelContract() {

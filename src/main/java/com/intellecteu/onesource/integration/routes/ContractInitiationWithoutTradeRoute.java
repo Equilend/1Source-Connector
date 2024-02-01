@@ -30,12 +30,12 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.model.spire.Position?"
-            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT p FROM Position p WHERE p.processingStatus IN ('%s')";
 
     private static final String TRADE_EVENT_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.model.TradeEvent?"
-            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT e FROM TradeEvent e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
 
     private final PositionProcessor positionProcessor;

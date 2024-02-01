@@ -23,7 +23,7 @@ public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
     private static final String TRADE_EVENT_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.model.TradeEvent?"
-            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT o FROM TradeEvent o WHERE o.processingStatus = '%s' AND o.eventType IN ('%s')";
 
     private final AgreementProcessor agreementProcessor;

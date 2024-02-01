@@ -39,6 +39,10 @@ public class ContractService {
         return contractRepository.findByVenueRefId(venueRefId).stream().findFirst();
     }
 
+    public Optional<Contract> findByPositionId(String positionId){
+        return contractRepository.findByMatchingSpirePositionId(positionId).stream().findFirst();
+    }
+
     public List<Contract> findAllByContractId(String contractId) {
         return contractRepository.findAllByContractId(contractId);
     }
