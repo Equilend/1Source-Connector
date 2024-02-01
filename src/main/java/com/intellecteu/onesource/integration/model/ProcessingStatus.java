@@ -27,5 +27,6 @@ public enum ProcessingStatus {
     TO_CANCEL,
     TO_DECLINE,
     UPDATED,
-    VALIDATED
+    VALIDATED,
+    MATCHED_RERATE_TRADE
 }

@@ -22,7 +22,7 @@ public class RerateTrade {
     private LocalDateTime lastUpdateDatetime;
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;
-    private Integer matchingRerateId;
+    private String matchingRerateId;
     private Long relatedPositionId;
     private String relatedContractId;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

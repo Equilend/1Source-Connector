@@ -15,6 +15,7 @@ public enum EventType {
     RECALL,
     RECALL_CANCEL,
     RERATE,
+    RERATE_PROPOSED,
     RERATE_APPROVE,
     RERATE_CANCEL,
     RERATE_DECLINE,

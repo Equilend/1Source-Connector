@@ -189,3 +189,7 @@ Integration tests + skip Unit tests:
 | notification.spire.topic                          | NOTIFICATION_SPIRE_TOPIC         |
 | notification.spire.auth.key                       | NOTIFICATION_SPIRE_KEY           |
 | notification.spire.auth.secret                    | NOTIFICATION_SPIRE_SECRET        |
+|                                                   |                                  |
+
+## 5.1 Generated DTO based on swagger
+For generated 1source DTO classes with OneOf* replace '@JsonTypeInfo(use = JsonTypeInfo.Id.NAME...' with @JsonTypeInfo(use = Id.DEDUCTION)

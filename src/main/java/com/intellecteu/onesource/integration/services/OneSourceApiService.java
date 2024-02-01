@@ -47,6 +47,7 @@ import com.intellecteu.onesource.integration.model.EventType;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -60,6 +61,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.RequestEntity;
+import org.springframework.http.RequestEntity.BodyBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -85,7 +88,6 @@ public class OneSourceApiService implements OneSourceService {
     private static final String CONTRACT_CANCEL_ENDPOINT = "/ledger/contracts/{contractId}/cancel";
     private static final String CONTRACT_ENDPOINT = "/ledger/contracts/{contractId}";
     private static final String CREATE_CONTRACT_ENDPOINT = "/ledger/contracts";
-
 
     @Value("${onesource.baseEndpoint}")
     private String onesourceBaseEndpoint;
@@ -170,6 +172,12 @@ public class OneSourceApiService implements OneSourceService {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
+    }
+
+    @Override
+    public RerateDTO retrieveRerate(String rerateUri) {
+        log.debug("Retrieving rerate: {}", rerateUri);
+        return restTemplate.getForObject(onesourceBaseEndpoint + rerateUri, RerateDTO.class);
     }
 
     public SettlementDto retrieveSettlementInstruction(ContractDto contractDto) {
