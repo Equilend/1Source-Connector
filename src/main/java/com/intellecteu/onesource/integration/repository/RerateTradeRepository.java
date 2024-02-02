@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

@@ -5,11 +5,11 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIf
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.AgreementStatus;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.AgreementStatus;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

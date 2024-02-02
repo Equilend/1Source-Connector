@@ -43,10 +43,10 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.TAX_WITH_HOLDING_RATE;
 import static com.intellecteu.onesource.integration.exception.ReconcileException.RECONCILE_MISMATCH;
-import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
-import static com.intellecteu.onesource.integration.model.PriceUnit.SHARE;
-import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
-import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.SHARE;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.dto.CollateralDto;
@@ -61,9 +61,9 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.CollateralType;
-import com.intellecteu.onesource.integration.model.SettlementType;
-import com.intellecteu.onesource.integration.model.TermType;
+import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.SettlementType;
+import com.intellecteu.onesource.integration.model.onesource.TermType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;

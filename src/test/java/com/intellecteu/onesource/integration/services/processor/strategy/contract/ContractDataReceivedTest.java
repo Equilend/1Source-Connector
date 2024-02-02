@@ -19,23 +19,23 @@ import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.ContractStatus;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.Settlement;
-import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
-import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
-import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
 import java.util.Optional;
 import lombok.experimental.FieldDefaults;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +67,7 @@ class ContractDataReceivedTest {
     @Mock
     AgreementRepository agreementRepository;
     @Mock
-    OneSourceService oneSourceService;
+    OneSourceApiClient oneSourceApiClient;
     @Mock
     BackOfficeService borrowerBackOfficeService;
     @Mock
@@ -156,6 +156,6 @@ class ContractDataReceivedTest {
             settlementTempRepository, settlementService,
             borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService,
             reconcileService, eventMapper, spireMapper,
-            agreementRepository, oneSourceService);
+            agreementRepository, oneSourceApiClient);
     }
 }

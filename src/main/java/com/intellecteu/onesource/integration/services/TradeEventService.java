@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.intellecteu.onesource.integration.model.Timestamp;
-import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.Timestamp;
+import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import java.time.LocalDateTime;

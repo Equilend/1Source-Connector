@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.Benchmark;
+import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

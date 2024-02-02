@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.Settlement;
-import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

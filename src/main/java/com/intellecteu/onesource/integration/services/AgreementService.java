@@ -1,23 +1,23 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.enums.RecordType;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
+import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;

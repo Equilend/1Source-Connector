@@ -3,9 +3,7 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.CANCEL;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FAILED;
 
-import com.intellecteu.onesource.integration.constant.PositionConstant;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.model.spire.PositionStatus;
+import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import java.time.LocalDateTime;
 import java.util.Comparator;

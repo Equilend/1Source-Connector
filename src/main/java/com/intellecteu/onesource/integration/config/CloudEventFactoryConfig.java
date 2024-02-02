@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.config;
 
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
