@@ -3,6 +3,8 @@ package com.intellecteu.onesource.integration.routes.rerate;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
@@ -22,27 +24,32 @@ import org.springframework.stereotype.Component;
 public class RerateRoute extends RouteBuilder {
 
     private static final String TRADE_EVENT_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.onesource.TradeEvent?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT e FROM TradeEvent e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
+            + "query=SELECT e FROM TradeEventEntity e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
 
     private static final String RERATE_TRADE_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.spire.RerateTrade?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT r FROM RerateTrade r WHERE r.processingStatus = '%s'";
+            + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s'";
 
     private static final String RERATE_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.onesource.Rerate?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT r FROM Rerate r WHERE r.processingStatus = '%s'";
+            + "query=SELECT r FROM RerateEntity r WHERE r.processingStatus = '%s'";
 
     private final RerateProcessor rerateProcessor;
     private final EventProcessor eventProcessor;
+    private final OneSourceMapper oneSourceMapper;
+    private final BackOfficeMapper backOfficeMapper;
 
     @Autowired
-    public RerateRoute(RerateProcessor rerateProcessor, EventProcessor eventProcessor) {
+    public RerateRoute(RerateProcessor rerateProcessor, EventProcessor eventProcessor, OneSourceMapper oneSourceMapper,
+        BackOfficeMapper backOfficeMapper) {
         this.rerateProcessor = rerateProcessor;
         this.eventProcessor = eventProcessor;
+        this.oneSourceMapper = oneSourceMapper;
+        this.backOfficeMapper = backOfficeMapper;
     }
 
     @Override
@@ -79,6 +86,7 @@ public class RerateRoute extends RouteBuilder {
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
             .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processRerateEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
@@ -86,6 +94,7 @@ public class RerateRoute extends RouteBuilder {
 
         from(createRerateSQLEndpoint(CREATED))
             .log(">>>>> Started processing Rerate with rerateId ${body.rerateId}")
+            .bean(oneSourceMapper, "toModel")
             .bean(rerateProcessor, "matchContract")
             .bean(rerateProcessor, "matchRerateTrade")
             .choice()

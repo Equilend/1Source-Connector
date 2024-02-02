@@ -23,6 +23,8 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
@@ -100,6 +102,7 @@ public class AgreementFlowTest {
     @Mock
     private TradeEventRepository eventRepository;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
+    private OneSourceMapper oneSourceMapper = new OneSourceMapperImpl();
 
     @BeforeEach
     void setUp() {
@@ -113,7 +116,7 @@ public class AgreementFlowTest {
         builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder());
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository);
+            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
         agreementDataReceived = new AgreementDataReceived(oneSourceService, settlementService, reconcileService,
             agreementService, positionService, eventMapper, spireMapper, cloudEventRecordService,
             lenderBackOfficeService, borrowerBackOfficeService);

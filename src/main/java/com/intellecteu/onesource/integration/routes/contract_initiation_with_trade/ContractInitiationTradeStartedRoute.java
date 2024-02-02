@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.contract_initiation_with_tr
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.AgreementProcessor;
@@ -22,17 +23,20 @@ import org.springframework.stereotype.Component;
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
     private static final String TRADE_EVENT_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.onesource.TradeEvent?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT o FROM TradeEvent o WHERE o.processingStatus = '%s' AND o.eventType IN ('%s')";
+            + "query=SELECT o FROM TradeEventEntity o WHERE o.processingStatus = '%s' AND o.eventType IN ('%s')";
 
     private final AgreementProcessor agreementProcessor;
     private final EventProcessor eventProcessor;
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
-    public ContractInitiationTradeStartedRoute(AgreementProcessor agreementProcessor, EventProcessor eventProcessor) {
+    public ContractInitiationTradeStartedRoute(AgreementProcessor agreementProcessor, EventProcessor eventProcessor,
+        OneSourceMapper oneSourceMapper) {
         this.agreementProcessor = agreementProcessor;
         this.eventProcessor = eventProcessor;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     @Override
@@ -40,6 +44,7 @@ public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 
         from(createTradeEventSQLEndpoint(CREATED, TRADE_AGREED))
             .log(">>>>> Started processing TradeAgreementEvent with id ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processTradeEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")

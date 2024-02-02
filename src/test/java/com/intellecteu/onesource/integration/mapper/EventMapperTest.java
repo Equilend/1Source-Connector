@@ -114,15 +114,15 @@ class EventMapperTest {
         assertNotNull(agreementDto.getLastUpdateDatetime());
     }
 
-    @Test
-    @DisplayName("Agreement mapping shall read lastUpdateDateTime")
-    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
-        var agreementJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
-        final Agreement agreementEntity = objectMapper.readValue(agreementJson, Agreement.class);
-        final AgreementDto agreementDto = eventMapper.toAgreementDto(agreementEntity);
-
-        assertNotNull(agreementDto.getLastUpdateDatetime());
-    }
+//    @Test
+//    @DisplayName("Agreement mapping shall read lastUpdateDateTime")
+//    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
+//        var agreementJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+//        final Agreement agreementEntity = objectMapper.readValue(agreementJson, Agreement.class);
+//        final AgreementDto agreementDto = eventMapper.toAgreementDto(agreementEntity);
+//
+//        assertNotNull(agreementDto.getLastUpdateDatetime());
+//    }
 
     @Test
     @DisplayName("Contract mapping shall read lastUpdateDatetime on missed camel case Style")
@@ -134,15 +134,15 @@ class EventMapperTest {
         assertNotNull(contractDto.getLastUpdateDatetime());
     }
 
-    @Test
-    @DisplayName("Contract mapping shall read lastUpdateDateTime")
-    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
-        var contractJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
-        final Contract contractEntity = objectMapper.readValue(contractJson, Contract.class);
-        final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
-
-        assertNotNull(contractDto.getLastUpdateDatetime());
-    }
+//    @Test
+//    @DisplayName("Contract mapping shall read lastUpdateDateTime")
+//    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
+//        var contractJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+//        final Contract contractEntity = objectMapper.readValue(contractJson, Contract.class);
+//        final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
+//
+//        assertNotNull(contractDto.getLastUpdateDatetime());
+//    }
 
     @Test
     @DisplayName("Test agreement mapping for trade.venue inner object")

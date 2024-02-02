@@ -39,6 +39,7 @@ import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -76,9 +77,10 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private final CloudEventRecordService cloudEventRecordService;
     private final RestTemplate restTemplate;
     private final SettlementUpdateRepository settlementUpdateRepository;
-
     private final TradeEventRepository eventRepository;
     private final EventMapper eventMapper;
+    private final OneSourceMapper oneSourceMapper;
+
     private static final String EVENTS_ENDPOINT = "/ledger/events";
     private static final String CONTRACT_APPROVE_ENDPOINT = "/ledger/contracts/{contractId}/approve";
     private static final String PARTIES_ENDPOINT = "/ledger/parties";
@@ -95,13 +97,14 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     public OneSourceApiClientImpl(ContractRepository contractRepository, CloudEventRecordService cloudEventRecordService,
         RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository, EventMapper eventMapper,
-        TradeEventRepository eventRepository) {
+        TradeEventRepository eventRepository, OneSourceMapper oneSourceMapper) {
         this.contractRepository = contractRepository;
         this.cloudEventRecordService = cloudEventRecordService;
         this.restTemplate = restTemplate;
         this.settlementUpdateRepository = settlementUpdateRepository;
         this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     @Override
@@ -376,6 +379,6 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         log.error("The loan contract : {} cannot be canceled for the following reason: {}",
             contract.getContractId(), response);
         contract.setProcessingStatus(SPIRE_ISSUE);
-        contractRepository.save(contract);
+        contractRepository.save(oneSourceMapper.toEntity(contract));
     }
 }

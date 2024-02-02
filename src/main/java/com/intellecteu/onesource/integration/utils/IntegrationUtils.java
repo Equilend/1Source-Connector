@@ -11,7 +11,7 @@ import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;

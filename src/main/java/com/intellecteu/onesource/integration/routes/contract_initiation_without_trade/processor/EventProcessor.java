@@ -23,7 +23,7 @@ import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
-import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;

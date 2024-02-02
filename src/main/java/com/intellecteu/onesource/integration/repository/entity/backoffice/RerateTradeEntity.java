@@ -1,6 +1,7 @@
-package com.intellecteu.onesource.integration.model.backoffice.spire;
+package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -15,7 +16,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class RerateTrade {
+@Table(name = "rerate_trade")
+public class RerateTradeEntity {
 
     @Id
     private Long tradeId;
@@ -26,5 +28,5 @@ public class RerateTrade {
     private Long relatedPositionId;
     private String relatedContractId;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    private TradeOut tradeOut;
+    private TradeOutEntity tradeOut;
 }

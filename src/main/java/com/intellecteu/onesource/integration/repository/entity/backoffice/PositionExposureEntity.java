@@ -1,7 +1,5 @@
-package com.intellecteu.onesource.integration.model.backoffice.spire;
+package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -15,9 +13,10 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class LoanBorrow {
+public class PositionExposureEntity {
 
-    private Double taxWithholdingRate;
+    private Double cpHaircut;
+    private Integer cpMarkRoundTo;
+    private Integer depoId;
 
 }

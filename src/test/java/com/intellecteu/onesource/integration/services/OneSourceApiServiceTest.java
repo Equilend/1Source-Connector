@@ -19,6 +19,8 @@ import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -80,10 +82,12 @@ class OneSourceApiServiceTest {
 
     private OneSourceApiClientImpl service;
 
+    private OneSourceMapper oneSourceMapper = new OneSourceMapperImpl();
+
     @BeforeEach
     void setUp() {
         service = new OneSourceApiClientImpl(contractRepository, recordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository);
+            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
         ReflectionTestUtils.setField(service, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(service, VERSION_FIELD_INJECT, TEST_API_VERSION);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();

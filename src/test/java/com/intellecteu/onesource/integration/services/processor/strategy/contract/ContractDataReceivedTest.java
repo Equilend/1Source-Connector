@@ -23,7 +23,7 @@ import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;

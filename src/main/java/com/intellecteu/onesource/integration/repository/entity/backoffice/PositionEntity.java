@@ -1,9 +1,7 @@
-package com.intellecteu.onesource.integration.model.backoffice.spire;
+package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import java.time.LocalDateTime;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -13,6 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,16 +19,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-@JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "position")
-public class Position {
+public class PositionEntity {
 
     @Id
     @Column(name = "spire_position_id")
@@ -107,28 +105,28 @@ public class Position {
         @AttributeOverride(name = "priceFactor", column = @Column(name = "price_factor")),
         @AttributeOverride(name = "baseRebateRate", column = @Column(name = "base_rebate_rate"))
     })
-    private PositionSecurityDetail positionSecurityDetail;
+    private PositionSecurityDetailEntity positionSecurityDetail;
 
     @Embedded
     @JsonProperty("currencyDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "currencyKy", column = @Column(name = "currency"))
     })
-    private Currency currency;
+    private CurrencyEntity currency;
 
     @Embedded
     @JsonProperty("loanBorrowDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "taxWithholdingRate", column = @Column(name = "tax_with_holding_rate"))
     })
-    private LoanBorrow loanBorrow;
+    private LoanBorrowEntity loanBorrow;
 
     @Embedded
     @JsonProperty("collateralTypeDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "collateralType", column = @Column(name = "collateral_type"))
     })
-    private PositionCollateralType positionCollateralType;
+    private PositionCollateralTypeEntity positionCollateralType;
 
     @Embedded
     @JsonProperty("exposureDTO")
@@ -137,21 +135,21 @@ public class Position {
         @AttributeOverride(name = "cpMarkRoundTo", column = @Column(name = "cp_mark_round_to")),
         @AttributeOverride(name = "depoId", column = @Column(name = "depo_id"))
     })
-    private PositionExposure exposure;
+    private PositionExposureEntity exposure;
 
     @Embedded
     @JsonProperty("positiontypeDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "positionType", column = @Column(name = "position_type"))
     })
-    private PositionType positionType;
+    private PositionTypeEntity positionType;
 
     @Embedded
     @JsonProperty("indexDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "indexName", column = @Column(name = "index_name"))
     })
-    private Index index;
+    private IndexEntity index;
 
     @Embedded
     @JsonProperty("accountDTO")
@@ -161,7 +159,7 @@ public class Position {
         @AttributeOverride(name = "accountId", column = @Column(name = "account_id")),
         @AttributeOverride(name = "info", column = @Column(name = "info", insertable = false, updatable = false))
     })
-    private PositionAccount positionAccount;
+    private PositionAccountEntity positionAccount;
 
     @Embedded
     @JsonProperty("counterPartyDTO")
@@ -170,11 +168,11 @@ public class Position {
         @AttributeOverride(name = "accountId", column = @Column(name = "cp_account_id")),
         @AttributeOverride(name = "shortName", column = @Column(name = "short_name", insertable = false, updatable = false))
     })
-    private PositionAccount positionCpAccount;
+    private PositionAccountEntity positionCpAccount;
 
     @Embedded
     @JsonProperty("statusDTO")
-    private PositionStatus positionStatus;
+    private PositionStatusEntity positionStatus;
 
 
 }

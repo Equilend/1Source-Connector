@@ -1,12 +1,16 @@
 package com.intellecteu.onesource.integration.services;
 
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.Timestamp;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TimestampEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,26 +24,33 @@ public class TradeEventService {
     private static final String LAST_TRADE_EVENT_DATETIME = "LAST_TRADE_EVENT_DATETIME";
     private final TradeEventRepository tradeEventRepository;
     private final TimestampRepository timestampRepository;
-    private LocalDateTime startingTradeEventDatetime;
+    private final LocalDateTime startingTradeEventDatetime;
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
     public TradeEventService(TradeEventRepository tradeEventRepository, TimestampRepository timestampRepository,
-        @Value("${integration-toolkit.starting-trade-event-datetime}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX") LocalDateTime startingTradeEventDatetime) {
+        @Value("${integration-toolkit.starting-trade-event-datetime}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX") LocalDateTime startingTradeEventDatetime,
+        OneSourceMapper oneSourceMapper) {
         this.tradeEventRepository = tradeEventRepository;
         this.timestampRepository = timestampRepository;
         this.startingTradeEventDatetime = startingTradeEventDatetime;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     public TradeEvent saveTradeEvent(TradeEvent tradeEvent) {
-        return tradeEventRepository.save(tradeEvent);
+        TradeEventEntity tradeEventEntity = tradeEventRepository.save(oneSourceMapper.toEntity(tradeEvent));
+        return oneSourceMapper.toModel(tradeEventEntity);
     }
 
     public List<TradeEvent> saveTradeEvents(List<TradeEvent> tradeEvents) {
-        return tradeEventRepository.saveAll(tradeEvents);
+        List<TradeEventEntity> tradeEventEntities = tradeEvents.stream().map(oneSourceMapper::toEntity).collect(
+            Collectors.toList());
+        tradeEventEntities = tradeEventRepository.saveAll(tradeEventEntities);
+        return tradeEventEntities.stream().map(oneSourceMapper::toModel).collect(Collectors.toList());
     }
 
     public LocalDateTime getLastEventDatetime() {
-        Optional<Timestamp> lastEventDatetime = timestampRepository.findById(LAST_TRADE_EVENT_DATETIME);
+        Optional<TimestampEntity> lastEventDatetime = timestampRepository.findById(LAST_TRADE_EVENT_DATETIME);
         return lastEventDatetime.map(timestamp -> timestamp.getTimestamp()).orElse(startingTradeEventDatetime);
     }
 
@@ -49,7 +60,7 @@ public class TradeEventService {
                 .map(TradeEvent::getEventDatetime)
                 .max(LocalDateTime::compareTo)
                 .get();
-            timestampRepository.save(new Timestamp(LAST_TRADE_EVENT_DATETIME, lastEventDatetime));
+            timestampRepository.save(new TimestampEntity(LAST_TRADE_EVENT_DATETIME, lastEventDatetime));
         }
     }
 

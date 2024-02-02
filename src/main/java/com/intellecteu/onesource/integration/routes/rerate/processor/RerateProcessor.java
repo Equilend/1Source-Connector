@@ -9,7 +9,7 @@ import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
-import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.RerateService;

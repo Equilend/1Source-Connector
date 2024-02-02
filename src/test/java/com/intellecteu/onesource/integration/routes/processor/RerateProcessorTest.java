@@ -8,7 +8,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
-import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;

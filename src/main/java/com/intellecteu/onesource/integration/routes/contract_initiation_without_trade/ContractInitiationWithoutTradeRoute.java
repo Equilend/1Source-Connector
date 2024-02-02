@@ -8,6 +8,8 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.CO
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.ContractProcessor;
@@ -29,25 +31,29 @@ import org.springframework.stereotype.Component;
 public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.spire.Position?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT p FROM Position p WHERE p.processingStatus IN ('%s')";
+            + "query=SELECT p FROM PositionEntity p WHERE p.processingStatus IN ('%s')";
 
     private static final String TRADE_EVENT_SQL_ENDPOINT =
-        "jpa://com.intellecteu.onesource.integration.model.onesource.TradeEvent?"
+        "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT e FROM TradeEvent e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
+            + "query=SELECT e FROM TradeEventEntity e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
 
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
     private final ContractProcessor contractProcessor;
+    private final BackOfficeMapper backOfficeMapper;
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
     public ContractInitiationWithoutTradeRoute(PositionProcessor positionProcessor, EventProcessor eventProcessor,
-        ContractProcessor contractProcessor) {
+        ContractProcessor contractProcessor, BackOfficeMapper backOfficeMapper, OneSourceMapper oneSourceMapper) {
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
         this.contractProcessor = contractProcessor;
+        this.backOfficeMapper = backOfficeMapper;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     @Override
@@ -56,6 +62,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
         //Process positions (step 2)
         from(createPositionSQLEndpoint(ProcessingStatus.CREATED))
+                .bean(backOfficeMapper, "toModel")
                 .bean(positionProcessor, "matchTradeAgreement")
                 .choice()
                     .when(method(IntegrationUtils.class, "isBorrower"))
@@ -95,6 +102,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
 
         from(createTradeEventSQLEndpoint(CREATED, TRADE_CANCELED))
             .log(">>>>> Started processing TradeCanceledEvent with id ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processTradeCanceledEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
@@ -104,6 +112,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
         from(createTradeEventSQLEndpoint(CREATED, CONTRACT_OPENED, CONTRACT_PENDING, CONTRACT_DECLINED,
             CONTRACT_PROPOSED, CONTRACT_CANCELED))
             .log(">>>>> Started processing ContractEvent with eventId ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processContractEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
