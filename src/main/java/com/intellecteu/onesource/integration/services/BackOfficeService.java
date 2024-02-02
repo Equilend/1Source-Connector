@@ -16,19 +16,19 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
-import com.intellecteu.onesource.integration.mapper.RerateTradeMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
-import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
-import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
-import com.intellecteu.onesource.integration.model.backoffice.spire.TradeOut;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
@@ -75,8 +75,8 @@ public class BackOfficeService {
     private final TradeSpireApiClient tradeSpireApiClient;
     private final InstructionSpireApiClient instructionClient;
     private final SpireMapper spireMapper;
-    private final RerateTradeMapper rerateTradeMapper;
-    private CloudEventRecordService cloudEventRecordService;
+    private final BackOfficeMapper backOfficeMapper;
+    private final CloudEventRecordService cloudEventRecordService;
 
     public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
         String maxPositionId = lastPositionId.orElse(STARTING_POSITION_ID);
@@ -367,7 +367,7 @@ public class BackOfficeService {
     }
 
     private RerateTrade mapBackOfficeTradeOutDTOToRerateTrade(TradeOutDTO tradeOutDTO) {
-        TradeOut tradeOut = rerateTradeMapper.toModel(tradeOutDTO);
+        TradeOut tradeOut = backOfficeMapper.toModel(tradeOutDTO);
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeOut(tradeOut);
         rerateTrade.setTradeId(tradeOut.getTradeId());
@@ -399,13 +399,13 @@ public class BackOfficeService {
     }
 
     public BackOfficeService(PositionSpireApiClient positionSpireApiClient, TradeSpireApiClient tradeSpireApiClient,
-        InstructionSpireApiClient instructionClient, SpireMapper spireMapper, RerateTradeMapper rerateTradeMapper,
+        InstructionSpireApiClient instructionClient, SpireMapper spireMapper, BackOfficeMapper backOfficeMapper,
         CloudEventRecordService cloudEventRecordService) {
         this.positionSpireApiClient = positionSpireApiClient;
         this.tradeSpireApiClient = tradeSpireApiClient;
         this.instructionClient = instructionClient;
         this.spireMapper = spireMapper;
-        this.rerateTradeMapper = rerateTradeMapper;
+        this.backOfficeMapper = backOfficeMapper;
         this.cloudEventRecordService = cloudEventRecordService;
     }
 

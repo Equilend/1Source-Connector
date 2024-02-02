@@ -1,14 +1,18 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
-import com.intellecteu.onesource.integration.model.backoffice.spire.TradeOut;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public abstract class RerateTradeMapper {
+public abstract class BackOfficeMapper {
 
     @Mapping(target = "tradeType", source = "tradeOutDTO.tradeTypeDetailDTO.tradeType")
     @Mapping(target = "tradeTypeId", source = "tradeOutDTO.tradeTypeDetailDTO.tradeTypeId")
@@ -26,5 +30,13 @@ public abstract class RerateTradeMapper {
     @Mapping(target = "positionCpAccount", source = "counterPartyDTO")
     @Mapping(target = "positionStatus", source = "statusDTO")
     public abstract Position toModel(PositionOutDTO positionOutDTO);
+
+    public abstract Position toModel(PositionEntity positionEntity);
+
+    public abstract PositionEntity toEntity(Position position);
+
+    public abstract RerateTrade toModel(RerateTradeEntity rerateTradeEntity);
+
+    public abstract RerateTradeEntity toEntity(RerateTrade rerateTrade);
 
 }

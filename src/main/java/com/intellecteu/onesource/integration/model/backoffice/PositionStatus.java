@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.model.backoffice.spire;
+package com.intellecteu.onesource.integration.model.backoffice;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -9,15 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@Embeddable
 @Getter
 @Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PositionCollateralType {
+public class PositionStatus {
 
-    private String collateralType;
+    private String status;
 
 }

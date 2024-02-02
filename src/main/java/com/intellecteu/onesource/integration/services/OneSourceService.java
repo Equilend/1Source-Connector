@@ -2,8 +2,9 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.RerateMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -25,15 +26,14 @@ public class OneSourceService {
 
     private final OneSourceApiClient oneSourceApiClient;
     private final EventMapper eventMapper;
-    private final RerateMapper rerateMapper;
-
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
     public OneSourceService(OneSourceApiClient oneSourceApiClient, EventMapper eventMapper,
-        RerateMapper rerateMapper) {
+        OneSourceMapper oneSourceMapper) {
         this.oneSourceApiClient = oneSourceApiClient;
         this.eventMapper = eventMapper;
-        this.rerateMapper = rerateMapper;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     public List<TradeEvent> retrieveEvents(LocalDateTime lastEventDatetime) {
@@ -63,7 +63,7 @@ public class OneSourceService {
 
     public Optional<Rerate> retrieveRerate(String eventUri) {
         RerateDTO rerateDTO = oneSourceApiClient.retrieveRerate(eventUri);
-        return Optional.of(rerateMapper.toModel(rerateDTO));
+        return Optional.of(oneSourceMapper.toModel(rerateDTO));
     }
 
     public void cancelContract(Contract contract, String positionId) {

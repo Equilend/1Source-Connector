@@ -48,6 +48,7 @@ import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
+import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -355,6 +356,16 @@ public class DtoTestFactory {
 
     public static SettlementInstruction buildInstruction() {
         return SettlementInstruction.builder()
+            .localAgentAcct("testacc")
+            .localAgentBic("RHBBMYKL")
+            .localAgentName("nestname")
+            .settlementBic("RHBBMYKL")
+            .dtcParticipantNumber("123")
+            .build();
+    }
+
+    public static SettlementInstructionEntity buildInstructionEntity() {
+        return SettlementInstructionEntity.builder()
             .localAgentAcct("testacc")
             .localAgentBic("RHBBMYKL")
             .localAgentName("nestname")

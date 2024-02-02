@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.intellecteu.onesource.integration.mapper.RerateTradeMapper;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
@@ -108,17 +108,17 @@ public class AppConfig {
     @Bean("lenderBackOfficeService") // todo rework to use only one backoffice
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
         TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        SpireMapper spireMapper, RerateTradeMapper rerateTradeMapper, CloudEventRecordService cloudEventRecordService) {
+        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient,
-            spireMapper, rerateTradeMapper, cloudEventRecordService);
+            spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean("borrowerBackOfficeService") // todo rework to use only one backoffice
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
         TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        SpireMapper spireMapper, RerateTradeMapper rerateTradeMapper, CloudEventRecordService cloudEventRecordService) {
+        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, instructionClient,
-            spireMapper, rerateTradeMapper, cloudEventRecordService);
+            spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
     private List<ClientHttpRequestInterceptor> getHttpRequestInterceptors(

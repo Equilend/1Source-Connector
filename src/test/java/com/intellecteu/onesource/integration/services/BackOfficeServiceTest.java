@@ -11,9 +11,10 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.mapper.RerateTradeMapperImpl;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
@@ -56,7 +57,7 @@ class BackOfficeServiceTest {
     @Mock
     private CloudEventRecordService cloudEventRecordService;
 
-    RerateTradeMapperImpl rerateTradeMapper = new RerateTradeMapperImpl();
+    BackOfficeMapperImpl rerateTradeMapper = new BackOfficeMapperImpl();
 
     private BackOfficeService service;
 

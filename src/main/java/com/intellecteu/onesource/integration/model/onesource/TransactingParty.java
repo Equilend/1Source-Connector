@@ -20,23 +20,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "transacting_party")
 public class TransactingParty {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "party_role")
-    @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "party_id")
     private Party party;
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "internal_ref_id")
     private InternalReference internalRef;
+
 }

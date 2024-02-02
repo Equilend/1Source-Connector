@@ -13,7 +13,7 @@ import com.intellecteu.onesource.integration.dto.record.CloudEvent;
 import com.intellecteu.onesource.integration.dto.record.CloudEventData;
 import com.intellecteu.onesource.integration.dto.record.RelatedObject;
 import com.intellecteu.onesource.integration.exception.ConvertException;
-import com.intellecteu.onesource.integration.model.onesource.CloudEventEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.CloudEventEntity;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

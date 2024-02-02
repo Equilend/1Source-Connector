@@ -17,20 +17,14 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-@Table(name = "venue_party")
 public class VenueParty {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "party_role")
-    @Enumerated(value = EnumType.STRING)
     private PartyRole partyRole;
-    @Column(name = "venue_id")
     private String venueId;
+
 }
