@@ -1,8 +1,8 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import com.intellecteu.onesource.integration.model.Rate;
-import com.intellecteu.onesource.integration.model.RebateRate;
-import com.intellecteu.onesource.integration.model.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.Rate;
+import com.intellecteu.onesource.integration.model.onesource.RebateRate;
+import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;

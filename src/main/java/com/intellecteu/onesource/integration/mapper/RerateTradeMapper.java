@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.model.spire.TradeOut;
+import com.intellecteu.onesource.integration.model.backoffice.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.spire.TradeOut;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import org.mapstruct.Mapper;

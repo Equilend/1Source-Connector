@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,7 +13,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.mapper.RerateTradeMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.spire.RerateTrade;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
@@ -21,9 +21,9 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRes
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;

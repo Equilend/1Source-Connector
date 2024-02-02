@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.CloudEventEntity;
+import com.intellecteu.onesource.integration.model.onesource.CloudEventEntity;
 import java.util.Set;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

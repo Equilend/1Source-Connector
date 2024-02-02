@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.dto.record.CloudEvent;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.exception.ConvertException;
-import com.intellecteu.onesource.integration.model.CloudEventEntity;
+import com.intellecteu.onesource.integration.model.onesource.CloudEventEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;

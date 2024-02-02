@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.Agreement;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

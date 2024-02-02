@@ -10,15 +10,15 @@ import static org.springframework.http.HttpMethod.GET;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.Participant;
-import com.intellecteu.onesource.integration.model.ParticipantHolder;
+import com.intellecteu.onesource.integration.model.onesource.Participant;
+import com.intellecteu.onesource.integration.model.onesource.ParticipantHolder;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.ParticipantHolderRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.routes.processor.PartyProcessor;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,12 +65,12 @@ public class ParticipantFlowTests {
     @Mock
     private SpireMapper spireMapper;
 
-    private OneSourceApiService oneSourceService;
+    private OneSourceApiClientImpl oneSourceService;
     private PartyProcessor partyProcessor;
 
     @BeforeEach
     void setUp() {
-        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
+        oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);

@@ -1,8 +1,8 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.Rerate;
-import com.intellecteu.onesource.integration.model.RerateStatus;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
 import com.intellecteu.onesource.integration.repository.RerateRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

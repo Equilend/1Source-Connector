@@ -12,12 +12,11 @@ import com.intellecteu.onesource.integration.services.client.spire.InstructionSp
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
