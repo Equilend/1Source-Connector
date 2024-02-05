@@ -24,5 +24,6 @@ public class TradeEventDto {
     private LocalDateTime eventDatetime;
     @JsonProperty("resourceUri")
     private String resourceUri;
+    @Builder.Default
     private ProcessingStatus processingStatus = ProcessingStatus.CREATED;
 }

@@ -10,16 +10,16 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.ContractStatus;
-import com.intellecteu.onesource.integration.model.CurrencyCd;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
+import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -75,7 +75,7 @@ public class TradeEventServiceIT extends AbstractTest {
         retrieveEvents(eventFile);
 
 //        tradeEventService.retrieveNewEvents();
-        List<TradeEvent> tradeEvents = tradeEventRepository.findAll();
+        List<TradeEventEntity> tradeEvents = tradeEventRepository.findAll();
 
         mockServer.verify();
         Assertions.assertEquals(tradeEvents.size(), 2);
@@ -110,7 +110,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
 //        tradeEventService.processEventData();
 
-        List<Contract> contracts = contractRepository.findAll();
+        List<ContractEntity> contracts = contractRepository.findAll();
 
         mockServer.verify();
         Assertions.assertEquals(contracts.size(), 1);
@@ -153,7 +153,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
 //        tradeEventService.processEventData();
 
-        List<Agreement> trades = agreementRepository.findAll();
+        List<AgreementEntity> trades = agreementRepository.findAll();
 
         mockServer.verify();
         Assertions.assertEquals(trades.size(), 1);
