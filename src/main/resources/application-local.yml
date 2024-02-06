@@ -68,9 +68,6 @@ logging:
     org:
       apache:
         kafka: WARN
-      hibernate:
-        internal:
-          SessionImpl: ERROR
       springframework:
         web:
           client:
@@ -107,7 +104,7 @@ integration-toolkit:
     rerate:
       enable: ${RERATE_ROUTE_LOCAL:true}
     contract-initiation-trade-started:
-      enable: ${CI_WITH_TRADE_ROUTE_LOcAL:true}
+      enable: ${CI_WITH_TRADE_ROUTE_LOCAL:true}
     contract-initiation-without-trade-route:
       enable: ${CI_WITHOUT_TRADE_ROUTE_LOCAL:true}
   uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
