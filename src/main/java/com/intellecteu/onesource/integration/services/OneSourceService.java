@@ -2,7 +2,6 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
-import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -19,9 +18,11 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
+@Transactional(readOnly = true)
 public class OneSourceService {
 
     private final OneSourceApiClient oneSourceApiClient;
@@ -66,6 +67,7 @@ public class OneSourceService {
         return Optional.of(oneSourceMapper.toModel(rerateDTO));
     }
 
+    @Transactional
     public void cancelContract(Contract contract, String positionId) {
         oneSourceApiClient.cancelContract(contract, positionId);
     }

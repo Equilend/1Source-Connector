@@ -6,8 +6,6 @@ import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
-import java.time.LocalDateTime;
-import java.util.List;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -21,6 +19,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -41,9 +41,9 @@ public class ContractEntity {
     private Long id;
     @Column(name = "contract_id")
     private String contractId;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "last_event_id")
-    private TradeEventEntity lastEvent;
+    private TradeEventEntity lastEvent; // todo remove?
     @Column(name = "contract_status")
     @Enumerated(value = EnumType.STRING)
     private ContractStatus contractStatus;
@@ -56,7 +56,7 @@ public class ContractEntity {
     @Column(name = "last_update_datetime", columnDefinition = "TIMESTAMP")
     private LocalDateTime lastUpdateDatetime;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "trade_id")
+    @JoinColumn(name = "trade_id", referencedColumnName = "id")
     private TradeAgreementEntity trade;
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "settlement_id")

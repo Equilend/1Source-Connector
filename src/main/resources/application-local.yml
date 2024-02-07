@@ -10,12 +10,10 @@ camel:
 
 spring:
   datasource:
-    driverClassName: ${DB_DRIVER_LOCAL:org.postgresql.Driver}
     url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
     username: ${DB_USERNAME_LOCAL:postgres}
     password: ${DB_PASSWORD_LOCAL:postgres}
   jpa:
-    database: POSTGRESQL
     show-sql: false
     properties:
       hibernate:
@@ -72,6 +70,8 @@ logging:
         web:
           client:
             RestTemplate: INFO
+    #        transaction:
+    #          interceptor: TRACE
     root: INFO
 
 onesource:

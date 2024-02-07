@@ -11,19 +11,18 @@ import static com.intellecteu.onesource.integration.model.onesource.ContractStat
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.NEW;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.isLender;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -38,6 +37,7 @@ import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Slf4j
@@ -75,14 +75,15 @@ public class EventProcessor {
             });
     }
 
+    @Transactional
     public void processContractEvent(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
             oneSourceService.retrieveContract(resourceUri)
                 .ifPresent(contract -> {
-                    contract = enrichContract(contract, event);
-                    contractService.save(contract);
+                    Contract enrichedContract = enrichContract(contract, event);
+                    contractService.save(enrichedContract);
                 });
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not found. Details: {} ", resourceUri, e.getMessage());
@@ -114,7 +115,7 @@ public class EventProcessor {
         });
     }
 
-    public void processRerateEvent(TradeEvent event){
+    public void processRerateEvent(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {

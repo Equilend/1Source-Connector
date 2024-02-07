@@ -3,7 +3,6 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
 
-import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -15,14 +14,15 @@ import com.intellecteu.onesource.integration.services.systemevent.CloudEventReco
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import jakarta.transaction.Transactional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
+@Transactional(readOnly = true)
 public class ContractService {
 
     private final ContractRepository contractRepository;
@@ -39,16 +39,19 @@ public class ContractService {
 
     @Transactional
     public Contract save(Contract contract) {
-        ContractEntity contractEntity = contractRepository.save(oneSourceMapper.toEntity(contract));
-        return oneSourceMapper.toModel(contractEntity);
+        log.debug("Trying to save contract with id: {}", contract.getContractId());
+        final ContractEntity contractEntity = oneSourceMapper.toEntity(contract);
+        ContractEntity savedEntity = contractRepository.save(contractEntity);
+        return oneSourceMapper.toModel(savedEntity);
     }
 
     public Optional<Contract> findByVenueRefId(String venueRefId) {
         return contractRepository.findByVenueRefId(venueRefId).stream().findFirst().map(oneSourceMapper::toModel);
     }
 
-    public Optional<Contract> findByPositionId(String positionId){
-        return contractRepository.findByMatchingSpirePositionId(positionId).stream().findFirst().map(oneSourceMapper::toModel);
+    public Optional<Contract> findByPositionId(String positionId) {
+        return contractRepository.findByMatchingSpirePositionId(positionId).stream().findFirst()
+            .map(oneSourceMapper::toModel);
     }
 
     public List<Contract> findAllByContractId(String contractId) {
