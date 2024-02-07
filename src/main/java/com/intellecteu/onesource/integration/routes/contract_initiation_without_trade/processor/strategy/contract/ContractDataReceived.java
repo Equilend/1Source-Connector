@@ -41,13 +41,13 @@ import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
-import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
@@ -56,10 +56,10 @@ import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SwiftbicDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
@@ -73,6 +73,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestClientException;
@@ -87,6 +88,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     private final BackOfficeService lenderBackOfficeService;
 
     @Override
+    @Transactional
     public void process(ContractDto contract) {
         String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
         log.debug("Contract Id {} Contract Datetime {}, venueRefId: {}", contract.getContractId(),

@@ -39,9 +39,9 @@ import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -95,7 +95,8 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     @Value("${onesource.version}")
     private String version;
 
-    public OneSourceApiClientImpl(ContractRepository contractRepository, CloudEventRecordService cloudEventRecordService,
+    public OneSourceApiClientImpl(ContractRepository contractRepository,
+        CloudEventRecordService cloudEventRecordService,
         RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository, EventMapper eventMapper,
         TradeEventRepository eventRepository, OneSourceMapper oneSourceMapper) {
         this.contractRepository = contractRepository;
