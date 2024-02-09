@@ -1,10 +1,12 @@
-package com.intellecteu.onesource.integration.api.cloudevents;
+package com.intellecteu.onesource.integration.api.mappers;
 
+import com.intellecteu.onesource.integration.api.entities.CloudSystemEventEntity;
+import com.intellecteu.onesource.integration.api.models.CloudSystemEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-interface CloudSystemEventMapper {
+public interface CloudSystemEventMapper {
 
     @Mapping(target = "eventData", source = "cloudEventEntity.data")
     CloudSystemEvent toCloudEvent(CloudSystemEventEntity cloudEventEntity);

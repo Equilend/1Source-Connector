@@ -15,6 +15,10 @@ import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemE
 import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemEventSpecs.cloudEventTimeAfter;
 import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemEventSpecs.cloudEventTypeEquals;
 
+import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.api.entities.CloudSystemEventEntity;
+import com.intellecteu.onesource.integration.api.mappers.CloudSystemEventMapper;
+import com.intellecteu.onesource.integration.api.models.CloudSystemEvent;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -33,19 +37,25 @@ import org.springframework.util.MultiValueMap;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-class CloudSystemEventService {
+public class CloudSystemEventService {
 
     private final CloudSystemEventRepositoryApi cloudEventRepository;
     private final CloudSystemEventMapper cloudSystemEventMapper;
 
-    Page<CloudSystemEvent> getCloudEvents(Pageable pageable, MultiValueMap<String, String> parameters) {
+    public PageResponse<CloudSystemEvent> getCloudEvents(Pageable pageable, MultiValueMap<String, String> parameters) {
         Specification<CloudSystemEventEntity> dynamicFieldsFilter = createSpecificationForCloudEvents(parameters);
         final Page<CloudSystemEventEntity> events = cloudEventRepository.findAll(dynamicFieldsFilter, pageable);
         log.debug("Found {} cloud events", events.getTotalElements());
-        return events.map(cloudSystemEventMapper::toCloudEvent);
+        final Page<CloudSystemEvent> pageEvents = events.map(cloudSystemEventMapper::toCloudEvent);
+        return PageResponse.<CloudSystemEvent>builder()
+            .totalItems(pageEvents.getTotalElements())
+            .currentPage(pageEvents.getPageable().getPageNumber())
+            .totalPages(pageEvents.getTotalPages())
+            .items(pageEvents.getContent())
+            .build();
     }
 
-    CloudSystemEvent getCloudEventById(@NonNull String id) {
+    public CloudSystemEvent getCloudEventById(@NonNull String id) {
         final Optional<CloudSystemEventEntity> event = cloudEventRepository.findById(id);
         return event.map(cloudSystemEventMapper::toCloudEvent).orElseThrow(EntityNotFoundException::new);
     }

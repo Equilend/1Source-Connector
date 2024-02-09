@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.api.cloudevents;
+package com.intellecteu.onesource.integration.api.models;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;

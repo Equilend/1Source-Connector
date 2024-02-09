@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemE
 import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemEventConstants.TIME;
 import static com.intellecteu.onesource.integration.api.cloudevents.CloudSystemEventConstants.TYPE;
 
+import com.intellecteu.onesource.integration.api.entities.CloudSystemEventEntity;
 import java.time.LocalDate;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;

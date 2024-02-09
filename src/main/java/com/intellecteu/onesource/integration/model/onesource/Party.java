@@ -1,11 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Party {
 
+    @JsonIgnore
     private Long id;
     private String partyId;
     private String partyName;

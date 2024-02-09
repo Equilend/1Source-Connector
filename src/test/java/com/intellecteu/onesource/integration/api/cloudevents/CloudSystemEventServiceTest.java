@@ -5,6 +5,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
+import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.api.entities.CloudSystemEventEntity;
+import com.intellecteu.onesource.integration.api.mappers.CloudSystemEventMapper;
+import com.intellecteu.onesource.integration.api.models.CloudSystemEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +16,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
@@ -34,7 +39,7 @@ class CloudSystemEventServiceTest {
 
     @BeforeEach
     void setUp() {
-        cloudSystemEventMapper = new CloudSystemEventMapperImpl();
+        cloudSystemEventMapper = Mappers.getMapper(CloudSystemEventMapper.class);
         service = new CloudSystemEventService(cloudEventRepository, cloudSystemEventMapper);
     }
 
@@ -54,7 +59,7 @@ class CloudSystemEventServiceTest {
 
     @Test
     @DisplayName("Test get all cloud events with id in path parameters")
-    void testGetAllCloudEventsWithIdInParameters_shouldReturnPageCloudEvents() {
+    void testGetAllCloudEventsWithIdInParameters_shouldReturnPageResponse() {
         String id = "testId";
 
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
@@ -63,38 +68,45 @@ class CloudSystemEventServiceTest {
         Pageable pageable = PageRequest.of(0, 20);
         final CloudSystemEventEntity entity = createCloudEventEntity(id);
         List<CloudSystemEventEntity> entities = List.of(entity);
-        Page<CloudSystemEventEntity> dbResponse = new PageImpl<>(entities);
+        Page<CloudSystemEventEntity> dbResponse = new PageImpl<>(entities, pageable, 20);
 
         final CloudSystemEvent event = cloudSystemEventMapper.toCloudEvent(entity);
         List<CloudSystemEvent> events = List.of(event);
-        Page<CloudSystemEvent> expectedResponse = new PageImpl<>(events);
+        Page<CloudSystemEvent> expectedResponse = new PageImpl<>(events, pageable, 20);
 
         when(cloudEventRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(dbResponse);
 
-        final Page<CloudSystemEvent> actual = service.getCloudEvents(pageable, parameters);
+        final PageResponse<CloudSystemEvent> actual = service.getCloudEvents(pageable, parameters);
 
-        assertEquals(expectedResponse, actual);
+        assertEquals(expectedResponse.getTotalElements(), actual.getTotalItems());
+        assertEquals(expectedResponse.getTotalPages(), actual.getTotalPages());
+        assertEquals(expectedResponse.getPageable().getPageNumber(), actual.getCurrentPage());
+        assertEquals(expectedResponse.getContent(), actual.getItems());
     }
 
     @Test
     @DisplayName("Test get all cloud events without path parameters")
-    void testGetAllCloudEventsWithoutPathParameters_shouldReturnPageCloudEvents() {
+    void testGetAllCloudEventsWithoutPathParameters_shouldReturnPageResponse() {
         MultiValueMap<String, String> parameters = new LinkedMultiValueMap<>();
 
         Pageable pageable = PageRequest.of(0, 20);
         final CloudSystemEventEntity entity = createCloudEventEntity("testId");
         List<CloudSystemEventEntity> entities = List.of(entity);
-        Page<CloudSystemEventEntity> dbResponse = new PageImpl<>(entities);
+        Pageable defaultPage = PageRequest.of(0, 20);
+        Page<CloudSystemEventEntity> dbResponse = new PageImpl<>(entities, defaultPage, 20);
 
         final CloudSystemEvent event = cloudSystemEventMapper.toCloudEvent(entity);
         List<CloudSystemEvent> events = List.of(event);
-        Page<CloudSystemEvent> expectedResponse = new PageImpl<>(events);
+        Page<CloudSystemEvent> expectedResponse = new PageImpl<>(events, defaultPage, 20);
 
         when(cloudEventRepository.findAll(any(Specification.class), eq(pageable))).thenReturn(dbResponse);
 
-        final Page<CloudSystemEvent> actual = service.getCloudEvents(pageable, parameters);
+        final PageResponse<CloudSystemEvent> actual = service.getCloudEvents(pageable, parameters);
 
-        assertEquals(expectedResponse, actual);
+        assertEquals(expectedResponse.getTotalElements(), actual.getTotalItems());
+        assertEquals(expectedResponse.getTotalPages(), actual.getTotalPages());
+        assertEquals(expectedResponse.getPageable().getPageNumber(), actual.getCurrentPage());
+        assertEquals(expectedResponse.getContent(), actual.getItems());
     }
 
     private CloudSystemEventEntity createCloudEventEntity(String id) {
