@@ -10,6 +10,14 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+  requestBodies:
+    DeclineInstruction:
+      required: true
+      description: Decline Instruction to be created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeclineInstruction'
   schemas:
     Benchmark:
       type: string
@@ -160,6 +168,28 @@ components:
         - SGD
         - NOK
         - DKK
+    DeclineInstruction:
+      required:
+        - declineInstructionId
+      type: object
+      properties:
+        declineInstructionId:
+          type: string
+        relatedExceptionEventId:
+          type: string
+        relatedProposalId:
+          type: string
+        relatedProposalType:
+          $ref: '#/components/schemas/RelatedProposalType'
+        creationDateTime:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        declineReasonCode:
+          type: string
+        declineReasonText:
+          type: string
     EventType:
       type: string
       enum:
@@ -301,6 +331,7 @@ components:
             oneOf:
               - $ref: '#/components/schemas/CloudEvent'
               - $ref: '#/components/schemas/Contract'
+              - $ref: '#/components/schemas/DeclineInstruction'
     Party:
       required:
         - gleifLei
@@ -380,6 +411,11 @@ components:
           $ref: '#/components/schemas/FixedRate'
         floating:
           $ref: '#/components/schemas/FloatingRate'
+    RelatedProposalType:
+      type: string
+      enum:
+        - CONTRACT
+        - RERATE
     RoundingMode:
       type: string
       enum:
@@ -817,5 +853,89 @@ paths:
           description: The access to the API is not authorized
         '404':
           description: No 1Source loan contracts are matching the selection criteria
+        '500':
+          description: The API is not getting the data due to a technical error
+
+  /decline-instructions:
+    get:
+      summary: Retrieve a list of Decline instructions information
+      description: >
+        Retrieve Decline instructions information based on various query parameters. 
+        Supports filtering by each field separately or in combination, date range queries, sorting, and pagination.
+      parameters:
+        - name: declineInstructionId
+          in: query
+          schema:
+            type: string
+        - name: relatedExceptionEventId
+          in: query
+          schema:
+            type: string
+        - name: relatedProposalId
+          in: query
+          schema:
+            type: string
+        - name: sinceCreationDate
+          in: query
+          description: Decline instruction creation date (since), included, in the format 'yyyy-MM-dd'
+          schema:
+            type: string
+            format: date
+        - name: beforeCreationDate
+          in: query
+          description: Decline instruction creation date (before), excluded, in the format 'yyyy-MM-dd'
+          schema:
+            type: string
+            format: date
+        - name: userId
+          in: query
+          schema:
+            type: string
+        - name: sort
+          in: query
+          description: Sort by specified fields (e.g., 'userId').
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        '200':
+          description: Decline instructions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+
+        '400':
+          description: Bad request. Check the query.
+        '401':
+          description: The access to the API is not authorized
+        '404':
+          description: No Decline instructions are matching the selection criteria
+        '500':
+          description: The API is not getting the data due to a technical error
+    post:
+      summary: Create a Decline instruction
+      requestBody:
+        $ref: '#/components/requestBodies/DeclineInstruction'
+      responses:
+        '201':
+          description: Decline instruction successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeclineInstruction'
+        '400':
+          description: Bad request. Check the response body
+        '401':
+          description: The access to the API is not authorized
         '500':
           description: The API is not getting the data due to a technical error

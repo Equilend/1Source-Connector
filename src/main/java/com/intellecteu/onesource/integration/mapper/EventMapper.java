@@ -315,7 +315,14 @@ public class EventMapper {
         return venueFields.stream().filter(Objects::nonNull).map(this::toVenueFieldDto).collect(Collectors.toList());
     }
 
-    public Agreement toAgreementEntity(AgreementDto agreementDto) {
+    public AgreementEntity toAgreementEntity(AgreementDto agreementDto) {
+        if (agreementDto == null) {
+            return null;
+        }
+        return objectMapper.convertValue(agreementDto, AgreementEntity.class);
+    }
+
+    public Agreement toAgreement(AgreementDto agreementDto) {
         if (agreementDto == null) {
             return null;
         }

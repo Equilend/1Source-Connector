@@ -45,7 +45,7 @@ public class OneSourceService {
 
     public Optional<Agreement> retrieveTradeAgreement(String eventUri, EventType eventType) {
         Optional<AgreementDto> tradeAgreementDtos = oneSourceApiClient.findTradeAgreement(eventUri, eventType);
-        return tradeAgreementDtos.map(eventMapper::toAgreementEntity);
+        return tradeAgreementDtos.map(eventMapper::toAgreement);
     }
 
     //TODO Do we need this logic?
