@@ -23,12 +23,12 @@ import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -127,10 +127,10 @@ public class AgreementFlowTest {
     @Test
     @DisplayName("Contract proposal successfully created with 201 response code.")
     void test_agreementFlow_shouldCreateContractProposal_success() throws JsonProcessingException, ReconcileException {
-        var agreement = buildAgreementDto();
-        var agreementEntity = eventMapper.toAgreementEntity(agreement);
-        agreement.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
-        agreement.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
+        var agreementDto = buildAgreementDto();
+        var agreement = eventMapper.toAgreement(agreementDto);
+        agreementDto.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
+        agreementDto.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
 
         String positionEntityResponse = """
             {"id":1,"positionId":"testSpirePositionId","customValue2":"testVenueRefId","rate":10.2,"quantity":2.0,"tradeDate":"2023-11-14T16:52:06.060844","settleDate":"2023-11-14T16:52:06.061189","deliverFree":false,"amount":400.32,"price":100.0,"contractValue":4.52,"positionTypeId":null,"currencyId":null,"securityId":null,"accountLei":"lender-lei","cpLei":"borrower-lei","collateralType":"CASH","cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null,"securityDetailDTO":{"ticker":"testTicker","cusip":"testCusip","isin":"testIsin","sedol":"testSedol","quickCode":"testQuick","bloombergId":"testFigi"},"currencyDTO":{"currencyName":"EUR"},"loanBorrowDTO":{"taxWithholdingRate":2.0},"collateralTypeDTO":{"collateralType":"CASH"},"exposureDTO":{"cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null},"positiontypeDTO":{"positionType":"CASH LOAN"},"accountDTO":{"dtc":null,"lei":"lender-lei"},"counterPartyDTO":{"dtc":null,"lei":"borrower-lei"}, "statusDTO":{"status":"CREATED"}}
@@ -142,14 +142,14 @@ public class AgreementFlowTest {
         var positionDto = spireMapper.toPositionDto(positionEntity);
 
 //        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
-        when(agreementService.saveAgreement(any())).thenReturn(agreementEntity);
+        when(agreementService.saveAgreement(any())).thenReturn(agreement);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(positionEntity));
         when(positionService.savePosition(any())).thenReturn(positionEntity);
         doNothing().when(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
-        agreementDataReceived.process(agreement);
+        agreementDataReceived.process(agreementDto);
 
         verify(positionService).findByVenueRefId(any());
         verify(cloudEventRecordService, times(2)).record(any());

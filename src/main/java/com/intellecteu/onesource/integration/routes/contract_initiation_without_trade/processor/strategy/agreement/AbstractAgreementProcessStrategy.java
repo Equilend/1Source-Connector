@@ -2,12 +2,12 @@ package com.intellecteu.onesource.integration.routes.contract_initiation_without
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
+import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
-import static com.intellecteu.onesource.integration.exception.LoanContractProcessException.PROCESS_EXCEPTION_MESSAGE;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
@@ -29,24 +29,24 @@ import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
-import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +75,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
 
     Agreement saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
         agreement.setFlowStatus(status);
-        return agreementService.saveAgreement(eventMapper.toAgreementEntity(agreement));
+        return agreementService.saveAgreement(eventMapper.toAgreement(agreement));
     }
 
     @Transactional
@@ -169,7 +169,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         agreementDto.setMatchingSpirePositionId(positionDto.getPositionId());
         positionDto.setMatching1SourceTradeAgreementId(agreementDto.getAgreementId());
 
-        agreementService.saveAgreement(eventMapper.toAgreementEntity(agreementDto));
+        agreementService.saveAgreement(eventMapper.toAgreement(agreementDto));
         positionService.savePosition(spireMapper.toPosition(positionDto));
 
         recordCloudEvent(agreementDto.getAgreementId(), recordType, positionDto.getPositionId());
