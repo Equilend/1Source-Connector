@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TradeEvent {
 
+    @JsonIgnore
     private Long id;
     private Long eventId;
     private EventType eventType;

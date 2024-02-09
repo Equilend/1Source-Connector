@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class TradeAgreement {
 
+    @JsonIgnore
     private Long id;
     @JsonProperty("executionVenue")
     private Venue venue;
@@ -31,7 +33,9 @@ public class TradeAgreement {
     private SettlementType settlementType;
     private Collateral collateral;
     private List<TransactingParty> transactingParties;
+    @JsonIgnore
     private Long eventId;
+    @JsonIgnore
     private String resourceUri;
     private ProcessingStatus processingStatus;
 

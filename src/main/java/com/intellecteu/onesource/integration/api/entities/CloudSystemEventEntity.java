@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.api.cloudevents;
+package com.intellecteu.onesource.integration.api.entities;
 
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -31,7 +31,7 @@ import lombok.ToString;
 @ToString
 @JsonIgnoreProperties(value = {"processingStatus"})
 @Table(name = "event_record")
-class CloudSystemEventEntity {
+public class CloudSystemEventEntity {
 
     @Id
     @Column(name = "id")

@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +17,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Contract {
 
+    @JsonIgnore
     private Long id;
     private String contractId;
     private TradeEvent lastEvent;
@@ -28,6 +30,7 @@ public class Contract {
     private ProcessingStatus processingStatus;
     private EventType eventType;
     private String matchingSpirePositionId;
+    @JsonIgnore
     private FlowStatus flowStatus;
 
 }

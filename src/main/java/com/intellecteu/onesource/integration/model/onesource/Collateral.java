@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Collateral {
 
+    @JsonIgnore
     private Long id;
     private Double contractPrice;
     private Double contractValue;
