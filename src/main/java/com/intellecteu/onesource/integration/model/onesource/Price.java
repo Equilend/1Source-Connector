@@ -20,4 +20,7 @@ public class Price {
     private String currency;
     private PriceUnit unit;
 
+    public Price(PriceUnit unit) {
+        this.unit = unit;
+    }
 }

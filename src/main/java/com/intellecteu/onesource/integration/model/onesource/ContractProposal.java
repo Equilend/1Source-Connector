@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,9 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class LocalVenueField {
+public class ContractProposal {
 
-    private Long id;
-    private String localFieldName;
-    private String localFieldValue;
+    private TradeAgreement trade;
+    private List<Settlement> settlementList;
+
 }

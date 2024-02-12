@@ -7,5 +7,6 @@ CREATE TABLE IF NOT EXISTS decline_instruction
     creation_date_time   TIMESTAMP    NOT NULL,
     user_id              VARCHAR(255) NULL,
     reason_code          VARCHAR(255) NULL,
-    reason_text          VARCHAR(255) NULL
+    reason_text          VARCHAR(255) NULL,
+    processing_status    VARCHAR(255) NULL
 );

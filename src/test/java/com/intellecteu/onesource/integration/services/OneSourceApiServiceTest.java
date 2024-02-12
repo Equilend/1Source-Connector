@@ -11,18 +11,18 @@ import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.DtoTestFactory;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractProposalDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
@@ -115,9 +115,9 @@ class OneSourceApiServiceTest {
     @Test
     @DisplayName("Execute record service when create contract request returns 401 response code.")
     void test_createContract_shouldExecuteRecordService_whenResponse401() {
-        var agreement = DtoTestFactory.buildAgreementDto();
-        var settlement = new SettlementDto();
-        var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(agreement.getTrade());
+        var agreement = ModelTestFactory.buildAgreement();
+        var settlement = new Settlement();
+        var position = ModelTestFactory.buildPosition();
 
         var expectedUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_CREATE_CONTRACT_ENDPOINT;
 
@@ -132,14 +132,14 @@ class OneSourceApiServiceTest {
         verify(recordService).record(any(CloudEventBuildRequest.class));
     }
 
-    ContractProposalDto buildContract(AgreementDto agreement, PositionDto positionDto,
-        List<SettlementDto> settlements) {
-        TradeAgreementDto trade = agreement.getTrade();
-        trade.getCollateral().setRoundingRule(positionDto.getCpMarkRoundTo());
+    ContractProposal buildContract(Agreement agreement, Position position,
+        List<Settlement> settlements) {
+        TradeAgreement trade = agreement.getTrade();
+        trade.getCollateral().setRoundingRule(position.getCpMarkRoundTo());
         trade.getCollateral().setRoundingMode(ALWAYSUP);
-        return ContractProposalDto.builder()
+        return ContractProposal.builder()
             .trade(trade)
-            .settlement(settlements)
+            .settlementList(settlements)
             .build();
     }
 

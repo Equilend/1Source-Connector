@@ -1,11 +1,11 @@
-package com.intellecteu.onesource.integration.api.declineinstructions;
+package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.api.dto.DeclineInstruction;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
-interface DeclineInstructionMapper {
+public interface DeclineInstructionMapper {
 
     DeclineInstructionEntity toEntity(DeclineInstruction model);
 

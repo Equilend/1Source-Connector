@@ -1,7 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.TradeEventDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -14,7 +12,6 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Rerat
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,23 +35,22 @@ public class OneSourceService {
     }
 
     public List<TradeEvent> retrieveEvents(LocalDateTime lastEventDatetime) {
-        List<TradeEventDto> tradeEventDtos = oneSourceApiClient.retrieveEvents(lastEventDatetime);
-        tradeEventDtos = findNewEvents(tradeEventDtos, lastEventDatetime);
-        return tradeEventDtos.stream().map(eventMapper::toEventEntity).collect(Collectors.toList());
+        List<TradeEvent> tradeEvents = oneSourceApiClient.retrieveEvents(lastEventDatetime);
+        List<TradeEvent> newEvents = findNewEvents(tradeEvents, lastEventDatetime);
+        return newEvents;
     }
 
     public Optional<Agreement> retrieveTradeAgreement(String eventUri, EventType eventType) {
-        Optional<AgreementDto> tradeAgreementDtos = oneSourceApiClient.findTradeAgreement(eventUri, eventType);
-        return tradeAgreementDtos.map(eventMapper::toAgreement);
+        return oneSourceApiClient.findTradeAgreement(eventUri, eventType);
     }
 
     //TODO Do we need this logic?
     @Deprecated
-    private List<TradeEventDto> findNewEvents(List<TradeEventDto> events, LocalDateTime lastEventDatetime) {
+    private List<TradeEvent> findNewEvents(List<TradeEvent> events, LocalDateTime lastEventDatetime) {
         return events.stream()
-            .filter(p -> p.getEventDatetime().isAfter(lastEventDatetime))
+            .filter(p -> p.getEventDateTime().isAfter(lastEventDatetime))
             .peek(i -> log.debug("New event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
-                i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDatetime()))
+                i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDateTime()))
             .toList();
     }
 

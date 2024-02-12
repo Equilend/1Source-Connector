@@ -31,20 +31,20 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.SettlementInstructionUpdateDto;
-import com.intellecteu.onesource.integration.dto.TradeEventDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
+import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
@@ -62,6 +62,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -109,16 +111,16 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
-    public void createContract(AgreementDto agreement, ContractProposalDto contractProposalDto, PositionDto position) {
+    public void createContract(Agreement agreement, ContractProposal contractProposal, Position position) {
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        HttpEntity<ContractProposalDto> request = new HttpEntity<>(contractProposalDto, headers);
+        HttpEntity<ContractProposal> request = new HttpEntity<>(contractProposal, headers);
 
         executeCreateContractRequest(agreement, position, request);
     }
 
-    private void executeCreateContractRequest(AgreementDto agreement, PositionDto position,
-        HttpEntity<ContractProposalDto> request) {
+    private void executeCreateContractRequest(Agreement agreement, Position position,
+        HttpEntity<ContractProposal> request) {
         String agreementId = agreement == null ? null : agreement.getAgreementId();
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
         try {
@@ -129,7 +131,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: "
                     + "{} (SPIRE Position: {}) for the following reason: {}",
                 agreementId, position.getPositionId(), e.getStatusCode());
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
                     position.getPositionId());
@@ -139,15 +143,17 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
-    public Optional<AgreementDto> findTradeAgreement(String agreementUri, EventType eventType) {
+    public Optional<Agreement> findTradeAgreement(String agreementUri, EventType eventType) {
         log.debug("Retrieving Trade Agreement from 1Source.");
         try {
             Agreement agreement = restTemplate.getForObject(onesourceBaseEndpoint + agreementUri, Agreement.class);
-            return Optional.ofNullable(eventMapper.toAgreementDto(agreement));
+            return Optional.ofNullable(agreement);
         } catch (RestClientException e) {
             log.warn("Trade Agreement {} was not found. Details: {} ", agreementUri, e.getMessage());
             if (e instanceof HttpStatusCodeException exception) {
-                if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(exception.getStatusCode())) {
+                final HttpStatusCode statusCode = exception.getStatusCode();
+                if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                    .contains(HttpStatus.valueOf(statusCode.value()))) {
                     String eventId = retrieveEventId(agreementUri, eventType);
                     var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                     var recordRequest = eventBuilder.buildExceptionRequest(agreementUri, exception, GET_TRADE_AGREEMENT,
@@ -170,8 +176,8 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
-    public void updateContract(ContractDto contract, HttpEntity<?> request) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
+    public void updateContract(Contract contract, HttpEntity<?> request) {
+        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
         executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
@@ -182,8 +188,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         return restTemplate.getForObject(onesourceBaseEndpoint + rerateUri, RerateDTO.class);
     }
 
-    public SettlementDto retrieveSettlementInstruction(ContractDto contractDto) {
-        String venueRefId = contractDto.getTrade().getExecutionVenue().getVenueRefKey();
+    @Override
+    public Settlement retrieveSettlementInstruction(Contract contractDto) {
+        String venueRefId = contractDto.getTrade().getVenue().getVenueRefKey();
         log.debug("Updating contract by venueRefId: {}", venueRefId);
         var settlementInstructionUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()
@@ -192,16 +199,16 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             log.warn("No settlement update was found for venueRefId:{}", venueRefId);
             return null;
         }
-        SettlementDto settlementDto = SettlementDto.builder()
+        Settlement settlement = Settlement.builder()
             .partyRole(BORROWER)
-            .instruction(eventMapper.toInstructionDto(settlementInstructionUpdate.getInstruction())).build();
+            .instruction(eventMapper.toInstruction(settlementInstructionUpdate.getInstruction())).build();
 
         log.debug("Settlement with role {} was created from venueRefId:{}",
-            settlementDto.getPartyRole(), venueRefId);
-        return settlementDto;
+            settlement.getPartyRole(), venueRefId);
+        return settlement;
     }
 
-    private void executeUpdateContract(ContractDto contract, HttpEntity<?> request) {
+    private void executeUpdateContract(Contract contract, HttpEntity<?> request) {
         log.debug("Updating contract. Sending PATCH request to {}/{}",
             onesourceBaseEndpoint + version + CONTRACT_ENDPOINT, contract.getContractId());
         try {
@@ -211,7 +218,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             log.error(
                 format(POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG, contract.getContractId(), e.getStatusText()));
             contract.setProcessingStatus(SPIRE_ISSUE);
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
                 var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
                     POST_LOAN_CONTRACT_UPDATE,
@@ -236,20 +245,21 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
+            final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR)
-                .contains(e.getStatusCode())) {
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 makeCloudEventRecord(contract.getContractId(), e, APPROVE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
         }
     }
 
     @Override
-    public void approveContract(ContractDto contract, SettlementDto settlementDto) {
+    public void approveContract(Contract contract, Settlement settlement) {
         log.debug("Approving contract: {}", contract.getContractId());
-        var settlementInstructionUpdateDto = new SettlementInstructionUpdateDto(settlementDto);
+        var settlementInstructionUpdate = new SettlementInstructionUpdate(settlement.getInstruction());
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        HttpEntity<SettlementInstructionUpdateDto> request = new HttpEntity<>(settlementInstructionUpdateDto, headers);
+        HttpEntity<SettlementInstructionUpdate> request = new HttpEntity<>(settlementInstructionUpdate, headers);
         try {
             log.debug("Sending {} request to {}:", POST, onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT);
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
@@ -260,17 +270,19 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
+            final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR)
-                .contains(e.getStatusCode())) {
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 makeCloudEventRecord(contract.getContractId(), e, APPROVE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
         }
     }
 
     @Override
-    public void declineContract(ContractDto contract) {
+    public void declineContract(Contract contract) {
         try {
-            log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_DECLINE_ENDPOINT);
+            String formattedEndpoint = CONTRACT_DECLINE_ENDPOINT.replace("{contractId}", contract.getContractId());
+            log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + formattedEndpoint);
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_DECLINE_ENDPOINT, POST,
                 null, JsonNode.class, contract.getContractId());
             log.debug("The contract: {} was declined!", contract.getContractId());
@@ -279,7 +291,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             log.error(
                 format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusText()));
             contract.setProcessingStatus(SPIRE_ISSUE);
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 makeCloudEventRecord(contract.getContractId(), e, DECLINE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
         }
@@ -293,7 +307,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 null, JsonNode.class, contract.getContractId());
         } catch (HttpStatusCodeException e) {
             saveStatusOnUnsuccessfulRequest(contract, e.getStatusText());
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
                     CANCEL_LOAN_CONTRACT_PROPOSAL, positionId);
@@ -334,7 +350,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
-    public List<TradeEventDto> retrieveEvents(LocalDateTime timeStamp) {
+    public List<TradeEvent> retrieveEvents(LocalDateTime timeStamp) {
         var encodedTimestamp = URLEncoder.encode(
             timeStamp.atZone(ZoneOffset.UTC).toString(), StandardCharsets.US_ASCII);
         String url = UriComponentsBuilder
@@ -347,9 +363,9 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         return executeGetEventsRequest(url);
     }
 
-    private List<TradeEventDto> executeGetEventsRequest(String url) {
+    private List<TradeEvent> executeGetEventsRequest(String url) {
         try {
-            final ResponseEntity<List<TradeEventDto>> response = restTemplate.exchange(
+            final ResponseEntity<List<TradeEvent>> response = restTemplate.exchange(
                 url, GET, null, new ParameterizedTypeReference<>() {
                 });
             log.debug("Retrieve events response: " + response.getStatusCode());

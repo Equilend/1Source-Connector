@@ -10,20 +10,18 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.intellecteu.onesource.integration.dto.ContractProposalDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -35,7 +33,6 @@ import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -154,22 +151,19 @@ public class PositionProcessor {
             && position.getProcessingStatus() == SI_FETCHED)) {
             List<Settlement> settlementList = settlementService.getSettlementByInstructionId(
                 position.getApplicableInstructionId());
-            PositionDto positionDto = spireMapper.toPositionDto(position);
-            List<SettlementDto> settlementDtos = settlementList.stream().map(eventMapper::toSettlementDto).collect(
-                Collectors.toList());
-            ContractProposalDto contractProposalDto = buildLoanContractProposal(settlementDtos,
-                spireMapper.buildTradeAgreementDto(positionDto));
-            oneSourceApiClient.createContract(null, contractProposalDto, positionDto);
-            log.debug("Loan contract proposal was created for position id: {}", positionDto.getPositionId());
+            ContractProposal contractProposal = buildLoanContractProposal(settlementList,
+                spireMapper.buildTradeAgreement(position));
+            oneSourceApiClient.createContract(null, contractProposal, position);
+            log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
         }
         return position;
     }
 
-    private ContractProposalDto buildLoanContractProposal(List<SettlementDto> settlementDtos,
-        TradeAgreementDto tradeAgreementDto) {
-        return ContractProposalDto.builder()
-            .settlement(settlementDtos)
-            .trade(tradeAgreementDto)
+    private ContractProposal buildLoanContractProposal(List<Settlement> settlements,
+        TradeAgreement tradeAgreement) {
+        return ContractProposal.builder()
+            .settlementList(settlements)
+            .trade(tradeAgreement)
             .build();
     }
 }

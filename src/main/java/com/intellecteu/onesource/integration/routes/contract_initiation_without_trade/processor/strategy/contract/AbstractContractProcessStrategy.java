@@ -17,14 +17,15 @@ import static com.intellecteu.onesource.integration.model.onesource.ProcessingSt
 import static java.lang.String.format;
 import static lombok.AccessLevel.PROTECTED;
 
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.mapper.ContractMapper;
+import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
-import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -49,61 +50,62 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     SettlementTempRepository settlementTempRepository;
     SettlementService settlementService;
     CloudEventRecordService cloudEventRecordService;
-    ReconcileService<ContractDto, PositionDto> reconcileService;
+    ReconcileService<Contract, PositionDto> reconcileService;
     EventMapper eventMapper;
     SpireMapper spireMapper;
+    ContractMapper contractMapper;
 
     Optional<PositionDto> retrievePositionByVenue(String venueRefId) {
         return positionService.findByVenueRefId(venueRefId).map(spireMapper::toPositionDto);
     }
 
-    void saveContractWithStage(ContractDto contract, FlowStatus status) {
+    void saveContractWithStage(Contract contract, FlowStatus status) {
         contract.setFlowStatus(status);
-        contractService.save(eventMapper.toContractEntity(contract));
+        contractService.save(contract);
         log.debug("Contract id: {} was saved with flow status: {}", contract.getContractId(), status);
     }
 
-    void reconcile(ContractDto contractDto, PositionDto positionDto) {
+    void reconcile(Contract contract, PositionDto positionDto) {
         try {
-            var processingStatus = contractDto.getTrade().getProcessingStatus();
+            var processingStatus = contract.getTrade().getProcessingStatus();
             if (processingStatus != null && SKIP_RECONCILIATION_STATUSES.contains(processingStatus)) {
                 log.debug("Skipping reconciliation as trade agreement has status: {}", processingStatus);
                 return;
             }
             log.debug("Starting reconciliation for contract {} and position {}",
-                contractDto.getContractId(), positionDto.getPositionId());
-            reconcileService.reconcile(contractDto, positionDto);
+                contract.getContractId(), positionDto.getPositionId());
+            reconcileService.reconcile(contract, positionDto);
             log.debug(format(LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG,
-                contractDto.getContractId(), contractDto.getMatchingSpirePositionId()));
-            saveContract(contractDto, RECONCILED);
-            createContractInitiationEvent(contractDto.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED,
-                contractDto.getMatchingSpirePositionId());
+                contract.getContractId(), contract.getMatchingSpirePositionId()));
+            saveContract(contract, RECONCILED);
+            createContractInitiationEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED,
+                contract.getMatchingSpirePositionId());
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
-            saveContract(contractDto, DISCREPANCIES);
-            createFailedReconciliationEvent(contractDto, e);
+            saveContract(contract, DISCREPANCIES);
+            createFailedReconciliationEvent(contract, e);
         }
     }
 
-    private void createFailedReconciliationEvent(ContractDto contractDto, ReconcileException e) {
+    private void createFailedReconciliationEvent(Contract contract, ReconcileException e) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(contractDto.getContractId(),
-            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, contractDto.getMatchingSpirePositionId(), e.getErrorList());
+        var recordRequest = eventBuilder.buildRequest(contract.getContractId(),
+            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, contract.getMatchingSpirePositionId(), e.getErrorList());
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void saveContract(ContractDto contractDto, ProcessingStatus processingStatus) {
-        contractDto.setProcessingStatus(processingStatus);
-        contractDto.setLastUpdateDatetime(LocalDateTime.now());
-        contractService.save(eventMapper.toContractEntity(contractDto));
+    private void saveContract(Contract contract, ProcessingStatus processingStatus) {
+        contract.setProcessingStatus(processingStatus);
+        contract.setLastUpdateDateTime(LocalDateTime.now());
+        contractService.save(contract);
     }
 
-    void processMatchingPosition(@NonNull ContractDto contractDto, @NonNull PositionDto positionDto) {
+    void processMatchingPosition(@NonNull Contract contractDto, @NonNull PositionDto positionDto) {
         log.debug("Matching position: {} with a contract: {}.",
             positionDto.getPositionId(), contractDto.getContractId());
-        contractDto.setLastUpdateDatetime(LocalDateTime.now());
+        contractDto.setLastUpdateDateTime(LocalDateTime.now());
         contractDto.setMatchingSpirePositionId(positionDto.getPositionId());
 
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
@@ -122,13 +124,13 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         positionService.savePosition(spireMapper.toPosition(positionDto));
     }
 
-    void savePositionRetrievementIssue(ContractDto contract) {
-        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
+    void savePositionRetrievementIssue(Contract contract) {
+        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
         log.warn("Could not retrieve position by venue {} for the contract {}", venueRefId, contract.getContractId());
         contract.setProcessingStatus(PROPOSED);
-        contract.setLastUpdateDatetime(LocalDateTime.now());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
 //        contract.setFlowStatus(PROCESSED); TODO commented for local development. Ask to C-H how to resolve if we don't have position for this contract
-        contractService.save(eventMapper.toContractEntity(contract));
+        contractService.save(contract);
         recordContractCreatedButNotYetMatchedEvent(contract.getContractId());
     }
 
@@ -138,7 +140,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         cloudEventRecordService.record(recordRequest);
     }
 
-    void processPartyRoleIssue(String positionType, ContractDto contractDto) {
+    void processPartyRoleIssue(String positionType, Contract contractDto) {
         log.warn("PositionType: {} has no matches with the loan contract {}",
             positionType, contractDto.getContractId());
         contractDto.setProcessingStatus(ProcessingStatus.ONESOURCE_ISSUE);

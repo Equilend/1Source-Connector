@@ -24,10 +24,6 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractProposalDto;
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
@@ -39,8 +35,10 @@ import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
@@ -65,7 +63,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
 
     OneSourceApiClient oneSourceApiClient;
     SettlementService settlementService;
-    ReconcileService<AgreementDto, PositionDto> reconcileService;
+    ReconcileService<Agreement, PositionDto> reconcileService;
     AgreementService agreementService;
     PositionService positionService;
     BackOfficeService lenderBackOfficeService;
@@ -73,13 +71,13 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
     SpireMapper spireMapper;
     CloudEventRecordService cloudEventRecordService;
 
-    Agreement saveAgreementWithStage(AgreementDto agreement, FlowStatus status) {
+    Agreement saveAgreementWithStage(Agreement agreement, FlowStatus status) {
         agreement.setFlowStatus(status);
-        return agreementService.saveAgreement(eventMapper.toAgreement(agreement));
+        return agreementService.saveAgreement(agreement);
     }
 
     @Transactional
-    public void reconcile(AgreementDto agreement, PositionDto position) {
+    public void reconcile(Agreement agreement, PositionDto position) {
         try {
             var processingStatus = agreement.getTrade().getProcessingStatus();
             if (processingStatus != null && SKIP_RECONCILIATION_STATUSES.contains(processingStatus)) {
@@ -112,28 +110,26 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         positionService.savePosition(spireMapper.toPosition(position));
     }
 
-    void processAgreement(AgreementDto agreementDto, PositionDto positionDto) {
-        extractPartyRole(positionDto.unwrapPositionType())
+    void processAgreement(Agreement agreement, Position position) {
+        extractPartyRole(position.unwrapPositionType())
             .ifPresentOrElse(
-                party -> processByParty(party, agreementDto, positionDto),
-                () -> persistIssueStatus(agreementDto, positionDto)
+                party -> processByParty(party, agreement, position),
+                () -> persistIssueStatus(agreement, position)
             );
     }
 
-    private void processByParty(PartyRole partyRole, AgreementDto agreementDto, PositionDto positionDto) {
+    private void processByParty(PartyRole partyRole, Agreement agreement, Position position) {
         if (partyRole == LENDER) {
             log.debug("Retrieving Settlement Instruction from Spire as a {}", partyRole);
             try {
-                Position position = spireMapper.toPosition(positionDto);
                 Optional<Settlement> settlement = lenderBackOfficeService.retrieveSettlementInstruction(position,
                     partyRole,
                     position.getPositionAccount().getAccountId());
                 settlement.ifPresent(s -> {
                     log.debug("Submitting contract proposal as a {}", partyRole);
-                    ContractProposalDto contractProposalDto = buildContract(agreementDto, positionDto,
-                        eventMapper.toSettlementDto(s));
-                    oneSourceApiClient.createContract(agreementDto, contractProposalDto, positionDto);
-                    log.debug("***** Trade Agreement Id: {} was processed successfully", agreementDto.getAgreementId());
+                    ContractProposal contractProposal = buildContract(agreement, position, s);
+                    oneSourceApiClient.createContract(agreement, contractProposal, position);
+                    log.debug("***** Trade Agreement Id: {} was processed successfully", agreement.getAgreementId());
                 });
             } catch (InstructionRetrievementException e) {
                 if (e.getCause() instanceof HttpStatusCodeException exception) {
@@ -141,8 +137,8 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
                     if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
                         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                         var recordRequest = eventBuilder.buildExceptionRequest(
-                            positionDto.getMatching1SourceTradeAgreementId(), exception,
-                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, positionDto.getPositionId());
+                            position.getMatching1SourceTradeAgreementId(), exception,
+                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, position.getPositionId());
                         cloudEventRecordService.record(recordRequest);
                     }
                 }
@@ -150,39 +146,39 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
         }
     }
 
-    private void persistIssueStatus(AgreementDto agreementDto, PositionDto positionDto) {
-        log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreementDto.getAgreementId(), positionDto.getPositionId(),
-            positionDto.unwrapPositionStatus()));
-        agreementDto.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
+    private void persistIssueStatus(Agreement agreement, Position position) {
+        log.debug(format(PROCESS_EXCEPTION_MESSAGE, agreement.getAgreementId(), position.getPositionId(),
+            position.unwrapPositionStatus()));
+        agreement.getTrade().setProcessingStatus(ONESOURCE_ISSUE);
     }
 
-    public void processMatchingPosition(AgreementDto agreementDto, PositionDto positionDto) {
+    public void processMatchingPosition(Agreement agreement, PositionDto positionDto) {
         RecordType recordType = null;
         if (positionDto.getProcessingStatus() == CANCELED) {
-            agreementDto.setProcessingStatus(MATCHED_CANCELED_POSITION);
+            agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
             recordType = TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
         } else {
-            agreementDto.setProcessingStatus(MATCHED_POSITION);
+            agreement.setProcessingStatus(MATCHED_POSITION);
             recordType = TRADE_AGREEMENT_MATCHED_POSITION;
         }
 
-        agreementDto.setMatchingSpirePositionId(positionDto.getPositionId());
-        positionDto.setMatching1SourceTradeAgreementId(agreementDto.getAgreementId());
+        agreement.setMatchingSpirePositionId(positionDto.getPositionId());
+        positionDto.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
 
-        agreementService.saveAgreement(eventMapper.toAgreement(agreementDto));
+        agreementService.saveAgreement(agreement);
         positionService.savePosition(spireMapper.toPosition(positionDto));
 
-        recordCloudEvent(agreementDto.getAgreementId(), recordType, positionDto.getPositionId());
+        recordCloudEvent(agreement.getAgreementId(), recordType, positionDto.getPositionId());
     }
 
-    ContractProposalDto buildContract(AgreementDto agreement, PositionDto positionDto,
-        SettlementDto settlement) {
-        TradeAgreementDto trade = agreement.getTrade();
-        trade.getCollateral().setRoundingRule(positionDto.getCpMarkRoundTo());
+    ContractProposal buildContract(Agreement agreement, Position position,
+        Settlement settlement) {
+        TradeAgreement trade = agreement.getTrade();
+        trade.getCollateral().setRoundingRule(position.getCpMarkRoundTo());
         trade.getCollateral().setRoundingMode(ALWAYSUP);
-        return ContractProposalDto.builder()
+        return ContractProposal.builder()
             .trade(trade)
-            .settlement(List.of(settlement))
+            .settlementList(List.of(settlement))
             .build();
     }
 

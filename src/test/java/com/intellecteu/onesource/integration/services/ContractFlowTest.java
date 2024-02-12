@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildContractDto;
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstruction;
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstructionEntity;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
@@ -24,10 +23,11 @@ import static org.springframework.http.HttpMethod.PUT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
+import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
@@ -68,6 +68,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -142,13 +143,14 @@ public class ContractFlowTest {
     private ContractReconcileService reconcileService;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
     private OneSourceMapper oneSourceMapper = new OneSourceMapperImpl();
+    private ContractMapper contractMapper;
 
-    ContractDto contract;
-    Contract contractEntity;
+    Contract contract;
     Position position;
 
     @BeforeEach
     void setUp() {
+        contractMapper = Mappers.getMapper(ContractMapper.class);
         objectMapper = TestConfig.createTestObjectMapper();
         eventMapper = new EventMapper(objectMapper);
         spireMapper = new SpireMapper(objectMapper);
@@ -164,14 +166,13 @@ public class ContractFlowTest {
         contractDataReceived = new ContractDataReceived(contractService, positionService,
             settlementTempRepository, settlementService, borrowerBackOfficeService,
             lenderBackOfficeService, cloudEventRecordService, reconcileService,
-            eventMapper, spireMapper, agreementRepository, oneSourceService);
+            eventMapper, spireMapper, agreementRepository, oneSourceService, contractMapper);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
 //        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
 //            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireMapper,
 //            spireService, oneSourceService, cloudEventRecordService, settlementService);
-        contract = buildContractDto();
-        contractEntity = eventMapper.toContractEntity(contract);
+        contract = ModelTestFactory.buildContract();
         PositionExposure exposure = new PositionExposure();
         exposure.setCpMarkRoundTo(2);
         position = new Position();
@@ -309,9 +310,7 @@ public class ContractFlowTest {
         when(
             restTemplate.exchange(eq(cancelContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"))).thenReturn(
             response);
-        List<ContractEntity> contractEntityList = List.of(contractEntity).stream().map(oneSourceMapper::toEntity)
-            .collect(
-                Collectors.toList());
+        List<ContractEntity> contractEntityList = List.of(new ContractEntity());
         when(contractRepository.findAllByContractStatus(any())).thenReturn(contractEntityList);
 
         eventService.cancelContract();

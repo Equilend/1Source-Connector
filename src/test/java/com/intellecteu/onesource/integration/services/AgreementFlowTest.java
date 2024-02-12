@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
@@ -18,8 +17,8 @@ import static org.springframework.http.HttpMethod.POST;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
@@ -29,6 +28,7 @@ import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
@@ -94,7 +94,7 @@ public class AgreementFlowTest {
     @Mock
     private BackOfficeService borrowerBackOfficeService;
     @Mock
-    private ReconcileService<AgreementDto, PositionDto> reconcileService;
+    private ReconcileService<Agreement, PositionDto> reconcileService;
     private AgreementDataReceived agreementDataReceived;
 
     @Mock
@@ -127,10 +127,9 @@ public class AgreementFlowTest {
     @Test
     @DisplayName("Contract proposal successfully created with 201 response code.")
     void test_agreementFlow_shouldCreateContractProposal_success() throws JsonProcessingException, ReconcileException {
-        var agreementDto = buildAgreementDto();
-        var agreement = eventMapper.toAgreement(agreementDto);
-        agreementDto.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
-        agreementDto.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
+        var agreement = ModelTestFactory.buildAgreement();
+        agreement.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
+        agreement.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
 
         String positionEntityResponse = """
             {"id":1,"positionId":"testSpirePositionId","customValue2":"testVenueRefId","rate":10.2,"quantity":2.0,"tradeDate":"2023-11-14T16:52:06.060844","settleDate":"2023-11-14T16:52:06.061189","deliverFree":false,"amount":400.32,"price":100.0,"contractValue":4.52,"positionTypeId":null,"currencyId":null,"securityId":null,"accountLei":"lender-lei","cpLei":"borrower-lei","collateralType":"CASH","cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null,"securityDetailDTO":{"ticker":"testTicker","cusip":"testCusip","isin":"testIsin","sedol":"testSedol","quickCode":"testQuick","bloombergId":"testFigi"},"currencyDTO":{"currencyName":"EUR"},"loanBorrowDTO":{"taxWithholdingRate":2.0},"collateralTypeDTO":{"collateralType":"CASH"},"exposureDTO":{"cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null},"positiontypeDTO":{"positionType":"CASH LOAN"},"accountDTO":{"dtc":null,"lei":"lender-lei"},"counterPartyDTO":{"dtc":null,"lei":"borrower-lei"}, "statusDTO":{"status":"CREATED"}}
@@ -145,23 +144,23 @@ public class AgreementFlowTest {
         when(agreementService.saveAgreement(any())).thenReturn(agreement);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(positionEntity));
         when(positionService.savePosition(any())).thenReturn(positionEntity);
-        doNothing().when(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
+        doNothing().when(reconcileService).reconcile(any(Agreement.class), any(PositionDto.class));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
-        agreementDataReceived.process(agreementDto);
+        agreementDataReceived.process(agreement);
 
         verify(positionService).findByVenueRefId(any());
         verify(cloudEventRecordService, times(2)).record(any());
         verify(positionService, times(2)).savePosition(any());
         verify(agreementService, times(3)).saveAgreement(any());
-        verify(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
+        verify(reconcileService).reconcile(any(Agreement.class), any(PositionDto.class));
     }
 
     @Test
     @DisplayName("Contract proposal was not created due reconcile error")
     void test_agreementFlow_shouldNotCreateContractProposal_reconcile_failed() throws Exception {
-        var agreement = buildAgreementDto();
+        var agreement = ModelTestFactory.buildAgreement();
         String positionEntityResponse = """
             {"id":1,"positionId":"testSpirePositionId","customValue2":"testVenueRefId","rate":10.2,"quantity":2.0,"tradeDate":"2023-11-14T16:52:06.060844","settleDate":"2023-11-14T16:52:06.061189","deliverFree":false,"amount":400.32,"price":100.0,"contractValue":4.52,"positionTypeId":null,"currencyId":null,"securityId":null,"accountLei":"lender-lei","cpLei":"borrower-lei","collateralType":"CASH","cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null,"securityDetailDTO":{"ticker":"testTicker","cusip":"testCusip","isin":"testIsin","sedol":"testSedol","quickCode":"testQuick","bloombergId":"testFigi"},"currencyDTO":{"currencyName":"EUR"},"loanBorrowDTO":{"taxWithholdingRate":2.0},"collateralTypeDTO":{"collateralType":"CASH"},"exposureDTO":{"cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null},"positiontypeDTO":{"positionType":"CASH LOAN"},"accountDTO":{"dtc":null,"lei":"lender-lei"},"counterPartyDTO":{"dtc":null,"lei":"borrower-lei"}, "statusDTO":{"status":"CREATED"}}
             """;
@@ -178,7 +177,7 @@ public class AgreementFlowTest {
         var exceptionMsgDto = new ExceptionMessageDto("testValue", "testMsg");
         final ReconcileException reconcileException = new ReconcileException("exception", List.of(exceptionMsgDto));
         doThrow(reconcileException).when(reconcileService)
-            .reconcile(any(AgreementDto.class), any(PositionDto.class));
+            .reconcile(any(Agreement.class), any(PositionDto.class));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 

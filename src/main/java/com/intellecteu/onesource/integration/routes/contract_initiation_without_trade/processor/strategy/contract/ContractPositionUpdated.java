@@ -1,10 +1,11 @@
 package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract;
 
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 public class ContractPositionUpdated extends AbstractContractProcessStrategy {
 
     @Override
-    public void process(ContractDto contract) {
+    public void process(Contract contract) {
         log.warn("This is deprecated method! Should be removed soon!");
 //        String venueRefId = contract.getTrade().getExecutionVenue().getVenueRefKey();
 //        if (contract.getEventType().equals(CONTRACT_PENDING) && contract.getContractStatus() == APPROVED) {
@@ -48,9 +49,9 @@ public class ContractPositionUpdated extends AbstractContractProcessStrategy {
     public ContractPositionUpdated(ContractService contractService, PositionService positionService,
         SettlementTempRepository settlementTempRepository, SettlementService settlementService,
         CloudEventRecordService cloudEventRecordService,
-        ReconcileService<ContractDto, PositionDto> contractReconcileService,
-        EventMapper eventMapper, SpireMapper spireMapper) {
+        ReconcileService<Contract, PositionDto> contractReconcileService,
+        EventMapper eventMapper, SpireMapper spireMapper, ContractMapper contractMapper) {
         super(contractService, positionService, settlementTempRepository, settlementService,
-            cloudEventRecordService, contractReconcileService, eventMapper, spireMapper);
+            cloudEventRecordService, contractReconcileService, eventMapper, spireMapper, contractMapper);
     }
 }

@@ -1,16 +1,16 @@
 package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.agreement;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,7 +25,7 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
 
     @Override
     @Transactional
-    public void process(AgreementDto agreement) {
+    public void process(Agreement agreement) {
         log.warn("This is deprecated method! Should be removed soon!");
 //        var venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
 //        positionService.findByVenueRefId(venueRefId)
@@ -47,8 +47,9 @@ public class AgreementPositionRetrieved extends AbstractAgreementProcessStrategy
     }
 
     public AgreementPositionRetrieved(OneSourceApiClient oneSourceApiClient, SettlementService settlementService,
-        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementService agreementService,
-        PositionService positionService, BackOfficeService lenderBackOfficeService,  EventMapper eventMapper, SpireMapper spireMapper,
+        ReconcileService<Agreement, PositionDto> agreementReconcileService, AgreementService agreementService,
+        PositionService positionService, BackOfficeService lenderBackOfficeService, EventMapper eventMapper,
+        SpireMapper spireMapper,
         CloudEventRecordService cloudEventRecordService) {
         super(oneSourceApiClient,
             settlementService,

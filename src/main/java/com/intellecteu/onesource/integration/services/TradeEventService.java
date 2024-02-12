@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.onesource.Timestamp;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.TimestampRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
@@ -57,7 +56,7 @@ public class TradeEventService {
     public void updateLastEventDatetime(List<TradeEvent> tradeEventList) {
         if (tradeEventList != null && !tradeEventList.isEmpty()) {
             LocalDateTime lastEventDatetime = tradeEventList.stream()
-                .map(TradeEvent::getEventDatetime)
+                .map(TradeEvent::getEventDateTime)
                 .max(LocalDateTime::compareTo)
                 .get();
             timestampRepository.save(new TimestampEntity(LAST_TRADE_EVENT_DATETIME, lastEventDatetime));
