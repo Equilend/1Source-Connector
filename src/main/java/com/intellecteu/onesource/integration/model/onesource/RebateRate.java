@@ -19,4 +19,11 @@ public class RebateRate {
     private FixedRate fixed;
     private FloatingRate floating;
 
+    public Double retrieveBaseRate() {
+        if (fixed == null && floating == null) {
+            return null;
+        }
+        return fixed == null ? floating.getEffectiveRate() : fixed.getBaseRate();
+    }
+
 }

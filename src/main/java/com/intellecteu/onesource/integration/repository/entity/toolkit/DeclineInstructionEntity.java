@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.toolkit;
 
 import com.intellecteu.onesource.integration.model.enums.RelatedProposalType;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,6 +43,9 @@ public class DeclineInstructionEntity {
     private String declineReasonCode;
     @Column(name = "reason_text")
     private String declineReasonText;
+    @Column(name = "processing_status")
+    @Enumerated(value = EnumType.STRING)
+    private ProcessingStatus processingStatus;
 
     @PrePersist
     protected void onCreate() {

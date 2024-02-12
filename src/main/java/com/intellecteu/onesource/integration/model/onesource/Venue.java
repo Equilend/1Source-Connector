@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDateTime;
@@ -24,7 +25,8 @@ public class Venue {
     private VenueType type;
     private String venueName;
     private String venueRefKey;
-    private LocalDateTime transactionDatetime;
+    @JsonAlias({"transactionDatetime", "transactionDateTime"})
+    private LocalDateTime transactionDateTime;
     private Set<VenueParty> venueParties;
     private Set<LocalVenueField> localVenueFields;
 

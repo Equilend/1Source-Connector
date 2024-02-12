@@ -26,21 +26,20 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
-import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -164,7 +163,7 @@ public class PositionPendingConfirmationProcessor {
             contract = contracts.get(0);
         }
         if (contract != null && contract.getProcessingStatus() == DISCREPANCIES) {
-            oneSourceApiClient.declineContract(eventMapper.toContractDto(contract));
+            oneSourceApiClient.declineContract(contract);
         }
     }
 
@@ -225,10 +224,9 @@ public class PositionPendingConfirmationProcessor {
     }
 
     private void executeSettledContractUpdate(Contract contract) {
-        ContractDto contractDto = eventMapper.toContractDto(contract);
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
-        oneSourceApiClient.updateContract(contractDto,
+        oneSourceApiClient.updateContract(contract,
             new HttpEntity<>(new SettlementStatusUpdateDto(SettlementStatus.SETTLED), headers));
     }
 
@@ -242,7 +240,7 @@ public class PositionPendingConfirmationProcessor {
     }
 
     private void processAgreementMatchedCanceledPosition(Agreement agreement) {
-        agreement.setLastUpdateDatetime(LocalDateTime.now());
+        agreement.setLastUpdateDateTime(LocalDateTime.now());
         agreement.setProcessingStatus(MATCHED_CANCELED_POSITION);
         agreementService.saveAgreement(agreement);
         recordCloudEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED_CANCELED_POSITION,
@@ -250,7 +248,7 @@ public class PositionPendingConfirmationProcessor {
     }
 
     private void processContractMatchedCanceledPosition(Contract contract) {
-        contract.setLastUpdateDatetime(LocalDateTime.now());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
         contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
         contractService.save(contract);
         recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION,

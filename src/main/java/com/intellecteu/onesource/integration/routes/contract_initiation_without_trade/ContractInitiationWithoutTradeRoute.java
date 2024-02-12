@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value="integration-toolkit.route.contract-initiation-without-trade-route.enable",
+    value = "integration-toolkit.route.contract-initiation-without-trade-route.enable",
     havingValue = "true",
     matchIfMissing = true)
 public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
@@ -39,6 +39,11 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
         "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity?"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT e FROM TradeEventEntity e WHERE e.processingStatus = '%s' AND e.eventType IN ('%s')";
+
+    private static final String DECLINE_INSTRUCTION_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT d FROM DeclineInstructionEntity d WHERE d.processingStatus IS NULL";
 
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
@@ -61,7 +66,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         //Process positions (step 2)
-        from(createPositionSQLEndpoint(ProcessingStatus.CREATED))
+        from(createPositionSQLEndpoint(CREATED))
                 .bean(backOfficeMapper, "toModel")
                 .bean(positionProcessor, "matchTradeAgreement")
                 .choice()
@@ -134,6 +139,13 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
             .log("cancelContract")
             .bean(eventProcessor, "cancelContract")
             .log("<<<<< Cancel Contract success");
+
+        //Pull data to decline loan contract instruction
+        from(DECLINE_INSTRUCTION_SQL_ENDPOINT)
+            .log(">>>>> Started decline loan contract for Decline Instruction=${body.declineInstructionId}")
+            .bean(contractProcessor, "processDecline")
+            .log("<<<<< Finished processing decline instruction")
+            .end();
     }
     //@formatter:on
 

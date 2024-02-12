@@ -7,24 +7,26 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -38,12 +40,12 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
 
     @Override
     @Transactional
-    public void process(AgreementDto agreement) {
+    public void process(Agreement agreement) {
         retrievePositionForTrade(agreement);
         saveAgreementWithStage(agreement, POSITION_RETRIEVED);
 
         if (agreement.getProcessingStatus() == ProcessingStatus.CREATED) {
-            String venueRefId = agreement.getTrade().getExecutionVenue().getVenueRefKey();
+            String venueRefId = agreement.getTrade().getVenue().getVenueRefKey();
             positionService.findByVenueRefId(venueRefId)
                 .ifPresent(position -> {
                     processMatchingPosition(agreement, spireMapper.toPositionDto(position));
@@ -63,15 +65,15 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
 //        }
     }
 
-    private Position retrievePositionForTrade(AgreementDto agreement) {
+    private Position retrievePositionForTrade(Agreement agreement) {
         var lenderPosition = retrievePositionForLender(agreement);
         var borrowerPosition = retrievePositionForBorrower(agreement);
         return lenderPosition == null ? borrowerPosition : lenderPosition;
     }
 
-    private Position retrievePositionForLender(AgreementDto agreement) {
-        TradeAgreementDto trade = agreement.getTrade();
-        String venueRefId = trade.getExecutionVenue().getVenueRefKey();
+    private Position retrievePositionForLender(Agreement agreement) {
+        TradeAgreement trade = agreement.getTrade();
+        String venueRefId = trade.getVenue().getVenueRefKey();
         try {
             return lenderBackOfficeService.getPositionForTrade(venueRefId).orElse(null);
         } catch (PositionRetrievementException e) {
@@ -80,22 +82,23 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
         }
     }
 
-    private void handlePositionRetrievementException(AgreementDto agreement, PositionRetrievementException e,
-        String venueRefId, TradeAgreementDto trade) {
+    private void handlePositionRetrievementException(Agreement agreement, PositionRetrievementException e,
+        String venueRefId, TradeAgreement trade) {
         var msg = format("The position related to the trade : %s negotiated on %s on %s has not been recorded in SPIRE",
             venueRefId, agreement.getTrade().retrieveVenueName(), agreement.getTrade().getTradeDate());
         log.warn(msg);
         if (e.getCause() instanceof HttpStatusCodeException exception) {
-            if (Set.of(NOT_FOUND, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
+            final HttpStatusCode statusCode = exception.getStatusCode();
+            if (Set.of(NOT_FOUND, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
                 trade.setProcessingStatus(SPIRE_ISSUE);
             }
         }
         saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
     }
 
-    private Position retrievePositionForBorrower(AgreementDto agreement) {
-        TradeAgreementDto trade = agreement.getTrade();
-        String venueRefId = trade.getExecutionVenue().getVenueRefKey();
+    private Position retrievePositionForBorrower(Agreement agreement) {
+        TradeAgreement trade = agreement.getTrade();
+        String venueRefId = trade.getVenue().getVenueRefKey();
         try {
             return borrowerBackOfficeService.getPositionForTrade(venueRefId).orElse(null);
         } catch (PositionRetrievementException e) {
@@ -110,7 +113,7 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     }
 
     public AgreementDataReceived(OneSourceApiClient oneSourceApiClient, SettlementService settlementService,
-        ReconcileService<AgreementDto, PositionDto> agreementReconcileService, AgreementService agreementService,
+        ReconcileService<Agreement, PositionDto> agreementReconcileService, AgreementService agreementService,
         PositionService positionService,
         EventMapper eventMapper, SpireMapper spireMapper, CloudEventRecordService cloudEventRecordService,
         BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService) {

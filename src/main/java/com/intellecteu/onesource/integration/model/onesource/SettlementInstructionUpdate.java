@@ -25,4 +25,7 @@ public class SettlementInstructionUpdate {
     private PartyRole partyRole;
     private SettlementInstruction instruction;
 
+    public SettlementInstructionUpdate(SettlementInstruction instruction) {
+        this.instruction = instruction;
+    }
 }

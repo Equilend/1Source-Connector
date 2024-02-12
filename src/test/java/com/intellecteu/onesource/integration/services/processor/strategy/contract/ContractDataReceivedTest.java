@@ -11,14 +11,16 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.intellecteu.onesource.integration.DtoTestFactory;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
+import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
@@ -42,6 +44,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -63,7 +66,7 @@ class ContractDataReceivedTest {
     @Mock
     CloudEventRecordService cloudEventRecordService;
     @Mock
-    ReconcileService<ContractDto, PositionDto> reconcileService;
+    ReconcileService<Contract, PositionDto> reconcileService;
     @Mock
     AgreementRepository agreementRepository;
     @Mock
@@ -75,8 +78,10 @@ class ContractDataReceivedTest {
     EventMapper eventMapper;
     SpireMapper spireMapper;
     ContractDataReceived service;
-    ContractDto contractDto;
+    Contract contract;
     PositionDto positionDto;
+
+    final ContractMapper contractMapper = Mappers.getMapper(ContractMapper.class);
 
     @Test
     @SuppressWarnings("unchecked")
@@ -84,9 +89,9 @@ class ContractDataReceivedTest {
     void testUpdateCounterpartySettlementInstruction_shouldSuccess() {
         positionDto.setPositionTypeDto(new PositionTypeDto(BORROWER_POSITION_TYPE));
         Position position = spireMapper.toPosition(positionDto);
-        contractDto.setEventType(EventType.CONTRACT_PENDING);
-        contractDto.setContractStatus(ContractStatus.APPROVED);
-        contractDto.getSettlement().get(0).setPartyRole(PartyRole.LENDER);
+        contract.setEventType(EventType.CONTRACT_PENDING);
+        contract.setContractStatus(ContractStatus.APPROVED);
+        contract.getSettlement().get(0).setPartyRole(PartyRole.LENDER);
         Settlement settlement = DtoTestFactory.buildSettlement();
         settlement.setPartyRole(PartyRole.LENDER);
         var settlementResponse = Optional.of(settlement);
@@ -100,7 +105,7 @@ class ContractDataReceivedTest {
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
         doNothing().when(cloudEventRecordService).record(any());
 
-        service.process(contractDto);
+        service.process(contract);
 
         verify(positionService).findByVenueRefId(any());
         verify(positionService).savePosition(any());
@@ -117,10 +122,10 @@ class ContractDataReceivedTest {
     void testUpdateCounterpartySettlementInstruction_shouldCaptureResponseException() {
         positionDto.setPositionTypeDto(new PositionTypeDto(BORROWER_POSITION_TYPE));
         Position position = spireMapper.toPosition(positionDto);
-        contractDto.setEventType(EventType.CONTRACT_PENDING);
-        contractDto.setContractStatus(ContractStatus.APPROVED);
-        contractDto.getSettlement().get(0).setPartyRole(PartyRole.LENDER);
-        contractDto.setMatchingSpirePositionId(positionDto.getPositionId());
+        contract.setEventType(EventType.CONTRACT_PENDING);
+        contract.setContractStatus(ContractStatus.APPROVED);
+        contract.getSettlement().get(0).setPartyRole(PartyRole.LENDER);
+        contract.setMatchingSpirePositionId(positionDto.getPositionId());
         SettlementDto settlementDto = DtoTestFactory.buildSettlementDto();
         settlementDto.setPartyRole(PartyRole.LENDER);
         var eventFactoryMock = Mockito.mock(CloudEventFactory.class);
@@ -134,7 +139,7 @@ class ContractDataReceivedTest {
         when(eventFactoryMock.eventBuilder(any())).thenReturn(new ContractInitiationCloudEventBuilder());
         doNothing().when(cloudEventRecordService).record(any());
 
-        service.process(contractDto);
+        service.process(contract);
 
         verify(positionService).findByVenueRefId(any());
         verify(positionService).savePosition(any());
@@ -148,14 +153,14 @@ class ContractDataReceivedTest {
 
     @BeforeEach
     void setUp() {
-        contractDto = DtoTestFactory.buildContractDto();
-        positionDto = DtoTestFactory.buildPositionDtoFromTradeAgreement(contractDto.getTrade());
+        contract = ModelTestFactory.buildContract();
+        positionDto = DtoTestFactory.buildPositionDtoFromTradeAgreement(contract.getTrade());
         eventMapper = new EventMapper(TestConfig.createTestObjectMapper());
         spireMapper = new SpireMapper(TestConfig.createTestObjectMapper());
         service = new ContractDataReceived(contractService, positionService,
             settlementTempRepository, settlementService,
             borrowerBackOfficeService, lenderBackOfficeService, cloudEventRecordService,
             reconcileService, eventMapper, spireMapper,
-            agreementRepository, oneSourceApiClient);
+            agreementRepository, oneSourceApiClient, contractMapper);
     }
 }

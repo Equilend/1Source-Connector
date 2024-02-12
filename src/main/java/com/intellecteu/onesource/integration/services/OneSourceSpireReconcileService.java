@@ -49,21 +49,21 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.CollateralDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
-import com.intellecteu.onesource.integration.dto.InstrumentDto;
-import com.intellecteu.onesource.integration.dto.PriceDto;
-import com.intellecteu.onesource.integration.dto.RateDto;
-import com.intellecteu.onesource.integration.dto.RebateRateDto;
-import com.intellecteu.onesource.integration.dto.TradeAgreementDto;
-import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.Instrument;
+import com.intellecteu.onesource.integration.model.onesource.Price;
+import com.intellecteu.onesource.integration.model.onesource.Rate;
+import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
+import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -102,19 +102,19 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsList;
     }
 
-    List<ExceptionMessageDto> reconcileTrade(TradeAgreementDto tradeDto, PositionDto positionDto) {
+    List<ExceptionMessageDto> reconcileTrade(TradeAgreement trade, PositionDto positionDto) {
         var failedList = new ArrayList<ExceptionMessageDto>();
-        reconcileVenue(tradeDto, positionDto).ifPresent(failedList::add);
-        failedList.addAll(reconcileRate(tradeDto.getRate(), positionDto));
-        failedList.addAll(reconcileInstrument(tradeDto.getInstrument(), positionDto));
-        reconcileQuantity(tradeDto, positionDto).ifPresent(failedList::add);
-        reconcileDividendRate(tradeDto, positionDto).ifPresent(failedList::add);
-        reconcileTradeDate(tradeDto, positionDto).ifPresent(failedList::add);
-        reconcileSettlementDate(tradeDto, positionDto).ifPresent(failedList::add);
-        reconcileTermType(tradeDto.getTermType(), positionDto.getTermId()).ifPresent(failedList::add);
-        reconcileSettlementType(tradeDto.getSettlementType(), positionDto).ifPresent(failedList::add);
-        failedList.addAll(reconcileCollateral(tradeDto.getCollateral(), positionDto));
-        reconcileLei(tradeDto.getTransactingParties(), positionDto).ifPresent(failedList::add);
+        reconcileVenue(trade, positionDto).ifPresent(failedList::add);
+        failedList.addAll(reconcileRate(trade.getRate(), positionDto));
+        failedList.addAll(reconcileInstrument(trade.getInstrument(), positionDto));
+        reconcileQuantity(trade, positionDto).ifPresent(failedList::add);
+        reconcileDividendRate(trade, positionDto).ifPresent(failedList::add);
+        reconcileTradeDate(trade, positionDto).ifPresent(failedList::add);
+        reconcileSettlementDate(trade, positionDto).ifPresent(failedList::add);
+        reconcileTermType(trade.getTermType(), positionDto.getTermId()).ifPresent(failedList::add);
+        reconcileSettlementType(trade.getSettlementType(), positionDto).ifPresent(failedList::add);
+        failedList.addAll(reconcileCollateral(trade.getCollateral(), positionDto));
+        reconcileLei(trade.getTransactingParties(), positionDto).ifPresent(failedList::add);
         return failedList;
     }
 
@@ -136,7 +136,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         };
     }
 
-    private Optional<ExceptionMessageDto> reconcileLei(List<TransactingPartyDto> transactionParties,
+    private Optional<ExceptionMessageDto> reconcileLei(List<TransactingParty> transactionParties,
         PositionDto position) {
         var positionAccountLei = position.getAccountLei();
         var positionCpLei = position.getCpLei();
@@ -156,7 +156,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.of(exceptionDto);
     }
 
-    private List<ExceptionMessageDto> reconcileCollateral(CollateralDto collateral, PositionDto position) {
+    private List<ExceptionMessageDto> reconcileCollateral(Collateral collateral, PositionDto position) {
         List<ExceptionMessageDto> failsLog = new ArrayList<>();
         if (collateral.getContractPrice() != null) {
             checkEquality(collateral.getContractPrice(), CONTRACT_PRICE, position.getPrice(), POSITION_PRICE)
@@ -226,7 +226,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
      * Must reconcile if present. At least one security identifier must be present
      * ('At least one' presence is checked inside PositionDto domain model logic)
      */
-    private List<ExceptionMessageDto> checkEqualityOfSecurityIdentifiers(InstrumentDto instrument,
+    private List<ExceptionMessageDto> checkEqualityOfSecurityIdentifiers(Instrument instrument,
         PositionDto position) {
         List<ExceptionMessageDto> failsLog = new ArrayList<>();
         var securityDetailDto = position.getSecurityDetailDto();
@@ -251,60 +251,60 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsLog;
     }
 
-    private Optional<ExceptionMessageDto> reconcileSettlementDate(TradeAgreementDto tradeDto, PositionDto positionDto) {
-        if (tradeDto.getSettlementDate() != null && positionDto.getSettleDate() != null) {
-            return checkEquality(tradeDto.getSettlementDate(), SETTLEMENT_DATE,
+    private Optional<ExceptionMessageDto> reconcileSettlementDate(TradeAgreement trade, PositionDto positionDto) {
+        if (trade.getSettlementDate() != null && positionDto.getSettleDate() != null) {
+            return checkEquality(trade.getSettlementDate(), SETTLEMENT_DATE,
                 positionDto.getSettleDate().toLocalDate(), SETTLE_DATE);
         }
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileTradeDate(TradeAgreementDto tradeDto, PositionDto positionDto) {
-        if (tradeDto.getTradeDate() != null && positionDto.getTradeDate() != null) {
-            return checkEquality(tradeDto.getTradeDate(), TRADE_DATE,
+    private Optional<ExceptionMessageDto> reconcileTradeDate(TradeAgreement trade, PositionDto positionDto) {
+        if (trade.getTradeDate() != null && positionDto.getTradeDate() != null) {
+            return checkEquality(trade.getTradeDate(), TRADE_DATE,
                 positionDto.getTradeDate().toLocalDate(), POSITION_TRADE_DATE);
         }
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileDividendRate(TradeAgreementDto tradeDto, PositionDto positionDto) {
+    private Optional<ExceptionMessageDto> reconcileDividendRate(TradeAgreement trade, PositionDto positionDto) {
         if (positionDto.getLoanBorrowDto() != null && positionDto.getLoanBorrowDto().getTaxWithholdingRate() != null
-            && tradeDto.getDividendRatePct() != null) {
-            return checkEquality(tradeDto.getDividendRatePct().doubleValue(), DIVIDENT_RATE_PCT,
+            && trade.getDividendRatePct() != null) {
+            return checkEquality(trade.getDividendRatePct().doubleValue(), DIVIDENT_RATE_PCT,
                 positionDto.getLoanBorrowDto().getTaxWithholdingRate(), TAX_WITH_HOLDING_RATE);
         }
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileQuantity(TradeAgreementDto tradeDto, PositionDto positionDto) {
-        if (tradeDto.getQuantity() != null) {
-            return checkEquality(tradeDto.getQuantity().doubleValue(), QUANTITY,
+    private Optional<ExceptionMessageDto> reconcileQuantity(TradeAgreement trade, PositionDto positionDto) {
+        if (trade.getQuantity() != null) {
+            return checkEquality(trade.getQuantity().doubleValue(), QUANTITY,
                 positionDto.getQuantity(), POSITION_QUANTITY);
         }
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileVenue(TradeAgreementDto tradeDto, PositionDto positionDto) {
-        return checkEquality(tradeDto.getExecutionVenue().getVenueRefKey(), VENUE_REF_ID,
+    private Optional<ExceptionMessageDto> reconcileVenue(TradeAgreement trade, PositionDto positionDto) {
+        return checkEquality(trade.getVenue().getVenueRefKey(), VENUE_REF_ID,
             positionDto.getCustomValue2(), CUSTOM_VALUE_2);
     }
 
-    private List<ExceptionMessageDto> reconcileRate(RateDto rateDto, PositionDto positionDto) {
+    private List<ExceptionMessageDto> reconcileRate(Rate rate, PositionDto positionDto) {
         List<ExceptionMessageDto> failsLog = new ArrayList<>();
 
-        if (rateDto != null && positionDto != null) {
+        if (rate != null && positionDto != null) {
             var positionRate = positionDto.getRate();
-            if (rateDto.getRebateRate() != null && positionRate != null) {
-                checkEquality(rateDto.getRebateRate(), REBATE, positionRate, RATE).ifPresent(failsLog::add);
-                reconcileFixedRebate(rateDto.getRebate(), positionDto).ifPresent(failsLog::add);
-                reconcileFloatingRebate(rateDto.getRebate(), positionDto).ifPresent(failsLog::add);
+            if (rate.getRebateRate() != null && positionRate != null) {
+                checkEquality(rate.getRebateRate(), REBATE, positionRate, RATE).ifPresent(failsLog::add);
+                reconcileFixedRebate(rate.getRebate(), positionDto).ifPresent(failsLog::add);
+                reconcileFloatingRebate(rate.getRebate(), positionDto).ifPresent(failsLog::add);
             }
         }
 
         return failsLog;
     }
 
-    private Optional<ExceptionMessageDto> reconcileFixedRebate(RebateRateDto rebate, PositionDto positionDto) {
+    private Optional<ExceptionMessageDto> reconcileFixedRebate(RebateRate rebate, PositionDto positionDto) {
         if (rebate != null && rebate.getFixed() != null) {
             final LocalDate effectiveDate = rebate.getFixed().getEffectiveDate();
             final LocalDateTime settleDate = positionDto.getSettleDate();
@@ -316,7 +316,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileFloatingRebate(RebateRateDto rebate, PositionDto positionDto) {
+    private Optional<ExceptionMessageDto> reconcileFloatingRebate(RebateRate rebate, PositionDto positionDto) {
         if (rebate != null && rebate.getFloating() != null && positionDto.getIndexDto() != null) {
             final Double spread = rebate.getFloating().getSpread();
             final Double positionSpread = positionDto.getIndexDto().getSpread();
@@ -341,13 +341,13 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private List<ExceptionMessageDto> reconcileInstrument(InstrumentDto instrumentDto, PositionDto positionDto) {
-        var failsList = checkEqualityOfSecurityIdentifiers(instrumentDto, positionDto);
-        failsList.addAll(checkInstrumentUnit(instrumentDto.getPrice(), positionDto.getSecurityDetailDto()));
+    private List<ExceptionMessageDto> reconcileInstrument(Instrument instrument, PositionDto positionDto) {
+        var failsList = checkEqualityOfSecurityIdentifiers(instrument, positionDto);
+        failsList.addAll(checkInstrumentUnit(instrument.getPrice(), positionDto.getSecurityDetailDto()));
         return failsList;
     }
 
-    private List<ExceptionMessageDto> checkInstrumentUnit(PriceDto price, SecurityDetailDto securityDetailDto) {
+    private List<ExceptionMessageDto> checkInstrumentUnit(Price price, SecurityDetailDto securityDetailDto) {
         List<ExceptionMessageDto> failsLog = new ArrayList<>();
         if (price != null && securityDetailDto != null && securityDetailDto.getPriceFactor() != null) {
             final Integer priceFactor = securityDetailDto.getPriceFactor();

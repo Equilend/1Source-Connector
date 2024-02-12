@@ -15,6 +15,7 @@ import static com.intellecteu.onesource.integration.api.declineinstructions.Decl
 
 import com.intellecteu.onesource.integration.api.dto.DeclineInstruction;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;

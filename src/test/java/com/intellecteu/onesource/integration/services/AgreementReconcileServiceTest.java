@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildPositionDtoFromTradeAgreement;
 import static com.intellecteu.onesource.integration.exception.ReconcileException.RECONCILE_EXCEPTION;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
@@ -9,21 +8,22 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.FeeRateDto;
-import com.intellecteu.onesource.integration.dto.FixedRateDto;
-import com.intellecteu.onesource.integration.dto.FloatingRateDto;
-import com.intellecteu.onesource.integration.dto.PriceDto;
-import com.intellecteu.onesource.integration.dto.RateDto;
-import com.intellecteu.onesource.integration.dto.RebateRateDto;
-import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
 import com.intellecteu.onesource.integration.dto.spire.IndexDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.FeeRate;
+import com.intellecteu.onesource.integration.model.onesource.FixedRate;
+import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
+import com.intellecteu.onesource.integration.model.onesource.Price;
 import com.intellecteu.onesource.integration.model.onesource.PriceUnit;
+import com.intellecteu.onesource.integration.model.onesource.Rate;
+import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
+import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -40,14 +40,14 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class AgreementReconcileServiceTest {
 
-    private ReconcileService<AgreementDto, PositionDto> service;
-    private AgreementDto agreement;
+    private ReconcileService<Agreement, PositionDto> service;
+    private Agreement agreement;
     private PositionDto position;
 
     @BeforeEach
     void setUp() {
         service = new AgreementReconcileService();
-        agreement = buildAgreementDto();
+        agreement = ModelTestFactory.buildAgreement();
         position = buildPositionDtoFromTradeAgreement(agreement.getTrade());
     }
 
@@ -62,7 +62,7 @@ class AgreementReconcileServiceTest {
     @Order(2)
     @DisplayName("Throw exception on reconciliation fail for venueRefId")
     void reconcile_shouldThrowException_whenReconciliationFailOnVenueRefId() {
-        agreement.getTrade().getExecutionVenue().setVenueRefKey("customValue");
+        agreement.getTrade().getVenue().setVenueRefKey("customValue");
 
         verifyReconciliationFailure();
     }
@@ -189,13 +189,13 @@ class AgreementReconcileServiceTest {
     @Order(11)
     @DisplayName("Throw exception if reconciliation fails for a rate")
     void reconcile_shouldThrowException_whenReconciliationFailsForRateAgreementFloatingChanged() {
-        final RebateRateDto rebateRateDto = new RebateRateDto();
-        final FloatingRateDto floatingRateDto = new FloatingRateDto();
-        floatingRateDto.setEffectiveRate(111.0d);
-        rebateRateDto.setFloating(floatingRateDto);
-        var rateDto = new RateDto();
-        rateDto.setRebate(rebateRateDto);
-        agreement.getTrade().setRate(rateDto);
+        final RebateRate rebateRate = new RebateRate();
+        final FloatingRate floatingRate = new FloatingRate();
+        floatingRate.setEffectiveRate(111.0d);
+        rebateRate.setFloating(floatingRate);
+        var rate = new Rate();
+        rate.setRebate(rebateRate);
+        agreement.getTrade().setRate(rate);
 
         verifyReconciliationFailure();
     }
@@ -204,13 +204,13 @@ class AgreementReconcileServiceTest {
     @Order(11)
     @DisplayName("Should success when trade.rate.rebate.fixed.baseRate matches with position.rate")
     void reconcile_shouldSuccess_whenAgreementFixedRateMatchesWithPosition() throws Exception {
-        final RebateRateDto rebateRateDto = new RebateRateDto();
-        var fixedRateDto = new FixedRateDto();
-        fixedRateDto.setBaseRate(10.2d);
-        rebateRateDto.setFixed(fixedRateDto);
-        var rateDto = new RateDto();
-        rateDto.setRebate(rebateRateDto);
-        agreement.getTrade().setRate(rateDto);
+        final RebateRate rebateRate = new RebateRate();
+        var fixedRate = new FixedRate();
+        fixedRate.setBaseRate(10.2d);
+        rebateRate.setFixed(fixedRate);
+        var rate = new Rate();
+        rate.setRebate(rebateRate);
+        agreement.getTrade().setRate(rate);
 
         service.reconcile(agreement, position);
     }
@@ -219,13 +219,13 @@ class AgreementReconcileServiceTest {
     @Order(11)
     @DisplayName("Should success when trade.rate.rebate.floating.effectiveRate matches with position.rate")
     void reconcile_shouldSuccess_whenAgreementFloatingRateMatchesWithPosition() throws Exception {
-        final RebateRateDto rebateRateDto = new RebateRateDto();
-        final FloatingRateDto floatingRateDto = new FloatingRateDto();
-        floatingRateDto.setEffectiveRate(10.2d);
-        rebateRateDto.setFloating(floatingRateDto);
-        var rateDto = new RateDto();
-        rateDto.setRebate(rebateRateDto);
-        agreement.getTrade().setRate(rateDto);
+        final RebateRate rebateRate = new RebateRate();
+        final FloatingRate floatingRate = new FloatingRate();
+        floatingRate.setEffectiveRate(10.2d);
+        rebateRate.setFloating(floatingRate);
+        var rate = new Rate();
+        rate.setRebate(rebateRate);
+        agreement.getTrade().setRate(rate);
 
         service.reconcile(agreement, position);
     }
@@ -234,13 +234,13 @@ class AgreementReconcileServiceTest {
     @Order(11)
     @DisplayName("Throw exception if reconciliation fails for a rate")
     void reconcile_shouldThrowException_whenReconciliationFailsForRateAgreementFixedChanged() {
-        final RebateRateDto rebateRateDto = new RebateRateDto();
-        var fixedRateDto = new FixedRateDto();
-        fixedRateDto.setBaseRate(111.0d);
-        rebateRateDto.setFixed(fixedRateDto);
-        var rateDto = new RateDto();
-        rateDto.setRebate(rebateRateDto);
-        agreement.getTrade().setRate(rateDto);
+        final RebateRate rebateRate = new RebateRate();
+        var fixedRate = new FixedRate();
+        fixedRate.setBaseRate(111.0d);
+        rebateRate.setFixed(fixedRate);
+        var rate = new Rate();
+        rate.setRebate(rebateRate);
+        agreement.getTrade().setRate(rate);
 
         verifyReconciliationFailure();
     }
@@ -566,7 +566,7 @@ class AgreementReconcileServiceTest {
     @Order(45)
     @DisplayName("Throw exception if trade agreement rebate rate is missed")
     void reconcile_shouldThrowException_whenTradeAgreementRateRebateBpsIsMissed() {
-        var emptyRate = new RateDto(new RebateRateDto(), new FeeRateDto());
+        var emptyRate = new Rate(1L, new RebateRate(), new FeeRate());
         agreement.getTrade().setRate(emptyRate);
 
         verifyReconciliationFailure();
@@ -667,7 +667,7 @@ class AgreementReconcileServiceTest {
     @Order(56)
     @DisplayName("Throw exception if trade agreement party gleifLei is missed")
     void reconcile_shouldThrowException_whenTradeAgreementGleifLeiIsMissed() {
-        TransactingPartyDto party = agreement.getTrade().getTransactingParties().get(0);
+        TransactingParty party = agreement.getTrade().getTransactingParties().get(0);
         party.getParty().setGleifLei(null);
         agreement.getTrade().setTransactingParties(List.of(party));
 
@@ -678,7 +678,7 @@ class AgreementReconcileServiceTest {
     @Order(57)
     @DisplayName("Should reconcile if trade agreement internal party id is missed")
     void reconcile_shouldSuccess_whenTradeAgreementInternalPartyIdIsMissed() throws Exception {
-        TransactingPartyDto party = agreement.getTrade().getTransactingParties().get(0);
+        TransactingParty party = agreement.getTrade().getTransactingParties().get(0);
         party.getParty().setInternalPartyId(null);
 
         service.reconcile(agreement, position);
@@ -736,7 +736,7 @@ class AgreementReconcileServiceTest {
     @DisplayName("Should throw exception if position.securityDetailDTO.priceFactor is 1 and "
         + "trade.instrument.price.unit is not SHARE")
     void reconcile_shouldThrowException_whenPriceFactorIsNotShare() {
-        agreement.getTrade().getInstrument().setPrice(new PriceDto(PriceUnit.LOT));
+        agreement.getTrade().getInstrument().setPrice(new Price(PriceUnit.LOT));
         position.getSecurityDetailDto().setPriceFactor(1);
 
         verifyReconciliationFailure();
@@ -747,7 +747,7 @@ class AgreementReconcileServiceTest {
     @DisplayName("Should throw exception if position.securityDetailDTO.priceFactor is 2 and "
         + "trade.instrument.price.unit is not LOT")
     void reconcile_shouldThrowException_whenPriceFactorIsNotLot() {
-        agreement.getTrade().getInstrument().setPrice(new PriceDto(PriceUnit.SHARE));
+        agreement.getTrade().getInstrument().setPrice(new Price(PriceUnit.SHARE));
         position.getSecurityDetailDto().setPriceFactor(2);
 
         verifyReconciliationFailure();
@@ -814,7 +814,7 @@ class AgreementReconcileServiceTest {
     @Order(70)
     @DisplayName("Throw exception if trade.rate.rebate.floating.spread is not matched with position.indexDTO.spread")
     void reconcile_shouldThrowException_whenRateRebateFloatingSpreadIsNotMatched() {
-        var floating = FloatingRateDto.builder().spread(1.0d).build();
+        var floating = FloatingRate.builder().spread(1.0d).build();
         agreement.getTrade().getRate().getRebate().setFixed(null);
         agreement.getTrade().getRate().getRebate().setFloating(floating);
         position.setIndexDto(new IndexDto("testName", 2.0d));
@@ -826,7 +826,7 @@ class AgreementReconcileServiceTest {
     @Order(71)
     @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
     void reconcile_shouldReconcile_whenRateRebateFloatingSpreadIsMatched() throws Exception {
-        var floating = FloatingRateDto.builder()
+        var floating = FloatingRate.builder()
             .spread(1.0d)
             .effectiveRate(10.2d) // must match with positionDto test data position.rate
             .build();
@@ -841,7 +841,7 @@ class AgreementReconcileServiceTest {
     @Order(72)
     @DisplayName("Throw exception if trade.rate.rebate doesn't have fixed or floating objects")
     void reconcile_shouldThrowException_whenRateRebateFixedAndFloatingMissed() {
-        agreement.getTrade().getRate().setRebate(new RebateRateDto());
+        agreement.getTrade().getRate().setRebate(new RebateRate());
 
         verifyReconciliationFailure();
     }
@@ -850,7 +850,7 @@ class AgreementReconcileServiceTest {
     @Order(73)
     @DisplayName("Throw exception if trade.rate.rebate.floating.effectiveRate is missed for Floating object")
     void reconcile_shouldThrowException_whenRateRebateFloatingEffectiveRateIsMissed() {
-        var floating = FloatingRateDto.builder().effectiveRate(null).build();
+        var floating = FloatingRate.builder().effectiveRate(null).build();
         agreement.getTrade().getRate().getRebate().setFixed(null);
         agreement.getTrade().getRate().getRebate().setFloating(floating);
 
@@ -862,7 +862,7 @@ class AgreementReconcileServiceTest {
     @DisplayName("Throw exception if trade.rate.rebate.fixed.baseRate is missed for Fixed object")
     void reconcile_shouldThrowException_whenRateRebateFixedBaseRateIsMissed() {
         agreement.getTrade().getRate().getRebate().setFloating(null);
-        agreement.getTrade().getRate().getRebate().setFixed(new FixedRateDto());
+        agreement.getTrade().getRate().getRebate().setFixed(new FixedRate());
 
         verifyReconciliationFailure();
     }

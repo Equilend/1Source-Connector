@@ -9,12 +9,10 @@ import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Builder
 @NoArgsConstructor
@@ -33,4 +31,8 @@ public class FixedRate {
     private LocalDate effectiveDate;
     @Column(name = "cutoff_time")
     private String cutoffTime;
+
+    public FixedRate(Double baseRate) {
+        this.baseRate = baseRate;
+    }
 }

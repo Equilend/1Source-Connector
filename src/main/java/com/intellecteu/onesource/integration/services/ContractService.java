@@ -64,10 +64,21 @@ public class ContractService {
             Collectors.toList());
     }
 
+    public List<Contract> findAllNotProcessed() {
+        List<ContractEntity> notProcessedEntities = contractRepository.findAllNotProcessed();
+        return notProcessedEntities.stream()
+            .map(oneSourceMapper::toModel)
+            .toList();
+    }
+
+    public Optional<Contract> findContractById(String contractId) {
+        return contractRepository.findByContractId(contractId).map(oneSourceMapper::toModel);
+    }
+
     public Contract markContractAsMatched(Contract contract, String positionId) {
         contract.setMatchingSpirePositionId(positionId);
         contract.setProcessingStatus(MATCHED_POSITION);
-        contract.setLastUpdateDatetime(LocalDateTime.now());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
             contract.getMatchingSpirePositionId());
         return save(contract);
