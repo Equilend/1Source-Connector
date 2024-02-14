@@ -39,7 +39,7 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          jwk-set-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}/protocol/openid-connect/certs
       client:
         registration:
           keycloak:

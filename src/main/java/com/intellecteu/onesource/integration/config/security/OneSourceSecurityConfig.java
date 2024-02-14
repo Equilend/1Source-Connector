@@ -23,12 +23,15 @@ public class OneSourceSecurityConfig {
     }
 
     @Bean
-    @Profile("!local")
+    @Profile("!local & !test")
     public SecurityFilterChain resourceServerFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth ->
             auth
                 .anyRequest()
                 .authenticated());
+
+        http.csrf(Customizer.withDefaults());
+        http.cors(Customizer.withDefaults());
 
         http.oauth2ResourceServer((oauth2) -> oauth2
             .jwt(Customizer.withDefaults()));
@@ -36,12 +39,15 @@ public class OneSourceSecurityConfig {
     }
 
     @Bean
-    @Profile("local")
+    @Profile({"local", "test"})
     public SecurityFilterChain resourceServerFilterChainLocal(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth ->
             auth
                 .anyRequest()
                 .permitAll());
+
+        http.csrf(Customizer.withDefaults());
+        http.cors(Customizer.withDefaults());
 
         http.oauth2ResourceServer((oauth2) -> oauth2
             .jwt(Customizer.withDefaults()));
