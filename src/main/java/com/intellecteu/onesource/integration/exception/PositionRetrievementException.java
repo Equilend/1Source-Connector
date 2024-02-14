@@ -13,4 +13,8 @@ public class PositionRetrievementException extends RuntimeException {
         super(message);
     }
 
+    public PositionRetrievementException(Throwable throwable) {
+        super(throwable);
+    }
+
 }

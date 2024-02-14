@@ -1,56 +1,84 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
 
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.enums.RecordType;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.ContractStatus;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import javax.transaction.Transactional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
+@Transactional(readOnly = true)
 public class ContractService {
 
     private final ContractRepository contractRepository;
     private final CloudEventRecordService cloudEventRecordService;
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
-    public ContractService(ContractRepository contractRepository, CloudEventRecordService cloudEventRecordService) {
+    public ContractService(ContractRepository contractRepository, CloudEventRecordService cloudEventRecordService,
+        OneSourceMapper oneSourceMapper) {
         this.contractRepository = contractRepository;
         this.cloudEventRecordService = cloudEventRecordService;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     @Transactional
     public Contract save(Contract contract) {
-        return contractRepository.save(contract);
+        log.debug("Trying to save contract with id: {}", contract.getContractId());
+        final ContractEntity contractEntity = oneSourceMapper.toEntity(contract);
+        ContractEntity savedEntity = contractRepository.save(contractEntity);
+        return oneSourceMapper.toModel(savedEntity);
     }
 
     public Optional<Contract> findByVenueRefId(String venueRefId) {
-        return contractRepository.findByVenueRefId(venueRefId).stream().findFirst();
+        return contractRepository.findByVenueRefId(venueRefId).stream().findFirst().map(oneSourceMapper::toModel);
+    }
+
+    public Optional<Contract> findByPositionId(String positionId) {
+        return contractRepository.findByMatchingSpirePositionId(positionId).stream().findFirst()
+            .map(oneSourceMapper::toModel);
     }
 
     public List<Contract> findAllByContractId(String contractId) {
-        return contractRepository.findAllByContractId(contractId);
+        return contractRepository.findAllByContractId(contractId).stream().map(oneSourceMapper::toModel).collect(
+            Collectors.toList());
     }
 
     public List<Contract> findAllByContractStatus(ContractStatus status) {
-        return contractRepository.findAllByContractStatus(status);
+        return contractRepository.findAllByContractStatus(status).stream().map(oneSourceMapper::toModel).collect(
+            Collectors.toList());
+    }
+
+    public List<Contract> findAllNotProcessed() {
+        List<ContractEntity> notProcessedEntities = contractRepository.findAllNotProcessed();
+        return notProcessedEntities.stream()
+            .map(oneSourceMapper::toModel)
+            .toList();
+    }
+
+    public Optional<Contract> findContractById(String contractId) {
+        return contractRepository.findByContractId(contractId).map(oneSourceMapper::toModel);
     }
 
     public Contract markContractAsMatched(Contract contract, String positionId) {
         contract.setMatchingSpirePositionId(positionId);
         contract.setProcessingStatus(MATCHED_POSITION);
-        contract.setLastUpdateDatetime(LocalDateTime.now());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
             contract.getMatchingSpirePositionId());
         return save(contract);

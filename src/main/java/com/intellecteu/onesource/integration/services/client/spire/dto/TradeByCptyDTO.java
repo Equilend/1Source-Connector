@@ -21,252 +21,262 @@ import java.util.Objects;
 /**
  * TradeByCptyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TradeByCptyDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("avgRate")
-  private Double avgRate = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("counterparty")
-  private String counterparty = null;
+    @JsonProperty("avgRate")
+    private Double avgRate = null;
 
-  @JsonProperty("loanStatus")
-  private String loanStatus = null;
+    @JsonProperty("counterparty")
+    private String counterparty = null;
 
-  @JsonProperty("totalActivityLoss")
-  private Double totalActivityLoss = null;
+    @JsonProperty("loanStatus")
+    private String loanStatus = null;
 
-  @JsonProperty("totalActivityPAndL")
-  private Double totalActivityPAndL = null;
+    @JsonProperty("totalActivityLoss")
+    private Double totalActivityLoss = null;
 
-  @JsonProperty("totalActivityProfit")
-  private Double totalActivityProfit = null;
+    @JsonProperty("totalActivityPAndL")
+    private Double totalActivityPAndL = null;
 
-  @JsonProperty("totalAmount")
-  private Double totalAmount = null;
+    @JsonProperty("totalActivityProfit")
+    private Double totalActivityProfit = null;
 
-  @JsonProperty("tradeType")
-  private String tradeType = null;
+    @JsonProperty("totalAmount")
+    private Double totalAmount = null;
 
-  public TradeByCptyDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("tradeType")
+    private String tradeType = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TradeByCptyDTO avgRate(Double avgRate) {
-    this.avgRate = avgRate;
-    return this;
-  }
-
-   /**
-   * Get avgRate
-   * @return avgRate
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAvgRate() {
-    return avgRate;
-  }
-
-  public void setAvgRate(Double avgRate) {
-    this.avgRate = avgRate;
-  }
-
-  public TradeByCptyDTO counterparty(String counterparty) {
-    this.counterparty = counterparty;
-    return this;
-  }
-
-   /**
-   * Get counterparty
-   * @return counterparty
-  **/
-  @ApiModelProperty(value = "")
-  public String getCounterparty() {
-    return counterparty;
-  }
-
-  public void setCounterparty(String counterparty) {
-    this.counterparty = counterparty;
-  }
-
-  public TradeByCptyDTO loanStatus(String loanStatus) {
-    this.loanStatus = loanStatus;
-    return this;
-  }
-
-   /**
-   * Get loanStatus
-   * @return loanStatus
-  **/
-  @ApiModelProperty(value = "")
-  public String getLoanStatus() {
-    return loanStatus;
-  }
-
-  public void setLoanStatus(String loanStatus) {
-    this.loanStatus = loanStatus;
-  }
-
-  public TradeByCptyDTO totalActivityLoss(Double totalActivityLoss) {
-    this.totalActivityLoss = totalActivityLoss;
-    return this;
-  }
-
-   /**
-   * Get totalActivityLoss
-   * @return totalActivityLoss
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalActivityLoss() {
-    return totalActivityLoss;
-  }
-
-  public void setTotalActivityLoss(Double totalActivityLoss) {
-    this.totalActivityLoss = totalActivityLoss;
-  }
-
-  public TradeByCptyDTO totalActivityPAndL(Double totalActivityPAndL) {
-    this.totalActivityPAndL = totalActivityPAndL;
-    return this;
-  }
-
-   /**
-   * Get totalActivityPAndL
-   * @return totalActivityPAndL
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalActivityPAndL() {
-    return totalActivityPAndL;
-  }
-
-  public void setTotalActivityPAndL(Double totalActivityPAndL) {
-    this.totalActivityPAndL = totalActivityPAndL;
-  }
-
-  public TradeByCptyDTO totalActivityProfit(Double totalActivityProfit) {
-    this.totalActivityProfit = totalActivityProfit;
-    return this;
-  }
-
-   /**
-   * Get totalActivityProfit
-   * @return totalActivityProfit
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalActivityProfit() {
-    return totalActivityProfit;
-  }
-
-  public void setTotalActivityProfit(Double totalActivityProfit) {
-    this.totalActivityProfit = totalActivityProfit;
-  }
-
-  public TradeByCptyDTO totalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-    return this;
-  }
-
-   /**
-   * Get totalAmount
-   * @return totalAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getTotalAmount() {
-    return totalAmount;
-  }
-
-  public void setTotalAmount(Double totalAmount) {
-    this.totalAmount = totalAmount;
-  }
-
-  public TradeByCptyDTO tradeType(String tradeType) {
-    this.tradeType = tradeType;
-    return this;
-  }
-
-   /**
-   * Get tradeType
-   * @return tradeType
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradeType() {
-    return tradeType;
-  }
-
-  public void setTradeType(String tradeType) {
-    this.tradeType = tradeType;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TradeByCptyDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    TradeByCptyDTO tradeByCptyDTO = (TradeByCptyDTO) o;
-    return Objects.equals(this.qualifiedName, tradeByCptyDTO.qualifiedName) &&
-        Objects.equals(this.avgRate, tradeByCptyDTO.avgRate) &&
-        Objects.equals(this.counterparty, tradeByCptyDTO.counterparty) &&
-        Objects.equals(this.loanStatus, tradeByCptyDTO.loanStatus) &&
-        Objects.equals(this.totalActivityLoss, tradeByCptyDTO.totalActivityLoss) &&
-        Objects.equals(this.totalActivityPAndL, tradeByCptyDTO.totalActivityPAndL) &&
-        Objects.equals(this.totalActivityProfit, tradeByCptyDTO.totalActivityProfit) &&
-        Objects.equals(this.totalAmount, tradeByCptyDTO.totalAmount) &&
-        Objects.equals(this.tradeType, tradeByCptyDTO.tradeType);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, avgRate, counterparty, loanStatus, totalActivityLoss, totalActivityPAndL, totalActivityProfit, totalAmount, tradeType);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TradeByCptyDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
-    sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
-    sb.append("    loanStatus: ").append(toIndentedString(loanStatus)).append("\n");
-    sb.append("    totalActivityLoss: ").append(toIndentedString(totalActivityLoss)).append("\n");
-    sb.append("    totalActivityPAndL: ").append(toIndentedString(totalActivityPAndL)).append("\n");
-    sb.append("    totalActivityProfit: ").append(toIndentedString(totalActivityProfit)).append("\n");
-    sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
-    sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TradeByCptyDTO avgRate(Double avgRate) {
+        this.avgRate = avgRate;
+        return this;
+    }
+
+    /**
+     * Get avgRate
+     *
+     * @return avgRate
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAvgRate() {
+        return avgRate;
+    }
+
+    public void setAvgRate(Double avgRate) {
+        this.avgRate = avgRate;
+    }
+
+    public TradeByCptyDTO counterparty(String counterparty) {
+        this.counterparty = counterparty;
+        return this;
+    }
+
+    /**
+     * Get counterparty
+     *
+     * @return counterparty
+     **/
+    @ApiModelProperty(value = "")
+    public String getCounterparty() {
+        return counterparty;
+    }
+
+    public void setCounterparty(String counterparty) {
+        this.counterparty = counterparty;
+    }
+
+    public TradeByCptyDTO loanStatus(String loanStatus) {
+        this.loanStatus = loanStatus;
+        return this;
+    }
+
+    /**
+     * Get loanStatus
+     *
+     * @return loanStatus
+     **/
+    @ApiModelProperty(value = "")
+    public String getLoanStatus() {
+        return loanStatus;
+    }
+
+    public void setLoanStatus(String loanStatus) {
+        this.loanStatus = loanStatus;
+    }
+
+    public TradeByCptyDTO totalActivityLoss(Double totalActivityLoss) {
+        this.totalActivityLoss = totalActivityLoss;
+        return this;
+    }
+
+    /**
+     * Get totalActivityLoss
+     *
+     * @return totalActivityLoss
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalActivityLoss() {
+        return totalActivityLoss;
+    }
+
+    public void setTotalActivityLoss(Double totalActivityLoss) {
+        this.totalActivityLoss = totalActivityLoss;
+    }
+
+    public TradeByCptyDTO totalActivityPAndL(Double totalActivityPAndL) {
+        this.totalActivityPAndL = totalActivityPAndL;
+        return this;
+    }
+
+    /**
+     * Get totalActivityPAndL
+     *
+     * @return totalActivityPAndL
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalActivityPAndL() {
+        return totalActivityPAndL;
+    }
+
+    public void setTotalActivityPAndL(Double totalActivityPAndL) {
+        this.totalActivityPAndL = totalActivityPAndL;
+    }
+
+    public TradeByCptyDTO totalActivityProfit(Double totalActivityProfit) {
+        this.totalActivityProfit = totalActivityProfit;
+        return this;
+    }
+
+    /**
+     * Get totalActivityProfit
+     *
+     * @return totalActivityProfit
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalActivityProfit() {
+        return totalActivityProfit;
+    }
+
+    public void setTotalActivityProfit(Double totalActivityProfit) {
+        this.totalActivityProfit = totalActivityProfit;
+    }
+
+    public TradeByCptyDTO totalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+        return this;
+    }
+
+    /**
+     * Get totalAmount
+     *
+     * @return totalAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(Double totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+    public TradeByCptyDTO tradeType(String tradeType) {
+        this.tradeType = tradeType;
+        return this;
+    }
+
+    /**
+     * Get tradeType
+     *
+     * @return tradeType
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(String tradeType) {
+        this.tradeType = tradeType;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TradeByCptyDTO tradeByCptyDTO = (TradeByCptyDTO) o;
+        return Objects.equals(this.qualifiedName, tradeByCptyDTO.qualifiedName) &&
+            Objects.equals(this.avgRate, tradeByCptyDTO.avgRate) &&
+            Objects.equals(this.counterparty, tradeByCptyDTO.counterparty) &&
+            Objects.equals(this.loanStatus, tradeByCptyDTO.loanStatus) &&
+            Objects.equals(this.totalActivityLoss, tradeByCptyDTO.totalActivityLoss) &&
+            Objects.equals(this.totalActivityPAndL, tradeByCptyDTO.totalActivityPAndL) &&
+            Objects.equals(this.totalActivityProfit, tradeByCptyDTO.totalActivityProfit) &&
+            Objects.equals(this.totalAmount, tradeByCptyDTO.totalAmount) &&
+            Objects.equals(this.tradeType, tradeByCptyDTO.tradeType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, avgRate, counterparty, loanStatus, totalActivityLoss, totalActivityPAndL,
+            totalActivityProfit, totalAmount, tradeType);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TradeByCptyDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    avgRate: ").append(toIndentedString(avgRate)).append("\n");
+        sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
+        sb.append("    loanStatus: ").append(toIndentedString(loanStatus)).append("\n");
+        sb.append("    totalActivityLoss: ").append(toIndentedString(totalActivityLoss)).append("\n");
+        sb.append("    totalActivityPAndL: ").append(toIndentedString(totalActivityPAndL)).append("\n");
+        sb.append("    totalActivityProfit: ").append(toIndentedString(totalActivityProfit)).append("\n");
+        sb.append("    totalAmount: ").append(toIndentedString(totalAmount)).append("\n");
+        sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

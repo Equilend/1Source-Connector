@@ -21,160 +21,165 @@ import java.util.Objects;
 /**
  * SecurityIdentifierDetailDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SecurityIdentifierDetailDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("primary")
-  private Boolean primary = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("secIdentifier")
-  private String secIdentifier = null;
+    @JsonProperty("primary")
+    private Boolean primary = null;
 
-  @JsonProperty("secIdentifierType")
-  private String secIdentifierType = null;
+    @JsonProperty("secIdentifier")
+    private String secIdentifier = null;
 
-  @JsonProperty("secIdentifierTypeId")
-  private Integer secIdentifierTypeId = null;
+    @JsonProperty("secIdentifierType")
+    private String secIdentifierType = null;
 
-  public SecurityIdentifierDetailDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("secIdentifierTypeId")
+    private Integer secIdentifierTypeId = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public SecurityIdentifierDetailDTO primary(Boolean primary) {
-    this.primary = primary;
-    return this;
-  }
-
-   /**
-   * Get primary
-   * @return primary
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isPrimary() {
-    return primary;
-  }
-
-  public void setPrimary(Boolean primary) {
-    this.primary = primary;
-  }
-
-  public SecurityIdentifierDetailDTO secIdentifier(String secIdentifier) {
-    this.secIdentifier = secIdentifier;
-    return this;
-  }
-
-   /**
-   * Get secIdentifier
-   * @return secIdentifier
-  **/
-  @ApiModelProperty(value = "")
-  public String getSecIdentifier() {
-    return secIdentifier;
-  }
-
-  public void setSecIdentifier(String secIdentifier) {
-    this.secIdentifier = secIdentifier;
-  }
-
-  public SecurityIdentifierDetailDTO secIdentifierType(String secIdentifierType) {
-    this.secIdentifierType = secIdentifierType;
-    return this;
-  }
-
-   /**
-   * Get secIdentifierType
-   * @return secIdentifierType
-  **/
-  @ApiModelProperty(value = "")
-  public String getSecIdentifierType() {
-    return secIdentifierType;
-  }
-
-  public void setSecIdentifierType(String secIdentifierType) {
-    this.secIdentifierType = secIdentifierType;
-  }
-
-  public SecurityIdentifierDetailDTO secIdentifierTypeId(Integer secIdentifierTypeId) {
-    this.secIdentifierTypeId = secIdentifierTypeId;
-    return this;
-  }
-
-   /**
-   * Get secIdentifierTypeId
-   * @return secIdentifierTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getSecIdentifierTypeId() {
-    return secIdentifierTypeId;
-  }
-
-  public void setSecIdentifierTypeId(Integer secIdentifierTypeId) {
-    this.secIdentifierTypeId = secIdentifierTypeId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public SecurityIdentifierDetailDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    SecurityIdentifierDetailDTO securityIdentifierDetailDTO = (SecurityIdentifierDetailDTO) o;
-    return Objects.equals(this.qualifiedName, securityIdentifierDetailDTO.qualifiedName) &&
-        Objects.equals(this.primary, securityIdentifierDetailDTO.primary) &&
-        Objects.equals(this.secIdentifier, securityIdentifierDetailDTO.secIdentifier) &&
-        Objects.equals(this.secIdentifierType, securityIdentifierDetailDTO.secIdentifierType) &&
-        Objects.equals(this.secIdentifierTypeId, securityIdentifierDetailDTO.secIdentifierTypeId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, primary, secIdentifier, secIdentifierType, secIdentifierTypeId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SecurityIdentifierDetailDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    primary: ").append(toIndentedString(primary)).append("\n");
-    sb.append("    secIdentifier: ").append(toIndentedString(secIdentifier)).append("\n");
-    sb.append("    secIdentifierType: ").append(toIndentedString(secIdentifierType)).append("\n");
-    sb.append("    secIdentifierTypeId: ").append(toIndentedString(secIdentifierTypeId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public SecurityIdentifierDetailDTO primary(Boolean primary) {
+        this.primary = primary;
+        return this;
+    }
+
+    /**
+     * Get primary
+     *
+     * @return primary
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isPrimary() {
+        return primary;
+    }
+
+    public void setPrimary(Boolean primary) {
+        this.primary = primary;
+    }
+
+    public SecurityIdentifierDetailDTO secIdentifier(String secIdentifier) {
+        this.secIdentifier = secIdentifier;
+        return this;
+    }
+
+    /**
+     * Get secIdentifier
+     *
+     * @return secIdentifier
+     **/
+    @ApiModelProperty(value = "")
+    public String getSecIdentifier() {
+        return secIdentifier;
+    }
+
+    public void setSecIdentifier(String secIdentifier) {
+        this.secIdentifier = secIdentifier;
+    }
+
+    public SecurityIdentifierDetailDTO secIdentifierType(String secIdentifierType) {
+        this.secIdentifierType = secIdentifierType;
+        return this;
+    }
+
+    /**
+     * Get secIdentifierType
+     *
+     * @return secIdentifierType
+     **/
+    @ApiModelProperty(value = "")
+    public String getSecIdentifierType() {
+        return secIdentifierType;
+    }
+
+    public void setSecIdentifierType(String secIdentifierType) {
+        this.secIdentifierType = secIdentifierType;
+    }
+
+    public SecurityIdentifierDetailDTO secIdentifierTypeId(Integer secIdentifierTypeId) {
+        this.secIdentifierTypeId = secIdentifierTypeId;
+        return this;
+    }
+
+    /**
+     * Get secIdentifierTypeId
+     *
+     * @return secIdentifierTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getSecIdentifierTypeId() {
+        return secIdentifierTypeId;
+    }
+
+    public void setSecIdentifierTypeId(Integer secIdentifierTypeId) {
+        this.secIdentifierTypeId = secIdentifierTypeId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecurityIdentifierDetailDTO securityIdentifierDetailDTO = (SecurityIdentifierDetailDTO) o;
+        return Objects.equals(this.qualifiedName, securityIdentifierDetailDTO.qualifiedName) &&
+            Objects.equals(this.primary, securityIdentifierDetailDTO.primary) &&
+            Objects.equals(this.secIdentifier, securityIdentifierDetailDTO.secIdentifier) &&
+            Objects.equals(this.secIdentifierType, securityIdentifierDetailDTO.secIdentifierType) &&
+            Objects.equals(this.secIdentifierTypeId, securityIdentifierDetailDTO.secIdentifierTypeId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, primary, secIdentifier, secIdentifierType, secIdentifierTypeId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SecurityIdentifierDetailDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    primary: ").append(toIndentedString(primary)).append("\n");
+        sb.append("    secIdentifier: ").append(toIndentedString(secIdentifier)).append("\n");
+        sb.append("    secIdentifierType: ").append(toIndentedString(secIdentifierType)).append("\n");
+        sb.append("    secIdentifierTypeId: ").append(toIndentedString(secIdentifierTypeId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

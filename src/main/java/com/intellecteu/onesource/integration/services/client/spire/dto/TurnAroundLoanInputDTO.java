@@ -24,1219 +24,1281 @@ import java.util.Objects;
 /**
  * TurnAroundLoanInputDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TurnAroundLoanInputDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("accrualAmount")
-  private Double accrualAmount = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("accrualTypeId")
-  private Integer accrualTypeId = null;
+    @JsonProperty("accrualAmount")
+    private Double accrualAmount = null;
 
-  @JsonProperty("action")
-  private String action = null;
+    @JsonProperty("accrualTypeId")
+    private Integer accrualTypeId = null;
 
-  @JsonProperty("allowTradeForNoCurrDaySecPrice")
-  private Boolean allowTradeForNoCurrDaySecPrice = null;
+    @JsonProperty("action")
+    private String action = null;
 
-  @JsonProperty("asOfEndDate")
-  private LocalDateTime asOfEndDate = null;
+    @JsonProperty("allowTradeForNoCurrDaySecPrice")
+    private Boolean allowTradeForNoCurrDaySecPrice = null;
 
-  @JsonProperty("asOfStartDate")
-  private LocalDateTime asOfStartDate = null;
+    @JsonProperty("asOfEndDate")
+    private LocalDateTime asOfEndDate = null;
 
-  @JsonProperty("autoRecall")
-  private Boolean autoRecall = null;
+    @JsonProperty("asOfStartDate")
+    private LocalDateTime asOfStartDate = null;
 
-  @JsonProperty("autoReturn")
-  private Boolean autoReturn = null;
+    @JsonProperty("autoRecall")
+    private Boolean autoRecall = null;
 
-  @JsonProperty("byPassLimits")
-  private Boolean byPassLimits = null;
+    @JsonProperty("autoReturn")
+    private Boolean autoReturn = null;
 
-  @JsonProperty("bypassRTI")
-  private Boolean bypassRTI = null;
+    @JsonProperty("byPassLimits")
+    private Boolean byPassLimits = null;
 
-  @JsonProperty("cancelFail")
-  private String cancelFail = null;
+    @JsonProperty("bypassRTI")
+    private Boolean bypassRTI = null;
 
-  @JsonProperty("cancelMarks")
-  private Boolean cancelMarks = null;
+    @JsonProperty("cancelFail")
+    private String cancelFail = null;
 
-  @JsonProperty("chainedTradeDTO")
-  private List<TradeDTO> chainedTradeDTO = null;
+    @JsonProperty("cancelMarks")
+    private Boolean cancelMarks = null;
 
-  @JsonProperty("checkCompliance")
-  private Boolean checkCompliance = null;
+    @JsonProperty("chainedTradeDTO")
+    private List<TradeDTO> chainedTradeDTO = null;
 
-  @JsonProperty("checkInventory")
-  private Boolean checkInventory = null;
+    @JsonProperty("checkCompliance")
+    private Boolean checkCompliance = null;
 
-  @JsonProperty("checkLimits")
-  private Boolean checkLimits = null;
+    @JsonProperty("checkInventory")
+    private Boolean checkInventory = null;
 
-  @JsonProperty("copyRestrictions")
-  private Boolean copyRestrictions = null;
+    @JsonProperty("checkLimits")
+    private Boolean checkLimits = null;
 
-  @JsonProperty("createTerminationTrade")
-  private Boolean createTerminationTrade = null;
+    @JsonProperty("copyRestrictions")
+    private Boolean copyRestrictions = null;
 
-  @JsonProperty("doNotCancelLinked")
-  private Boolean doNotCancelLinked = null;
+    @JsonProperty("createTerminationTrade")
+    private Boolean createTerminationTrade = null;
 
-  @JsonProperty("doNotPost")
-  private Boolean doNotPost = null;
+    @JsonProperty("doNotCancelLinked")
+    private Boolean doNotCancelLinked = null;
 
-  @JsonProperty("doNotRecall")
-  private Boolean doNotRecall = null;
+    @JsonProperty("doNotPost")
+    private Boolean doNotPost = null;
 
-  @JsonProperty("endDate")
-  private LocalDateTime endDate = null;
+    @JsonProperty("doNotRecall")
+    private Boolean doNotRecall = null;
 
-  @JsonProperty("errorMessage")
-  private String errorMessage = null;
+    @JsonProperty("endDate")
+    private LocalDateTime endDate = null;
 
-  @JsonProperty("eventList")
-  private List<TradeEvent> eventList = null;
+    @JsonProperty("errorMessage")
+    private String errorMessage = null;
 
-  @JsonProperty("groupedPositionRef")
-  private String groupedPositionRef = null;
+    @JsonProperty("eventList")
+    private List<TradeEvent> eventList = null;
 
-  @JsonProperty("includeCouponInterest")
-  private Boolean includeCouponInterest = null;
+    @JsonProperty("groupedPositionRef")
+    private String groupedPositionRef = null;
 
-  @JsonProperty("msgId")
-  private Long msgId = null;
+    @JsonProperty("includeCouponInterest")
+    private Boolean includeCouponInterest = null;
 
-  @JsonProperty("newLoanTradeInput")
-  private LoanTradeInputDTO newLoanTradeInput = null;
+    @JsonProperty("msgId")
+    private Long msgId = null;
 
-  @JsonProperty("oldLoanTradeInput")
-  private LoanTradeInputDTO oldLoanTradeInput = null;
+    @JsonProperty("newLoanTradeInput")
+    private LoanTradeInputDTO newLoanTradeInput = null;
 
-  @JsonProperty("orderId")
-  private Long orderId = null;
+    @JsonProperty("oldLoanTradeInput")
+    private LoanTradeInputDTO oldLoanTradeInput = null;
 
-  @JsonProperty("originalTrade")
-  private TradeDTO originalTrade = null;
+    @JsonProperty("orderId")
+    private Long orderId = null;
 
-  @JsonProperty("position")
-  private PositionDTO position = null;
+    @JsonProperty("originalTrade")
+    private TradeDTO originalTrade = null;
 
-  @JsonProperty("positionLimitUsed")
-  private List<PositionlimitusedDTO> positionLimitUsed = null;
-
-  @JsonProperty("postOrSettle")
-  private Boolean postOrSettle = null;
+    @JsonProperty("position")
+    private PositionDTO position = null;
 
-  @JsonProperty("preTradeId")
-  private Long preTradeId = null;
-
-  @JsonProperty("skipAldCheck")
-  private Boolean skipAldCheck = null;
-
-  @JsonProperty("skipInventoryCheckAndUpdate")
-  private Boolean skipInventoryCheckAndUpdate = null;
-
-  @JsonProperty("skipLimitCheckAndUpdate")
-  private Boolean skipLimitCheckAndUpdate = null;
-
-  @JsonProperty("skipMinSpreadCheck")
-  private Boolean skipMinSpreadCheck = null;
-
-  @JsonProperty("skipSecChillCheck")
-  private Boolean skipSecChillCheck = null;
-
-  @JsonProperty("source")
-  private String source = null;
-
-  @JsonProperty("startDate")
-  private LocalDateTime startDate = null;
-
-  @JsonProperty("system")
-  private String system = null;
-
-  @JsonProperty("systemId")
-  private Integer systemId = null;
-
-  @JsonProperty("trade")
-  private TradeDTO trade = null;
-
-  @JsonProperty("tradeRefNo")
-  private String tradeRefNo = null;
-
-  @JsonProperty("updateInventory")
-  private Boolean updateInventory = null;
-
-  @JsonProperty("userId")
-  private Integer userId = null;
-
-  @JsonProperty("userName")
-  private String userName = null;
-
-  public TurnAroundLoanInputDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
-
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TurnAroundLoanInputDTO accrualAmount(Double accrualAmount) {
-    this.accrualAmount = accrualAmount;
-    return this;
-  }
-
-   /**
-   * Get accrualAmount
-   * @return accrualAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAccrualAmount() {
-    return accrualAmount;
-  }
-
-  public void setAccrualAmount(Double accrualAmount) {
-    this.accrualAmount = accrualAmount;
-  }
-
-  public TurnAroundLoanInputDTO accrualTypeId(Integer accrualTypeId) {
-    this.accrualTypeId = accrualTypeId;
-    return this;
-  }
-
-   /**
-   * Get accrualTypeId
-   * @return accrualTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getAccrualTypeId() {
-    return accrualTypeId;
-  }
-
-  public void setAccrualTypeId(Integer accrualTypeId) {
-    this.accrualTypeId = accrualTypeId;
-  }
-
-  public TurnAroundLoanInputDTO action(String action) {
-    this.action = action;
-    return this;
-  }
-
-   /**
-   * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan, &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold, &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold, &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold Qty, &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
-   * @return action
-  **/
-  @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty")
-  public String getAction() {
-    return action;
-  }
-
-  public void setAction(String action) {
-    this.action = action;
-  }
-
-  public TurnAroundLoanInputDTO allowTradeForNoCurrDaySecPrice(Boolean allowTradeForNoCurrDaySecPrice) {
-    this.allowTradeForNoCurrDaySecPrice = allowTradeForNoCurrDaySecPrice;
-    return this;
-  }
-
-   /**
-   * Get allowTradeForNoCurrDaySecPrice
-   * @return allowTradeForNoCurrDaySecPrice
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAllowTradeForNoCurrDaySecPrice() {
-    return allowTradeForNoCurrDaySecPrice;
-  }
-
-  public void setAllowTradeForNoCurrDaySecPrice(Boolean allowTradeForNoCurrDaySecPrice) {
-    this.allowTradeForNoCurrDaySecPrice = allowTradeForNoCurrDaySecPrice;
-  }
-
-  public TurnAroundLoanInputDTO asOfEndDate(LocalDateTime asOfEndDate) {
-    this.asOfEndDate = asOfEndDate;
-    return this;
-  }
-
-   /**
-   * Get asOfEndDate
-   * @return asOfEndDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getAsOfEndDate() {
-    return asOfEndDate;
-  }
-
-  public void setAsOfEndDate(LocalDateTime asOfEndDate) {
-    this.asOfEndDate = asOfEndDate;
-  }
-
-  public TurnAroundLoanInputDTO asOfStartDate(LocalDateTime asOfStartDate) {
-    this.asOfStartDate = asOfStartDate;
-    return this;
-  }
-
-   /**
-   * Get asOfStartDate
-   * @return asOfStartDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getAsOfStartDate() {
-    return asOfStartDate;
-  }
-
-  public void setAsOfStartDate(LocalDateTime asOfStartDate) {
-    this.asOfStartDate = asOfStartDate;
-  }
-
-  public TurnAroundLoanInputDTO autoRecall(Boolean autoRecall) {
-    this.autoRecall = autoRecall;
-    return this;
-  }
-
-   /**
-   * Get autoRecall
-   * @return autoRecall
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAutoRecall() {
-    return autoRecall;
-  }
-
-  public void setAutoRecall(Boolean autoRecall) {
-    this.autoRecall = autoRecall;
-  }
-
-  public TurnAroundLoanInputDTO autoReturn(Boolean autoReturn) {
-    this.autoReturn = autoReturn;
-    return this;
-  }
-
-   /**
-   * Get autoReturn
-   * @return autoReturn
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isAutoReturn() {
-    return autoReturn;
-  }
-
-  public void setAutoReturn(Boolean autoReturn) {
-    this.autoReturn = autoReturn;
-  }
-
-  public TurnAroundLoanInputDTO byPassLimits(Boolean byPassLimits) {
-    this.byPassLimits = byPassLimits;
-    return this;
-  }
-
-   /**
-   * Get byPassLimits
-   * @return byPassLimits
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isByPassLimits() {
-    return byPassLimits;
-  }
-
-  public void setByPassLimits(Boolean byPassLimits) {
-    this.byPassLimits = byPassLimits;
-  }
-
-  public TurnAroundLoanInputDTO bypassRTI(Boolean bypassRTI) {
-    this.bypassRTI = bypassRTI;
-    return this;
-  }
-
-   /**
-   * Get bypassRTI
-   * @return bypassRTI
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isBypassRTI() {
-    return bypassRTI;
-  }
-
-  public void setBypassRTI(Boolean bypassRTI) {
-    this.bypassRTI = bypassRTI;
-  }
-
-  public TurnAroundLoanInputDTO cancelFail(String cancelFail) {
-    this.cancelFail = cancelFail;
-    return this;
-  }
-
-   /**
-   * Get cancelFail
-   * @return cancelFail
-  **/
-  @ApiModelProperty(value = "")
-  public String getCancelFail() {
-    return cancelFail;
-  }
-
-  public void setCancelFail(String cancelFail) {
-    this.cancelFail = cancelFail;
-  }
-
-  public TurnAroundLoanInputDTO cancelMarks(Boolean cancelMarks) {
-    this.cancelMarks = cancelMarks;
-    return this;
-  }
-
-   /**
-   * Get cancelMarks
-   * @return cancelMarks
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCancelMarks() {
-    return cancelMarks;
-  }
-
-  public void setCancelMarks(Boolean cancelMarks) {
-    this.cancelMarks = cancelMarks;
-  }
-
-  public TurnAroundLoanInputDTO chainedTradeDTO(List<TradeDTO> chainedTradeDTO) {
-    this.chainedTradeDTO = chainedTradeDTO;
-    return this;
-  }
-
-  public TurnAroundLoanInputDTO addChainedTradeDTOItem(TradeDTO chainedTradeDTOItem) {
-    if (this.chainedTradeDTO == null) {
-      this.chainedTradeDTO = new ArrayList<>();
+    @JsonProperty("positionLimitUsed")
+    private List<PositionlimitusedDTO> positionLimitUsed = null;
+
+    @JsonProperty("postOrSettle")
+    private Boolean postOrSettle = null;
+
+    @JsonProperty("preTradeId")
+    private Long preTradeId = null;
+
+    @JsonProperty("skipAldCheck")
+    private Boolean skipAldCheck = null;
+
+    @JsonProperty("skipInventoryCheckAndUpdate")
+    private Boolean skipInventoryCheckAndUpdate = null;
+
+    @JsonProperty("skipLimitCheckAndUpdate")
+    private Boolean skipLimitCheckAndUpdate = null;
+
+    @JsonProperty("skipMinSpreadCheck")
+    private Boolean skipMinSpreadCheck = null;
+
+    @JsonProperty("skipSecChillCheck")
+    private Boolean skipSecChillCheck = null;
+
+    @JsonProperty("source")
+    private String source = null;
+
+    @JsonProperty("startDate")
+    private LocalDateTime startDate = null;
+
+    @JsonProperty("system")
+    private String system = null;
+
+    @JsonProperty("systemId")
+    private Integer systemId = null;
+
+    @JsonProperty("trade")
+    private TradeDTO trade = null;
+
+    @JsonProperty("tradeRefNo")
+    private String tradeRefNo = null;
+
+    @JsonProperty("updateInventory")
+    private Boolean updateInventory = null;
+
+    @JsonProperty("userId")
+    private Integer userId = null;
+
+    @JsonProperty("userName")
+    private String userName = null;
+
+    public TurnAroundLoanInputDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.chainedTradeDTO.add(chainedTradeDTOItem);
-    return this;
-  }
 
-   /**
-   * Get chainedTradeDTO
-   * @return chainedTradeDTO
-  **/
-  @ApiModelProperty(value = "")
-  public List<TradeDTO> getChainedTradeDTO() {
-    return chainedTradeDTO;
-  }
-
-  public void setChainedTradeDTO(List<TradeDTO> chainedTradeDTO) {
-    this.chainedTradeDTO = chainedTradeDTO;
-  }
-
-  public TurnAroundLoanInputDTO checkCompliance(Boolean checkCompliance) {
-    this.checkCompliance = checkCompliance;
-    return this;
-  }
-
-   /**
-   * Get checkCompliance
-   * @return checkCompliance
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCheckCompliance() {
-    return checkCompliance;
-  }
-
-  public void setCheckCompliance(Boolean checkCompliance) {
-    this.checkCompliance = checkCompliance;
-  }
-
-  public TurnAroundLoanInputDTO checkInventory(Boolean checkInventory) {
-    this.checkInventory = checkInventory;
-    return this;
-  }
-
-   /**
-   * Get checkInventory
-   * @return checkInventory
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCheckInventory() {
-    return checkInventory;
-  }
-
-  public void setCheckInventory(Boolean checkInventory) {
-    this.checkInventory = checkInventory;
-  }
-
-  public TurnAroundLoanInputDTO checkLimits(Boolean checkLimits) {
-    this.checkLimits = checkLimits;
-    return this;
-  }
-
-   /**
-   * Get checkLimits
-   * @return checkLimits
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCheckLimits() {
-    return checkLimits;
-  }
-
-  public void setCheckLimits(Boolean checkLimits) {
-    this.checkLimits = checkLimits;
-  }
-
-  public TurnAroundLoanInputDTO copyRestrictions(Boolean copyRestrictions) {
-    this.copyRestrictions = copyRestrictions;
-    return this;
-  }
-
-   /**
-   * Get copyRestrictions
-   * @return copyRestrictions
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCopyRestrictions() {
-    return copyRestrictions;
-  }
-
-  public void setCopyRestrictions(Boolean copyRestrictions) {
-    this.copyRestrictions = copyRestrictions;
-  }
-
-  public TurnAroundLoanInputDTO createTerminationTrade(Boolean createTerminationTrade) {
-    this.createTerminationTrade = createTerminationTrade;
-    return this;
-  }
-
-   /**
-   * Get createTerminationTrade
-   * @return createTerminationTrade
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCreateTerminationTrade() {
-    return createTerminationTrade;
-  }
-
-  public void setCreateTerminationTrade(Boolean createTerminationTrade) {
-    this.createTerminationTrade = createTerminationTrade;
-  }
-
-  public TurnAroundLoanInputDTO doNotCancelLinked(Boolean doNotCancelLinked) {
-    this.doNotCancelLinked = doNotCancelLinked;
-    return this;
-  }
-
-   /**
-   * Get doNotCancelLinked
-   * @return doNotCancelLinked
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDoNotCancelLinked() {
-    return doNotCancelLinked;
-  }
-
-  public void setDoNotCancelLinked(Boolean doNotCancelLinked) {
-    this.doNotCancelLinked = doNotCancelLinked;
-  }
-
-  public TurnAroundLoanInputDTO doNotPost(Boolean doNotPost) {
-    this.doNotPost = doNotPost;
-    return this;
-  }
-
-   /**
-   * Get doNotPost
-   * @return doNotPost
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDoNotPost() {
-    return doNotPost;
-  }
-
-  public void setDoNotPost(Boolean doNotPost) {
-    this.doNotPost = doNotPost;
-  }
-
-  public TurnAroundLoanInputDTO doNotRecall(Boolean doNotRecall) {
-    this.doNotRecall = doNotRecall;
-    return this;
-  }
-
-   /**
-   * Get doNotRecall
-   * @return doNotRecall
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDoNotRecall() {
-    return doNotRecall;
-  }
-
-  public void setDoNotRecall(Boolean doNotRecall) {
-    this.doNotRecall = doNotRecall;
-  }
-
-  public TurnAroundLoanInputDTO endDate(LocalDateTime endDate) {
-    this.endDate = endDate;
-    return this;
-  }
-
-   /**
-   * Required only when adjusting rate
-   * @return endDate
-  **/
-  @ApiModelProperty(required = true, value = "Required only when adjusting rate")
-  public LocalDateTime getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(LocalDateTime endDate) {
-    this.endDate = endDate;
-  }
-
-  public TurnAroundLoanInputDTO errorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-    return this;
-  }
-
-   /**
-   * Get errorMessage
-   * @return errorMessage
-  **/
-  @ApiModelProperty(value = "")
-  public String getErrorMessage() {
-    return errorMessage;
-  }
-
-  public void setErrorMessage(String errorMessage) {
-    this.errorMessage = errorMessage;
-  }
-
-  public TurnAroundLoanInputDTO eventList(List<TradeEvent> eventList) {
-    this.eventList = eventList;
-    return this;
-  }
-
-  public TurnAroundLoanInputDTO addEventListItem(TradeEvent eventListItem) {
-    if (this.eventList == null) {
-      this.eventList = new ArrayList<>();
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    this.eventList.add(eventListItem);
-    return this;
-  }
 
-   /**
-   * Get eventList
-   * @return eventList
-  **/
-  @ApiModelProperty(value = "")
-  public List<TradeEvent> getEventList() {
-    return eventList;
-  }
-
-  public void setEventList(List<TradeEvent> eventList) {
-    this.eventList = eventList;
-  }
-
-  public TurnAroundLoanInputDTO groupedPositionRef(String groupedPositionRef) {
-    this.groupedPositionRef = groupedPositionRef;
-    return this;
-  }
-
-   /**
-   * Get groupedPositionRef
-   * @return groupedPositionRef
-  **/
-  @ApiModelProperty(value = "")
-  public String getGroupedPositionRef() {
-    return groupedPositionRef;
-  }
-
-  public void setGroupedPositionRef(String groupedPositionRef) {
-    this.groupedPositionRef = groupedPositionRef;
-  }
-
-  public TurnAroundLoanInputDTO includeCouponInterest(Boolean includeCouponInterest) {
-    this.includeCouponInterest = includeCouponInterest;
-    return this;
-  }
-
-   /**
-   * Get includeCouponInterest
-   * @return includeCouponInterest
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIncludeCouponInterest() {
-    return includeCouponInterest;
-  }
-
-  public void setIncludeCouponInterest(Boolean includeCouponInterest) {
-    this.includeCouponInterest = includeCouponInterest;
-  }
-
-  public TurnAroundLoanInputDTO msgId(Long msgId) {
-    this.msgId = msgId;
-    return this;
-  }
-
-   /**
-   * Get msgId
-   * @return msgId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getMsgId() {
-    return msgId;
-  }
-
-  public void setMsgId(Long msgId) {
-    this.msgId = msgId;
-  }
-
-  public TurnAroundLoanInputDTO newLoanTradeInput(LoanTradeInputDTO newLoanTradeInput) {
-    this.newLoanTradeInput = newLoanTradeInput;
-    return this;
-  }
-
-   /**
-   * Get newLoanTradeInput
-   * @return newLoanTradeInput
-  **/
-  @ApiModelProperty(value = "")
-  public LoanTradeInputDTO getNewLoanTradeInput() {
-    return newLoanTradeInput;
-  }
-
-  public void setNewLoanTradeInput(LoanTradeInputDTO newLoanTradeInput) {
-    this.newLoanTradeInput = newLoanTradeInput;
-  }
-
-  public TurnAroundLoanInputDTO oldLoanTradeInput(LoanTradeInputDTO oldLoanTradeInput) {
-    this.oldLoanTradeInput = oldLoanTradeInput;
-    return this;
-  }
-
-   /**
-   * Get oldLoanTradeInput
-   * @return oldLoanTradeInput
-  **/
-  @ApiModelProperty(value = "")
-  public LoanTradeInputDTO getOldLoanTradeInput() {
-    return oldLoanTradeInput;
-  }
-
-  public void setOldLoanTradeInput(LoanTradeInputDTO oldLoanTradeInput) {
-    this.oldLoanTradeInput = oldLoanTradeInput;
-  }
-
-  public TurnAroundLoanInputDTO orderId(Long orderId) {
-    this.orderId = orderId;
-    return this;
-  }
-
-   /**
-   * Get orderId
-   * @return orderId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getOrderId() {
-    return orderId;
-  }
-
-  public void setOrderId(Long orderId) {
-    this.orderId = orderId;
-  }
-
-  public TurnAroundLoanInputDTO originalTrade(TradeDTO originalTrade) {
-    this.originalTrade = originalTrade;
-    return this;
-  }
-
-   /**
-   * Get originalTrade
-   * @return originalTrade
-  **/
-  @ApiModelProperty(value = "")
-  public TradeDTO getOriginalTrade() {
-    return originalTrade;
-  }
-
-  public void setOriginalTrade(TradeDTO originalTrade) {
-    this.originalTrade = originalTrade;
-  }
-
-  public TurnAroundLoanInputDTO position(PositionDTO position) {
-    this.position = position;
-    return this;
-  }
-
-   /**
-   * Get position
-   * @return position
-  **/
-  @ApiModelProperty(value = "")
-  public PositionDTO getPosition() {
-    return position;
-  }
-
-  public void setPosition(PositionDTO position) {
-    this.position = position;
-  }
-
-  public TurnAroundLoanInputDTO positionLimitUsed(List<PositionlimitusedDTO> positionLimitUsed) {
-    this.positionLimitUsed = positionLimitUsed;
-    return this;
-  }
-
-  public TurnAroundLoanInputDTO addPositionLimitUsedItem(PositionlimitusedDTO positionLimitUsedItem) {
-    if (this.positionLimitUsed == null) {
-      this.positionLimitUsed = new ArrayList<>();
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    this.positionLimitUsed.add(positionLimitUsedItem);
-    return this;
-  }
 
-   /**
-   * Get positionLimitUsed
-   * @return positionLimitUsed
-  **/
-  @ApiModelProperty(value = "")
-  public List<PositionlimitusedDTO> getPositionLimitUsed() {
-    return positionLimitUsed;
-  }
-
-  public void setPositionLimitUsed(List<PositionlimitusedDTO> positionLimitUsed) {
-    this.positionLimitUsed = positionLimitUsed;
-  }
-
-  public TurnAroundLoanInputDTO postOrSettle(Boolean postOrSettle) {
-    this.postOrSettle = postOrSettle;
-    return this;
-  }
-
-   /**
-   * Get postOrSettle
-   * @return postOrSettle
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isPostOrSettle() {
-    return postOrSettle;
-  }
-
-  public void setPostOrSettle(Boolean postOrSettle) {
-    this.postOrSettle = postOrSettle;
-  }
-
-  public TurnAroundLoanInputDTO preTradeId(Long preTradeId) {
-    this.preTradeId = preTradeId;
-    return this;
-  }
-
-   /**
-   * Get preTradeId
-   * @return preTradeId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getPreTradeId() {
-    return preTradeId;
-  }
-
-  public void setPreTradeId(Long preTradeId) {
-    this.preTradeId = preTradeId;
-  }
-
-  public TurnAroundLoanInputDTO skipAldCheck(Boolean skipAldCheck) {
-    this.skipAldCheck = skipAldCheck;
-    return this;
-  }
-
-   /**
-   * Get skipAldCheck
-   * @return skipAldCheck
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSkipAldCheck() {
-    return skipAldCheck;
-  }
-
-  public void setSkipAldCheck(Boolean skipAldCheck) {
-    this.skipAldCheck = skipAldCheck;
-  }
-
-  public TurnAroundLoanInputDTO skipInventoryCheckAndUpdate(Boolean skipInventoryCheckAndUpdate) {
-    this.skipInventoryCheckAndUpdate = skipInventoryCheckAndUpdate;
-    return this;
-  }
-
-   /**
-   * Get skipInventoryCheckAndUpdate
-   * @return skipInventoryCheckAndUpdate
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSkipInventoryCheckAndUpdate() {
-    return skipInventoryCheckAndUpdate;
-  }
-
-  public void setSkipInventoryCheckAndUpdate(Boolean skipInventoryCheckAndUpdate) {
-    this.skipInventoryCheckAndUpdate = skipInventoryCheckAndUpdate;
-  }
-
-  public TurnAroundLoanInputDTO skipLimitCheckAndUpdate(Boolean skipLimitCheckAndUpdate) {
-    this.skipLimitCheckAndUpdate = skipLimitCheckAndUpdate;
-    return this;
-  }
-
-   /**
-   * Get skipLimitCheckAndUpdate
-   * @return skipLimitCheckAndUpdate
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSkipLimitCheckAndUpdate() {
-    return skipLimitCheckAndUpdate;
-  }
-
-  public void setSkipLimitCheckAndUpdate(Boolean skipLimitCheckAndUpdate) {
-    this.skipLimitCheckAndUpdate = skipLimitCheckAndUpdate;
-  }
-
-  public TurnAroundLoanInputDTO skipMinSpreadCheck(Boolean skipMinSpreadCheck) {
-    this.skipMinSpreadCheck = skipMinSpreadCheck;
-    return this;
-  }
-
-   /**
-   * Get skipMinSpreadCheck
-   * @return skipMinSpreadCheck
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSkipMinSpreadCheck() {
-    return skipMinSpreadCheck;
-  }
-
-  public void setSkipMinSpreadCheck(Boolean skipMinSpreadCheck) {
-    this.skipMinSpreadCheck = skipMinSpreadCheck;
-  }
-
-  public TurnAroundLoanInputDTO skipSecChillCheck(Boolean skipSecChillCheck) {
-    this.skipSecChillCheck = skipSecChillCheck;
-    return this;
-  }
-
-   /**
-   * Get skipSecChillCheck
-   * @return skipSecChillCheck
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSkipSecChillCheck() {
-    return skipSecChillCheck;
-  }
-
-  public void setSkipSecChillCheck(Boolean skipSecChillCheck) {
-    this.skipSecChillCheck = skipSecChillCheck;
-  }
-
-  public TurnAroundLoanInputDTO source(String source) {
-    this.source = source;
-    return this;
-  }
-
-   /**
-   * Get source
-   * @return source
-  **/
-  @ApiModelProperty(value = "")
-  public String getSource() {
-    return source;
-  }
-
-  public void setSource(String source) {
-    this.source = source;
-  }
-
-  public TurnAroundLoanInputDTO startDate(LocalDateTime startDate) {
-    this.startDate = startDate;
-    return this;
-  }
-
-   /**
-   * Required only when adjusting rate
-   * @return startDate
-  **/
-  @ApiModelProperty(required = true, value = "Required only when adjusting rate")
-  public LocalDateTime getStartDate() {
-    return startDate;
-  }
-
-  public void setStartDate(LocalDateTime startDate) {
-    this.startDate = startDate;
-  }
-
-  public TurnAroundLoanInputDTO system(String system) {
-    this.system = system;
-    return this;
-  }
-
-   /**
-   * Get system
-   * @return system
-  **/
-  @ApiModelProperty(value = "")
-  public String getSystem() {
-    return system;
-  }
-
-  public void setSystem(String system) {
-    this.system = system;
-  }
-
-  public TurnAroundLoanInputDTO systemId(Integer systemId) {
-    this.systemId = systemId;
-    return this;
-  }
-
-   /**
-   * Get systemId
-   * @return systemId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getSystemId() {
-    return systemId;
-  }
-
-  public void setSystemId(Integer systemId) {
-    this.systemId = systemId;
-  }
-
-  public TurnAroundLoanInputDTO trade(TradeDTO trade) {
-    this.trade = trade;
-    return this;
-  }
-
-   /**
-   * Get trade
-   * @return trade
-  **/
-  @ApiModelProperty(value = "")
-  public TradeDTO getTrade() {
-    return trade;
-  }
-
-  public void setTrade(TradeDTO trade) {
-    this.trade = trade;
-  }
-
-  public TurnAroundLoanInputDTO tradeRefNo(String tradeRefNo) {
-    this.tradeRefNo = tradeRefNo;
-    return this;
-  }
-
-   /**
-   * Get tradeRefNo
-   * @return tradeRefNo
-  **/
-  @ApiModelProperty(value = "")
-  public String getTradeRefNo() {
-    return tradeRefNo;
-  }
-
-  public void setTradeRefNo(String tradeRefNo) {
-    this.tradeRefNo = tradeRefNo;
-  }
-
-  public TurnAroundLoanInputDTO updateInventory(Boolean updateInventory) {
-    this.updateInventory = updateInventory;
-    return this;
-  }
-
-   /**
-   * Get updateInventory
-   * @return updateInventory
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isUpdateInventory() {
-    return updateInventory;
-  }
-
-  public void setUpdateInventory(Boolean updateInventory) {
-    this.updateInventory = updateInventory;
-  }
-
-  public TurnAroundLoanInputDTO userId(Integer userId) {
-    this.userId = userId;
-    return this;
-  }
-
-   /**
-   * Either userId or userName is required
-   * @return userId
-  **/
-  @ApiModelProperty(required = true, value = "Either userId or userName is required")
-  public Integer getUserId() {
-    return userId;
-  }
-
-  public void setUserId(Integer userId) {
-    this.userId = userId;
-  }
-
-  public TurnAroundLoanInputDTO userName(String userName) {
-    this.userName = userName;
-    return this;
-  }
-
-   /**
-   * Either userId or userName is required
-   * @return userName
-  **/
-  @ApiModelProperty(required = true, value = "Either userId or userName is required")
-  public String getUserName() {
-    return userName;
-  }
-
-  public void setUserName(String userName) {
-    this.userName = userName;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public TurnAroundLoanInputDTO accrualAmount(Double accrualAmount) {
+        this.accrualAmount = accrualAmount;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get accrualAmount
+     *
+     * @return accrualAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAccrualAmount() {
+        return accrualAmount;
     }
-    TurnAroundLoanInputDTO turnAroundLoanInputDTO = (TurnAroundLoanInputDTO) o;
-    return Objects.equals(this.qualifiedName, turnAroundLoanInputDTO.qualifiedName) &&
-        Objects.equals(this.accrualAmount, turnAroundLoanInputDTO.accrualAmount) &&
-        Objects.equals(this.accrualTypeId, turnAroundLoanInputDTO.accrualTypeId) &&
-        Objects.equals(this.action, turnAroundLoanInputDTO.action) &&
-        Objects.equals(this.allowTradeForNoCurrDaySecPrice, turnAroundLoanInputDTO.allowTradeForNoCurrDaySecPrice) &&
-        Objects.equals(this.asOfEndDate, turnAroundLoanInputDTO.asOfEndDate) &&
-        Objects.equals(this.asOfStartDate, turnAroundLoanInputDTO.asOfStartDate) &&
-        Objects.equals(this.autoRecall, turnAroundLoanInputDTO.autoRecall) &&
-        Objects.equals(this.autoReturn, turnAroundLoanInputDTO.autoReturn) &&
-        Objects.equals(this.byPassLimits, turnAroundLoanInputDTO.byPassLimits) &&
-        Objects.equals(this.bypassRTI, turnAroundLoanInputDTO.bypassRTI) &&
-        Objects.equals(this.cancelFail, turnAroundLoanInputDTO.cancelFail) &&
-        Objects.equals(this.cancelMarks, turnAroundLoanInputDTO.cancelMarks) &&
-        Objects.equals(this.chainedTradeDTO, turnAroundLoanInputDTO.chainedTradeDTO) &&
-        Objects.equals(this.checkCompliance, turnAroundLoanInputDTO.checkCompliance) &&
-        Objects.equals(this.checkInventory, turnAroundLoanInputDTO.checkInventory) &&
-        Objects.equals(this.checkLimits, turnAroundLoanInputDTO.checkLimits) &&
-        Objects.equals(this.copyRestrictions, turnAroundLoanInputDTO.copyRestrictions) &&
-        Objects.equals(this.createTerminationTrade, turnAroundLoanInputDTO.createTerminationTrade) &&
-        Objects.equals(this.doNotCancelLinked, turnAroundLoanInputDTO.doNotCancelLinked) &&
-        Objects.equals(this.doNotPost, turnAroundLoanInputDTO.doNotPost) &&
-        Objects.equals(this.doNotRecall, turnAroundLoanInputDTO.doNotRecall) &&
-        Objects.equals(this.endDate, turnAroundLoanInputDTO.endDate) &&
-        Objects.equals(this.errorMessage, turnAroundLoanInputDTO.errorMessage) &&
-        Objects.equals(this.eventList, turnAroundLoanInputDTO.eventList) &&
-        Objects.equals(this.groupedPositionRef, turnAroundLoanInputDTO.groupedPositionRef) &&
-        Objects.equals(this.includeCouponInterest, turnAroundLoanInputDTO.includeCouponInterest) &&
-        Objects.equals(this.msgId, turnAroundLoanInputDTO.msgId) &&
-        Objects.equals(this.newLoanTradeInput, turnAroundLoanInputDTO.newLoanTradeInput) &&
-        Objects.equals(this.oldLoanTradeInput, turnAroundLoanInputDTO.oldLoanTradeInput) &&
-        Objects.equals(this.orderId, turnAroundLoanInputDTO.orderId) &&
-        Objects.equals(this.originalTrade, turnAroundLoanInputDTO.originalTrade) &&
-        Objects.equals(this.position, turnAroundLoanInputDTO.position) &&
-        Objects.equals(this.positionLimitUsed, turnAroundLoanInputDTO.positionLimitUsed) &&
-        Objects.equals(this.postOrSettle, turnAroundLoanInputDTO.postOrSettle) &&
-        Objects.equals(this.preTradeId, turnAroundLoanInputDTO.preTradeId) &&
-        Objects.equals(this.skipAldCheck, turnAroundLoanInputDTO.skipAldCheck) &&
-        Objects.equals(this.skipInventoryCheckAndUpdate, turnAroundLoanInputDTO.skipInventoryCheckAndUpdate) &&
-        Objects.equals(this.skipLimitCheckAndUpdate, turnAroundLoanInputDTO.skipLimitCheckAndUpdate) &&
-        Objects.equals(this.skipMinSpreadCheck, turnAroundLoanInputDTO.skipMinSpreadCheck) &&
-        Objects.equals(this.skipSecChillCheck, turnAroundLoanInputDTO.skipSecChillCheck) &&
-        Objects.equals(this.source, turnAroundLoanInputDTO.source) &&
-        Objects.equals(this.startDate, turnAroundLoanInputDTO.startDate) &&
-        Objects.equals(this.system, turnAroundLoanInputDTO.system) &&
-        Objects.equals(this.systemId, turnAroundLoanInputDTO.systemId) &&
-        Objects.equals(this.trade, turnAroundLoanInputDTO.trade) &&
-        Objects.equals(this.tradeRefNo, turnAroundLoanInputDTO.tradeRefNo) &&
-        Objects.equals(this.updateInventory, turnAroundLoanInputDTO.updateInventory) &&
-        Objects.equals(this.userId, turnAroundLoanInputDTO.userId) &&
-        Objects.equals(this.userName, turnAroundLoanInputDTO.userName);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice, asOfEndDate, asOfStartDate, autoRecall, autoReturn, byPassLimits, bypassRTI, cancelFail, cancelMarks, chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade, doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef, includeCouponInterest, msgId, newLoanTradeInput, oldLoanTradeInput, orderId, originalTrade, position, positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipMinSpreadCheck, skipSecChillCheck, source, startDate, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TurnAroundLoanInputDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    accrualAmount: ").append(toIndentedString(accrualAmount)).append("\n");
-    sb.append("    accrualTypeId: ").append(toIndentedString(accrualTypeId)).append("\n");
-    sb.append("    action: ").append(toIndentedString(action)).append("\n");
-    sb.append("    allowTradeForNoCurrDaySecPrice: ").append(toIndentedString(allowTradeForNoCurrDaySecPrice)).append("\n");
-    sb.append("    asOfEndDate: ").append(toIndentedString(asOfEndDate)).append("\n");
-    sb.append("    asOfStartDate: ").append(toIndentedString(asOfStartDate)).append("\n");
-    sb.append("    autoRecall: ").append(toIndentedString(autoRecall)).append("\n");
-    sb.append("    autoReturn: ").append(toIndentedString(autoReturn)).append("\n");
-    sb.append("    byPassLimits: ").append(toIndentedString(byPassLimits)).append("\n");
-    sb.append("    bypassRTI: ").append(toIndentedString(bypassRTI)).append("\n");
-    sb.append("    cancelFail: ").append(toIndentedString(cancelFail)).append("\n");
-    sb.append("    cancelMarks: ").append(toIndentedString(cancelMarks)).append("\n");
-    sb.append("    chainedTradeDTO: ").append(toIndentedString(chainedTradeDTO)).append("\n");
-    sb.append("    checkCompliance: ").append(toIndentedString(checkCompliance)).append("\n");
-    sb.append("    checkInventory: ").append(toIndentedString(checkInventory)).append("\n");
-    sb.append("    checkLimits: ").append(toIndentedString(checkLimits)).append("\n");
-    sb.append("    copyRestrictions: ").append(toIndentedString(copyRestrictions)).append("\n");
-    sb.append("    createTerminationTrade: ").append(toIndentedString(createTerminationTrade)).append("\n");
-    sb.append("    doNotCancelLinked: ").append(toIndentedString(doNotCancelLinked)).append("\n");
-    sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
-    sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
-    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
-    sb.append("    errorMessage: ").append(toIndentedString(errorMessage)).append("\n");
-    sb.append("    eventList: ").append(toIndentedString(eventList)).append("\n");
-    sb.append("    groupedPositionRef: ").append(toIndentedString(groupedPositionRef)).append("\n");
-    sb.append("    includeCouponInterest: ").append(toIndentedString(includeCouponInterest)).append("\n");
-    sb.append("    msgId: ").append(toIndentedString(msgId)).append("\n");
-    sb.append("    newLoanTradeInput: ").append(toIndentedString(newLoanTradeInput)).append("\n");
-    sb.append("    oldLoanTradeInput: ").append(toIndentedString(oldLoanTradeInput)).append("\n");
-    sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
-    sb.append("    originalTrade: ").append(toIndentedString(originalTrade)).append("\n");
-    sb.append("    position: ").append(toIndentedString(position)).append("\n");
-    sb.append("    positionLimitUsed: ").append(toIndentedString(positionLimitUsed)).append("\n");
-    sb.append("    postOrSettle: ").append(toIndentedString(postOrSettle)).append("\n");
-    sb.append("    preTradeId: ").append(toIndentedString(preTradeId)).append("\n");
-    sb.append("    skipAldCheck: ").append(toIndentedString(skipAldCheck)).append("\n");
-    sb.append("    skipInventoryCheckAndUpdate: ").append(toIndentedString(skipInventoryCheckAndUpdate)).append("\n");
-    sb.append("    skipLimitCheckAndUpdate: ").append(toIndentedString(skipLimitCheckAndUpdate)).append("\n");
-    sb.append("    skipMinSpreadCheck: ").append(toIndentedString(skipMinSpreadCheck)).append("\n");
-    sb.append("    skipSecChillCheck: ").append(toIndentedString(skipSecChillCheck)).append("\n");
-    sb.append("    source: ").append(toIndentedString(source)).append("\n");
-    sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
-    sb.append("    system: ").append(toIndentedString(system)).append("\n");
-    sb.append("    systemId: ").append(toIndentedString(systemId)).append("\n");
-    sb.append("    trade: ").append(toIndentedString(trade)).append("\n");
-    sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
-    sb.append("    updateInventory: ").append(toIndentedString(updateInventory)).append("\n");
-    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-    sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setAccrualAmount(Double accrualAmount) {
+        this.accrualAmount = accrualAmount;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public TurnAroundLoanInputDTO accrualTypeId(Integer accrualTypeId) {
+        this.accrualTypeId = accrualTypeId;
+        return this;
+    }
+
+    /**
+     * Get accrualTypeId
+     *
+     * @return accrualTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getAccrualTypeId() {
+        return accrualTypeId;
+    }
+
+    public void setAccrualTypeId(Integer accrualTypeId) {
+        this.accrualTypeId = accrualTypeId;
+    }
+
+    public TurnAroundLoanInputDTO action(String action) {
+        this.action = action;
+        return this;
+    }
+
+    /**
+     * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan, &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold,
+     * &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold, &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold
+     * Qty, &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
+     *
+     * @return action
+     **/
+    @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty")
+    public String getAction() {
+        return action;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public TurnAroundLoanInputDTO allowTradeForNoCurrDaySecPrice(Boolean allowTradeForNoCurrDaySecPrice) {
+        this.allowTradeForNoCurrDaySecPrice = allowTradeForNoCurrDaySecPrice;
+        return this;
+    }
+
+    /**
+     * Get allowTradeForNoCurrDaySecPrice
+     *
+     * @return allowTradeForNoCurrDaySecPrice
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAllowTradeForNoCurrDaySecPrice() {
+        return allowTradeForNoCurrDaySecPrice;
+    }
+
+    public void setAllowTradeForNoCurrDaySecPrice(Boolean allowTradeForNoCurrDaySecPrice) {
+        this.allowTradeForNoCurrDaySecPrice = allowTradeForNoCurrDaySecPrice;
+    }
+
+    public TurnAroundLoanInputDTO asOfEndDate(LocalDateTime asOfEndDate) {
+        this.asOfEndDate = asOfEndDate;
+        return this;
+    }
+
+    /**
+     * Get asOfEndDate
+     *
+     * @return asOfEndDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getAsOfEndDate() {
+        return asOfEndDate;
+    }
+
+    public void setAsOfEndDate(LocalDateTime asOfEndDate) {
+        this.asOfEndDate = asOfEndDate;
+    }
+
+    public TurnAroundLoanInputDTO asOfStartDate(LocalDateTime asOfStartDate) {
+        this.asOfStartDate = asOfStartDate;
+        return this;
+    }
+
+    /**
+     * Get asOfStartDate
+     *
+     * @return asOfStartDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getAsOfStartDate() {
+        return asOfStartDate;
+    }
+
+    public void setAsOfStartDate(LocalDateTime asOfStartDate) {
+        this.asOfStartDate = asOfStartDate;
+    }
+
+    public TurnAroundLoanInputDTO autoRecall(Boolean autoRecall) {
+        this.autoRecall = autoRecall;
+        return this;
+    }
+
+    /**
+     * Get autoRecall
+     *
+     * @return autoRecall
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAutoRecall() {
+        return autoRecall;
+    }
+
+    public void setAutoRecall(Boolean autoRecall) {
+        this.autoRecall = autoRecall;
+    }
+
+    public TurnAroundLoanInputDTO autoReturn(Boolean autoReturn) {
+        this.autoReturn = autoReturn;
+        return this;
+    }
+
+    /**
+     * Get autoReturn
+     *
+     * @return autoReturn
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isAutoReturn() {
+        return autoReturn;
+    }
+
+    public void setAutoReturn(Boolean autoReturn) {
+        this.autoReturn = autoReturn;
+    }
+
+    public TurnAroundLoanInputDTO byPassLimits(Boolean byPassLimits) {
+        this.byPassLimits = byPassLimits;
+        return this;
+    }
+
+    /**
+     * Get byPassLimits
+     *
+     * @return byPassLimits
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isByPassLimits() {
+        return byPassLimits;
+    }
+
+    public void setByPassLimits(Boolean byPassLimits) {
+        this.byPassLimits = byPassLimits;
+    }
+
+    public TurnAroundLoanInputDTO bypassRTI(Boolean bypassRTI) {
+        this.bypassRTI = bypassRTI;
+        return this;
+    }
+
+    /**
+     * Get bypassRTI
+     *
+     * @return bypassRTI
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isBypassRTI() {
+        return bypassRTI;
+    }
+
+    public void setBypassRTI(Boolean bypassRTI) {
+        this.bypassRTI = bypassRTI;
+    }
+
+    public TurnAroundLoanInputDTO cancelFail(String cancelFail) {
+        this.cancelFail = cancelFail;
+        return this;
+    }
+
+    /**
+     * Get cancelFail
+     *
+     * @return cancelFail
+     **/
+    @ApiModelProperty(value = "")
+    public String getCancelFail() {
+        return cancelFail;
+    }
+
+    public void setCancelFail(String cancelFail) {
+        this.cancelFail = cancelFail;
+    }
+
+    public TurnAroundLoanInputDTO cancelMarks(Boolean cancelMarks) {
+        this.cancelMarks = cancelMarks;
+        return this;
+    }
+
+    /**
+     * Get cancelMarks
+     *
+     * @return cancelMarks
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCancelMarks() {
+        return cancelMarks;
+    }
+
+    public void setCancelMarks(Boolean cancelMarks) {
+        this.cancelMarks = cancelMarks;
+    }
+
+    public TurnAroundLoanInputDTO chainedTradeDTO(List<TradeDTO> chainedTradeDTO) {
+        this.chainedTradeDTO = chainedTradeDTO;
+        return this;
+    }
+
+    public TurnAroundLoanInputDTO addChainedTradeDTOItem(TradeDTO chainedTradeDTOItem) {
+        if (this.chainedTradeDTO == null) {
+            this.chainedTradeDTO = new ArrayList<>();
+        }
+        this.chainedTradeDTO.add(chainedTradeDTOItem);
+        return this;
+    }
+
+    /**
+     * Get chainedTradeDTO
+     *
+     * @return chainedTradeDTO
+     **/
+    @ApiModelProperty(value = "")
+    public List<TradeDTO> getChainedTradeDTO() {
+        return chainedTradeDTO;
+    }
+
+    public void setChainedTradeDTO(List<TradeDTO> chainedTradeDTO) {
+        this.chainedTradeDTO = chainedTradeDTO;
+    }
+
+    public TurnAroundLoanInputDTO checkCompliance(Boolean checkCompliance) {
+        this.checkCompliance = checkCompliance;
+        return this;
+    }
+
+    /**
+     * Get checkCompliance
+     *
+     * @return checkCompliance
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCheckCompliance() {
+        return checkCompliance;
+    }
+
+    public void setCheckCompliance(Boolean checkCompliance) {
+        this.checkCompliance = checkCompliance;
+    }
+
+    public TurnAroundLoanInputDTO checkInventory(Boolean checkInventory) {
+        this.checkInventory = checkInventory;
+        return this;
+    }
+
+    /**
+     * Get checkInventory
+     *
+     * @return checkInventory
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCheckInventory() {
+        return checkInventory;
+    }
+
+    public void setCheckInventory(Boolean checkInventory) {
+        this.checkInventory = checkInventory;
+    }
+
+    public TurnAroundLoanInputDTO checkLimits(Boolean checkLimits) {
+        this.checkLimits = checkLimits;
+        return this;
+    }
+
+    /**
+     * Get checkLimits
+     *
+     * @return checkLimits
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCheckLimits() {
+        return checkLimits;
+    }
+
+    public void setCheckLimits(Boolean checkLimits) {
+        this.checkLimits = checkLimits;
+    }
+
+    public TurnAroundLoanInputDTO copyRestrictions(Boolean copyRestrictions) {
+        this.copyRestrictions = copyRestrictions;
+        return this;
+    }
+
+    /**
+     * Get copyRestrictions
+     *
+     * @return copyRestrictions
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCopyRestrictions() {
+        return copyRestrictions;
+    }
+
+    public void setCopyRestrictions(Boolean copyRestrictions) {
+        this.copyRestrictions = copyRestrictions;
+    }
+
+    public TurnAroundLoanInputDTO createTerminationTrade(Boolean createTerminationTrade) {
+        this.createTerminationTrade = createTerminationTrade;
+        return this;
+    }
+
+    /**
+     * Get createTerminationTrade
+     *
+     * @return createTerminationTrade
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCreateTerminationTrade() {
+        return createTerminationTrade;
+    }
+
+    public void setCreateTerminationTrade(Boolean createTerminationTrade) {
+        this.createTerminationTrade = createTerminationTrade;
+    }
+
+    public TurnAroundLoanInputDTO doNotCancelLinked(Boolean doNotCancelLinked) {
+        this.doNotCancelLinked = doNotCancelLinked;
+        return this;
+    }
+
+    /**
+     * Get doNotCancelLinked
+     *
+     * @return doNotCancelLinked
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDoNotCancelLinked() {
+        return doNotCancelLinked;
+    }
+
+    public void setDoNotCancelLinked(Boolean doNotCancelLinked) {
+        this.doNotCancelLinked = doNotCancelLinked;
+    }
+
+    public TurnAroundLoanInputDTO doNotPost(Boolean doNotPost) {
+        this.doNotPost = doNotPost;
+        return this;
+    }
+
+    /**
+     * Get doNotPost
+     *
+     * @return doNotPost
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDoNotPost() {
+        return doNotPost;
+    }
+
+    public void setDoNotPost(Boolean doNotPost) {
+        this.doNotPost = doNotPost;
+    }
+
+    public TurnAroundLoanInputDTO doNotRecall(Boolean doNotRecall) {
+        this.doNotRecall = doNotRecall;
+        return this;
+    }
+
+    /**
+     * Get doNotRecall
+     *
+     * @return doNotRecall
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDoNotRecall() {
+        return doNotRecall;
+    }
+
+    public void setDoNotRecall(Boolean doNotRecall) {
+        this.doNotRecall = doNotRecall;
+    }
+
+    public TurnAroundLoanInputDTO endDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    /**
+     * Required only when adjusting rate
+     *
+     * @return endDate
+     **/
+    @ApiModelProperty(required = true, value = "Required only when adjusting rate")
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public TurnAroundLoanInputDTO errorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+        return this;
+    }
+
+    /**
+     * Get errorMessage
+     *
+     * @return errorMessage
+     **/
+    @ApiModelProperty(value = "")
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
+
+    public TurnAroundLoanInputDTO eventList(List<TradeEvent> eventList) {
+        this.eventList = eventList;
+        return this;
+    }
+
+    public TurnAroundLoanInputDTO addEventListItem(TradeEvent eventListItem) {
+        if (this.eventList == null) {
+            this.eventList = new ArrayList<>();
+        }
+        this.eventList.add(eventListItem);
+        return this;
+    }
+
+    /**
+     * Get eventList
+     *
+     * @return eventList
+     **/
+    @ApiModelProperty(value = "")
+    public List<TradeEvent> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<TradeEvent> eventList) {
+        this.eventList = eventList;
+    }
+
+    public TurnAroundLoanInputDTO groupedPositionRef(String groupedPositionRef) {
+        this.groupedPositionRef = groupedPositionRef;
+        return this;
+    }
+
+    /**
+     * Get groupedPositionRef
+     *
+     * @return groupedPositionRef
+     **/
+    @ApiModelProperty(value = "")
+    public String getGroupedPositionRef() {
+        return groupedPositionRef;
+    }
+
+    public void setGroupedPositionRef(String groupedPositionRef) {
+        this.groupedPositionRef = groupedPositionRef;
+    }
+
+    public TurnAroundLoanInputDTO includeCouponInterest(Boolean includeCouponInterest) {
+        this.includeCouponInterest = includeCouponInterest;
+        return this;
+    }
+
+    /**
+     * Get includeCouponInterest
+     *
+     * @return includeCouponInterest
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIncludeCouponInterest() {
+        return includeCouponInterest;
+    }
+
+    public void setIncludeCouponInterest(Boolean includeCouponInterest) {
+        this.includeCouponInterest = includeCouponInterest;
+    }
+
+    public TurnAroundLoanInputDTO msgId(Long msgId) {
+        this.msgId = msgId;
+        return this;
+    }
+
+    /**
+     * Get msgId
+     *
+     * @return msgId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(Long msgId) {
+        this.msgId = msgId;
+    }
+
+    public TurnAroundLoanInputDTO newLoanTradeInput(LoanTradeInputDTO newLoanTradeInput) {
+        this.newLoanTradeInput = newLoanTradeInput;
+        return this;
+    }
+
+    /**
+     * Get newLoanTradeInput
+     *
+     * @return newLoanTradeInput
+     **/
+    @ApiModelProperty(value = "")
+    public LoanTradeInputDTO getNewLoanTradeInput() {
+        return newLoanTradeInput;
+    }
+
+    public void setNewLoanTradeInput(LoanTradeInputDTO newLoanTradeInput) {
+        this.newLoanTradeInput = newLoanTradeInput;
+    }
+
+    public TurnAroundLoanInputDTO oldLoanTradeInput(LoanTradeInputDTO oldLoanTradeInput) {
+        this.oldLoanTradeInput = oldLoanTradeInput;
+        return this;
+    }
+
+    /**
+     * Get oldLoanTradeInput
+     *
+     * @return oldLoanTradeInput
+     **/
+    @ApiModelProperty(value = "")
+    public LoanTradeInputDTO getOldLoanTradeInput() {
+        return oldLoanTradeInput;
+    }
+
+    public void setOldLoanTradeInput(LoanTradeInputDTO oldLoanTradeInput) {
+        this.oldLoanTradeInput = oldLoanTradeInput;
+    }
+
+    public TurnAroundLoanInputDTO orderId(Long orderId) {
+        this.orderId = orderId;
+        return this;
+    }
+
+    /**
+     * Get orderId
+     *
+     * @return orderId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
+    public TurnAroundLoanInputDTO originalTrade(TradeDTO originalTrade) {
+        this.originalTrade = originalTrade;
+        return this;
+    }
+
+    /**
+     * Get originalTrade
+     *
+     * @return originalTrade
+     **/
+    @ApiModelProperty(value = "")
+    public TradeDTO getOriginalTrade() {
+        return originalTrade;
+    }
+
+    public void setOriginalTrade(TradeDTO originalTrade) {
+        this.originalTrade = originalTrade;
+    }
+
+    public TurnAroundLoanInputDTO position(PositionDTO position) {
+        this.position = position;
+        return this;
+    }
+
+    /**
+     * Get position
+     *
+     * @return position
+     **/
+    @ApiModelProperty(value = "")
+    public PositionDTO getPosition() {
+        return position;
+    }
+
+    public void setPosition(PositionDTO position) {
+        this.position = position;
+    }
+
+    public TurnAroundLoanInputDTO positionLimitUsed(List<PositionlimitusedDTO> positionLimitUsed) {
+        this.positionLimitUsed = positionLimitUsed;
+        return this;
+    }
+
+    public TurnAroundLoanInputDTO addPositionLimitUsedItem(PositionlimitusedDTO positionLimitUsedItem) {
+        if (this.positionLimitUsed == null) {
+            this.positionLimitUsed = new ArrayList<>();
+        }
+        this.positionLimitUsed.add(positionLimitUsedItem);
+        return this;
+    }
+
+    /**
+     * Get positionLimitUsed
+     *
+     * @return positionLimitUsed
+     **/
+    @ApiModelProperty(value = "")
+    public List<PositionlimitusedDTO> getPositionLimitUsed() {
+        return positionLimitUsed;
+    }
+
+    public void setPositionLimitUsed(List<PositionlimitusedDTO> positionLimitUsed) {
+        this.positionLimitUsed = positionLimitUsed;
+    }
+
+    public TurnAroundLoanInputDTO postOrSettle(Boolean postOrSettle) {
+        this.postOrSettle = postOrSettle;
+        return this;
+    }
+
+    /**
+     * Get postOrSettle
+     *
+     * @return postOrSettle
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isPostOrSettle() {
+        return postOrSettle;
+    }
+
+    public void setPostOrSettle(Boolean postOrSettle) {
+        this.postOrSettle = postOrSettle;
+    }
+
+    public TurnAroundLoanInputDTO preTradeId(Long preTradeId) {
+        this.preTradeId = preTradeId;
+        return this;
+    }
+
+    /**
+     * Get preTradeId
+     *
+     * @return preTradeId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getPreTradeId() {
+        return preTradeId;
+    }
+
+    public void setPreTradeId(Long preTradeId) {
+        this.preTradeId = preTradeId;
+    }
+
+    public TurnAroundLoanInputDTO skipAldCheck(Boolean skipAldCheck) {
+        this.skipAldCheck = skipAldCheck;
+        return this;
+    }
+
+    /**
+     * Get skipAldCheck
+     *
+     * @return skipAldCheck
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSkipAldCheck() {
+        return skipAldCheck;
+    }
+
+    public void setSkipAldCheck(Boolean skipAldCheck) {
+        this.skipAldCheck = skipAldCheck;
+    }
+
+    public TurnAroundLoanInputDTO skipInventoryCheckAndUpdate(Boolean skipInventoryCheckAndUpdate) {
+        this.skipInventoryCheckAndUpdate = skipInventoryCheckAndUpdate;
+        return this;
+    }
+
+    /**
+     * Get skipInventoryCheckAndUpdate
+     *
+     * @return skipInventoryCheckAndUpdate
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSkipInventoryCheckAndUpdate() {
+        return skipInventoryCheckAndUpdate;
+    }
+
+    public void setSkipInventoryCheckAndUpdate(Boolean skipInventoryCheckAndUpdate) {
+        this.skipInventoryCheckAndUpdate = skipInventoryCheckAndUpdate;
+    }
+
+    public TurnAroundLoanInputDTO skipLimitCheckAndUpdate(Boolean skipLimitCheckAndUpdate) {
+        this.skipLimitCheckAndUpdate = skipLimitCheckAndUpdate;
+        return this;
+    }
+
+    /**
+     * Get skipLimitCheckAndUpdate
+     *
+     * @return skipLimitCheckAndUpdate
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSkipLimitCheckAndUpdate() {
+        return skipLimitCheckAndUpdate;
+    }
+
+    public void setSkipLimitCheckAndUpdate(Boolean skipLimitCheckAndUpdate) {
+        this.skipLimitCheckAndUpdate = skipLimitCheckAndUpdate;
+    }
+
+    public TurnAroundLoanInputDTO skipMinSpreadCheck(Boolean skipMinSpreadCheck) {
+        this.skipMinSpreadCheck = skipMinSpreadCheck;
+        return this;
+    }
+
+    /**
+     * Get skipMinSpreadCheck
+     *
+     * @return skipMinSpreadCheck
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSkipMinSpreadCheck() {
+        return skipMinSpreadCheck;
+    }
+
+    public void setSkipMinSpreadCheck(Boolean skipMinSpreadCheck) {
+        this.skipMinSpreadCheck = skipMinSpreadCheck;
+    }
+
+    public TurnAroundLoanInputDTO skipSecChillCheck(Boolean skipSecChillCheck) {
+        this.skipSecChillCheck = skipSecChillCheck;
+        return this;
+    }
+
+    /**
+     * Get skipSecChillCheck
+     *
+     * @return skipSecChillCheck
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSkipSecChillCheck() {
+        return skipSecChillCheck;
+    }
+
+    public void setSkipSecChillCheck(Boolean skipSecChillCheck) {
+        this.skipSecChillCheck = skipSecChillCheck;
+    }
+
+    public TurnAroundLoanInputDTO source(String source) {
+        this.source = source;
+        return this;
+    }
+
+    /**
+     * Get source
+     *
+     * @return source
+     **/
+    @ApiModelProperty(value = "")
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public TurnAroundLoanInputDTO startDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+        return this;
+    }
+
+    /**
+     * Required only when adjusting rate
+     *
+     * @return startDate
+     **/
+    @ApiModelProperty(required = true, value = "Required only when adjusting rate")
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public TurnAroundLoanInputDTO system(String system) {
+        this.system = system;
+        return this;
+    }
+
+    /**
+     * Get system
+     *
+     * @return system
+     **/
+    @ApiModelProperty(value = "")
+    public String getSystem() {
+        return system;
+    }
+
+    public void setSystem(String system) {
+        this.system = system;
+    }
+
+    public TurnAroundLoanInputDTO systemId(Integer systemId) {
+        this.systemId = systemId;
+        return this;
+    }
+
+    /**
+     * Get systemId
+     *
+     * @return systemId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Integer systemId) {
+        this.systemId = systemId;
+    }
+
+    public TurnAroundLoanInputDTO trade(TradeDTO trade) {
+        this.trade = trade;
+        return this;
+    }
+
+    /**
+     * Get trade
+     *
+     * @return trade
+     **/
+    @ApiModelProperty(value = "")
+    public TradeDTO getTrade() {
+        return trade;
+    }
+
+    public void setTrade(TradeDTO trade) {
+        this.trade = trade;
+    }
+
+    public TurnAroundLoanInputDTO tradeRefNo(String tradeRefNo) {
+        this.tradeRefNo = tradeRefNo;
+        return this;
+    }
+
+    /**
+     * Get tradeRefNo
+     *
+     * @return tradeRefNo
+     **/
+    @ApiModelProperty(value = "")
+    public String getTradeRefNo() {
+        return tradeRefNo;
+    }
+
+    public void setTradeRefNo(String tradeRefNo) {
+        this.tradeRefNo = tradeRefNo;
+    }
+
+    public TurnAroundLoanInputDTO updateInventory(Boolean updateInventory) {
+        this.updateInventory = updateInventory;
+        return this;
+    }
+
+    /**
+     * Get updateInventory
+     *
+     * @return updateInventory
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isUpdateInventory() {
+        return updateInventory;
+    }
+
+    public void setUpdateInventory(Boolean updateInventory) {
+        this.updateInventory = updateInventory;
+    }
+
+    public TurnAroundLoanInputDTO userId(Integer userId) {
+        this.userId = userId;
+        return this;
+    }
+
+    /**
+     * Either userId or userName is required
+     *
+     * @return userId
+     **/
+    @ApiModelProperty(required = true, value = "Either userId or userName is required")
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public TurnAroundLoanInputDTO userName(String userName) {
+        this.userName = userName;
+        return this;
+    }
+
+    /**
+     * Either userId or userName is required
+     *
+     * @return userName
+     **/
+    @ApiModelProperty(required = true, value = "Either userId or userName is required")
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TurnAroundLoanInputDTO turnAroundLoanInputDTO = (TurnAroundLoanInputDTO) o;
+        return Objects.equals(this.qualifiedName, turnAroundLoanInputDTO.qualifiedName) &&
+            Objects.equals(this.accrualAmount, turnAroundLoanInputDTO.accrualAmount) &&
+            Objects.equals(this.accrualTypeId, turnAroundLoanInputDTO.accrualTypeId) &&
+            Objects.equals(this.action, turnAroundLoanInputDTO.action) &&
+            Objects.equals(this.allowTradeForNoCurrDaySecPrice, turnAroundLoanInputDTO.allowTradeForNoCurrDaySecPrice)
+            &&
+            Objects.equals(this.asOfEndDate, turnAroundLoanInputDTO.asOfEndDate) &&
+            Objects.equals(this.asOfStartDate, turnAroundLoanInputDTO.asOfStartDate) &&
+            Objects.equals(this.autoRecall, turnAroundLoanInputDTO.autoRecall) &&
+            Objects.equals(this.autoReturn, turnAroundLoanInputDTO.autoReturn) &&
+            Objects.equals(this.byPassLimits, turnAroundLoanInputDTO.byPassLimits) &&
+            Objects.equals(this.bypassRTI, turnAroundLoanInputDTO.bypassRTI) &&
+            Objects.equals(this.cancelFail, turnAroundLoanInputDTO.cancelFail) &&
+            Objects.equals(this.cancelMarks, turnAroundLoanInputDTO.cancelMarks) &&
+            Objects.equals(this.chainedTradeDTO, turnAroundLoanInputDTO.chainedTradeDTO) &&
+            Objects.equals(this.checkCompliance, turnAroundLoanInputDTO.checkCompliance) &&
+            Objects.equals(this.checkInventory, turnAroundLoanInputDTO.checkInventory) &&
+            Objects.equals(this.checkLimits, turnAroundLoanInputDTO.checkLimits) &&
+            Objects.equals(this.copyRestrictions, turnAroundLoanInputDTO.copyRestrictions) &&
+            Objects.equals(this.createTerminationTrade, turnAroundLoanInputDTO.createTerminationTrade) &&
+            Objects.equals(this.doNotCancelLinked, turnAroundLoanInputDTO.doNotCancelLinked) &&
+            Objects.equals(this.doNotPost, turnAroundLoanInputDTO.doNotPost) &&
+            Objects.equals(this.doNotRecall, turnAroundLoanInputDTO.doNotRecall) &&
+            Objects.equals(this.endDate, turnAroundLoanInputDTO.endDate) &&
+            Objects.equals(this.errorMessage, turnAroundLoanInputDTO.errorMessage) &&
+            Objects.equals(this.eventList, turnAroundLoanInputDTO.eventList) &&
+            Objects.equals(this.groupedPositionRef, turnAroundLoanInputDTO.groupedPositionRef) &&
+            Objects.equals(this.includeCouponInterest, turnAroundLoanInputDTO.includeCouponInterest) &&
+            Objects.equals(this.msgId, turnAroundLoanInputDTO.msgId) &&
+            Objects.equals(this.newLoanTradeInput, turnAroundLoanInputDTO.newLoanTradeInput) &&
+            Objects.equals(this.oldLoanTradeInput, turnAroundLoanInputDTO.oldLoanTradeInput) &&
+            Objects.equals(this.orderId, turnAroundLoanInputDTO.orderId) &&
+            Objects.equals(this.originalTrade, turnAroundLoanInputDTO.originalTrade) &&
+            Objects.equals(this.position, turnAroundLoanInputDTO.position) &&
+            Objects.equals(this.positionLimitUsed, turnAroundLoanInputDTO.positionLimitUsed) &&
+            Objects.equals(this.postOrSettle, turnAroundLoanInputDTO.postOrSettle) &&
+            Objects.equals(this.preTradeId, turnAroundLoanInputDTO.preTradeId) &&
+            Objects.equals(this.skipAldCheck, turnAroundLoanInputDTO.skipAldCheck) &&
+            Objects.equals(this.skipInventoryCheckAndUpdate, turnAroundLoanInputDTO.skipInventoryCheckAndUpdate) &&
+            Objects.equals(this.skipLimitCheckAndUpdate, turnAroundLoanInputDTO.skipLimitCheckAndUpdate) &&
+            Objects.equals(this.skipMinSpreadCheck, turnAroundLoanInputDTO.skipMinSpreadCheck) &&
+            Objects.equals(this.skipSecChillCheck, turnAroundLoanInputDTO.skipSecChillCheck) &&
+            Objects.equals(this.source, turnAroundLoanInputDTO.source) &&
+            Objects.equals(this.startDate, turnAroundLoanInputDTO.startDate) &&
+            Objects.equals(this.system, turnAroundLoanInputDTO.system) &&
+            Objects.equals(this.systemId, turnAroundLoanInputDTO.systemId) &&
+            Objects.equals(this.trade, turnAroundLoanInputDTO.trade) &&
+            Objects.equals(this.tradeRefNo, turnAroundLoanInputDTO.tradeRefNo) &&
+            Objects.equals(this.updateInventory, turnAroundLoanInputDTO.updateInventory) &&
+            Objects.equals(this.userId, turnAroundLoanInputDTO.userId) &&
+            Objects.equals(this.userName, turnAroundLoanInputDTO.userName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice,
+            asOfEndDate, asOfStartDate, autoRecall, autoReturn, byPassLimits, bypassRTI, cancelFail, cancelMarks,
+            chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade,
+            doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef,
+            includeCouponInterest, msgId, newLoanTradeInput, oldLoanTradeInput, orderId, originalTrade, position,
+            positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate,
+            skipLimitCheckAndUpdate, skipMinSpreadCheck, skipSecChillCheck, source, startDate, system, systemId, trade,
+            tradeRefNo, updateInventory, userId, userName);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TurnAroundLoanInputDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    accrualAmount: ").append(toIndentedString(accrualAmount)).append("\n");
+        sb.append("    accrualTypeId: ").append(toIndentedString(accrualTypeId)).append("\n");
+        sb.append("    action: ").append(toIndentedString(action)).append("\n");
+        sb.append("    allowTradeForNoCurrDaySecPrice: ").append(toIndentedString(allowTradeForNoCurrDaySecPrice))
+            .append("\n");
+        sb.append("    asOfEndDate: ").append(toIndentedString(asOfEndDate)).append("\n");
+        sb.append("    asOfStartDate: ").append(toIndentedString(asOfStartDate)).append("\n");
+        sb.append("    autoRecall: ").append(toIndentedString(autoRecall)).append("\n");
+        sb.append("    autoReturn: ").append(toIndentedString(autoReturn)).append("\n");
+        sb.append("    byPassLimits: ").append(toIndentedString(byPassLimits)).append("\n");
+        sb.append("    bypassRTI: ").append(toIndentedString(bypassRTI)).append("\n");
+        sb.append("    cancelFail: ").append(toIndentedString(cancelFail)).append("\n");
+        sb.append("    cancelMarks: ").append(toIndentedString(cancelMarks)).append("\n");
+        sb.append("    chainedTradeDTO: ").append(toIndentedString(chainedTradeDTO)).append("\n");
+        sb.append("    checkCompliance: ").append(toIndentedString(checkCompliance)).append("\n");
+        sb.append("    checkInventory: ").append(toIndentedString(checkInventory)).append("\n");
+        sb.append("    checkLimits: ").append(toIndentedString(checkLimits)).append("\n");
+        sb.append("    copyRestrictions: ").append(toIndentedString(copyRestrictions)).append("\n");
+        sb.append("    createTerminationTrade: ").append(toIndentedString(createTerminationTrade)).append("\n");
+        sb.append("    doNotCancelLinked: ").append(toIndentedString(doNotCancelLinked)).append("\n");
+        sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
+        sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
+        sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
+        sb.append("    errorMessage: ").append(toIndentedString(errorMessage)).append("\n");
+        sb.append("    eventList: ").append(toIndentedString(eventList)).append("\n");
+        sb.append("    groupedPositionRef: ").append(toIndentedString(groupedPositionRef)).append("\n");
+        sb.append("    includeCouponInterest: ").append(toIndentedString(includeCouponInterest)).append("\n");
+        sb.append("    msgId: ").append(toIndentedString(msgId)).append("\n");
+        sb.append("    newLoanTradeInput: ").append(toIndentedString(newLoanTradeInput)).append("\n");
+        sb.append("    oldLoanTradeInput: ").append(toIndentedString(oldLoanTradeInput)).append("\n");
+        sb.append("    orderId: ").append(toIndentedString(orderId)).append("\n");
+        sb.append("    originalTrade: ").append(toIndentedString(originalTrade)).append("\n");
+        sb.append("    position: ").append(toIndentedString(position)).append("\n");
+        sb.append("    positionLimitUsed: ").append(toIndentedString(positionLimitUsed)).append("\n");
+        sb.append("    postOrSettle: ").append(toIndentedString(postOrSettle)).append("\n");
+        sb.append("    preTradeId: ").append(toIndentedString(preTradeId)).append("\n");
+        sb.append("    skipAldCheck: ").append(toIndentedString(skipAldCheck)).append("\n");
+        sb.append("    skipInventoryCheckAndUpdate: ").append(toIndentedString(skipInventoryCheckAndUpdate))
+            .append("\n");
+        sb.append("    skipLimitCheckAndUpdate: ").append(toIndentedString(skipLimitCheckAndUpdate)).append("\n");
+        sb.append("    skipMinSpreadCheck: ").append(toIndentedString(skipMinSpreadCheck)).append("\n");
+        sb.append("    skipSecChillCheck: ").append(toIndentedString(skipSecChillCheck)).append("\n");
+        sb.append("    source: ").append(toIndentedString(source)).append("\n");
+        sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
+        sb.append("    system: ").append(toIndentedString(system)).append("\n");
+        sb.append("    systemId: ").append(toIndentedString(systemId)).append("\n");
+        sb.append("    trade: ").append(toIndentedString(trade)).append("\n");
+        sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
+        sb.append("    updateInventory: ").append(toIndentedString(updateInventory)).append("\n");
+        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+        sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

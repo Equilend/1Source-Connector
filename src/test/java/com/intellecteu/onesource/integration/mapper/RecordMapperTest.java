@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -13,7 +14,7 @@ import com.intellecteu.onesource.integration.dto.record.CloudEvent;
 import com.intellecteu.onesource.integration.dto.record.CloudEventData;
 import com.intellecteu.onesource.integration.dto.record.RelatedObject;
 import com.intellecteu.onesource.integration.exception.ConvertException;
-import com.intellecteu.onesource.integration.model.CloudEventEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.CloudEventEntity;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -89,5 +90,14 @@ class RecordMapperTest {
             () -> recordMapper.toCloudEvent(null)
         );
         assertNotNull(exception);
+    }
+
+    @Test
+    void testCloudEventConvert_shouldConvertToJson() throws Exception {
+        CloudEventEntity entity = ModelTestFactory.buildCloudEventEntity();
+        final CloudEvent cloudEvent = recordMapper.toCloudEvent(entity);
+
+        String json = recordMapper.toJson(cloudEvent);
+        assertFalse(json.isEmpty());
     }
 }

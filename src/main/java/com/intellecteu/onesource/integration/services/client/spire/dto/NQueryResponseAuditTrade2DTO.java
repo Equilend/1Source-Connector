@@ -23,130 +23,133 @@ import java.util.Objects;
 /**
  * NQueryResponseAuditTrade2DTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class NQueryResponseAuditTrade2DTO {
-  @JsonProperty("beans")
-  private List<AuditTrade2DTO> beans = null;
 
-  @JsonProperty("groups")
-  private List<SGroupAuditTrade2DTO> groups = null;
+    @JsonProperty("beans")
+    private List<AuditTrade2DTO> beans = null;
 
-  @JsonProperty("totalRows")
-  private Integer totalRows = null;
+    @JsonProperty("groups")
+    private List<SGroupAuditTrade2DTO> groups = null;
 
-  public NQueryResponseAuditTrade2DTO beans(List<AuditTrade2DTO> beans) {
-    this.beans = beans;
-    return this;
-  }
+    @JsonProperty("totalRows")
+    private Integer totalRows = null;
 
-  public NQueryResponseAuditTrade2DTO addBeansItem(AuditTrade2DTO beansItem) {
-    if (this.beans == null) {
-      this.beans = new ArrayList<>();
+    public NQueryResponseAuditTrade2DTO beans(List<AuditTrade2DTO> beans) {
+        this.beans = beans;
+        return this;
     }
-    this.beans.add(beansItem);
-    return this;
-  }
 
-   /**
-   * Get beans
-   * @return beans
-  **/
-  @ApiModelProperty(value = "")
-  public List<AuditTrade2DTO> getBeans() {
-    return beans;
-  }
-
-  public void setBeans(List<AuditTrade2DTO> beans) {
-    this.beans = beans;
-  }
-
-  public NQueryResponseAuditTrade2DTO groups(List<SGroupAuditTrade2DTO> groups) {
-    this.groups = groups;
-    return this;
-  }
-
-  public NQueryResponseAuditTrade2DTO addGroupsItem(SGroupAuditTrade2DTO groupsItem) {
-    if (this.groups == null) {
-      this.groups = new ArrayList<>();
+    public NQueryResponseAuditTrade2DTO addBeansItem(AuditTrade2DTO beansItem) {
+        if (this.beans == null) {
+            this.beans = new ArrayList<>();
+        }
+        this.beans.add(beansItem);
+        return this;
     }
-    this.groups.add(groupsItem);
-    return this;
-  }
 
-   /**
-   * Get groups
-   * @return groups
-  **/
-  @ApiModelProperty(value = "")
-  public List<SGroupAuditTrade2DTO> getGroups() {
-    return groups;
-  }
-
-  public void setGroups(List<SGroupAuditTrade2DTO> groups) {
-    this.groups = groups;
-  }
-
-  public NQueryResponseAuditTrade2DTO totalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-    return this;
-  }
-
-   /**
-   * Get totalRows
-   * @return totalRows
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalRows() {
-    return totalRows;
-  }
-
-  public void setTotalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get beans
+     *
+     * @return beans
+     **/
+    @ApiModelProperty(value = "")
+    public List<AuditTrade2DTO> getBeans() {
+        return beans;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setBeans(List<AuditTrade2DTO> beans) {
+        this.beans = beans;
     }
-    NQueryResponseAuditTrade2DTO nqueryResponseAuditTrade2DTO = (NQueryResponseAuditTrade2DTO) o;
-    return Objects.equals(this.beans, nqueryResponseAuditTrade2DTO.beans) &&
-        Objects.equals(this.groups, nqueryResponseAuditTrade2DTO.groups) &&
-        Objects.equals(this.totalRows, nqueryResponseAuditTrade2DTO.totalRows);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(beans, groups, totalRows);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class NQueryResponseAuditTrade2DTO {\n");
-    
-    sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
-    sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
-    sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public NQueryResponseAuditTrade2DTO groups(List<SGroupAuditTrade2DTO> groups) {
+        this.groups = groups;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public NQueryResponseAuditTrade2DTO addGroupsItem(SGroupAuditTrade2DTO groupsItem) {
+        if (this.groups == null) {
+            this.groups = new ArrayList<>();
+        }
+        this.groups.add(groupsItem);
+        return this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return groups
+     **/
+    @ApiModelProperty(value = "")
+    public List<SGroupAuditTrade2DTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<SGroupAuditTrade2DTO> groups) {
+        this.groups = groups;
+    }
+
+    public NQueryResponseAuditTrade2DTO totalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+        return this;
+    }
+
+    /**
+     * Get totalRows
+     *
+     * @return totalRows
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTotalRows() {
+        return totalRows;
+    }
+
+    public void setTotalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NQueryResponseAuditTrade2DTO nqueryResponseAuditTrade2DTO = (NQueryResponseAuditTrade2DTO) o;
+        return Objects.equals(this.beans, nqueryResponseAuditTrade2DTO.beans) &&
+            Objects.equals(this.groups, nqueryResponseAuditTrade2DTO.groups) &&
+            Objects.equals(this.totalRows, nqueryResponseAuditTrade2DTO.totalRows);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beans, groups, totalRows);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class NQueryResponseAuditTrade2DTO {\n");
+
+        sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
+        sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
+        sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -11,18 +11,20 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.spire.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryResponseTradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
-import com.intellecteu.onesource.integration.mapper.RerateTradeMapperImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -47,20 +49,23 @@ class BackOfficeServiceTest {
     private TradeSpireApiClient tradeSpireApiClient;
 
     @Mock
+    private InstructionSpireApiClient instructionClient;
+
+    @Mock
     private SpireMapper spireMapper;
 
     @Mock
     private CloudEventRecordService cloudEventRecordService;
 
-    RerateTradeMapperImpl rerateTradeMapper = new RerateTradeMapperImpl();
+    BackOfficeMapperImpl rerateTradeMapper = new BackOfficeMapperImpl();
 
     private BackOfficeService service;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
-        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, spireMapper, rerateTradeMapper,
-            cloudEventRecordService);
+        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient,
+            spireMapper, rerateTradeMapper, cloudEventRecordService);
     }
 
     @Test

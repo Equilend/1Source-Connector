@@ -1,9 +1,9 @@
 package com.intellecteu.onesource.integration.constant;
 
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
 
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import java.util.Set;
 import lombok.experimental.UtilityClass;
 

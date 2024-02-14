@@ -1,10 +1,9 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -18,26 +17,30 @@ import static org.springframework.http.HttpMethod.POST;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.routes.processor.strategy.agreement.AgreementDataReceived;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
-import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.agreement.AgreementDataReceived;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.GenericRecordCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -83,11 +86,15 @@ public class AgreementFlowTest {
     private EventMapper eventMapper;
     private SpireMapper spireMapper;
     private ObjectMapper objectMapper;
-    private OneSourceApiService oneSourceService;
+    private OneSourceApiClientImpl oneSourceService;
     @Mock
-    private SpireApiService spireService;
+    private SettlementService settlementService;
     @Mock
-    private ReconcileService<AgreementDto, PositionDto> reconcileService;
+    private BackOfficeService lenderBackOfficeService;
+    @Mock
+    private BackOfficeService borrowerBackOfficeService;
+    @Mock
+    private ReconcileService<Agreement, PositionDto> reconcileService;
     private AgreementDataReceived agreementDataReceived;
 
     @Mock
@@ -95,6 +102,7 @@ public class AgreementFlowTest {
     @Mock
     private TradeEventRepository eventRepository;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
+    private OneSourceMapper oneSourceMapper = new OneSourceMapperImpl();
 
     @BeforeEach
     void setUp() {
@@ -107,12 +115,11 @@ public class AgreementFlowTest {
         builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new GenericRecordCloudEventBuilder());
         builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder());
         recordFactory = new CloudEventFactoryImpl(builderMap);
-        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository);
-        agreementDataReceived = new AgreementDataReceived(oneSourceService, spireService, reconcileService,
-            agreementService, positionService, eventMapper, spireMapper, cloudEventRecordService);
-        ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
-        ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
+        oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
+            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
+        agreementDataReceived = new AgreementDataReceived(oneSourceService, settlementService, reconcileService,
+            agreementService, positionService, eventMapper, spireMapper, cloudEventRecordService,
+            lenderBackOfficeService, borrowerBackOfficeService);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
     }
@@ -120,8 +127,7 @@ public class AgreementFlowTest {
     @Test
     @DisplayName("Contract proposal successfully created with 201 response code.")
     void test_agreementFlow_shouldCreateContractProposal_success() throws JsonProcessingException, ReconcileException {
-        var agreement = buildAgreementDto();
-        var agreementEntity = eventMapper.toAgreementEntity(agreement);
+        var agreement = ModelTestFactory.buildAgreement();
         agreement.getTrade().setTradeDate(LocalDateTime.parse("2023-11-14T16:52:06.060844").toLocalDate());
         agreement.getTrade().setSettlementDate(LocalDateTime.parse("2023-11-14T16:52:06.061189").toLocalDate());
 
@@ -134,11 +140,11 @@ public class AgreementFlowTest {
         positionEntity.getCurrency().setCurrencyKy("USD");
         var positionDto = spireMapper.toPositionDto(positionEntity);
 
-        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
-        when(agreementService.saveAgreement(any())).thenReturn(agreementEntity);
+//        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
+        when(agreementService.saveAgreement(any())).thenReturn(agreement);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(positionEntity));
         when(positionService.savePosition(any())).thenReturn(positionEntity);
-        doNothing().when(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
+        doNothing().when(reconcileService).reconcile(any(Agreement.class), any(PositionDto.class));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
@@ -148,13 +154,13 @@ public class AgreementFlowTest {
         verify(cloudEventRecordService, times(2)).record(any());
         verify(positionService, times(2)).savePosition(any());
         verify(agreementService, times(3)).saveAgreement(any());
-        verify(reconcileService).reconcile(any(AgreementDto.class), any(PositionDto.class));
+        verify(reconcileService).reconcile(any(Agreement.class), any(PositionDto.class));
     }
 
     @Test
     @DisplayName("Contract proposal was not created due reconcile error")
     void test_agreementFlow_shouldNotCreateContractProposal_reconcile_failed() throws Exception {
-        var agreement = buildAgreementDto();
+        var agreement = ModelTestFactory.buildAgreement();
         String positionEntityResponse = """
             {"id":1,"positionId":"testSpirePositionId","customValue2":"testVenueRefId","rate":10.2,"quantity":2.0,"tradeDate":"2023-11-14T16:52:06.060844","settleDate":"2023-11-14T16:52:06.061189","deliverFree":false,"amount":400.32,"price":100.0,"contractValue":4.52,"positionTypeId":null,"currencyId":null,"securityId":null,"accountLei":"lender-lei","cpLei":"borrower-lei","collateralType":"CASH","cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null,"securityDetailDTO":{"ticker":"testTicker","cusip":"testCusip","isin":"testIsin","sedol":"testSedol","quickCode":"testQuick","bloombergId":"testFigi"},"currencyDTO":{"currencyName":"EUR"},"loanBorrowDTO":{"taxWithholdingRate":2.0},"collateralTypeDTO":{"collateralType":"CASH"},"exposureDTO":{"cpHaircut":2.02,"cpMarkRoundTo":2,"depoId":null},"positiontypeDTO":{"positionType":"CASH LOAN"},"accountDTO":{"dtc":null,"lei":"lender-lei"},"counterPartyDTO":{"dtc":null,"lei":"borrower-lei"}, "statusDTO":{"status":"CREATED"}}
             """;
@@ -166,12 +172,12 @@ public class AgreementFlowTest {
         var positionEntity = spireMapper.toPosition(positionEntityNode);
         var positionDto = spireMapper.toPositionDto(positionEntity);
 
-        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
+//        when(spireService.getTradePosition(any(AgreementDto.class))).thenReturn(positionDto);
         when(positionService.savePosition(any())).thenReturn(positionEntity);
         var exceptionMsgDto = new ExceptionMessageDto("testValue", "testMsg");
         final ReconcileException reconcileException = new ReconcileException("exception", List.of(exceptionMsgDto));
         doThrow(reconcileException).when(reconcileService)
-            .reconcile(any(AgreementDto.class), any(PositionDto.class));
+            .reconcile(any(Agreement.class), any(PositionDto.class));
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 

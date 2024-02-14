@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * SecurityDepoDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SecurityDepoDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("id")
-  private SecurityDepoKeyDTO id = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("isDefault")
-  private Boolean isDefault = null;
+    @JsonProperty("id")
+    private SecurityDepoKeyDTO id = null;
 
-  public SecurityDepoDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("isDefault")
+    private Boolean isDefault = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public SecurityDepoDTO id(SecurityDepoKeyDTO id) {
-    this.id = id;
-    return this;
-  }
-
-   /**
-   * Get id
-   * @return id
-  **/
-  @ApiModelProperty(value = "")
-  public SecurityDepoKeyDTO getId() {
-    return id;
-  }
-
-  public void setId(SecurityDepoKeyDTO id) {
-    this.id = id;
-  }
-
-  public SecurityDepoDTO isDefault(Boolean isDefault) {
-    this.isDefault = isDefault;
-    return this;
-  }
-
-   /**
-   * Get isDefault
-   * @return isDefault
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isIsDefault() {
-    return isDefault;
-  }
-
-  public void setIsDefault(Boolean isDefault) {
-    this.isDefault = isDefault;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public SecurityDepoDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    SecurityDepoDTO securityDepoDTO = (SecurityDepoDTO) o;
-    return Objects.equals(this.qualifiedName, securityDepoDTO.qualifiedName) &&
-        Objects.equals(this.id, securityDepoDTO.id) &&
-        Objects.equals(this.isDefault, securityDepoDTO.isDefault);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, id, isDefault);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SecurityDepoDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    id: ").append(toIndentedString(id)).append("\n");
-    sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public SecurityDepoDTO id(SecurityDepoKeyDTO id) {
+        this.id = id;
+        return this;
+    }
+
+    /**
+     * Get id
+     *
+     * @return id
+     **/
+    @ApiModelProperty(value = "")
+    public SecurityDepoKeyDTO getId() {
+        return id;
+    }
+
+    public void setId(SecurityDepoKeyDTO id) {
+        this.id = id;
+    }
+
+    public SecurityDepoDTO isDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+        return this;
+    }
+
+    /**
+     * Get isDefault
+     *
+     * @return isDefault
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isIsDefault() {
+        return isDefault;
+    }
+
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SecurityDepoDTO securityDepoDTO = (SecurityDepoDTO) o;
+        return Objects.equals(this.qualifiedName, securityDepoDTO.qualifiedName) &&
+            Objects.equals(this.id, securityDepoDTO.id) &&
+            Objects.equals(this.isDefault, securityDepoDTO.isDefault);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, id, isDefault);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SecurityDepoDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    id: ").append(toIndentedString(id)).append("\n");
+        sb.append("    isDefault: ").append(toIndentedString(isDefault)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

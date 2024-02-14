@@ -1,16 +1,16 @@
 package com.intellecteu.onesource.integration;
 
-import static com.intellecteu.onesource.integration.model.AgreementStatus.CONFIRMED;
-import static com.intellecteu.onesource.integration.model.CollateralDescription.DEBT;
-import static com.intellecteu.onesource.integration.model.CollateralType.CASH;
-import static com.intellecteu.onesource.integration.model.CurrencyCd.USD;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
-import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
-import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
-import static com.intellecteu.onesource.integration.model.TermType.OPEN;
-import static com.intellecteu.onesource.integration.model.VenueType.ONPLATFORM;
+import static com.intellecteu.onesource.integration.model.onesource.AgreementStatus.CONFIRMED;
+import static com.intellecteu.onesource.integration.model.onesource.CollateralDescription.DEBT;
+import static com.intellecteu.onesource.integration.model.onesource.CollateralType.CASH;
+import static com.intellecteu.onesource.integration.model.onesource.CurrencyCd.USD;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
+import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
+import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
@@ -33,7 +33,6 @@ import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.VenueDto;
 import com.intellecteu.onesource.integration.dto.VenuePartyDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEvent;
-import com.intellecteu.onesource.integration.dto.spire.AccountDto;
 import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
 import com.intellecteu.onesource.integration.dto.spire.LoanBorrowDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionCollateralTypeDto;
@@ -41,13 +40,18 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionExposureDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.LocalMarketField;
-import com.intellecteu.onesource.integration.model.LocalVenueField;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.SettlementInstruction;
-import com.intellecteu.onesource.integration.model.SettlementType;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.LocalMarketField;
+import com.intellecteu.onesource.integration.model.onesource.LocalVenueField;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.SettlementType;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
+import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
+import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionEntity;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -151,13 +155,48 @@ public class DtoTestFactory {
             .build();
     }
 
-    public static AccountDto buildAccountDto(TransactingPartyDto party) {
-        return AccountDto.builder()
-            .lei(retrieveLei(party))
+    public static PositionDto buildPositionDtoFromTradeAgreement(TradeAgreement tradeAgreement) {
+        return PositionDto.builder()
+            .positionId("9")
+            .customValue2(tradeAgreement.getVenue().getVenueRefKey())
+            .securityDetailDto(buildSecurityDetailDto(tradeAgreement))
+            .rate(tradeAgreement.getRate().getFee().getBaseRate())
+            .quantity(tradeAgreement.getQuantity().doubleValue())
+            .currency(buildCurrencyDto(tradeAgreement))
+            .loanBorrowDto(buildLoanBorrowDto(tradeAgreement))
+            .tradeDate(LocalDateTime.of(tradeAgreement.getTradeDate(), LocalTime.now()))
+            .settleDate(LocalDateTime.of(tradeAgreement.getSettlementDate(), LocalTime.now()))
+            .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
+            .amount(tradeAgreement.getCollateral().getCollateralValue())
+            .price(tradeAgreement.getCollateral().getContractPrice())
+            .contractValue(tradeAgreement.getCollateral().getContractValue())
+            .collateralTypeDto(buildCollateralTypeDto(tradeAgreement))
+            .exposureDto(buildPositionExposureDto(tradeAgreement))
+            .positionTypeDto(buildPositionTypeDto(tradeAgreement))
+            .accountDto(buildAccountDto(tradeAgreement.getTransactingParties().get(0)))
+            .cpDto(buildAccountDto(tradeAgreement.getTransactingParties().get(1)))
             .build();
     }
 
+    public static AccountDTO buildAccountDto(TransactingPartyDto party) {
+        AccountDTO account = new AccountDTO();
+        account.setLei(retrieveLei(party));
+        return account;
+    }
+
+    public static AccountDTO buildAccountDto(TransactingParty party) {
+        AccountDTO account = new AccountDTO();
+        account.setLei(retrieveLei(party));
+        return account;
+    }
+
     public static PositionTypeDto buildPositionTypeDto(TradeAgreementDto tradeAgreement) {
+        return PositionTypeDto.builder()
+            .positionType(retrievePositionTypeDto(tradeAgreement.getTransactingParties()))
+            .build();
+    }
+
+    public static PositionTypeDto buildPositionTypeDto(TradeAgreement tradeAgreement) {
         return PositionTypeDto.builder()
             .positionType(retrievePositionType(tradeAgreement.getTransactingParties()))
             .build();
@@ -170,7 +209,20 @@ public class DtoTestFactory {
             .build();
     }
 
+    public static PositionExposureDto buildPositionExposureDto(TradeAgreement tradeAgreement) {
+        return PositionExposureDto.builder()
+            .cpHaircut(tradeAgreement.getCollateral().getMargin() / 100.0)
+            .cpMarkRoundTo(tradeAgreement.getCollateral().getRoundingRule())
+            .build();
+    }
+
     public static PositionCollateralTypeDto buildCollateralTypeDto(TradeAgreementDto tradeAgreement) {
+        return PositionCollateralTypeDto.builder()
+            .collateralType(tradeAgreement.getCollateral().getType().name())
+            .build();
+    }
+
+    public static PositionCollateralTypeDto buildCollateralTypeDto(TradeAgreement tradeAgreement) {
         return PositionCollateralTypeDto.builder()
             .collateralType(tradeAgreement.getCollateral().getType().name())
             .build();
@@ -182,7 +234,19 @@ public class DtoTestFactory {
             .build();
     }
 
+    public static LoanBorrowDto buildLoanBorrowDto(TradeAgreement tradeAgreement) {
+        return LoanBorrowDto.builder()
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct().doubleValue())
+            .build();
+    }
+
     public static CurrencyDto buildCurrencyDto(TradeAgreementDto tradeAgreement) {
+        return CurrencyDto.builder()
+            .currencyKy(tradeAgreement.getBillingCurrency().name())
+            .build();
+    }
+
+    public static CurrencyDto buildCurrencyDto(TradeAgreement tradeAgreement) {
         return CurrencyDto.builder()
             .currencyKy(tradeAgreement.getBillingCurrency().name())
             .build();
@@ -199,11 +263,38 @@ public class DtoTestFactory {
             .build();
     }
 
+    public static SecurityDetailDto buildSecurityDetailDto(TradeAgreement tradeAgreement) {
+        return SecurityDetailDto.builder()
+            .ticker(tradeAgreement.getInstrument().getTicker())
+            .cusip(tradeAgreement.getInstrument().getCusip())
+            .isin(tradeAgreement.getInstrument().getIsin())
+            .sedol(tradeAgreement.getInstrument().getSedol())
+            .quickCode(tradeAgreement.getInstrument().getQuick())
+            .bloombergId(tradeAgreement.getInstrument().getFigi())
+            .build();
+    }
+
     private static String retrieveLei(TransactingPartyDto party) {
         return party.getParty().getGleifLei();
     }
 
-    private static String retrievePositionType(List<TransactingPartyDto> parties) {
+    private static String retrieveLei(TransactingParty party) {
+        return party.getParty().getGleifLei();
+    }
+
+    private static String retrievePositionTypeDto(List<TransactingPartyDto> parties) {
+        boolean isCashLoan = parties.stream().anyMatch(p -> p.getPartyRole() == LENDER);
+        if (isCashLoan) {
+            return "CASH LOAN";
+        }
+        boolean isCashBorrow = parties.stream().anyMatch(p -> p.getPartyRole() == BORROWER);
+        if (isCashBorrow) {
+            return "CASH BORROW";
+        }
+        return null;
+    }
+
+    private static String retrievePositionType(List<TransactingParty> parties) {
         boolean isCashLoan = parties.stream().anyMatch(p -> p.getPartyRole() == LENDER);
         if (isCashLoan) {
             return "CASH LOAN";
@@ -262,7 +353,7 @@ public class DtoTestFactory {
             .build();
     }
 
-    private static RebateRateDto buildRebateRateDto() {
+    public static RebateRateDto buildRebateRateDto() {
         return RebateRateDto.builder()
             .fixed(new FixedRateDto(10.2d))
             .build();
@@ -323,7 +414,7 @@ public class DtoTestFactory {
     public static InternalReferenceDto buildInternalReferenceDto() {
         return InternalReferenceDto.builder()
             .brokerCd("testBrokerCd")
-            .accountId("testAccountId")
+            .accountId(123L)
             .internalRefId("testInternalRefId")
             .build();
     }
@@ -345,8 +436,25 @@ public class DtoTestFactory {
             .build();
     }
 
+    public static Settlement buildSettlement() {
+        return Settlement.builder()
+            .partyRole(BORROWER)
+            .instruction(buildInstruction())
+            .build();
+    }
+
     public static SettlementInstruction buildInstruction() {
         return SettlementInstruction.builder()
+            .localAgentAcct("testacc")
+            .localAgentBic("RHBBMYKL")
+            .localAgentName("nestname")
+            .settlementBic("RHBBMYKL")
+            .dtcParticipantNumber("123")
+            .build();
+    }
+
+    public static SettlementInstructionEntity buildInstructionEntity() {
+        return SettlementInstructionEntity.builder()
             .localAgentAcct("testacc")
             .localAgentBic("RHBBMYKL")
             .localAgentName("nestname")

@@ -21,137 +21,142 @@ import java.util.Objects;
 /**
  * ChangeLRValueByCptyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class ChangeLRValueByCptyDTO {
-  @JsonProperty("amount")
-  private Double amount = null;
 
-  @JsonProperty("parentCounterpartyId")
-  private Long parentCounterpartyId = null;
+    @JsonProperty("amount")
+    private Double amount = null;
 
-  @JsonProperty("parentCounterpartyLegalName")
-  private String parentCounterpartyLegalName = null;
+    @JsonProperty("parentCounterpartyId")
+    private Long parentCounterpartyId = null;
 
-  @JsonProperty("priorDayAmount")
-  private Double priorDayAmount = null;
+    @JsonProperty("parentCounterpartyLegalName")
+    private String parentCounterpartyLegalName = null;
 
-  public ChangeLRValueByCptyDTO amount(Double amount) {
-    this.amount = amount;
-    return this;
-  }
+    @JsonProperty("priorDayAmount")
+    private Double priorDayAmount = null;
 
-   /**
-   * Get amount
-   * @return amount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Double amount) {
-    this.amount = amount;
-  }
-
-  public ChangeLRValueByCptyDTO parentCounterpartyId(Long parentCounterpartyId) {
-    this.parentCounterpartyId = parentCounterpartyId;
-    return this;
-  }
-
-   /**
-   * Get parentCounterpartyId
-   * @return parentCounterpartyId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getParentCounterpartyId() {
-    return parentCounterpartyId;
-  }
-
-  public void setParentCounterpartyId(Long parentCounterpartyId) {
-    this.parentCounterpartyId = parentCounterpartyId;
-  }
-
-  public ChangeLRValueByCptyDTO parentCounterpartyLegalName(String parentCounterpartyLegalName) {
-    this.parentCounterpartyLegalName = parentCounterpartyLegalName;
-    return this;
-  }
-
-   /**
-   * Get parentCounterpartyLegalName
-   * @return parentCounterpartyLegalName
-  **/
-  @ApiModelProperty(value = "")
-  public String getParentCounterpartyLegalName() {
-    return parentCounterpartyLegalName;
-  }
-
-  public void setParentCounterpartyLegalName(String parentCounterpartyLegalName) {
-    this.parentCounterpartyLegalName = parentCounterpartyLegalName;
-  }
-
-  public ChangeLRValueByCptyDTO priorDayAmount(Double priorDayAmount) {
-    this.priorDayAmount = priorDayAmount;
-    return this;
-  }
-
-   /**
-   * Get priorDayAmount
-   * @return priorDayAmount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getPriorDayAmount() {
-    return priorDayAmount;
-  }
-
-  public void setPriorDayAmount(Double priorDayAmount) {
-    this.priorDayAmount = priorDayAmount;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public ChangeLRValueByCptyDTO amount(Double amount) {
+        this.amount = amount;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get amount
+     *
+     * @return amount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAmount() {
+        return amount;
     }
-    ChangeLRValueByCptyDTO changeLRValueByCptyDTO = (ChangeLRValueByCptyDTO) o;
-    return Objects.equals(this.amount, changeLRValueByCptyDTO.amount) &&
-        Objects.equals(this.parentCounterpartyId, changeLRValueByCptyDTO.parentCounterpartyId) &&
-        Objects.equals(this.parentCounterpartyLegalName, changeLRValueByCptyDTO.parentCounterpartyLegalName) &&
-        Objects.equals(this.priorDayAmount, changeLRValueByCptyDTO.priorDayAmount);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(amount, parentCounterpartyId, parentCounterpartyLegalName, priorDayAmount);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class ChangeLRValueByCptyDTO {\n");
-    
-    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-    sb.append("    parentCounterpartyId: ").append(toIndentedString(parentCounterpartyId)).append("\n");
-    sb.append("    parentCounterpartyLegalName: ").append(toIndentedString(parentCounterpartyLegalName)).append("\n");
-    sb.append("    priorDayAmount: ").append(toIndentedString(priorDayAmount)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setAmount(Double amount) {
+        this.amount = amount;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public ChangeLRValueByCptyDTO parentCounterpartyId(Long parentCounterpartyId) {
+        this.parentCounterpartyId = parentCounterpartyId;
+        return this;
+    }
+
+    /**
+     * Get parentCounterpartyId
+     *
+     * @return parentCounterpartyId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getParentCounterpartyId() {
+        return parentCounterpartyId;
+    }
+
+    public void setParentCounterpartyId(Long parentCounterpartyId) {
+        this.parentCounterpartyId = parentCounterpartyId;
+    }
+
+    public ChangeLRValueByCptyDTO parentCounterpartyLegalName(String parentCounterpartyLegalName) {
+        this.parentCounterpartyLegalName = parentCounterpartyLegalName;
+        return this;
+    }
+
+    /**
+     * Get parentCounterpartyLegalName
+     *
+     * @return parentCounterpartyLegalName
+     **/
+    @ApiModelProperty(value = "")
+    public String getParentCounterpartyLegalName() {
+        return parentCounterpartyLegalName;
+    }
+
+    public void setParentCounterpartyLegalName(String parentCounterpartyLegalName) {
+        this.parentCounterpartyLegalName = parentCounterpartyLegalName;
+    }
+
+    public ChangeLRValueByCptyDTO priorDayAmount(Double priorDayAmount) {
+        this.priorDayAmount = priorDayAmount;
+        return this;
+    }
+
+    /**
+     * Get priorDayAmount
+     *
+     * @return priorDayAmount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getPriorDayAmount() {
+        return priorDayAmount;
+    }
+
+    public void setPriorDayAmount(Double priorDayAmount) {
+        this.priorDayAmount = priorDayAmount;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ChangeLRValueByCptyDTO changeLRValueByCptyDTO = (ChangeLRValueByCptyDTO) o;
+        return Objects.equals(this.amount, changeLRValueByCptyDTO.amount) &&
+            Objects.equals(this.parentCounterpartyId, changeLRValueByCptyDTO.parentCounterpartyId) &&
+            Objects.equals(this.parentCounterpartyLegalName, changeLRValueByCptyDTO.parentCounterpartyLegalName) &&
+            Objects.equals(this.priorDayAmount, changeLRValueByCptyDTO.priorDayAmount);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount, parentCounterpartyId, parentCounterpartyLegalName, priorDayAmount);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class ChangeLRValueByCptyDTO {\n");
+
+        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
+        sb.append("    parentCounterpartyId: ").append(toIndentedString(parentCounterpartyId)).append("\n");
+        sb.append("    parentCounterpartyLegalName: ").append(toIndentedString(parentCounterpartyLegalName))
+            .append("\n");
+        sb.append("    priorDayAmount: ").append(toIndentedString(priorDayAmount)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

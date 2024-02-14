@@ -1,23 +1,24 @@
 package com.intellecteu.onesource.integration.utils;
 
+import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException.NO_PARTY_ROLE_EXCEPTION;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
+import static java.lang.String.format;
+
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import lombok.experimental.UtilityClass;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
-
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
-
-import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.lang.Nullable;
 
 @UtilityClass
 @Slf4j
@@ -37,16 +38,16 @@ public class IntegrationUtils {
      * retrieve the PartyRole.
      *
      * @param transactingParties List<TransactingPartyDto>
-     * @param positionLei        String
+     * @param positionLei String
      * @return PartyRole for matched fields or null if there are no matches
      */
     @Deprecated(since = "Flow II", forRemoval = true)
     public static PartyRole extractPartyRole(List<TransactingPartyDto> transactingParties, String positionLei) {
         final PartyRole partyRole = transactingParties.stream()
-                .filter(t -> positionLei.equals(t.getParty().getGleifLei()))
-                .map(TransactingPartyDto::getPartyRole)
-                .findAny()
-                .orElse(null);
+            .filter(t -> positionLei.equals(t.getParty().getGleifLei()))
+            .map(TransactingPartyDto::getPartyRole)
+            .findAny()
+            .orElse(null);
         log.debug("Position lei: {} matches with party role: {}", positionLei, partyRole);
         return partyRole;
     }
@@ -93,9 +94,24 @@ public class IntegrationUtils {
         if (positionDto == null) {
             throw new NoRequiredPartyRoleException();
         }
-        return extractPartyRole(positionDto.unwrapPositionType())
-                .filter(role -> role == LENDER || role == BORROWER)
-                .orElseThrow(() -> new NoRequiredPartyRoleException(positionDto.getPositionId()));
+        return extractLenderOrBorrower(positionDto.unwrapPositionType(), positionDto.getPositionId());
+    }
+
+    /**
+     * Retrieve Lender or Borrower or throw NoRequiredPartyRoleException exception otherwise.
+     *
+     * @param positionType String
+     * @param positionId String to log the position id for exception
+     * @return Lender or Borrower PartyRole
+     */
+    public static PartyRole extractLenderOrBorrower(@Nullable String positionType, @Nullable String positionId) {
+        if (positionType == null) {
+            throw new NoRequiredPartyRoleException();
+        }
+        return extractPartyRole(positionType)
+            .filter(role -> role == LENDER || role == BORROWER)
+            .orElseThrow(() -> new NoRequiredPartyRoleException(
+                format(NO_PARTY_ROLE_EXCEPTION, positionId)));
     }
 }
 

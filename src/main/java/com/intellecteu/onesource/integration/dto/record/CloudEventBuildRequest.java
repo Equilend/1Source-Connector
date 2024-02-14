@@ -1,9 +1,9 @@
 package com.intellecteu.onesource.integration.dto.record;
 
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.enums.IntegrationSubProcess;
-import com.intellecteu.onesource.integration.enums.RecordType;
-import com.intellecteu.onesource.integration.model.EventType;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -156,8 +156,10 @@ CREATE TABLE IF NOT EXISTS position
     security_id           BIGINT          NULL,
     position_type_id      INT          NULL,
     position_type         VARCHAR(255) NULL,
+    account_id            BIGINT       NULL,
     account_lei           VARCHAR(255) NULL,
     short_name            VARCHAR(255) NULL,
+    cp_account_id         BIGINT       NULL,
     cp_lei                VARCHAR(255) NULL,
     info                VARCHAR(255) NULL,
     index_name                VARCHAR(255) NULL,
@@ -166,7 +168,7 @@ CREATE TABLE IF NOT EXISTS position
     processing_status     VARCHAR(255) NULL,
     matching_1source_trade_agreement_id     VARCHAR(255) NULL,
     matching_1source_loan_contract_id     VARCHAR(255) NULL,
-    applicable_instruction_id      INT          NULL,
+    applicable_instruction_id      BIGINT          NULL,
     last_update_datetime   timestamp NULL,
     CONSTRAINT pk_position PRIMARY KEY (spire_position_id)
 );
@@ -363,7 +365,7 @@ CREATE TABLE IF NOT EXISTS rerate_trade
 (
     trade_id             BIGINT NOT NULL,
     last_update_datetime TIMESTAMP,
-    matching_rerate_id   INTEGER,
+    matching_rerate_id   VARCHAR(255),
     processing_status    VARCHAR(255),
     related_contract_id  VARCHAR(255),
     related_position_id  BIGINT,
@@ -371,6 +373,25 @@ CREATE TABLE IF NOT EXISTS rerate_trade
     CONSTRAINT pk_rerate_trade PRIMARY KEY (trade_id),
     CONSTRAINT fk_trade_out FOREIGN KEY (trade_out_trade_id) REFERENCES trade_out (trade_id)
 );
+
+CREATE TABLE IF NOT EXISTS rerate
+(
+    rerate_id                 VARCHAR(255) NOT NULL,
+    contract_id               VARCHAR(255),
+    last_update_datetime      TIMESTAMP,
+    matching_spire_trade_id   BIGINT,
+    processing_status         VARCHAR(255),
+    related_spire_position_id BIGINT,
+    status                    VARCHAR(255),
+    venue_id                  BIGINT,
+    rate_rate_id              BIGINT,
+    rerate_rate_id            BIGINT,
+    CONSTRAINT pk_rerate PRIMARY KEY (rerate_id),
+    CONSTRAINT fk_venue FOREIGN KEY (venue_id) REFERENCES venue (id),
+    CONSTRAINT fk_rate_rate_id FOREIGN KEY (rate_rate_id) REFERENCES rate (id),
+    CONSTRAINT fk_rerate_rate_id FOREIGN KEY (rerate_rate_id) REFERENCES rate (id)
+    );
+
 
 ALTER TABLE agreement DROP CONSTRAINT IF EXISTS FK_AGREEMENT_ON_TRADE;
 ALTER TABLE agreement

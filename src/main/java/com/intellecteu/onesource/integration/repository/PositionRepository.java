@@ -1,24 +1,24 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface PositionRepository extends JpaRepository<Position, String> {
+public interface PositionRepository extends JpaRepository<PositionEntity, String> {
 
-    List<Position> findAll();
+    List<PositionEntity> findAll();
 
-    Optional<Position> getByPositionId(String positionId);
+    Optional<PositionEntity> getByPositionId(String positionId);
 
-    @Query("select p from Position p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
-    List<Position> findAllNotCanceledAndSettled();
+    @Query("select p from PositionEntity p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
+    List<PositionEntity> findAllNotCanceledAndSettled();
 
-    Optional<Position> findByVenueRefId(String venueRefId);
+    Optional<PositionEntity> findByVenueRefId(String venueRefId);
 
-    List<Position> findAllByProcessingStatus(ProcessingStatus processingStatus);
+    List<PositionEntity> findAllByProcessingStatus(ProcessingStatus processingStatus);
 
-    List<Position> findByMatching1SourceTradeAgreementId(String agreementId);
+    List<PositionEntity> findByMatching1SourceTradeAgreementId(String agreementId);
 }
