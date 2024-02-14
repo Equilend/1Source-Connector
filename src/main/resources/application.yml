@@ -10,12 +10,10 @@ camel:
 
 spring:
   datasource:
-    driverClassName: ${DB_DRIVER:org.postgresql.Driver}
     url: ${DB_URL:jdbc:postgresql://1source-postgres:5432/postgres}
     username: ${DB_USERNAME:postgres}
     password: ${DB_PASSWORD:postgres}
   jpa:
-    database: POSTGRESQL
     show-sql: false
     properties:
       hibernate:
@@ -34,6 +32,23 @@ spring:
 
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
+          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: ${onesource.auth.resource}
+            authorization-grant-type: authorization_code
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
+            user-name-attribute: ${onesource.auth.principal-attribute}
 
 logging:
   level:
@@ -65,6 +80,7 @@ onesource:
       secret: ${1SOURCE_AUTH_CLIENT_SECRET}
 
 spire:
+  baseEndpoint: ${SPIRE_BASE_ENDPOINT}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT}
   username: ${SPIRE_LENDER_USERNAME}
@@ -77,11 +93,11 @@ integration-toolkit:
   starting-trade-event-datetime: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
   route:
     rerate:
-      enable: true
+      enable: ${RERATE_ROUTE:true}
     contract-initiation-trade-started:
-      enable: true
+      enable: ${CI_WITH_TRADE_ROUTE:true}
     contract-initiation-without-trade-route:
-      enable: true
+      enable: ${CI_WITHOUT_TRADE_ROUTE:true}
   uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
 
 notification:
