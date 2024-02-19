@@ -10,7 +10,6 @@ camel:
 
 spring:
   datasource:
-    driverClassName: org.postgresql.Driver
     url: jdbc:postgresql://1source-postgres:5432/postgres
     username: postgres
     password: postgres
@@ -39,8 +38,10 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-          jwk-set-uri: ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+          #should be a link to a localhost where keycloak instance is running
+          issuer-uri: http://localhost:8088/realms/${onesource.auth.realm}
+          # should be a link to the service in the docker container
+          jwk-set-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}/protocol/openid-connect/certs
       client:
         registration:
           keycloak:
