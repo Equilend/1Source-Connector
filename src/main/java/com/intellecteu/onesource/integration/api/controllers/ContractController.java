@@ -2,9 +2,9 @@ package com.intellecteu.onesource.integration.api.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.intellecteu.onesource.integration.api.contracts.ContractServiceApi;
+import com.intellecteu.onesource.integration.api.dto.ContractDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
-import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.api.services.contracts.ContractApiService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,20 +25,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/contracts")
 public class ContractController {
 
-    private final ContractServiceApi contractService;
+    private final ContractApiService contractService;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PageResponse<Contract>> getContracts(final Pageable pageable,
+    public ResponseEntity<PageResponse<ContractDto>> getContracts(final Pageable pageable,
         @RequestParam(required = false) final MultiValueMap<String, String> parameters) {
-        PageResponse<Contract> contracts = contractService.getAllContracts(pageable, parameters);
+        PageResponse<ContractDto> contracts = contractService.getAllContracts(pageable, parameters);
         return ResponseEntity
             .status(200)
             .body(contracts);
     }
 
     @GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<Contract> getContractById(@NonNull @PathVariable final String id) {
-        Contract contract = contractService.getContractById(id);
+    public ResponseEntity<ContractDto> getContractById(@NonNull @PathVariable final String id) {
+        ContractDto contract = contractService.getContractById(id);
         return ResponseEntity
             .status(200)
             .body(contract);

@@ -77,20 +77,27 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.CloudEventData;
-import com.intellecteu.onesource.integration.dto.record.RelatedObject;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Component
 public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBuilder {
+
+    public ContractInitiationCloudEventBuilder(
+        @Value("${cloudevents.specversion}") String specVersion,
+        @Value("${integration-toolkit.uri}") String integrationUri) {
+        super(specVersion, integrationUri);
+    }
 
     @Override
     public IntegrationProcess getVersion() {
@@ -326,7 +333,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         String subject = related == null
             ? format(TRADE_AGREEMENT_CANCELED, recorded)
             : format(TRADE_AGREEMENT_CANCELED_MATCHED_POSITION, related);
-        CloudEventData data = related == null
+        SystemEventData data = related == null
             ? createEventData(dataMessage, List.of(new RelatedObject(recorded, ONESOURCE_TRADE_AGREEMENT)))
             : createEventData(dataMessage, getTradeAgreementRelatedToPosition(recorded, related));
         return createRecordRequest(

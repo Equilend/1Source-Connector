@@ -2,9 +2,9 @@ package com.intellecteu.onesource.integration.api.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.intellecteu.onesource.integration.api.cloudevents.CloudSystemEventService;
+import com.intellecteu.onesource.integration.api.dto.CloudSystemEventDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
-import com.intellecteu.onesource.integration.api.models.CloudSystemEvent;
+import com.intellecteu.onesource.integration.api.services.cloudevents.CloudSystemEventService;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,19 +28,24 @@ public class CloudSystemEventController {
     private final CloudSystemEventService cloudSystemEventService;
 
     @GetMapping(path = "/cloudevents", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PageResponse<CloudSystemEvent>> getCloudEvents(final Pageable pageable,
+    public ResponseEntity<PageResponse<CloudSystemEventDto>> getCloudEvents(final Pageable pageable,
         @RequestParam(required = false) final MultiValueMap<String, String> parameters) {
-        PageResponse<CloudSystemEvent> events = cloudSystemEventService.getCloudEvents(pageable, parameters);
+        PageResponse<CloudSystemEventDto> events = cloudSystemEventService.getCloudEvents(pageable, parameters);
         return ResponseEntity
             .status(200)
             .body(events);
     }
 
-    @GetMapping(path = "/cloudevent/{id}", produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<CloudSystemEvent> getCloudEventById(@NonNull @PathVariable final String id) {
-        CloudSystemEvent event = cloudSystemEventService.getCloudEventById(id);
+    @GetMapping(path = "/cloudevents/{id}", produces = APPLICATION_JSON_VALUE)
+    public ResponseEntity<CloudSystemEventDto> getCloudEventById(@NonNull @PathVariable final String id) {
+        CloudSystemEventDto event = cloudSystemEventService.getCloudEventById(id);
         return ResponseEntity
             .status(200)
             .body(event);
+    }
+
+    @GetMapping(path = "/cloudevents/report", produces = APPLICATION_JSON_VALUE)
+    public String getCloudEventsReport() {
+        return "Under construction";
     }
 }
