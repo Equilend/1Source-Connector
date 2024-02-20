@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 
 /**
  * Service to record events according to the CloudEvents <a

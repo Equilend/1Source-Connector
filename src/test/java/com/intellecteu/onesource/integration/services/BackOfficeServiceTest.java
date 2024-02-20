@@ -10,11 +10,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
@@ -73,7 +72,8 @@ class BackOfficeServiceTest {
     void testExceptionCloudEventCapturing_whenApiResponseIsUnauthorized() {
         var expectedExceptionToCapture = new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
         var recordFactory = new CloudEventFactoryImpl(
-            Map.of(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder()));
+            Map.of(CONTRACT_INITIATION,
+                new ContractInitiationCloudEventBuilder("specVersion", "http://localhost:8000")));
         var eventBuilder = recordFactory.eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildExceptionRequest(
             expectedExceptionToCapture, GET_NEW_POSITIONS_PENDING_CONFIRMATION);
@@ -95,7 +95,8 @@ class BackOfficeServiceTest {
     void testExceptionCloudEventCapturing_whenApiResponseIsForbidden() {
         var expectedExceptionToCapture = new HttpClientErrorException(HttpStatus.FORBIDDEN);
         var recordFactory = new CloudEventFactoryImpl(
-            Map.of(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder()));
+            Map.of(CONTRACT_INITIATION,
+                new ContractInitiationCloudEventBuilder("specVersion", "http://localhost:8000")));
         var eventBuilder = recordFactory.eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildExceptionRequest(
             expectedExceptionToCapture, GET_NEW_POSITIONS_PENDING_CONFIRMATION);

@@ -20,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
@@ -28,6 +27,7 @@ import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -110,10 +110,11 @@ public class AgreementFlowTest {
         eventMapper = new EventMapper(objectMapper);
         spireMapper = new SpireMapper(objectMapper);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
-        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_INITIATION, new GenericRecordCloudEventBuilder());
-        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder());
+        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(CONTRACT_INITIATION, new GenericRecordCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST,
+            new GenericRecordCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(CONTRACT_SETTLEMENT, new GenericRecordCloudEventBuilder("specVersion", "http://localhost:8000"));
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);

@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
-import com.intellecteu.onesource.integration.dto.record.RecordRequest;
-import com.intellecteu.onesource.integration.dto.record.Recordable;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RecordRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.Recordable;
 
 /**
  * The service to record exceptions or events raised by the Integration toolkit
