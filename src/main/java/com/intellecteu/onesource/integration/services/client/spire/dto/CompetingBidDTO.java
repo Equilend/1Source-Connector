@@ -13,245 +13,217 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * CompetingBidDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class CompetingBidDTO {
+  @JsonProperty("basis")
+  private Integer basis = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("calendar")
+  private Integer calendar = null;
 
-    @JsonProperty("basis")
-    private Integer basis = null;
+  @JsonProperty("comments")
+  private String comments = null;
 
-    @JsonProperty("calendar")
-    private Integer calendar = null;
+  @JsonProperty("counterparty")
+  private Integer counterparty = null;
 
-    @JsonProperty("comments")
-    private String comments = null;
+  @JsonProperty("index")
+  private Integer index = null;
 
-    @JsonProperty("counterparty")
-    private Integer counterparty = null;
+  @JsonProperty("rate")
+  private Double rate = null;
 
-    @JsonProperty("index")
-    private Integer index = null;
+  @JsonProperty("spread")
+  private Double spread = null;
 
-    @JsonProperty("rate")
-    private Double rate = null;
+  public CompetingBidDTO basis(Integer basis) {
+    this.basis = basis;
+    return this;
+  }
 
-    @JsonProperty("spread")
-    private Double spread = null;
+   /**
+   * Get basis
+   * @return basis
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getBasis() {
+    return basis;
+  }
 
-    public CompetingBidDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setBasis(Integer basis) {
+    this.basis = basis;
+  }
+
+  public CompetingBidDTO calendar(Integer calendar) {
+    this.calendar = calendar;
+    return this;
+  }
+
+   /**
+   * Get calendar
+   * @return calendar
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCalendar() {
+    return calendar;
+  }
+
+  public void setCalendar(Integer calendar) {
+    this.calendar = calendar;
+  }
+
+  public CompetingBidDTO comments(String comments) {
+    this.comments = comments;
+    return this;
+  }
+
+   /**
+   * Get comments
+   * @return comments
+  **/
+  @ApiModelProperty(value = "")
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public CompetingBidDTO counterparty(Integer counterparty) {
+    this.counterparty = counterparty;
+    return this;
+  }
+
+   /**
+   * Get counterparty
+   * @return counterparty
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCounterparty() {
+    return counterparty;
+  }
+
+  public void setCounterparty(Integer counterparty) {
+    this.counterparty = counterparty;
+  }
+
+  public CompetingBidDTO index(Integer index) {
+    this.index = index;
+    return this;
+  }
+
+   /**
+   * Get index
+   * @return index
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getIndex() {
+    return index;
+  }
+
+  public void setIndex(Integer index) {
+    this.index = index;
+  }
+
+  public CompetingBidDTO rate(Double rate) {
+    this.rate = rate;
+    return this;
+  }
+
+   /**
+   * Get rate
+   * @return rate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRate() {
+    return rate;
+  }
+
+  public void setRate(Double rate) {
+    this.rate = rate;
+  }
+
+  public CompetingBidDTO spread(Double spread) {
+    this.spread = spread;
+    return this;
+  }
+
+   /**
+   * Get spread
+   * @return spread
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSpread() {
+    return spread;
+  }
+
+  public void setSpread(Double spread) {
+    this.spread = spread;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    CompetingBidDTO competingBidDTO = (CompetingBidDTO) o;
+    return Objects.equals(this.basis, competingBidDTO.basis) &&
+        Objects.equals(this.calendar, competingBidDTO.calendar) &&
+        Objects.equals(this.comments, competingBidDTO.comments) &&
+        Objects.equals(this.counterparty, competingBidDTO.counterparty) &&
+        Objects.equals(this.index, competingBidDTO.index) &&
+        Objects.equals(this.rate, competingBidDTO.rate) &&
+        Objects.equals(this.spread, competingBidDTO.spread);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(basis, calendar, comments, counterparty, index, rate, spread);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class CompetingBidDTO {\n");
+    
+    sb.append("    basis: ").append(toIndentedString(basis)).append("\n");
+    sb.append("    calendar: ").append(toIndentedString(calendar)).append("\n");
+    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+    sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
+    sb.append("    index: ").append(toIndentedString(index)).append("\n");
+    sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
+    sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public CompetingBidDTO basis(Integer basis) {
-        this.basis = basis;
-        return this;
-    }
-
-    /**
-     * Get basis
-     *
-     * @return basis
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getBasis() {
-        return basis;
-    }
-
-    public void setBasis(Integer basis) {
-        this.basis = basis;
-    }
-
-    public CompetingBidDTO calendar(Integer calendar) {
-        this.calendar = calendar;
-        return this;
-    }
-
-    /**
-     * Get calendar
-     *
-     * @return calendar
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(Integer calendar) {
-        this.calendar = calendar;
-    }
-
-    public CompetingBidDTO comments(String comments) {
-        this.comments = comments;
-        return this;
-    }
-
-    /**
-     * Get comments
-     *
-     * @return comments
-     **/
-    @ApiModelProperty(value = "")
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public CompetingBidDTO counterparty(Integer counterparty) {
-        this.counterparty = counterparty;
-        return this;
-    }
-
-    /**
-     * Get counterparty
-     *
-     * @return counterparty
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCounterparty() {
-        return counterparty;
-    }
-
-    public void setCounterparty(Integer counterparty) {
-        this.counterparty = counterparty;
-    }
-
-    public CompetingBidDTO index(Integer index) {
-        this.index = index;
-        return this;
-    }
-
-    /**
-     * Get index
-     *
-     * @return index
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public CompetingBidDTO rate(Double rate) {
-        this.rate = rate;
-        return this;
-    }
-
-    /**
-     * Get rate
-     *
-     * @return rate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
-
-    public CompetingBidDTO spread(Double spread) {
-        this.spread = spread;
-        return this;
-    }
-
-    /**
-     * Get spread
-     *
-     * @return spread
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSpread() {
-        return spread;
-    }
-
-    public void setSpread(Double spread) {
-        this.spread = spread;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        CompetingBidDTO competingBidDTO = (CompetingBidDTO) o;
-        return Objects.equals(this.qualifiedName, competingBidDTO.qualifiedName) &&
-            Objects.equals(this.basis, competingBidDTO.basis) &&
-            Objects.equals(this.calendar, competingBidDTO.calendar) &&
-            Objects.equals(this.comments, competingBidDTO.comments) &&
-            Objects.equals(this.counterparty, competingBidDTO.counterparty) &&
-            Objects.equals(this.index, competingBidDTO.index) &&
-            Objects.equals(this.rate, competingBidDTO.rate) &&
-            Objects.equals(this.spread, competingBidDTO.spread);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, basis, calendar, comments, counterparty, index, rate, spread);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class CompetingBidDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    basis: ").append(toIndentedString(basis)).append("\n");
-        sb.append("    calendar: ").append(toIndentedString(calendar)).append("\n");
-        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-        sb.append("    counterparty: ").append(toIndentedString(counterparty)).append("\n");
-        sb.append("    index: ").append(toIndentedString(index)).append("\n");
-        sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-        sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

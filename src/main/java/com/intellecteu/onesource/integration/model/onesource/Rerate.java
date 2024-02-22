@@ -22,9 +22,10 @@ public class Rerate {
 
     private String rerateId;
     private String contractId;
-    private RerateStatus status;
+    private RerateStatus rerateStatus;
     private Long matchingSpireTradeId;
     private Long relatedSpirePositionId;
+    private LocalDateTime createUpdateDatetime;
     private LocalDateTime lastUpdateDatetime;
     private Venue executionVenue;
     private Rate rate;

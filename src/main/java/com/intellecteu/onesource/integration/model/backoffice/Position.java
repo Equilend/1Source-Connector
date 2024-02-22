@@ -57,7 +57,6 @@ public class Position implements Reconcilable {
     private Double contractValue;
     private Integer currencyId;
     private Long securityId;
-    private Integer positionTypeId;
     private ProcessingStatus processingStatus;
     private LocalDateTime lastUpdateDateTime;
     private String matching1SourceTradeAgreementId;

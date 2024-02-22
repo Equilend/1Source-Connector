@@ -17,6 +17,7 @@ import lombok.Setter;
 public class RerateTrade {
 
     private Long tradeId;
+    private LocalDateTime creationDatetime;
     private LocalDateTime lastUpdateDatetime;
     private ProcessingStatus processingStatus;
     private String matchingRerateId;

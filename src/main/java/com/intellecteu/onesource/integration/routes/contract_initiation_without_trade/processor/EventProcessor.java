@@ -31,6 +31,7 @@ import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -121,7 +122,9 @@ public class EventProcessor {
         try {
             oneSourceService.retrieveRerate(resourceUri)
                 .ifPresent(rerate -> {
-                    rerate.setProcessingStatus(CREATED);
+                    rerate.setCreateUpdateDatetime(LocalDateTime.now());
+                    rerate.setLastUpdateDatetime(LocalDateTime.now());
+                    rerate.setProcessingStatus(ProcessingStatus.PROPOSED);
                     rerateService.saveRerate(rerate);
                 });
         } catch (HttpStatusCodeException e) {

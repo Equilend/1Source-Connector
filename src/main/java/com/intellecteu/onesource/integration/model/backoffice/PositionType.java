@@ -16,6 +16,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionType {
 
+    private Integer positionTypeId;
     private String positionType;
 
 }

@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.RerateTradeRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import java.time.LocalDate;
@@ -41,10 +42,12 @@ public class RerateTradeService {
     }
 
     public Optional<RerateTrade> findRerateTradeByContractIdAndSettleDate(String contractId, LocalDate settleDate) {
-        List<RerateTrade> rerateTradesWithRelatedContractId = rerateTradeRepository.findByRelatedContractId(contractId).stream().map(backOfficeMapper::toModel).collect(
+        List<RerateTrade> rerateTradesWithRelatedContractId = rerateTradeRepository.findByRelatedContractIdAndProcessingStatus(
+            contractId, ProcessingStatus.SUBMITTED).stream().map(backOfficeMapper::toModel).collect(
             Collectors.toList());
         Optional<RerateTrade> rerateTrade = rerateTradesWithRelatedContractId.stream()
-            .filter(r -> r.getTradeOut().getSettleDate().toLocalDate().equals(settleDate))
+            .filter(r -> r.getMatchingRerateId() == null && r.getTradeOut().getSettleDate().toLocalDate()
+                .equals(settleDate))
             .findFirst();
         return rerateTrade;
     }

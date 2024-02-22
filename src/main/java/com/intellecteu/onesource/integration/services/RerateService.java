@@ -31,9 +31,9 @@ public class RerateService {
         return oneSourceMapper.toModel(rerateEntity);
     }
 
-    public Optional<Rerate> findRerate(Long positionId, LocalDate effectiveDate, RerateStatus rerateStatus) {
-        List<Rerate> rerateList = rerateRepository.findByRelatedSpirePositionIdAndStatus(
-            positionId, rerateStatus).stream().map(oneSourceMapper::toModel).collect(Collectors.toList());
+    public Optional<Rerate> findRerate(Long positionId, LocalDate effectiveDate, ProcessingStatus processingStatus) {
+        List<Rerate> rerateList = rerateRepository.findByRelatedSpirePositionIdAndProcessingStatus(
+            positionId, processingStatus).stream().map(oneSourceMapper::toModel).collect(Collectors.toList());
         Optional<Rerate> rerateOptional = rerateList.stream().filter(rerate ->
             (rerate.getRerate().getRebate().getFloating() != null && effectiveDate.equals(
                 rerate.getRerate().getRebate().getFloating().getEffectiveDate()))
@@ -42,10 +42,11 @@ public class RerateService {
         return rerateOptional;
     }
 
-    public Rerate markRerateAsMatchedWithRerateTradeId(Rerate rerate, Long tradeId) {
+    public Rerate markRerateAsMatchedWithRerateTradeIdAndPositionId(Rerate rerate, Long tradeId, Long positionId) {
         rerate.setMatchingSpireTradeId(tradeId);
+        rerate.setRelatedSpirePositionId(positionId);
         rerate.setLastUpdateDatetime(LocalDateTime.now());
-        rerate.setProcessingStatus(ProcessingStatus.MATCHED_RERATE_TRADE);
+        rerate.setProcessingStatus(ProcessingStatus.MATCHED);
         return saveRerate(rerate);
     }
 }

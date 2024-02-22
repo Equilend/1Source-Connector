@@ -34,6 +34,7 @@ public class RerateEntity {
     private RerateStatus status;
     private Long matchingSpireTradeId;
     private Long relatedSpirePositionId;
+    private LocalDateTime createUpdateDatetime;
     private LocalDateTime lastUpdateDatetime;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "venue_id")

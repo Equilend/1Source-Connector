@@ -115,7 +115,6 @@ class BackOfficeServiceTest {
 
     @Test
     void getNewBackOfficeTradeEvents_OKApiClientResponseWithObject_ListOfRerateTrades() {
-        List<String> positionIds = List.of("1");
         SResponseNQueryResponseTradeOutDTO responseNQueryResponseTradeOutDTO = new SResponseNQueryResponseTradeOutDTO();
         NQueryResponseTradeOutDTO data = new NQueryResponseTradeOutDTO();
         PositionOutDTO positionOutDTO = new PositionOutDTO();
@@ -131,7 +130,7 @@ class BackOfficeServiceTest {
         ResponseEntity response = ResponseEntity.ok(responseNQueryResponseTradeOutDTO);
         doReturn(response).when(tradeSpireApiClient).getTrades(any());
 
-        List<RerateTrade> newBackOfficeTradeList = service.getNewBackOfficeTradeEvents(Optional.empty(), positionIds);
+        List<RerateTrade> newBackOfficeTradeList = service.getNewBackOfficeRerateTradeEvents(Optional.empty());
 
         assertTrue(!newBackOfficeTradeList.isEmpty());
         assertEquals(tradeId, newBackOfficeTradeList.get(0).getTradeId());

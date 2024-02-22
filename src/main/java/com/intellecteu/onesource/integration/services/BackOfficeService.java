@@ -165,10 +165,10 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public List<RerateTrade> getNewBackOfficeTradeEvents(Optional<Long> lastTradeId, List<String> positionIds) {
+    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeId) {
         Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTrades(maxTradeId.toString(), positionIds));
+            .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
@@ -194,7 +194,8 @@ public class BackOfficeService {
         PartyRole partyRole, Long accountId) throws InstructionRetrievementException {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createListOfTuplesGetInstruction(String.valueOf(position.getExposure().getDepoId()),
-                String.valueOf(position.getSecurityId()), String.valueOf(position.getPositionTypeId()),
+                String.valueOf(position.getSecurityId()),
+                String.valueOf(position.getPositionType().getPositionTypeId()),
                 String.valueOf(position.getCurrencyId()), String.valueOf(accountId)));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
@@ -221,9 +222,9 @@ public class BackOfficeService {
             final AccountDTO accountDTO = new AccountDTO();
             accountDTO.setDtc(
                 Long.valueOf(settlement.getInstruction().getDtcParticipantNumber()));
-            final SwiftbicDTO swiftBic = new SwiftbicDTO(
-                settlement.getInstruction().getSettlementBic(),
-                settlement.getInstruction().getLocalAgentBic());
+            final SwiftbicDTO swiftBic = new SwiftbicDTO();
+            swiftBic.setBic(settlement.getInstruction().getSettlementBic());
+            swiftBic.setBranch(settlement.getInstruction().getLocalAgentBic());
 
             return InstructionDTO.builder()
                 .agentName(settlement.getInstruction().getLocalAgentName())
@@ -355,14 +356,14 @@ public class BackOfficeService {
         return tuples;
     }
 
-    private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId, List<String> positionIds) {
+    private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId) {
         List<NQueryTuple> tuples = new ArrayList<>();
         tuples.add(
-            new NQueryTuple().lValue("positionType").operator(NQueryTuple.OperatorEnum.IN)
-                .rValue1(String.join(",", positionTypes)));
+            new NQueryTuple().lValue("tradetype").operator(NQueryTuple.OperatorEnum.IN)
+                .rValue1("RERATE,RERATE BORROW"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
-        tuples.add(new NQueryTuple().lValue("positionId").operator(NQueryTuple.OperatorEnum.IN)
-            .rValue1(String.join(",", positionIds)));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
+            .rValue1("PENDING ONESOURCE CONFIRMATION"));
         return tuples;
     }
 
