@@ -178,13 +178,15 @@ public class RecordMessageConstant {
 
     public static class Rerate{
         public static class Subject {
-            public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source rerate id - %s";
-            public static final String MATCHED_RERATE = "SPIRE trade event id - %s";
+            public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source Rerate - %s";
+            public static final String MATCHED_RERATE = "Trade - %s";
+            public static final String CREATED_RERATE = "Trade - %s";
             public static final String UNMATCHED_RERATE = "1Source rerate id -  %s";
         }
         public static class DataMsg {
             public static final String GET_RERATE_EXCEPTION_1SOURCE_MSG = "The details of rerate proposal %s have not been retrieved from 1Source for the following reason: %s";
-            public static final String MATCHED_RERATE_MSG = "The 1Source rerate proposal: %s has been matched with the SPIRE trade event: %s";
+            public static final String MATCHED_RERATE_MSG = "The rerate proposal %s has been matched with a SPIRE rerate trade: %s and needs now to be validated.";
+            public static final String CREATED_RERATE_MSG = "A new rerate trade %s has been captured but yet matched with a rerate proposal.";
             public static final String UNMATCHED_RERATE_MSG = "The rerate proposal %s has been captured but not yet matched with a SPIRE trade event";
         }
     }

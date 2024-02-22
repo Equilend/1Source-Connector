@@ -13,143 +13,145 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.IndexrateDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SGroupIndexrateDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * NQueryResponseIndexrateDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class NQueryResponseIndexrateDTO {
+  @JsonProperty("beans")
+  private List<IndexrateDTO> beans = null;
 
-    @JsonProperty("beans")
-    private List<IndexrateDTO> beans = null;
+  @JsonProperty("groups")
+  private List<SGroupIndexrateDTO> groups = null;
 
-    @JsonProperty("groups")
-    private List<SGroupIndexrateDTO> groups = null;
+  @JsonProperty("totalRows")
+  private Integer totalRows = null;
 
-    @JsonProperty("totalRows")
-    private Integer totalRows = null;
+  public NQueryResponseIndexrateDTO beans(List<IndexrateDTO> beans) {
+    this.beans = beans;
+    return this;
+  }
 
-    public NQueryResponseIndexrateDTO beans(List<IndexrateDTO> beans) {
-        this.beans = beans;
-        return this;
+  public NQueryResponseIndexrateDTO addBeansItem(IndexrateDTO beansItem) {
+    if (this.beans == null) {
+      this.beans = new ArrayList<>();
     }
+    this.beans.add(beansItem);
+    return this;
+  }
 
-    public NQueryResponseIndexrateDTO addBeansItem(IndexrateDTO beansItem) {
-        if (this.beans == null) {
-            this.beans = new ArrayList<>();
-        }
-        this.beans.add(beansItem);
-        return this;
+   /**
+   * Get beans
+   * @return beans
+  **/
+  @ApiModelProperty(value = "")
+  public List<IndexrateDTO> getBeans() {
+    return beans;
+  }
+
+  public void setBeans(List<IndexrateDTO> beans) {
+    this.beans = beans;
+  }
+
+  public NQueryResponseIndexrateDTO groups(List<SGroupIndexrateDTO> groups) {
+    this.groups = groups;
+    return this;
+  }
+
+  public NQueryResponseIndexrateDTO addGroupsItem(SGroupIndexrateDTO groupsItem) {
+    if (this.groups == null) {
+      this.groups = new ArrayList<>();
     }
+    this.groups.add(groupsItem);
+    return this;
+  }
 
-    /**
-     * Get beans
-     *
-     * @return beans
-     **/
-    @ApiModelProperty(value = "")
-    public List<IndexrateDTO> getBeans() {
-        return beans;
+   /**
+   * Get groups
+   * @return groups
+  **/
+  @ApiModelProperty(value = "")
+  public List<SGroupIndexrateDTO> getGroups() {
+    return groups;
+  }
+
+  public void setGroups(List<SGroupIndexrateDTO> groups) {
+    this.groups = groups;
+  }
+
+  public NQueryResponseIndexrateDTO totalRows(Integer totalRows) {
+    this.totalRows = totalRows;
+    return this;
+  }
+
+   /**
+   * Get totalRows
+   * @return totalRows
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTotalRows() {
+    return totalRows;
+  }
+
+  public void setTotalRows(Integer totalRows) {
+    this.totalRows = totalRows;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setBeans(List<IndexrateDTO> beans) {
-        this.beans = beans;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    NQueryResponseIndexrateDTO nqueryResponseIndexrateDTO = (NQueryResponseIndexrateDTO) o;
+    return Objects.equals(this.beans, nqueryResponseIndexrateDTO.beans) &&
+        Objects.equals(this.groups, nqueryResponseIndexrateDTO.groups) &&
+        Objects.equals(this.totalRows, nqueryResponseIndexrateDTO.totalRows);
+  }
 
-    public NQueryResponseIndexrateDTO groups(List<SGroupIndexrateDTO> groups) {
-        this.groups = groups;
-        return this;
+  @Override
+  public int hashCode() {
+    return Objects.hash(beans, groups, totalRows);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class NQueryResponseIndexrateDTO {\n");
+    
+    sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
+    sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
+    sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public NQueryResponseIndexrateDTO addGroupsItem(SGroupIndexrateDTO groupsItem) {
-        if (this.groups == null) {
-            this.groups = new ArrayList<>();
-        }
-        this.groups.add(groupsItem);
-        return this;
-    }
-
-    /**
-     * Get groups
-     *
-     * @return groups
-     **/
-    @ApiModelProperty(value = "")
-    public List<SGroupIndexrateDTO> getGroups() {
-        return groups;
-    }
-
-    public void setGroups(List<SGroupIndexrateDTO> groups) {
-        this.groups = groups;
-    }
-
-    public NQueryResponseIndexrateDTO totalRows(Integer totalRows) {
-        this.totalRows = totalRows;
-        return this;
-    }
-
-    /**
-     * Get totalRows
-     *
-     * @return totalRows
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTotalRows() {
-        return totalRows;
-    }
-
-    public void setTotalRows(Integer totalRows) {
-        this.totalRows = totalRows;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        NQueryResponseIndexrateDTO nqueryResponseIndexrateDTO = (NQueryResponseIndexrateDTO) o;
-        return Objects.equals(this.beans, nqueryResponseIndexrateDTO.beans) &&
-            Objects.equals(this.groups, nqueryResponseIndexrateDTO.groups) &&
-            Objects.equals(this.totalRows, nqueryResponseIndexrateDTO.totalRows);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(beans, groups, totalRows);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class NQueryResponseIndexrateDTO {\n");
-
-        sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
-        sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
-        sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

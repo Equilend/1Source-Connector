@@ -13,2688 +13,2537 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SecurityIdentifierDetailDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * SecurityDtlDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class SecurityDtlDTO {
+  @JsonProperty("accrualResetDate")
+  private LocalDateTime accrualResetDate = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("active")
+  private Boolean active = null;
 
-    @JsonProperty("accrualResetDate")
-    private LocalDateTime accrualResetDate = null;
+  @JsonProperty("advisor")
+  private String advisor = null;
 
-    @JsonProperty("active")
-    private Boolean active = null;
+  @JsonProperty("askPrice")
+  private Double askPrice = null;
 
-    @JsonProperty("advisor")
-    private String advisor = null;
+  @JsonProperty("autoCloseTime")
+  private Integer autoCloseTime = null;
 
-    @JsonProperty("askPrice")
-    private Double askPrice = null;
+  @JsonProperty("autoOpenTime")
+  private Integer autoOpenTime = null;
 
-    @JsonProperty("autoCloseTime")
-    private Integer autoCloseTime = null;
+  @JsonProperty("baseFeeRate")
+  private Double baseFeeRate = null;
 
-    @JsonProperty("autoOpenTime")
-    private Integer autoOpenTime = null;
+  @JsonProperty("baseRebateRate")
+  private Double baseRebateRate = null;
 
-    @JsonProperty("baseFeeRate")
-    private Double baseFeeRate = null;
+  @JsonProperty("bidPrice")
+  private Double bidPrice = null;
 
-    @JsonProperty("baseRebateRate")
-    private Double baseRebateRate = null;
+  @JsonProperty("category0Id")
+  private Integer category0Id = null;
 
-    @JsonProperty("bidPrice")
-    private Double bidPrice = null;
+  @JsonProperty("category1Id")
+  private Integer category1Id = null;
 
-    @JsonProperty("category0Id")
-    private Integer category0Id = null;
+  @JsonProperty("category2Id")
+  private Integer category2Id = null;
 
-    @JsonProperty("category1Id")
-    private Integer category1Id = null;
+  @JsonProperty("category3Id")
+  private Integer category3Id = null;
 
-    @JsonProperty("category2Id")
-    private Integer category2Id = null;
+  @JsonProperty("categoryId")
+  private Integer categoryId = null;
 
-    @JsonProperty("category3Id")
-    private Integer category3Id = null;
+  @JsonProperty("chilled")
+  private Boolean chilled = null;
 
-    @JsonProperty("categoryId")
-    private Integer categoryId = null;
+  @JsonProperty("clientCode")
+  private String clientCode = null;
 
-    @JsonProperty("chilled")
-    private Boolean chilled = null;
+  @JsonProperty("clientSecId")
+  private String clientSecId = null;
 
-    @JsonProperty("clientCode")
-    private String clientCode = null;
+  @JsonProperty("closeTime")
+  private Integer closeTime = null;
 
-    @JsonProperty("clientSecId")
-    private String clientSecId = null;
+  @JsonProperty("collatGrade")
+  private Integer collatGrade = null;
 
-    @JsonProperty("closeTime")
-    private Integer closeTime = null;
+  @JsonProperty("comments")
+  private String comments = null;
 
-    @JsonProperty("collatGrade")
-    private Integer collatGrade = null;
+  @JsonProperty("countryId")
+  private Integer countryId = null;
 
-    @JsonProperty("comments")
-    private String comments = null;
+  @JsonProperty("countryKy")
+  private String countryKy = null;
 
-    @JsonProperty("countryId")
-    private Integer countryId = null;
+  @JsonProperty("couponType")
+  private String couponType = null;
 
-    @JsonProperty("countryKy")
-    private String countryKy = null;
+  @JsonProperty("currencyId")
+  private Integer currencyId = null;
 
-    @JsonProperty("couponType")
-    private String couponType = null;
+  @JsonProperty("cusip")
+  private String cusip = null;
 
-    @JsonProperty("currencyId")
-    private Integer currencyId = null;
+  @JsonProperty("defaultPriceFlag")
+  private Boolean defaultPriceFlag = null;
 
-    @JsonProperty("cusip")
-    private String cusip = null;
+  @JsonProperty("depositoryList")
+  private List<Integer> depositoryList = null;
 
-    @JsonProperty("defaultPriceFlag")
-    private Boolean defaultPriceFlag = null;
+  @JsonProperty("description")
+  private String description = null;
 
-    @JsonProperty("depositoryList")
-    private List<Integer> depositoryList = null;
+  @JsonProperty("dirtyPrice")
+  private Double dirtyPrice = null;
 
-    @JsonProperty("description")
-    private String description = null;
+  @JsonProperty("distBusinessDay")
+  private Integer distBusinessDay = null;
 
-    @JsonProperty("dirtyPrice")
-    private Double dirtyPrice = null;
+  @JsonProperty("duration")
+  private Double duration = null;
 
-    @JsonProperty("distBusinessDay")
-    private Integer distBusinessDay = null;
+  @JsonProperty("earningDistFrequency")
+  private String earningDistFrequency = null;
 
-    @JsonProperty("duration")
-    private Double duration = null;
+  @JsonProperty("exchangeId")
+  private Integer exchangeId = null;
 
-    @JsonProperty("earningDistFrequency")
-    private String earningDistFrequency = null;
+  @JsonProperty("expMaturityDate")
+  private LocalDateTime expMaturityDate = null;
 
-    @JsonProperty("exchangeId")
-    private Integer exchangeId = null;
+  @JsonProperty("factor")
+  private Double factor = null;
 
-    @JsonProperty("expMaturityDate")
-    private LocalDateTime expMaturityDate = null;
+  @JsonProperty("firstAccrualDate")
+  private LocalDateTime firstAccrualDate = null;
 
-    @JsonProperty("factor")
-    private Double factor = null;
+  @JsonProperty("fitchLongTermId")
+  private Integer fitchLongTermId = null;
 
-    @JsonProperty("firstAccrualDate")
-    private LocalDateTime firstAccrualDate = null;
+  @JsonProperty("fitchShortTermId")
+  private Integer fitchShortTermId = null;
 
-    @JsonProperty("fitchLongTermId")
-    private Integer fitchLongTermId = null;
+  @JsonProperty("hotFactor")
+  private Integer hotFactor = null;
 
-    @JsonProperty("fitchShortTermId")
-    private Integer fitchShortTermId = null;
+  @JsonProperty("industryId")
+  private Integer industryId = null;
 
-    @JsonProperty("hotFactor")
-    private Integer hotFactor = null;
+  @JsonProperty("inflationIndex")
+  private Double inflationIndex = null;
 
-    @JsonProperty("industryId")
-    private Integer industryId = null;
+  @JsonProperty("inflationIndexedFlag")
+  private Boolean inflationIndexedFlag = null;
 
-    @JsonProperty("inflationIndex")
-    private Double inflationIndex = null;
+  @JsonProperty("interestAccrued")
+  private Double interestAccrued = null;
 
-    @JsonProperty("inflationIndexedFlag")
-    private Boolean inflationIndexedFlag = null;
+  @JsonProperty("isBaseRateManualUpdate")
+  private Boolean isBaseRateManualUpdate = null;
 
-    @JsonProperty("interestAccrued")
-    private Double interestAccrued = null;
+  @JsonProperty("isGC")
+  private Boolean isGC = null;
 
-    @JsonProperty("isBaseRateManualUpdate")
-    private Boolean isBaseRateManualUpdate = null;
+  @JsonProperty("isHotIndexManualUpdate")
+  private Boolean isHotIndexManualUpdate = null;
 
-    @JsonProperty("isGC")
-    private Boolean isGC = null;
+  @JsonProperty("isin")
+  private String isin = null;
 
-    @JsonProperty("isHotIndexManualUpdate")
-    private Boolean isHotIndexManualUpdate = null;
+  @JsonProperty("issueDate")
+  private LocalDateTime issueDate = null;
 
-    @JsonProperty("isin")
-    private String isin = null;
+  @JsonProperty("issuerId")
+  private Integer issuerId = null;
 
-    @JsonProperty("issueDate")
-    private LocalDateTime issueDate = null;
+  @JsonProperty("issuerName")
+  private String issuerName = null;
 
-    @JsonProperty("issuerId")
-    private Integer issuerId = null;
+  @JsonProperty("lastPrice")
+  private Double lastPrice = null;
 
-    @JsonProperty("issuerName")
-    private String issuerName = null;
+  @JsonProperty("longDuration")
+  private Boolean longDuration = null;
 
-    @JsonProperty("lastPrice")
-    private Double lastPrice = null;
+  @JsonProperty("marketCap")
+  private Double marketCap = null;
 
-    @JsonProperty("longDuration")
-    private Boolean longDuration = null;
+  @JsonProperty("marketVolume")
+  private Integer marketVolume = null;
 
-    @JsonProperty("marketCap")
-    private Double marketCap = null;
+  @JsonProperty("maturityDate")
+  private LocalDateTime maturityDate = null;
 
-    @JsonProperty("marketVolume")
-    private Integer marketVolume = null;
+  @JsonProperty("modDuration")
+  private Double modDuration = null;
 
-    @JsonProperty("maturityDate")
-    private LocalDateTime maturityDate = null;
+  @JsonProperty("moodyLongTermId")
+  private Integer moodyLongTermId = null;
 
-    @JsonProperty("modDuration")
-    private Double modDuration = null;
+  @JsonProperty("moodyShortTermId")
+  private Integer moodyShortTermId = null;
 
-    @JsonProperty("moodyLongTermId")
-    private Integer moodyLongTermId = null;
+  @JsonProperty("nextPaymentDate")
+  private LocalDateTime nextPaymentDate = null;
 
-    @JsonProperty("moodyShortTermId")
-    private Integer moodyShortTermId = null;
+  @JsonProperty("nextResetDate")
+  private LocalDateTime nextResetDate = null;
 
-    @JsonProperty("nextPaymentDate")
-    private LocalDateTime nextPaymentDate = null;
+  @JsonProperty("openCloseTimeType")
+  private Integer openCloseTimeType = null;
 
-    @JsonProperty("nextResetDate")
-    private LocalDateTime nextResetDate = null;
+  @JsonProperty("openTime")
+  private Integer openTime = null;
 
-    @JsonProperty("openCloseTimeType")
-    private Integer openCloseTimeType = null;
+  @JsonProperty("payDelay")
+  private Integer payDelay = null;
 
-    @JsonProperty("openTime")
-    private Integer openTime = null;
+  @JsonProperty("payFrequency")
+  private Integer payFrequency = null;
 
-    @JsonProperty("payDelay")
-    private Integer payDelay = null;
+  @JsonProperty("prepaySpeed")
+  private Double prepaySpeed = null;
 
-    @JsonProperty("payFrequency")
-    private Integer payFrequency = null;
+  @JsonProperty("prevAccrualDate")
+  private LocalDateTime prevAccrualDate = null;
 
-    @JsonProperty("prepaySpeed")
-    private Double prepaySpeed = null;
+  @JsonProperty("prevPaymentDate")
+  private LocalDateTime prevPaymentDate = null;
 
-    @JsonProperty("prevAccrualDate")
-    private LocalDateTime prevAccrualDate = null;
+  @JsonProperty("prevResetDate")
+  private LocalDateTime prevResetDate = null;
 
-    @JsonProperty("prevPaymentDate")
-    private LocalDateTime prevPaymentDate = null;
+  @JsonProperty("previousPaymentDate")
+  private LocalDateTime previousPaymentDate = null;
 
-    @JsonProperty("prevResetDate")
-    private LocalDateTime prevResetDate = null;
+  @JsonProperty("previousResetDate")
+  private LocalDateTime previousResetDate = null;
 
-    @JsonProperty("previousPaymentDate")
-    private LocalDateTime previousPaymentDate = null;
+  @JsonProperty("price")
+  private Double price = null;
 
-    @JsonProperty("previousResetDate")
-    private LocalDateTime previousResetDate = null;
+  @JsonProperty("priceCurrencyId")
+  private Integer priceCurrencyId = null;
 
-    @JsonProperty("price")
-    private Double price = null;
+  @JsonProperty("priceDate")
+  private LocalDateTime priceDate = null;
 
-    @JsonProperty("priceCurrencyId")
-    private Integer priceCurrencyId = null;
+  @JsonProperty("priceFactor")
+  private Integer priceFactor = null;
 
-    @JsonProperty("priceDate")
-    private LocalDateTime priceDate = null;
+  @JsonProperty("priceSource")
+  private Integer priceSource = null;
 
-    @JsonProperty("priceFactor")
-    private Integer priceFactor = null;
+  @JsonProperty("primaryId")
+  private String primaryId = null;
 
-    @JsonProperty("priceSource")
-    private Integer priceSource = null;
+  @JsonProperty("primaryIdType")
+  private String primaryIdType = null;
 
-    @JsonProperty("primaryId")
-    private String primaryId = null;
+  @JsonProperty("primaryPricingSourceId")
+  private Integer primaryPricingSourceId = null;
 
-    @JsonProperty("primaryIdType")
-    private String primaryIdType = null;
+  @JsonProperty("processingEndDate")
+  private LocalDateTime processingEndDate = null;
 
-    @JsonProperty("primaryPricingSourceId")
-    private Integer primaryPricingSourceId = null;
+  @JsonProperty("processingStartDate")
+  private LocalDateTime processingStartDate = null;
 
-    @JsonProperty("processingEndDate")
-    private LocalDateTime processingEndDate = null;
+  @JsonProperty("quickCode")
+  private String quickCode = null;
 
-    @JsonProperty("processingStartDate")
-    private LocalDateTime processingStartDate = null;
+  @JsonProperty("resetFrequency")
+  private Integer resetFrequency = null;
 
-    @JsonProperty("quickCode")
-    private String quickCode = null;
+  @JsonProperty("securityBasis")
+  private Integer securityBasis = null;
 
-    @JsonProperty("resetFrequency")
-    private Integer resetFrequency = null;
+  @JsonProperty("securityCalendar")
+  private Integer securityCalendar = null;
 
-    @JsonProperty("securityBasis")
-    private Integer securityBasis = null;
+  @JsonProperty("securityId")
+  private Integer securityId = null;
 
-    @JsonProperty("securityCalendar")
-    private Integer securityCalendar = null;
+  @JsonProperty("securityIdentifierDetailList")
+  private List<SecurityIdentifierDetailDTO> securityIdentifierDetailList = null;
 
-    @JsonProperty("securityId")
-    private Integer securityId = null;
+  @JsonProperty("securityIndex")
+  private Integer securityIndex = null;
 
-    @JsonProperty("securityIdentifierDetailList")
-    private List<SecurityIdentifierDetailDTO> securityIdentifierDetailList = null;
+  @JsonProperty("securityLookback")
+  private Integer securityLookback = null;
 
-    @JsonProperty("securityIndex")
-    private Integer securityIndex = null;
+  @JsonProperty("securityRate")
+  private Double securityRate = null;
 
-    @JsonProperty("securityLookback")
-    private Integer securityLookback = null;
+  @JsonProperty("securitySpread")
+  private Integer securitySpread = null;
 
-    @JsonProperty("securityRate")
-    private Double securityRate = null;
+  @JsonProperty("sedol")
+  private String sedol = null;
 
-    @JsonProperty("securitySpread")
-    private Integer securitySpread = null;
+  @JsonProperty("sharesOutstanding")
+  private Double sharesOutstanding = null;
 
-    @JsonProperty("sedol")
-    private String sedol = null;
+  @JsonProperty("shortInterest")
+  private Double shortInterest = null;
 
-    @JsonProperty("sharesOutstanding")
-    private Double sharesOutstanding = null;
+  @JsonProperty("shortName")
+  private String shortName = null;
 
-    @JsonProperty("shortInterest")
-    private Double shortInterest = null;
+  @JsonProperty("spLongTermId")
+  private Integer spLongTermId = null;
 
-    @JsonProperty("shortName")
-    private String shortName = null;
+  @JsonProperty("spShortTermId")
+  private Integer spShortTermId = null;
 
-    @JsonProperty("spLongTermId")
-    private Integer spLongTermId = null;
+  @JsonProperty("status")
+  private String status = null;
 
-    @JsonProperty("spShortTermId")
-    private Integer spShortTermId = null;
+  @JsonProperty("submittedInformationType")
+  private Integer submittedInformationType = null;
 
-    @JsonProperty("status")
-    private String status = null;
+  @JsonProperty("ticker")
+  private String ticker = null;
 
-    @JsonProperty("submittedInformationType")
-    private Integer submittedInformationType = null;
+  @JsonProperty("transferAgent")
+  private String transferAgent = null;
 
-    @JsonProperty("ticker")
-    private String ticker = null;
+  @JsonProperty("updateTransactions")
+  private Boolean updateTransactions = null;
 
-    @JsonProperty("transferAgent")
-    private String transferAgent = null;
+  @JsonProperty("volatility162W")
+  private Double volatility162W = null;
 
-    @JsonProperty("updateTransactions")
-    private Boolean updateTransactions = null;
+  @JsonProperty("volatility360D")
+  private Double volatility360D = null;
 
-    @JsonProperty("volatility162W")
-    private Double volatility162W = null;
+  @JsonProperty("volatility60D")
+  private Double volatility60D = null;
 
-    @JsonProperty("volatility360D")
-    private Double volatility360D = null;
+  @JsonProperty("volatility90D")
+  private Double volatility90D = null;
 
-    @JsonProperty("volatility60D")
-    private Double volatility60D = null;
+  @JsonProperty("wal")
+  private Double wal = null;
 
-    @JsonProperty("volatility90D")
-    private Double volatility90D = null;
+  @JsonProperty("wam")
+  private Double wam = null;
 
-    @JsonProperty("wal")
-    private Double wal = null;
+  public SecurityDtlDTO accrualResetDate(LocalDateTime accrualResetDate) {
+    this.accrualResetDate = accrualResetDate;
+    return this;
+  }
 
-    @JsonProperty("wam")
-    private Double wam = null;
+   /**
+   * Get accrualResetDate
+   * @return accrualResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getAccrualResetDate() {
+    return accrualResetDate;
+  }
 
-    public SecurityDtlDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
-    }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public SecurityDtlDTO accrualResetDate(LocalDateTime accrualResetDate) {
-        this.accrualResetDate = accrualResetDate;
-        return this;
-    }
-
-    /**
-     * Get accrualResetDate
-     *
-     * @return accrualResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getAccrualResetDate() {
-        return accrualResetDate;
-    }
-
-    public void setAccrualResetDate(LocalDateTime accrualResetDate) {
-        this.accrualResetDate = accrualResetDate;
-    }
-
-    public SecurityDtlDTO active(Boolean active) {
-        this.active = active;
-        return this;
-    }
-
-    /**
-     * Get active
-     *
-     * @return active
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
-    public SecurityDtlDTO advisor(String advisor) {
-        this.advisor = advisor;
-        return this;
-    }
-
-    /**
-     * Get advisor
-     *
-     * @return advisor
-     **/
-    @ApiModelProperty(value = "")
-    public String getAdvisor() {
-        return advisor;
-    }
-
-    public void setAdvisor(String advisor) {
-        this.advisor = advisor;
-    }
-
-    public SecurityDtlDTO askPrice(Double askPrice) {
-        this.askPrice = askPrice;
-        return this;
-    }
-
-    /**
-     * Get askPrice
-     *
-     * @return askPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAskPrice() {
-        return askPrice;
-    }
-
-    public void setAskPrice(Double askPrice) {
-        this.askPrice = askPrice;
-    }
-
-    public SecurityDtlDTO autoCloseTime(Integer autoCloseTime) {
-        this.autoCloseTime = autoCloseTime;
-        return this;
-    }
-
-    /**
-     * Get autoCloseTime
-     *
-     * @return autoCloseTime
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getAutoCloseTime() {
-        return autoCloseTime;
-    }
-
-    public void setAutoCloseTime(Integer autoCloseTime) {
-        this.autoCloseTime = autoCloseTime;
-    }
-
-    public SecurityDtlDTO autoOpenTime(Integer autoOpenTime) {
-        this.autoOpenTime = autoOpenTime;
-        return this;
-    }
-
-    /**
-     * Get autoOpenTime
-     *
-     * @return autoOpenTime
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getAutoOpenTime() {
-        return autoOpenTime;
-    }
-
-    public void setAutoOpenTime(Integer autoOpenTime) {
-        this.autoOpenTime = autoOpenTime;
-    }
-
-    public SecurityDtlDTO baseFeeRate(Double baseFeeRate) {
-        this.baseFeeRate = baseFeeRate;
-        return this;
-    }
-
-    /**
-     * Get baseFeeRate
-     *
-     * @return baseFeeRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBaseFeeRate() {
-        return baseFeeRate;
-    }
-
-    public void setBaseFeeRate(Double baseFeeRate) {
-        this.baseFeeRate = baseFeeRate;
-    }
-
-    public SecurityDtlDTO baseRebateRate(Double baseRebateRate) {
-        this.baseRebateRate = baseRebateRate;
-        return this;
-    }
-
-    /**
-     * Get baseRebateRate
-     *
-     * @return baseRebateRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBaseRebateRate() {
-        return baseRebateRate;
-    }
-
-    public void setBaseRebateRate(Double baseRebateRate) {
-        this.baseRebateRate = baseRebateRate;
-    }
-
-    public SecurityDtlDTO bidPrice(Double bidPrice) {
-        this.bidPrice = bidPrice;
-        return this;
-    }
-
-    /**
-     * Get bidPrice
-     *
-     * @return bidPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBidPrice() {
-        return bidPrice;
-    }
-
-    public void setBidPrice(Double bidPrice) {
-        this.bidPrice = bidPrice;
-    }
-
-    public SecurityDtlDTO category0Id(Integer category0Id) {
-        this.category0Id = category0Id;
-        return this;
-    }
-
-    /**
-     * Get category0Id
-     *
-     * @return category0Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory0Id() {
-        return category0Id;
-    }
-
-    public void setCategory0Id(Integer category0Id) {
-        this.category0Id = category0Id;
-    }
-
-    public SecurityDtlDTO category1Id(Integer category1Id) {
-        this.category1Id = category1Id;
-        return this;
-    }
-
-    /**
-     * Get category1Id
-     *
-     * @return category1Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory1Id() {
-        return category1Id;
-    }
-
-    public void setCategory1Id(Integer category1Id) {
-        this.category1Id = category1Id;
-    }
-
-    public SecurityDtlDTO category2Id(Integer category2Id) {
-        this.category2Id = category2Id;
-        return this;
-    }
-
-    /**
-     * Get category2Id
-     *
-     * @return category2Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory2Id() {
-        return category2Id;
-    }
-
-    public void setCategory2Id(Integer category2Id) {
-        this.category2Id = category2Id;
-    }
-
-    public SecurityDtlDTO category3Id(Integer category3Id) {
-        this.category3Id = category3Id;
-        return this;
-    }
-
-    /**
-     * Get category3Id
-     *
-     * @return category3Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory3Id() {
-        return category3Id;
-    }
-
-    public void setCategory3Id(Integer category3Id) {
-        this.category3Id = category3Id;
-    }
-
-    public SecurityDtlDTO categoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-        return this;
-    }
-
-    /**
-     * Get categoryId
-     *
-     * @return categoryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public SecurityDtlDTO chilled(Boolean chilled) {
-        this.chilled = chilled;
-        return this;
-    }
-
-    /**
-     * Get chilled
-     *
-     * @return chilled
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isChilled() {
-        return chilled;
-    }
-
-    public void setChilled(Boolean chilled) {
-        this.chilled = chilled;
-    }
-
-    public SecurityDtlDTO clientCode(String clientCode) {
-        this.clientCode = clientCode;
-        return this;
-    }
-
-    /**
-     * Get clientCode
-     *
-     * @return clientCode
-     **/
-    @ApiModelProperty(value = "")
-    public String getClientCode() {
-        return clientCode;
-    }
-
-    public void setClientCode(String clientCode) {
-        this.clientCode = clientCode;
-    }
-
-    public SecurityDtlDTO clientSecId(String clientSecId) {
-        this.clientSecId = clientSecId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return clientSecId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getClientSecId() {
-        return clientSecId;
-    }
-
-    public void setClientSecId(String clientSecId) {
-        this.clientSecId = clientSecId;
-    }
-
-    public SecurityDtlDTO closeTime(Integer closeTime) {
-        this.closeTime = closeTime;
-        return this;
-    }
-
-    /**
-     * Get closeTime
-     *
-     * @return closeTime
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCloseTime() {
-        return closeTime;
-    }
-
-    public void setCloseTime(Integer closeTime) {
-        this.closeTime = closeTime;
-    }
-
-    public SecurityDtlDTO collatGrade(Integer collatGrade) {
-        this.collatGrade = collatGrade;
-        return this;
-    }
-
-    /**
-     * Get collatGrade
-     *
-     * @return collatGrade
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCollatGrade() {
-        return collatGrade;
-    }
-
-    public void setCollatGrade(Integer collatGrade) {
-        this.collatGrade = collatGrade;
-    }
-
-    public SecurityDtlDTO comments(String comments) {
-        this.comments = comments;
-        return this;
-    }
-
-    /**
-     * Get comments
-     *
-     * @return comments
-     **/
-    @ApiModelProperty(value = "")
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public SecurityDtlDTO countryId(Integer countryId) {
-        this.countryId = countryId;
-        return this;
-    }
-
-    /**
-     * Get countryId
-     *
-     * @return countryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
-    public SecurityDtlDTO countryKy(String countryKy) {
-        this.countryKy = countryKy;
-        return this;
-    }
-
-    /**
-     * Get countryKy
-     *
-     * @return countryKy
-     **/
-    @ApiModelProperty(value = "")
-    public String getCountryKy() {
-        return countryKy;
-    }
-
-    public void setCountryKy(String countryKy) {
-        this.countryKy = countryKy;
-    }
-
-    public SecurityDtlDTO couponType(String couponType) {
-        this.couponType = couponType;
-        return this;
-    }
-
-    /**
-     * Get couponType
-     *
-     * @return couponType
-     **/
-    @ApiModelProperty(value = "")
-    public String getCouponType() {
-        return couponType;
-    }
-
-    public void setCouponType(String couponType) {
-        this.couponType = couponType;
-    }
-
-    public SecurityDtlDTO currencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-        return this;
-    }
-
-    /**
-     * Get currencyId
-     *
-     * @return currencyId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-    }
-
-    public SecurityDtlDTO cusip(String cusip) {
-        this.cusip = cusip;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return cusip
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getCusip() {
-        return cusip;
-    }
-
-    public void setCusip(String cusip) {
-        this.cusip = cusip;
-    }
-
-    public SecurityDtlDTO defaultPriceFlag(Boolean defaultPriceFlag) {
-        this.defaultPriceFlag = defaultPriceFlag;
-        return this;
-    }
-
-    /**
-     * Get defaultPriceFlag
-     *
-     * @return defaultPriceFlag
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDefaultPriceFlag() {
-        return defaultPriceFlag;
-    }
-
-    public void setDefaultPriceFlag(Boolean defaultPriceFlag) {
-        this.defaultPriceFlag = defaultPriceFlag;
-    }
-
-    public SecurityDtlDTO depositoryList(List<Integer> depositoryList) {
-        this.depositoryList = depositoryList;
-        return this;
-    }
-
-    public SecurityDtlDTO addDepositoryListItem(Integer depositoryListItem) {
-        if (this.depositoryList == null) {
-            this.depositoryList = new ArrayList<>();
-        }
-        this.depositoryList.add(depositoryListItem);
-        return this;
-    }
-
-    /**
-     * Get depositoryList
-     *
-     * @return depositoryList
-     **/
-    @ApiModelProperty(value = "")
-    public List<Integer> getDepositoryList() {
-        return depositoryList;
-    }
-
-    public void setDepositoryList(List<Integer> depositoryList) {
-        this.depositoryList = depositoryList;
-    }
-
-    public SecurityDtlDTO description(String description) {
-        this.description = description;
-        return this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return description
-     **/
-    @ApiModelProperty(value = "")
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public SecurityDtlDTO dirtyPrice(Double dirtyPrice) {
-        this.dirtyPrice = dirtyPrice;
-        return this;
-    }
-
-    /**
-     * Get dirtyPrice
-     *
-     * @return dirtyPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDirtyPrice() {
-        return dirtyPrice;
-    }
-
-    public void setDirtyPrice(Double dirtyPrice) {
-        this.dirtyPrice = dirtyPrice;
-    }
-
-    public SecurityDtlDTO distBusinessDay(Integer distBusinessDay) {
-        this.distBusinessDay = distBusinessDay;
-        return this;
-    }
-
-    /**
-     * Get distBusinessDay
-     *
-     * @return distBusinessDay
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getDistBusinessDay() {
-        return distBusinessDay;
-    }
-
-    public void setDistBusinessDay(Integer distBusinessDay) {
-        this.distBusinessDay = distBusinessDay;
-    }
-
-    public SecurityDtlDTO duration(Double duration) {
-        this.duration = duration;
-        return this;
-    }
-
-    /**
-     * Get duration
-     *
-     * @return duration
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDuration() {
-        return duration;
-    }
-
-    public void setDuration(Double duration) {
-        this.duration = duration;
-    }
-
-    public SecurityDtlDTO earningDistFrequency(String earningDistFrequency) {
-        this.earningDistFrequency = earningDistFrequency;
-        return this;
-    }
-
-    /**
-     * Get earningDistFrequency
-     *
-     * @return earningDistFrequency
-     **/
-    @ApiModelProperty(value = "")
-    public String getEarningDistFrequency() {
-        return earningDistFrequency;
-    }
-
-    public void setEarningDistFrequency(String earningDistFrequency) {
-        this.earningDistFrequency = earningDistFrequency;
-    }
-
-    public SecurityDtlDTO exchangeId(Integer exchangeId) {
-        this.exchangeId = exchangeId;
-        return this;
-    }
-
-    /**
-     * Get exchangeId
-     *
-     * @return exchangeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getExchangeId() {
-        return exchangeId;
-    }
-
-    public void setExchangeId(Integer exchangeId) {
-        this.exchangeId = exchangeId;
-    }
-
-    public SecurityDtlDTO expMaturityDate(LocalDateTime expMaturityDate) {
-        this.expMaturityDate = expMaturityDate;
-        return this;
-    }
-
-    /**
-     * Get expMaturityDate
-     *
-     * @return expMaturityDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getExpMaturityDate() {
-        return expMaturityDate;
-    }
-
-    public void setExpMaturityDate(LocalDateTime expMaturityDate) {
-        this.expMaturityDate = expMaturityDate;
-    }
-
-    public SecurityDtlDTO factor(Double factor) {
-        this.factor = factor;
-        return this;
-    }
-
-    /**
-     * Get factor
-     *
-     * @return factor
-     **/
-    @ApiModelProperty(value = "")
-    public Double getFactor() {
-        return factor;
-    }
-
-    public void setFactor(Double factor) {
-        this.factor = factor;
-    }
-
-    public SecurityDtlDTO firstAccrualDate(LocalDateTime firstAccrualDate) {
-        this.firstAccrualDate = firstAccrualDate;
-        return this;
-    }
-
-    /**
-     * Get firstAccrualDate
-     *
-     * @return firstAccrualDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getFirstAccrualDate() {
-        return firstAccrualDate;
-    }
-
-    public void setFirstAccrualDate(LocalDateTime firstAccrualDate) {
-        this.firstAccrualDate = firstAccrualDate;
-    }
-
-    public SecurityDtlDTO fitchLongTermId(Integer fitchLongTermId) {
-        this.fitchLongTermId = fitchLongTermId;
-        return this;
-    }
-
-    /**
-     * Get fitchLongTermId
-     *
-     * @return fitchLongTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getFitchLongTermId() {
-        return fitchLongTermId;
-    }
-
-    public void setFitchLongTermId(Integer fitchLongTermId) {
-        this.fitchLongTermId = fitchLongTermId;
-    }
-
-    public SecurityDtlDTO fitchShortTermId(Integer fitchShortTermId) {
-        this.fitchShortTermId = fitchShortTermId;
-        return this;
-    }
-
-    /**
-     * Get fitchShortTermId
-     *
-     * @return fitchShortTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getFitchShortTermId() {
-        return fitchShortTermId;
-    }
-
-    public void setFitchShortTermId(Integer fitchShortTermId) {
-        this.fitchShortTermId = fitchShortTermId;
-    }
-
-    public SecurityDtlDTO hotFactor(Integer hotFactor) {
-        this.hotFactor = hotFactor;
-        return this;
-    }
-
-    /**
-     * Get hotFactor
-     *
-     * @return hotFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getHotFactor() {
-        return hotFactor;
-    }
-
-    public void setHotFactor(Integer hotFactor) {
-        this.hotFactor = hotFactor;
-    }
-
-    public SecurityDtlDTO industryId(Integer industryId) {
-        this.industryId = industryId;
-        return this;
-    }
-
-    /**
-     * Get industryId
-     *
-     * @return industryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getIndustryId() {
-        return industryId;
-    }
-
-    public void setIndustryId(Integer industryId) {
-        this.industryId = industryId;
-    }
-
-    public SecurityDtlDTO inflationIndex(Double inflationIndex) {
-        this.inflationIndex = inflationIndex;
-        return this;
-    }
-
-    /**
-     * Get inflationIndex
-     *
-     * @return inflationIndex
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInflationIndex() {
-        return inflationIndex;
-    }
-
-    public void setInflationIndex(Double inflationIndex) {
-        this.inflationIndex = inflationIndex;
-    }
-
-    public SecurityDtlDTO inflationIndexedFlag(Boolean inflationIndexedFlag) {
-        this.inflationIndexedFlag = inflationIndexedFlag;
-        return this;
-    }
-
-    /**
-     * Get inflationIndexedFlag
-     *
-     * @return inflationIndexedFlag
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isInflationIndexedFlag() {
-        return inflationIndexedFlag;
-    }
-
-    public void setInflationIndexedFlag(Boolean inflationIndexedFlag) {
-        this.inflationIndexedFlag = inflationIndexedFlag;
-    }
-
-    public SecurityDtlDTO interestAccrued(Double interestAccrued) {
-        this.interestAccrued = interestAccrued;
-        return this;
-    }
-
-    /**
-     * Get interestAccrued
-     *
-     * @return interestAccrued
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInterestAccrued() {
-        return interestAccrued;
-    }
-
-    public void setInterestAccrued(Double interestAccrued) {
-        this.interestAccrued = interestAccrued;
-    }
-
-    public SecurityDtlDTO isBaseRateManualUpdate(Boolean isBaseRateManualUpdate) {
-        this.isBaseRateManualUpdate = isBaseRateManualUpdate;
-        return this;
-    }
-
-    /**
-     * Get isBaseRateManualUpdate
-     *
-     * @return isBaseRateManualUpdate
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsBaseRateManualUpdate() {
-        return isBaseRateManualUpdate;
-    }
-
-    public void setIsBaseRateManualUpdate(Boolean isBaseRateManualUpdate) {
-        this.isBaseRateManualUpdate = isBaseRateManualUpdate;
-    }
-
-    public SecurityDtlDTO isGC(Boolean isGC) {
-        this.isGC = isGC;
-        return this;
-    }
-
-    /**
-     * Get isGC
-     *
-     * @return isGC
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsGC() {
-        return isGC;
-    }
-
-    public void setIsGC(Boolean isGC) {
-        this.isGC = isGC;
-    }
-
-    public SecurityDtlDTO isHotIndexManualUpdate(Boolean isHotIndexManualUpdate) {
-        this.isHotIndexManualUpdate = isHotIndexManualUpdate;
-        return this;
-    }
-
-    /**
-     * Get isHotIndexManualUpdate
-     *
-     * @return isHotIndexManualUpdate
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsHotIndexManualUpdate() {
-        return isHotIndexManualUpdate;
-    }
-
-    public void setIsHotIndexManualUpdate(Boolean isHotIndexManualUpdate) {
-        this.isHotIndexManualUpdate = isHotIndexManualUpdate;
-    }
-
-    public SecurityDtlDTO isin(String isin) {
-        this.isin = isin;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return isin
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getIsin() {
-        return isin;
-    }
-
-    public void setIsin(String isin) {
-        this.isin = isin;
-    }
-
-    public SecurityDtlDTO issueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
-        return this;
-    }
-
-    /**
-     * Get issueDate
-     *
-     * @return issueDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getIssueDate() {
-        return issueDate;
-    }
-
-    public void setIssueDate(LocalDateTime issueDate) {
-        this.issueDate = issueDate;
-    }
-
-    public SecurityDtlDTO issuerId(Integer issuerId) {
-        this.issuerId = issuerId;
-        return this;
-    }
-
-    /**
-     * Get issuerId
-     *
-     * @return issuerId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getIssuerId() {
-        return issuerId;
-    }
-
-    public void setIssuerId(Integer issuerId) {
-        this.issuerId = issuerId;
-    }
-
-    public SecurityDtlDTO issuerName(String issuerName) {
-        this.issuerName = issuerName;
-        return this;
-    }
-
-    /**
-     * Get issuerName
-     *
-     * @return issuerName
-     **/
-    @ApiModelProperty(value = "")
-    public String getIssuerName() {
-        return issuerName;
-    }
-
-    public void setIssuerName(String issuerName) {
-        this.issuerName = issuerName;
-    }
-
-    public SecurityDtlDTO lastPrice(Double lastPrice) {
-        this.lastPrice = lastPrice;
-        return this;
-    }
-
-    /**
-     * Get lastPrice
-     *
-     * @return lastPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getLastPrice() {
-        return lastPrice;
-    }
-
-    public void setLastPrice(Double lastPrice) {
-        this.lastPrice = lastPrice;
-    }
-
-    public SecurityDtlDTO longDuration(Boolean longDuration) {
-        this.longDuration = longDuration;
-        return this;
-    }
-
-    /**
-     * Get longDuration
-     *
-     * @return longDuration
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isLongDuration() {
-        return longDuration;
-    }
-
-    public void setLongDuration(Boolean longDuration) {
-        this.longDuration = longDuration;
-    }
-
-    public SecurityDtlDTO marketCap(Double marketCap) {
-        this.marketCap = marketCap;
-        return this;
-    }
-
-    /**
-     * Get marketCap
-     *
-     * @return marketCap
-     **/
-    @ApiModelProperty(value = "")
-    public Double getMarketCap() {
-        return marketCap;
-    }
-
-    public void setMarketCap(Double marketCap) {
-        this.marketCap = marketCap;
-    }
-
-    public SecurityDtlDTO marketVolume(Integer marketVolume) {
-        this.marketVolume = marketVolume;
-        return this;
-    }
-
-    /**
-     * Get marketVolume
-     *
-     * @return marketVolume
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMarketVolume() {
-        return marketVolume;
-    }
-
-    public void setMarketVolume(Integer marketVolume) {
-        this.marketVolume = marketVolume;
-    }
-
-    public SecurityDtlDTO maturityDate(LocalDateTime maturityDate) {
-        this.maturityDate = maturityDate;
-        return this;
-    }
-
-    /**
-     * Get maturityDate
-     *
-     * @return maturityDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getMaturityDate() {
-        return maturityDate;
-    }
-
-    public void setMaturityDate(LocalDateTime maturityDate) {
-        this.maturityDate = maturityDate;
-    }
-
-    public SecurityDtlDTO modDuration(Double modDuration) {
-        this.modDuration = modDuration;
-        return this;
-    }
-
-    /**
-     * Get modDuration
-     *
-     * @return modDuration
-     **/
-    @ApiModelProperty(value = "")
-    public Double getModDuration() {
-        return modDuration;
-    }
-
-    public void setModDuration(Double modDuration) {
-        this.modDuration = modDuration;
-    }
-
-    public SecurityDtlDTO moodyLongTermId(Integer moodyLongTermId) {
-        this.moodyLongTermId = moodyLongTermId;
-        return this;
-    }
-
-    /**
-     * Get moodyLongTermId
-     *
-     * @return moodyLongTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMoodyLongTermId() {
-        return moodyLongTermId;
-    }
-
-    public void setMoodyLongTermId(Integer moodyLongTermId) {
-        this.moodyLongTermId = moodyLongTermId;
-    }
-
-    public SecurityDtlDTO moodyShortTermId(Integer moodyShortTermId) {
-        this.moodyShortTermId = moodyShortTermId;
-        return this;
-    }
-
-    /**
-     * Get moodyShortTermId
-     *
-     * @return moodyShortTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMoodyShortTermId() {
-        return moodyShortTermId;
-    }
-
-    public void setMoodyShortTermId(Integer moodyShortTermId) {
-        this.moodyShortTermId = moodyShortTermId;
-    }
-
-    public SecurityDtlDTO nextPaymentDate(LocalDateTime nextPaymentDate) {
-        this.nextPaymentDate = nextPaymentDate;
-        return this;
-    }
-
-    /**
-     * Get nextPaymentDate
-     *
-     * @return nextPaymentDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getNextPaymentDate() {
-        return nextPaymentDate;
-    }
-
-    public void setNextPaymentDate(LocalDateTime nextPaymentDate) {
-        this.nextPaymentDate = nextPaymentDate;
-    }
-
-    public SecurityDtlDTO nextResetDate(LocalDateTime nextResetDate) {
-        this.nextResetDate = nextResetDate;
-        return this;
-    }
-
-    /**
-     * Get nextResetDate
-     *
-     * @return nextResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getNextResetDate() {
-        return nextResetDate;
-    }
-
-    public void setNextResetDate(LocalDateTime nextResetDate) {
-        this.nextResetDate = nextResetDate;
-    }
-
-    public SecurityDtlDTO openCloseTimeType(Integer openCloseTimeType) {
-        this.openCloseTimeType = openCloseTimeType;
-        return this;
-    }
-
-    /**
-     * Get openCloseTimeType
-     *
-     * @return openCloseTimeType
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getOpenCloseTimeType() {
-        return openCloseTimeType;
-    }
-
-    public void setOpenCloseTimeType(Integer openCloseTimeType) {
-        this.openCloseTimeType = openCloseTimeType;
-    }
-
-    public SecurityDtlDTO openTime(Integer openTime) {
-        this.openTime = openTime;
-        return this;
-    }
-
-    /**
-     * Get openTime
-     *
-     * @return openTime
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getOpenTime() {
-        return openTime;
-    }
-
-    public void setOpenTime(Integer openTime) {
-        this.openTime = openTime;
-    }
-
-    public SecurityDtlDTO payDelay(Integer payDelay) {
-        this.payDelay = payDelay;
-        return this;
-    }
-
-    /**
-     * Get payDelay
-     *
-     * @return payDelay
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPayDelay() {
-        return payDelay;
-    }
-
-    public void setPayDelay(Integer payDelay) {
-        this.payDelay = payDelay;
-    }
-
-    public SecurityDtlDTO payFrequency(Integer payFrequency) {
-        this.payFrequency = payFrequency;
-        return this;
-    }
-
-    /**
-     * Get payFrequency
-     *
-     * @return payFrequency
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPayFrequency() {
-        return payFrequency;
-    }
-
-    public void setPayFrequency(Integer payFrequency) {
-        this.payFrequency = payFrequency;
-    }
-
-    public SecurityDtlDTO prepaySpeed(Double prepaySpeed) {
-        this.prepaySpeed = prepaySpeed;
-        return this;
-    }
-
-    /**
-     * Get prepaySpeed
-     *
-     * @return prepaySpeed
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPrepaySpeed() {
-        return prepaySpeed;
-    }
-
-    public void setPrepaySpeed(Double prepaySpeed) {
-        this.prepaySpeed = prepaySpeed;
-    }
-
-    public SecurityDtlDTO prevAccrualDate(LocalDateTime prevAccrualDate) {
-        this.prevAccrualDate = prevAccrualDate;
-        return this;
-    }
-
-    /**
-     * Get prevAccrualDate
-     *
-     * @return prevAccrualDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPrevAccrualDate() {
-        return prevAccrualDate;
-    }
-
-    public void setPrevAccrualDate(LocalDateTime prevAccrualDate) {
-        this.prevAccrualDate = prevAccrualDate;
-    }
-
-    public SecurityDtlDTO prevPaymentDate(LocalDateTime prevPaymentDate) {
-        this.prevPaymentDate = prevPaymentDate;
-        return this;
-    }
-
-    /**
-     * Get prevPaymentDate
-     *
-     * @return prevPaymentDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPrevPaymentDate() {
-        return prevPaymentDate;
-    }
-
-    public void setPrevPaymentDate(LocalDateTime prevPaymentDate) {
-        this.prevPaymentDate = prevPaymentDate;
-    }
-
-    public SecurityDtlDTO prevResetDate(LocalDateTime prevResetDate) {
-        this.prevResetDate = prevResetDate;
-        return this;
-    }
-
-    /**
-     * Get prevResetDate
-     *
-     * @return prevResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPrevResetDate() {
-        return prevResetDate;
-    }
-
-    public void setPrevResetDate(LocalDateTime prevResetDate) {
-        this.prevResetDate = prevResetDate;
-    }
-
-    public SecurityDtlDTO previousPaymentDate(LocalDateTime previousPaymentDate) {
-        this.previousPaymentDate = previousPaymentDate;
-        return this;
-    }
-
-    /**
-     * Get previousPaymentDate
-     *
-     * @return previousPaymentDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPreviousPaymentDate() {
-        return previousPaymentDate;
-    }
-
-    public void setPreviousPaymentDate(LocalDateTime previousPaymentDate) {
-        this.previousPaymentDate = previousPaymentDate;
-    }
-
-    public SecurityDtlDTO previousResetDate(LocalDateTime previousResetDate) {
-        this.previousResetDate = previousResetDate;
-        return this;
-    }
-
-    /**
-     * Get previousResetDate
-     *
-     * @return previousResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPreviousResetDate() {
-        return previousResetDate;
-    }
-
-    public void setPreviousResetDate(LocalDateTime previousResetDate) {
-        this.previousResetDate = previousResetDate;
-    }
-
-    public SecurityDtlDTO price(Double price) {
-        this.price = price;
-        return this;
-    }
-
-    /**
-     * Get price
-     *
-     * @return price
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public SecurityDtlDTO priceCurrencyId(Integer priceCurrencyId) {
-        this.priceCurrencyId = priceCurrencyId;
-        return this;
-    }
-
-    /**
-     * Get priceCurrencyId
-     *
-     * @return priceCurrencyId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceCurrencyId() {
-        return priceCurrencyId;
-    }
-
-    public void setPriceCurrencyId(Integer priceCurrencyId) {
-        this.priceCurrencyId = priceCurrencyId;
-    }
-
-    public SecurityDtlDTO priceDate(LocalDateTime priceDate) {
-        this.priceDate = priceDate;
-        return this;
-    }
-
-    /**
-     * Get priceDate
-     *
-     * @return priceDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPriceDate() {
-        return priceDate;
-    }
-
-    public void setPriceDate(LocalDateTime priceDate) {
-        this.priceDate = priceDate;
-    }
-
-    public SecurityDtlDTO priceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-        return this;
-    }
-
-    /**
-     * Get priceFactor
-     *
-     * @return priceFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceFactor() {
-        return priceFactor;
-    }
-
-    public void setPriceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-    }
-
-    public SecurityDtlDTO priceSource(Integer priceSource) {
-        this.priceSource = priceSource;
-        return this;
-    }
-
-    /**
-     * Get priceSource
-     *
-     * @return priceSource
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceSource() {
-        return priceSource;
-    }
-
-    public void setPriceSource(Integer priceSource) {
-        this.priceSource = priceSource;
-    }
-
-    public SecurityDtlDTO primaryId(String primaryId) {
-        this.primaryId = primaryId;
-        return this;
-    }
-
-    /**
-     * Get primaryId
-     *
-     * @return primaryId
-     **/
-    @ApiModelProperty(value = "")
-    public String getPrimaryId() {
-        return primaryId;
-    }
-
-    public void setPrimaryId(String primaryId) {
-        this.primaryId = primaryId;
-    }
-
-    public SecurityDtlDTO primaryIdType(String primaryIdType) {
-        this.primaryIdType = primaryIdType;
-        return this;
-    }
-
-    /**
-     * Get primaryIdType
-     *
-     * @return primaryIdType
-     **/
-    @ApiModelProperty(value = "")
-    public String getPrimaryIdType() {
-        return primaryIdType;
-    }
-
-    public void setPrimaryIdType(String primaryIdType) {
-        this.primaryIdType = primaryIdType;
-    }
-
-    public SecurityDtlDTO primaryPricingSourceId(Integer primaryPricingSourceId) {
-        this.primaryPricingSourceId = primaryPricingSourceId;
-        return this;
-    }
-
-    /**
-     * Get primaryPricingSourceId
-     *
-     * @return primaryPricingSourceId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPrimaryPricingSourceId() {
-        return primaryPricingSourceId;
-    }
-
-    public void setPrimaryPricingSourceId(Integer primaryPricingSourceId) {
-        this.primaryPricingSourceId = primaryPricingSourceId;
-    }
-
-    public SecurityDtlDTO processingEndDate(LocalDateTime processingEndDate) {
-        this.processingEndDate = processingEndDate;
-        return this;
-    }
-
-    /**
-     * Get processingEndDate
-     *
-     * @return processingEndDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getProcessingEndDate() {
-        return processingEndDate;
-    }
-
-    public void setProcessingEndDate(LocalDateTime processingEndDate) {
-        this.processingEndDate = processingEndDate;
-    }
-
-    public SecurityDtlDTO processingStartDate(LocalDateTime processingStartDate) {
-        this.processingStartDate = processingStartDate;
-        return this;
-    }
-
-    /**
-     * Get processingStartDate
-     *
-     * @return processingStartDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getProcessingStartDate() {
-        return processingStartDate;
-    }
-
-    public void setProcessingStartDate(LocalDateTime processingStartDate) {
-        this.processingStartDate = processingStartDate;
-    }
-
-    public SecurityDtlDTO quickCode(String quickCode) {
-        this.quickCode = quickCode;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return quickCode
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getQuickCode() {
-        return quickCode;
-    }
-
-    public void setQuickCode(String quickCode) {
-        this.quickCode = quickCode;
-    }
-
-    public SecurityDtlDTO resetFrequency(Integer resetFrequency) {
-        this.resetFrequency = resetFrequency;
-        return this;
-    }
-
-    /**
-     * Get resetFrequency
-     *
-     * @return resetFrequency
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getResetFrequency() {
-        return resetFrequency;
-    }
-
-    public void setResetFrequency(Integer resetFrequency) {
-        this.resetFrequency = resetFrequency;
-    }
-
-    public SecurityDtlDTO securityBasis(Integer securityBasis) {
-        this.securityBasis = securityBasis;
-        return this;
-    }
-
-    /**
-     * Get securityBasis
-     *
-     * @return securityBasis
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityBasis() {
-        return securityBasis;
-    }
-
-    public void setSecurityBasis(Integer securityBasis) {
-        this.securityBasis = securityBasis;
-    }
-
-    public SecurityDtlDTO securityCalendar(Integer securityCalendar) {
-        this.securityCalendar = securityCalendar;
-        return this;
-    }
-
-    /**
-     * Get securityCalendar
-     *
-     * @return securityCalendar
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityCalendar() {
-        return securityCalendar;
-    }
-
-    public void setSecurityCalendar(Integer securityCalendar) {
-        this.securityCalendar = securityCalendar;
-    }
-
-    public SecurityDtlDTO securityId(Integer securityId) {
-        this.securityId = securityId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return securityId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public Integer getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(Integer securityId) {
-        this.securityId = securityId;
-    }
-
-    public SecurityDtlDTO securityIdentifierDetailList(List<SecurityIdentifierDetailDTO> securityIdentifierDetailList) {
-        this.securityIdentifierDetailList = securityIdentifierDetailList;
-        return this;
-    }
-
-    public SecurityDtlDTO addSecurityIdentifierDetailListItem(
-        SecurityIdentifierDetailDTO securityIdentifierDetailListItem) {
-        if (this.securityIdentifierDetailList == null) {
-            this.securityIdentifierDetailList = new ArrayList<>();
-        }
-        this.securityIdentifierDetailList.add(securityIdentifierDetailListItem);
-        return this;
-    }
-
-    /**
-     * Get securityIdentifierDetailList
-     *
-     * @return securityIdentifierDetailList
-     **/
-    @ApiModelProperty(value = "")
-    public List<SecurityIdentifierDetailDTO> getSecurityIdentifierDetailList() {
-        return securityIdentifierDetailList;
-    }
-
-    public void setSecurityIdentifierDetailList(List<SecurityIdentifierDetailDTO> securityIdentifierDetailList) {
-        this.securityIdentifierDetailList = securityIdentifierDetailList;
-    }
-
-    public SecurityDtlDTO securityIndex(Integer securityIndex) {
-        this.securityIndex = securityIndex;
-        return this;
-    }
-
-    /**
-     * Get securityIndex
-     *
-     * @return securityIndex
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityIndex() {
-        return securityIndex;
-    }
-
-    public void setSecurityIndex(Integer securityIndex) {
-        this.securityIndex = securityIndex;
-    }
-
-    public SecurityDtlDTO securityLookback(Integer securityLookback) {
-        this.securityLookback = securityLookback;
-        return this;
-    }
-
-    /**
-     * Get securityLookback
-     *
-     * @return securityLookback
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityLookback() {
-        return securityLookback;
-    }
-
-    public void setSecurityLookback(Integer securityLookback) {
-        this.securityLookback = securityLookback;
-    }
-
-    public SecurityDtlDTO securityRate(Double securityRate) {
-        this.securityRate = securityRate;
-        return this;
-    }
-
-    /**
-     * Get securityRate
-     *
-     * @return securityRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSecurityRate() {
-        return securityRate;
-    }
-
-    public void setSecurityRate(Double securityRate) {
-        this.securityRate = securityRate;
-    }
-
-    public SecurityDtlDTO securitySpread(Integer securitySpread) {
-        this.securitySpread = securitySpread;
-        return this;
-    }
-
-    /**
-     * Get securitySpread
-     *
-     * @return securitySpread
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecuritySpread() {
-        return securitySpread;
-    }
-
-    public void setSecuritySpread(Integer securitySpread) {
-        this.securitySpread = securitySpread;
-    }
-
-    public SecurityDtlDTO sedol(String sedol) {
-        this.sedol = sedol;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return sedol
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getSedol() {
-        return sedol;
-    }
-
-    public void setSedol(String sedol) {
-        this.sedol = sedol;
-    }
-
-    public SecurityDtlDTO sharesOutstanding(Double sharesOutstanding) {
-        this.sharesOutstanding = sharesOutstanding;
-        return this;
-    }
-
-    /**
-     * Get sharesOutstanding
-     *
-     * @return sharesOutstanding
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSharesOutstanding() {
-        return sharesOutstanding;
-    }
-
-    public void setSharesOutstanding(Double sharesOutstanding) {
-        this.sharesOutstanding = sharesOutstanding;
-    }
-
-    public SecurityDtlDTO shortInterest(Double shortInterest) {
-        this.shortInterest = shortInterest;
-        return this;
-    }
-
-    /**
-     * Get shortInterest
-     *
-     * @return shortInterest
-     **/
-    @ApiModelProperty(value = "")
-    public Double getShortInterest() {
-        return shortInterest;
-    }
-
-    public void setShortInterest(Double shortInterest) {
-        this.shortInterest = shortInterest;
-    }
-
-    public SecurityDtlDTO shortName(String shortName) {
-        this.shortName = shortName;
-        return this;
-    }
-
-    /**
-     * Get shortName
-     *
-     * @return shortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getShortName() {
-        return shortName;
-    }
-
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
-
-    public SecurityDtlDTO spLongTermId(Integer spLongTermId) {
-        this.spLongTermId = spLongTermId;
-        return this;
-    }
-
-    /**
-     * Get spLongTermId
-     *
-     * @return spLongTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSpLongTermId() {
-        return spLongTermId;
-    }
-
-    public void setSpLongTermId(Integer spLongTermId) {
-        this.spLongTermId = spLongTermId;
-    }
-
-    public SecurityDtlDTO spShortTermId(Integer spShortTermId) {
-        this.spShortTermId = spShortTermId;
-        return this;
-    }
-
-    /**
-     * Get spShortTermId
-     *
-     * @return spShortTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSpShortTermId() {
-        return spShortTermId;
-    }
-
-    public void setSpShortTermId(Integer spShortTermId) {
-        this.spShortTermId = spShortTermId;
-    }
-
-    public SecurityDtlDTO status(String status) {
-        this.status = status;
-        return this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return status
-     **/
-    @ApiModelProperty(value = "")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public SecurityDtlDTO submittedInformationType(Integer submittedInformationType) {
-        this.submittedInformationType = submittedInformationType;
-        return this;
-    }
-
-    /**
-     * Get submittedInformationType
-     *
-     * @return submittedInformationType
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSubmittedInformationType() {
-        return submittedInformationType;
-    }
-
-    public void setSubmittedInformationType(Integer submittedInformationType) {
-        this.submittedInformationType = submittedInformationType;
-    }
-
-    public SecurityDtlDTO ticker(String ticker) {
-        this.ticker = ticker;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or
-     * clientSecId is required
-     *
-     * @return ticker
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-    public SecurityDtlDTO transferAgent(String transferAgent) {
-        this.transferAgent = transferAgent;
-        return this;
-    }
-
-    /**
-     * Get transferAgent
-     *
-     * @return transferAgent
-     **/
-    @ApiModelProperty(value = "")
-    public String getTransferAgent() {
-        return transferAgent;
-    }
-
-    public void setTransferAgent(String transferAgent) {
-        this.transferAgent = transferAgent;
-    }
-
-    public SecurityDtlDTO updateTransactions(Boolean updateTransactions) {
-        this.updateTransactions = updateTransactions;
-        return this;
-    }
-
-    /**
-     * Get updateTransactions
-     *
-     * @return updateTransactions
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isUpdateTransactions() {
-        return updateTransactions;
-    }
-
-    public void setUpdateTransactions(Boolean updateTransactions) {
-        this.updateTransactions = updateTransactions;
-    }
-
-    public SecurityDtlDTO volatility162W(Double volatility162W) {
-        this.volatility162W = volatility162W;
-        return this;
-    }
-
-    /**
-     * Get volatility162W
-     *
-     * @return volatility162W
-     **/
-    @ApiModelProperty(value = "")
-    public Double getVolatility162W() {
-        return volatility162W;
-    }
-
-    public void setVolatility162W(Double volatility162W) {
-        this.volatility162W = volatility162W;
-    }
-
-    public SecurityDtlDTO volatility360D(Double volatility360D) {
-        this.volatility360D = volatility360D;
-        return this;
-    }
-
-    /**
-     * Get volatility360D
-     *
-     * @return volatility360D
-     **/
-    @ApiModelProperty(value = "")
-    public Double getVolatility360D() {
-        return volatility360D;
-    }
-
-    public void setVolatility360D(Double volatility360D) {
-        this.volatility360D = volatility360D;
-    }
+  public void setAccrualResetDate(LocalDateTime accrualResetDate) {
+    this.accrualResetDate = accrualResetDate;
+  }
 
-    public SecurityDtlDTO volatility60D(Double volatility60D) {
-        this.volatility60D = volatility60D;
-        return this;
-    }
+  public SecurityDtlDTO active(Boolean active) {
+    this.active = active;
+    return this;
+  }
 
-    /**
-     * Get volatility60D
-     *
-     * @return volatility60D
-     **/
-    @ApiModelProperty(value = "")
-    public Double getVolatility60D() {
-        return volatility60D;
-    }
+   /**
+   * Get active
+   * @return active
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isActive() {
+    return active;
+  }
 
-    public void setVolatility60D(Double volatility60D) {
-        this.volatility60D = volatility60D;
-    }
+  public void setActive(Boolean active) {
+    this.active = active;
+  }
 
-    public SecurityDtlDTO volatility90D(Double volatility90D) {
-        this.volatility90D = volatility90D;
-        return this;
-    }
+  public SecurityDtlDTO advisor(String advisor) {
+    this.advisor = advisor;
+    return this;
+  }
 
-    /**
-     * Get volatility90D
-     *
-     * @return volatility90D
-     **/
-    @ApiModelProperty(value = "")
-    public Double getVolatility90D() {
-        return volatility90D;
-    }
+   /**
+   * Get advisor
+   * @return advisor
+  **/
+  @ApiModelProperty(value = "")
+  public String getAdvisor() {
+    return advisor;
+  }
 
-    public void setVolatility90D(Double volatility90D) {
-        this.volatility90D = volatility90D;
-    }
+  public void setAdvisor(String advisor) {
+    this.advisor = advisor;
+  }
 
-    public SecurityDtlDTO wal(Double wal) {
-        this.wal = wal;
-        return this;
-    }
+  public SecurityDtlDTO askPrice(Double askPrice) {
+    this.askPrice = askPrice;
+    return this;
+  }
 
-    /**
-     * Get wal
-     *
-     * @return wal
-     **/
-    @ApiModelProperty(value = "")
-    public Double getWal() {
-        return wal;
-    }
+   /**
+   * Get askPrice
+   * @return askPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAskPrice() {
+    return askPrice;
+  }
 
-    public void setWal(Double wal) {
-        this.wal = wal;
-    }
+  public void setAskPrice(Double askPrice) {
+    this.askPrice = askPrice;
+  }
 
-    public SecurityDtlDTO wam(Double wam) {
-        this.wam = wam;
-        return this;
-    }
+  public SecurityDtlDTO autoCloseTime(Integer autoCloseTime) {
+    this.autoCloseTime = autoCloseTime;
+    return this;
+  }
 
-    /**
-     * Get wam
-     *
-     * @return wam
-     **/
-    @ApiModelProperty(value = "")
-    public Double getWam() {
-        return wam;
-    }
+   /**
+   * Get autoCloseTime
+   * @return autoCloseTime
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getAutoCloseTime() {
+    return autoCloseTime;
+  }
 
-    public void setWam(Double wam) {
-        this.wam = wam;
-    }
+  public void setAutoCloseTime(Integer autoCloseTime) {
+    this.autoCloseTime = autoCloseTime;
+  }
 
+  public SecurityDtlDTO autoOpenTime(Integer autoOpenTime) {
+    this.autoOpenTime = autoOpenTime;
+    return this;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SecurityDtlDTO securityDtlDTO = (SecurityDtlDTO) o;
-        return Objects.equals(this.qualifiedName, securityDtlDTO.qualifiedName) &&
-            Objects.equals(this.accrualResetDate, securityDtlDTO.accrualResetDate) &&
-            Objects.equals(this.active, securityDtlDTO.active) &&
-            Objects.equals(this.advisor, securityDtlDTO.advisor) &&
-            Objects.equals(this.askPrice, securityDtlDTO.askPrice) &&
-            Objects.equals(this.autoCloseTime, securityDtlDTO.autoCloseTime) &&
-            Objects.equals(this.autoOpenTime, securityDtlDTO.autoOpenTime) &&
-            Objects.equals(this.baseFeeRate, securityDtlDTO.baseFeeRate) &&
-            Objects.equals(this.baseRebateRate, securityDtlDTO.baseRebateRate) &&
-            Objects.equals(this.bidPrice, securityDtlDTO.bidPrice) &&
-            Objects.equals(this.category0Id, securityDtlDTO.category0Id) &&
-            Objects.equals(this.category1Id, securityDtlDTO.category1Id) &&
-            Objects.equals(this.category2Id, securityDtlDTO.category2Id) &&
-            Objects.equals(this.category3Id, securityDtlDTO.category3Id) &&
-            Objects.equals(this.categoryId, securityDtlDTO.categoryId) &&
-            Objects.equals(this.chilled, securityDtlDTO.chilled) &&
-            Objects.equals(this.clientCode, securityDtlDTO.clientCode) &&
-            Objects.equals(this.clientSecId, securityDtlDTO.clientSecId) &&
-            Objects.equals(this.closeTime, securityDtlDTO.closeTime) &&
-            Objects.equals(this.collatGrade, securityDtlDTO.collatGrade) &&
-            Objects.equals(this.comments, securityDtlDTO.comments) &&
-            Objects.equals(this.countryId, securityDtlDTO.countryId) &&
-            Objects.equals(this.countryKy, securityDtlDTO.countryKy) &&
-            Objects.equals(this.couponType, securityDtlDTO.couponType) &&
-            Objects.equals(this.currencyId, securityDtlDTO.currencyId) &&
-            Objects.equals(this.cusip, securityDtlDTO.cusip) &&
-            Objects.equals(this.defaultPriceFlag, securityDtlDTO.defaultPriceFlag) &&
-            Objects.equals(this.depositoryList, securityDtlDTO.depositoryList) &&
-            Objects.equals(this.description, securityDtlDTO.description) &&
-            Objects.equals(this.dirtyPrice, securityDtlDTO.dirtyPrice) &&
-            Objects.equals(this.distBusinessDay, securityDtlDTO.distBusinessDay) &&
-            Objects.equals(this.duration, securityDtlDTO.duration) &&
-            Objects.equals(this.earningDistFrequency, securityDtlDTO.earningDistFrequency) &&
-            Objects.equals(this.exchangeId, securityDtlDTO.exchangeId) &&
-            Objects.equals(this.expMaturityDate, securityDtlDTO.expMaturityDate) &&
-            Objects.equals(this.factor, securityDtlDTO.factor) &&
-            Objects.equals(this.firstAccrualDate, securityDtlDTO.firstAccrualDate) &&
-            Objects.equals(this.fitchLongTermId, securityDtlDTO.fitchLongTermId) &&
-            Objects.equals(this.fitchShortTermId, securityDtlDTO.fitchShortTermId) &&
-            Objects.equals(this.hotFactor, securityDtlDTO.hotFactor) &&
-            Objects.equals(this.industryId, securityDtlDTO.industryId) &&
-            Objects.equals(this.inflationIndex, securityDtlDTO.inflationIndex) &&
-            Objects.equals(this.inflationIndexedFlag, securityDtlDTO.inflationIndexedFlag) &&
-            Objects.equals(this.interestAccrued, securityDtlDTO.interestAccrued) &&
-            Objects.equals(this.isBaseRateManualUpdate, securityDtlDTO.isBaseRateManualUpdate) &&
-            Objects.equals(this.isGC, securityDtlDTO.isGC) &&
-            Objects.equals(this.isHotIndexManualUpdate, securityDtlDTO.isHotIndexManualUpdate) &&
-            Objects.equals(this.isin, securityDtlDTO.isin) &&
-            Objects.equals(this.issueDate, securityDtlDTO.issueDate) &&
-            Objects.equals(this.issuerId, securityDtlDTO.issuerId) &&
-            Objects.equals(this.issuerName, securityDtlDTO.issuerName) &&
-            Objects.equals(this.lastPrice, securityDtlDTO.lastPrice) &&
-            Objects.equals(this.longDuration, securityDtlDTO.longDuration) &&
-            Objects.equals(this.marketCap, securityDtlDTO.marketCap) &&
-            Objects.equals(this.marketVolume, securityDtlDTO.marketVolume) &&
-            Objects.equals(this.maturityDate, securityDtlDTO.maturityDate) &&
-            Objects.equals(this.modDuration, securityDtlDTO.modDuration) &&
-            Objects.equals(this.moodyLongTermId, securityDtlDTO.moodyLongTermId) &&
-            Objects.equals(this.moodyShortTermId, securityDtlDTO.moodyShortTermId) &&
-            Objects.equals(this.nextPaymentDate, securityDtlDTO.nextPaymentDate) &&
-            Objects.equals(this.nextResetDate, securityDtlDTO.nextResetDate) &&
-            Objects.equals(this.openCloseTimeType, securityDtlDTO.openCloseTimeType) &&
-            Objects.equals(this.openTime, securityDtlDTO.openTime) &&
-            Objects.equals(this.payDelay, securityDtlDTO.payDelay) &&
-            Objects.equals(this.payFrequency, securityDtlDTO.payFrequency) &&
-            Objects.equals(this.prepaySpeed, securityDtlDTO.prepaySpeed) &&
-            Objects.equals(this.prevAccrualDate, securityDtlDTO.prevAccrualDate) &&
-            Objects.equals(this.prevPaymentDate, securityDtlDTO.prevPaymentDate) &&
-            Objects.equals(this.prevResetDate, securityDtlDTO.prevResetDate) &&
-            Objects.equals(this.previousPaymentDate, securityDtlDTO.previousPaymentDate) &&
-            Objects.equals(this.previousResetDate, securityDtlDTO.previousResetDate) &&
-            Objects.equals(this.price, securityDtlDTO.price) &&
-            Objects.equals(this.priceCurrencyId, securityDtlDTO.priceCurrencyId) &&
-            Objects.equals(this.priceDate, securityDtlDTO.priceDate) &&
-            Objects.equals(this.priceFactor, securityDtlDTO.priceFactor) &&
-            Objects.equals(this.priceSource, securityDtlDTO.priceSource) &&
-            Objects.equals(this.primaryId, securityDtlDTO.primaryId) &&
-            Objects.equals(this.primaryIdType, securityDtlDTO.primaryIdType) &&
-            Objects.equals(this.primaryPricingSourceId, securityDtlDTO.primaryPricingSourceId) &&
-            Objects.equals(this.processingEndDate, securityDtlDTO.processingEndDate) &&
-            Objects.equals(this.processingStartDate, securityDtlDTO.processingStartDate) &&
-            Objects.equals(this.quickCode, securityDtlDTO.quickCode) &&
-            Objects.equals(this.resetFrequency, securityDtlDTO.resetFrequency) &&
-            Objects.equals(this.securityBasis, securityDtlDTO.securityBasis) &&
-            Objects.equals(this.securityCalendar, securityDtlDTO.securityCalendar) &&
-            Objects.equals(this.securityId, securityDtlDTO.securityId) &&
-            Objects.equals(this.securityIdentifierDetailList, securityDtlDTO.securityIdentifierDetailList) &&
-            Objects.equals(this.securityIndex, securityDtlDTO.securityIndex) &&
-            Objects.equals(this.securityLookback, securityDtlDTO.securityLookback) &&
-            Objects.equals(this.securityRate, securityDtlDTO.securityRate) &&
-            Objects.equals(this.securitySpread, securityDtlDTO.securitySpread) &&
-            Objects.equals(this.sedol, securityDtlDTO.sedol) &&
-            Objects.equals(this.sharesOutstanding, securityDtlDTO.sharesOutstanding) &&
-            Objects.equals(this.shortInterest, securityDtlDTO.shortInterest) &&
-            Objects.equals(this.shortName, securityDtlDTO.shortName) &&
-            Objects.equals(this.spLongTermId, securityDtlDTO.spLongTermId) &&
-            Objects.equals(this.spShortTermId, securityDtlDTO.spShortTermId) &&
-            Objects.equals(this.status, securityDtlDTO.status) &&
-            Objects.equals(this.submittedInformationType, securityDtlDTO.submittedInformationType) &&
-            Objects.equals(this.ticker, securityDtlDTO.ticker) &&
-            Objects.equals(this.transferAgent, securityDtlDTO.transferAgent) &&
-            Objects.equals(this.updateTransactions, securityDtlDTO.updateTransactions) &&
-            Objects.equals(this.volatility162W, securityDtlDTO.volatility162W) &&
-            Objects.equals(this.volatility360D, securityDtlDTO.volatility360D) &&
-            Objects.equals(this.volatility60D, securityDtlDTO.volatility60D) &&
-            Objects.equals(this.volatility90D, securityDtlDTO.volatility90D) &&
-            Objects.equals(this.wal, securityDtlDTO.wal) &&
-            Objects.equals(this.wam, securityDtlDTO.wam);
-    }
+   /**
+   * Get autoOpenTime
+   * @return autoOpenTime
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getAutoOpenTime() {
+    return autoOpenTime;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, accrualResetDate, active, advisor, askPrice, autoCloseTime, autoOpenTime,
-            baseFeeRate, baseRebateRate, bidPrice, category0Id, category1Id, category2Id, category3Id, categoryId,
-            chilled, clientCode, clientSecId, closeTime, collatGrade, comments, countryId, countryKy, couponType,
-            currencyId, cusip, defaultPriceFlag, depositoryList, description, dirtyPrice, distBusinessDay, duration,
-            earningDistFrequency, exchangeId, expMaturityDate, factor, firstAccrualDate, fitchLongTermId,
-            fitchShortTermId, hotFactor, industryId, inflationIndex, inflationIndexedFlag, interestAccrued,
-            isBaseRateManualUpdate, isGC, isHotIndexManualUpdate, isin, issueDate, issuerId, issuerName, lastPrice,
-            longDuration, marketCap, marketVolume, maturityDate, modDuration, moodyLongTermId, moodyShortTermId,
-            nextPaymentDate, nextResetDate, openCloseTimeType, openTime, payDelay, payFrequency, prepaySpeed,
-            prevAccrualDate, prevPaymentDate, prevResetDate, previousPaymentDate, previousResetDate, price,
-            priceCurrencyId, priceDate, priceFactor, priceSource, primaryId, primaryIdType, primaryPricingSourceId,
-            processingEndDate, processingStartDate, quickCode, resetFrequency, securityBasis, securityCalendar,
-            securityId, securityIdentifierDetailList, securityIndex, securityLookback, securityRate, securitySpread,
-            sedol, sharesOutstanding, shortInterest, shortName, spLongTermId, spShortTermId, status,
-            submittedInformationType, ticker, transferAgent, updateTransactions, volatility162W, volatility360D,
-            volatility60D, volatility90D, wal, wam);
-    }
+  public void setAutoOpenTime(Integer autoOpenTime) {
+    this.autoOpenTime = autoOpenTime;
+  }
 
+  public SecurityDtlDTO baseFeeRate(Double baseFeeRate) {
+    this.baseFeeRate = baseFeeRate;
+    return this;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SecurityDtlDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    accrualResetDate: ").append(toIndentedString(accrualResetDate)).append("\n");
-        sb.append("    active: ").append(toIndentedString(active)).append("\n");
-        sb.append("    advisor: ").append(toIndentedString(advisor)).append("\n");
-        sb.append("    askPrice: ").append(toIndentedString(askPrice)).append("\n");
-        sb.append("    autoCloseTime: ").append(toIndentedString(autoCloseTime)).append("\n");
-        sb.append("    autoOpenTime: ").append(toIndentedString(autoOpenTime)).append("\n");
-        sb.append("    baseFeeRate: ").append(toIndentedString(baseFeeRate)).append("\n");
-        sb.append("    baseRebateRate: ").append(toIndentedString(baseRebateRate)).append("\n");
-        sb.append("    bidPrice: ").append(toIndentedString(bidPrice)).append("\n");
-        sb.append("    category0Id: ").append(toIndentedString(category0Id)).append("\n");
-        sb.append("    category1Id: ").append(toIndentedString(category1Id)).append("\n");
-        sb.append("    category2Id: ").append(toIndentedString(category2Id)).append("\n");
-        sb.append("    category3Id: ").append(toIndentedString(category3Id)).append("\n");
-        sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
-        sb.append("    chilled: ").append(toIndentedString(chilled)).append("\n");
-        sb.append("    clientCode: ").append(toIndentedString(clientCode)).append("\n");
-        sb.append("    clientSecId: ").append(toIndentedString(clientSecId)).append("\n");
-        sb.append("    closeTime: ").append(toIndentedString(closeTime)).append("\n");
-        sb.append("    collatGrade: ").append(toIndentedString(collatGrade)).append("\n");
-        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-        sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
-        sb.append("    countryKy: ").append(toIndentedString(countryKy)).append("\n");
-        sb.append("    couponType: ").append(toIndentedString(couponType)).append("\n");
-        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-        sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
-        sb.append("    defaultPriceFlag: ").append(toIndentedString(defaultPriceFlag)).append("\n");
-        sb.append("    depositoryList: ").append(toIndentedString(depositoryList)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    dirtyPrice: ").append(toIndentedString(dirtyPrice)).append("\n");
-        sb.append("    distBusinessDay: ").append(toIndentedString(distBusinessDay)).append("\n");
-        sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
-        sb.append("    earningDistFrequency: ").append(toIndentedString(earningDistFrequency)).append("\n");
-        sb.append("    exchangeId: ").append(toIndentedString(exchangeId)).append("\n");
-        sb.append("    expMaturityDate: ").append(toIndentedString(expMaturityDate)).append("\n");
-        sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
-        sb.append("    firstAccrualDate: ").append(toIndentedString(firstAccrualDate)).append("\n");
-        sb.append("    fitchLongTermId: ").append(toIndentedString(fitchLongTermId)).append("\n");
-        sb.append("    fitchShortTermId: ").append(toIndentedString(fitchShortTermId)).append("\n");
-        sb.append("    hotFactor: ").append(toIndentedString(hotFactor)).append("\n");
-        sb.append("    industryId: ").append(toIndentedString(industryId)).append("\n");
-        sb.append("    inflationIndex: ").append(toIndentedString(inflationIndex)).append("\n");
-        sb.append("    inflationIndexedFlag: ").append(toIndentedString(inflationIndexedFlag)).append("\n");
-        sb.append("    interestAccrued: ").append(toIndentedString(interestAccrued)).append("\n");
-        sb.append("    isBaseRateManualUpdate: ").append(toIndentedString(isBaseRateManualUpdate)).append("\n");
-        sb.append("    isGC: ").append(toIndentedString(isGC)).append("\n");
-        sb.append("    isHotIndexManualUpdate: ").append(toIndentedString(isHotIndexManualUpdate)).append("\n");
-        sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
-        sb.append("    issueDate: ").append(toIndentedString(issueDate)).append("\n");
-        sb.append("    issuerId: ").append(toIndentedString(issuerId)).append("\n");
-        sb.append("    issuerName: ").append(toIndentedString(issuerName)).append("\n");
-        sb.append("    lastPrice: ").append(toIndentedString(lastPrice)).append("\n");
-        sb.append("    longDuration: ").append(toIndentedString(longDuration)).append("\n");
-        sb.append("    marketCap: ").append(toIndentedString(marketCap)).append("\n");
-        sb.append("    marketVolume: ").append(toIndentedString(marketVolume)).append("\n");
-        sb.append("    maturityDate: ").append(toIndentedString(maturityDate)).append("\n");
-        sb.append("    modDuration: ").append(toIndentedString(modDuration)).append("\n");
-        sb.append("    moodyLongTermId: ").append(toIndentedString(moodyLongTermId)).append("\n");
-        sb.append("    moodyShortTermId: ").append(toIndentedString(moodyShortTermId)).append("\n");
-        sb.append("    nextPaymentDate: ").append(toIndentedString(nextPaymentDate)).append("\n");
-        sb.append("    nextResetDate: ").append(toIndentedString(nextResetDate)).append("\n");
-        sb.append("    openCloseTimeType: ").append(toIndentedString(openCloseTimeType)).append("\n");
-        sb.append("    openTime: ").append(toIndentedString(openTime)).append("\n");
-        sb.append("    payDelay: ").append(toIndentedString(payDelay)).append("\n");
-        sb.append("    payFrequency: ").append(toIndentedString(payFrequency)).append("\n");
-        sb.append("    prepaySpeed: ").append(toIndentedString(prepaySpeed)).append("\n");
-        sb.append("    prevAccrualDate: ").append(toIndentedString(prevAccrualDate)).append("\n");
-        sb.append("    prevPaymentDate: ").append(toIndentedString(prevPaymentDate)).append("\n");
-        sb.append("    prevResetDate: ").append(toIndentedString(prevResetDate)).append("\n");
-        sb.append("    previousPaymentDate: ").append(toIndentedString(previousPaymentDate)).append("\n");
-        sb.append("    previousResetDate: ").append(toIndentedString(previousResetDate)).append("\n");
-        sb.append("    price: ").append(toIndentedString(price)).append("\n");
-        sb.append("    priceCurrencyId: ").append(toIndentedString(priceCurrencyId)).append("\n");
-        sb.append("    priceDate: ").append(toIndentedString(priceDate)).append("\n");
-        sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
-        sb.append("    priceSource: ").append(toIndentedString(priceSource)).append("\n");
-        sb.append("    primaryId: ").append(toIndentedString(primaryId)).append("\n");
-        sb.append("    primaryIdType: ").append(toIndentedString(primaryIdType)).append("\n");
-        sb.append("    primaryPricingSourceId: ").append(toIndentedString(primaryPricingSourceId)).append("\n");
-        sb.append("    processingEndDate: ").append(toIndentedString(processingEndDate)).append("\n");
-        sb.append("    processingStartDate: ").append(toIndentedString(processingStartDate)).append("\n");
-        sb.append("    quickCode: ").append(toIndentedString(quickCode)).append("\n");
-        sb.append("    resetFrequency: ").append(toIndentedString(resetFrequency)).append("\n");
-        sb.append("    securityBasis: ").append(toIndentedString(securityBasis)).append("\n");
-        sb.append("    securityCalendar: ").append(toIndentedString(securityCalendar)).append("\n");
-        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-        sb.append("    securityIdentifierDetailList: ").append(toIndentedString(securityIdentifierDetailList))
-            .append("\n");
-        sb.append("    securityIndex: ").append(toIndentedString(securityIndex)).append("\n");
-        sb.append("    securityLookback: ").append(toIndentedString(securityLookback)).append("\n");
-        sb.append("    securityRate: ").append(toIndentedString(securityRate)).append("\n");
-        sb.append("    securitySpread: ").append(toIndentedString(securitySpread)).append("\n");
-        sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
-        sb.append("    sharesOutstanding: ").append(toIndentedString(sharesOutstanding)).append("\n");
-        sb.append("    shortInterest: ").append(toIndentedString(shortInterest)).append("\n");
-        sb.append("    shortName: ").append(toIndentedString(shortName)).append("\n");
-        sb.append("    spLongTermId: ").append(toIndentedString(spLongTermId)).append("\n");
-        sb.append("    spShortTermId: ").append(toIndentedString(spShortTermId)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    submittedInformationType: ").append(toIndentedString(submittedInformationType)).append("\n");
-        sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
-        sb.append("    transferAgent: ").append(toIndentedString(transferAgent)).append("\n");
-        sb.append("    updateTransactions: ").append(toIndentedString(updateTransactions)).append("\n");
-        sb.append("    volatility162W: ").append(toIndentedString(volatility162W)).append("\n");
-        sb.append("    volatility360D: ").append(toIndentedString(volatility360D)).append("\n");
-        sb.append("    volatility60D: ").append(toIndentedString(volatility60D)).append("\n");
-        sb.append("    volatility90D: ").append(toIndentedString(volatility90D)).append("\n");
-        sb.append("    wal: ").append(toIndentedString(wal)).append("\n");
-        sb.append("    wam: ").append(toIndentedString(wam)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
+   /**
+   * Get baseFeeRate
+   * @return baseFeeRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBaseFeeRate() {
+    return baseFeeRate;
+  }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+  public void setBaseFeeRate(Double baseFeeRate) {
+    this.baseFeeRate = baseFeeRate;
+  }
+
+  public SecurityDtlDTO baseRebateRate(Double baseRebateRate) {
+    this.baseRebateRate = baseRebateRate;
+    return this;
+  }
+
+   /**
+   * Get baseRebateRate
+   * @return baseRebateRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBaseRebateRate() {
+    return baseRebateRate;
+  }
+
+  public void setBaseRebateRate(Double baseRebateRate) {
+    this.baseRebateRate = baseRebateRate;
+  }
+
+  public SecurityDtlDTO bidPrice(Double bidPrice) {
+    this.bidPrice = bidPrice;
+    return this;
+  }
+
+   /**
+   * Get bidPrice
+   * @return bidPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBidPrice() {
+    return bidPrice;
+  }
+
+  public void setBidPrice(Double bidPrice) {
+    this.bidPrice = bidPrice;
+  }
+
+  public SecurityDtlDTO category0Id(Integer category0Id) {
+    this.category0Id = category0Id;
+    return this;
+  }
+
+   /**
+   * Get category0Id
+   * @return category0Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory0Id() {
+    return category0Id;
+  }
+
+  public void setCategory0Id(Integer category0Id) {
+    this.category0Id = category0Id;
+  }
+
+  public SecurityDtlDTO category1Id(Integer category1Id) {
+    this.category1Id = category1Id;
+    return this;
+  }
+
+   /**
+   * Get category1Id
+   * @return category1Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory1Id() {
+    return category1Id;
+  }
+
+  public void setCategory1Id(Integer category1Id) {
+    this.category1Id = category1Id;
+  }
+
+  public SecurityDtlDTO category2Id(Integer category2Id) {
+    this.category2Id = category2Id;
+    return this;
+  }
+
+   /**
+   * Get category2Id
+   * @return category2Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory2Id() {
+    return category2Id;
+  }
+
+  public void setCategory2Id(Integer category2Id) {
+    this.category2Id = category2Id;
+  }
+
+  public SecurityDtlDTO category3Id(Integer category3Id) {
+    this.category3Id = category3Id;
+    return this;
+  }
+
+   /**
+   * Get category3Id
+   * @return category3Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory3Id() {
+    return category3Id;
+  }
+
+  public void setCategory3Id(Integer category3Id) {
+    this.category3Id = category3Id;
+  }
+
+  public SecurityDtlDTO categoryId(Integer categoryId) {
+    this.categoryId = categoryId;
+    return this;
+  }
+
+   /**
+   * Get categoryId
+   * @return categoryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Integer categoryId) {
+    this.categoryId = categoryId;
+  }
+
+  public SecurityDtlDTO chilled(Boolean chilled) {
+    this.chilled = chilled;
+    return this;
+  }
+
+   /**
+   * Get chilled
+   * @return chilled
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isChilled() {
+    return chilled;
+  }
+
+  public void setChilled(Boolean chilled) {
+    this.chilled = chilled;
+  }
+
+  public SecurityDtlDTO clientCode(String clientCode) {
+    this.clientCode = clientCode;
+    return this;
+  }
+
+   /**
+   * Get clientCode
+   * @return clientCode
+  **/
+  @ApiModelProperty(value = "")
+  public String getClientCode() {
+    return clientCode;
+  }
+
+  public void setClientCode(String clientCode) {
+    this.clientCode = clientCode;
+  }
+
+  public SecurityDtlDTO clientSecId(String clientSecId) {
+    this.clientSecId = clientSecId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return clientSecId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getClientSecId() {
+    return clientSecId;
+  }
+
+  public void setClientSecId(String clientSecId) {
+    this.clientSecId = clientSecId;
+  }
+
+  public SecurityDtlDTO closeTime(Integer closeTime) {
+    this.closeTime = closeTime;
+    return this;
+  }
+
+   /**
+   * Get closeTime
+   * @return closeTime
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCloseTime() {
+    return closeTime;
+  }
+
+  public void setCloseTime(Integer closeTime) {
+    this.closeTime = closeTime;
+  }
+
+  public SecurityDtlDTO collatGrade(Integer collatGrade) {
+    this.collatGrade = collatGrade;
+    return this;
+  }
+
+   /**
+   * Get collatGrade
+   * @return collatGrade
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCollatGrade() {
+    return collatGrade;
+  }
+
+  public void setCollatGrade(Integer collatGrade) {
+    this.collatGrade = collatGrade;
+  }
+
+  public SecurityDtlDTO comments(String comments) {
+    this.comments = comments;
+    return this;
+  }
+
+   /**
+   * Get comments
+   * @return comments
+  **/
+  @ApiModelProperty(value = "")
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public SecurityDtlDTO countryId(Integer countryId) {
+    this.countryId = countryId;
+    return this;
+  }
+
+   /**
+   * Get countryId
+   * @return countryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Integer countryId) {
+    this.countryId = countryId;
+  }
+
+  public SecurityDtlDTO countryKy(String countryKy) {
+    this.countryKy = countryKy;
+    return this;
+  }
+
+   /**
+   * Get countryKy
+   * @return countryKy
+  **/
+  @ApiModelProperty(value = "")
+  public String getCountryKy() {
+    return countryKy;
+  }
+
+  public void setCountryKy(String countryKy) {
+    this.countryKy = countryKy;
+  }
+
+  public SecurityDtlDTO couponType(String couponType) {
+    this.couponType = couponType;
+    return this;
+  }
+
+   /**
+   * Get couponType
+   * @return couponType
+  **/
+  @ApiModelProperty(value = "")
+  public String getCouponType() {
+    return couponType;
+  }
+
+  public void setCouponType(String couponType) {
+    this.couponType = couponType;
+  }
+
+  public SecurityDtlDTO currencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+    return this;
+  }
+
+   /**
+   * Get currencyId
+   * @return currencyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+  }
+
+  public SecurityDtlDTO cusip(String cusip) {
+    this.cusip = cusip;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return cusip
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getCusip() {
+    return cusip;
+  }
+
+  public void setCusip(String cusip) {
+    this.cusip = cusip;
+  }
+
+  public SecurityDtlDTO defaultPriceFlag(Boolean defaultPriceFlag) {
+    this.defaultPriceFlag = defaultPriceFlag;
+    return this;
+  }
+
+   /**
+   * Get defaultPriceFlag
+   * @return defaultPriceFlag
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDefaultPriceFlag() {
+    return defaultPriceFlag;
+  }
+
+  public void setDefaultPriceFlag(Boolean defaultPriceFlag) {
+    this.defaultPriceFlag = defaultPriceFlag;
+  }
+
+  public SecurityDtlDTO depositoryList(List<Integer> depositoryList) {
+    this.depositoryList = depositoryList;
+    return this;
+  }
+
+  public SecurityDtlDTO addDepositoryListItem(Integer depositoryListItem) {
+    if (this.depositoryList == null) {
+      this.depositoryList = new ArrayList<>();
+    }
+    this.depositoryList.add(depositoryListItem);
+    return this;
+  }
+
+   /**
+   * Get depositoryList
+   * @return depositoryList
+  **/
+  @ApiModelProperty(value = "")
+  public List<Integer> getDepositoryList() {
+    return depositoryList;
+  }
+
+  public void setDepositoryList(List<Integer> depositoryList) {
+    this.depositoryList = depositoryList;
+  }
+
+  public SecurityDtlDTO description(String description) {
+    this.description = description;
+    return this;
+  }
+
+   /**
+   * Get description
+   * @return description
+  **/
+  @ApiModelProperty(value = "")
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public SecurityDtlDTO dirtyPrice(Double dirtyPrice) {
+    this.dirtyPrice = dirtyPrice;
+    return this;
+  }
+
+   /**
+   * Get dirtyPrice
+   * @return dirtyPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDirtyPrice() {
+    return dirtyPrice;
+  }
+
+  public void setDirtyPrice(Double dirtyPrice) {
+    this.dirtyPrice = dirtyPrice;
+  }
+
+  public SecurityDtlDTO distBusinessDay(Integer distBusinessDay) {
+    this.distBusinessDay = distBusinessDay;
+    return this;
+  }
+
+   /**
+   * Get distBusinessDay
+   * @return distBusinessDay
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getDistBusinessDay() {
+    return distBusinessDay;
+  }
+
+  public void setDistBusinessDay(Integer distBusinessDay) {
+    this.distBusinessDay = distBusinessDay;
+  }
+
+  public SecurityDtlDTO duration(Double duration) {
+    this.duration = duration;
+    return this;
+  }
+
+   /**
+   * Get duration
+   * @return duration
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDuration() {
+    return duration;
+  }
+
+  public void setDuration(Double duration) {
+    this.duration = duration;
+  }
+
+  public SecurityDtlDTO earningDistFrequency(String earningDistFrequency) {
+    this.earningDistFrequency = earningDistFrequency;
+    return this;
+  }
+
+   /**
+   * Get earningDistFrequency
+   * @return earningDistFrequency
+  **/
+  @ApiModelProperty(value = "")
+  public String getEarningDistFrequency() {
+    return earningDistFrequency;
+  }
+
+  public void setEarningDistFrequency(String earningDistFrequency) {
+    this.earningDistFrequency = earningDistFrequency;
+  }
+
+  public SecurityDtlDTO exchangeId(Integer exchangeId) {
+    this.exchangeId = exchangeId;
+    return this;
+  }
+
+   /**
+   * Get exchangeId
+   * @return exchangeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getExchangeId() {
+    return exchangeId;
+  }
+
+  public void setExchangeId(Integer exchangeId) {
+    this.exchangeId = exchangeId;
+  }
+
+  public SecurityDtlDTO expMaturityDate(LocalDateTime expMaturityDate) {
+    this.expMaturityDate = expMaturityDate;
+    return this;
+  }
+
+   /**
+   * Get expMaturityDate
+   * @return expMaturityDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getExpMaturityDate() {
+    return expMaturityDate;
+  }
+
+  public void setExpMaturityDate(LocalDateTime expMaturityDate) {
+    this.expMaturityDate = expMaturityDate;
+  }
+
+  public SecurityDtlDTO factor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
+
+   /**
+   * Get factor
+   * @return factor
+  **/
+  @ApiModelProperty(value = "")
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+
+  public SecurityDtlDTO firstAccrualDate(LocalDateTime firstAccrualDate) {
+    this.firstAccrualDate = firstAccrualDate;
+    return this;
+  }
+
+   /**
+   * Get firstAccrualDate
+   * @return firstAccrualDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getFirstAccrualDate() {
+    return firstAccrualDate;
+  }
+
+  public void setFirstAccrualDate(LocalDateTime firstAccrualDate) {
+    this.firstAccrualDate = firstAccrualDate;
+  }
+
+  public SecurityDtlDTO fitchLongTermId(Integer fitchLongTermId) {
+    this.fitchLongTermId = fitchLongTermId;
+    return this;
+  }
+
+   /**
+   * Get fitchLongTermId
+   * @return fitchLongTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getFitchLongTermId() {
+    return fitchLongTermId;
+  }
+
+  public void setFitchLongTermId(Integer fitchLongTermId) {
+    this.fitchLongTermId = fitchLongTermId;
+  }
+
+  public SecurityDtlDTO fitchShortTermId(Integer fitchShortTermId) {
+    this.fitchShortTermId = fitchShortTermId;
+    return this;
+  }
+
+   /**
+   * Get fitchShortTermId
+   * @return fitchShortTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getFitchShortTermId() {
+    return fitchShortTermId;
+  }
+
+  public void setFitchShortTermId(Integer fitchShortTermId) {
+    this.fitchShortTermId = fitchShortTermId;
+  }
+
+  public SecurityDtlDTO hotFactor(Integer hotFactor) {
+    this.hotFactor = hotFactor;
+    return this;
+  }
+
+   /**
+   * Get hotFactor
+   * @return hotFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getHotFactor() {
+    return hotFactor;
+  }
+
+  public void setHotFactor(Integer hotFactor) {
+    this.hotFactor = hotFactor;
+  }
+
+  public SecurityDtlDTO industryId(Integer industryId) {
+    this.industryId = industryId;
+    return this;
+  }
+
+   /**
+   * Get industryId
+   * @return industryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getIndustryId() {
+    return industryId;
+  }
+
+  public void setIndustryId(Integer industryId) {
+    this.industryId = industryId;
+  }
+
+  public SecurityDtlDTO inflationIndex(Double inflationIndex) {
+    this.inflationIndex = inflationIndex;
+    return this;
+  }
+
+   /**
+   * Get inflationIndex
+   * @return inflationIndex
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInflationIndex() {
+    return inflationIndex;
+  }
+
+  public void setInflationIndex(Double inflationIndex) {
+    this.inflationIndex = inflationIndex;
+  }
+
+  public SecurityDtlDTO inflationIndexedFlag(Boolean inflationIndexedFlag) {
+    this.inflationIndexedFlag = inflationIndexedFlag;
+    return this;
+  }
+
+   /**
+   * Get inflationIndexedFlag
+   * @return inflationIndexedFlag
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isInflationIndexedFlag() {
+    return inflationIndexedFlag;
+  }
+
+  public void setInflationIndexedFlag(Boolean inflationIndexedFlag) {
+    this.inflationIndexedFlag = inflationIndexedFlag;
+  }
+
+  public SecurityDtlDTO interestAccrued(Double interestAccrued) {
+    this.interestAccrued = interestAccrued;
+    return this;
+  }
+
+   /**
+   * Get interestAccrued
+   * @return interestAccrued
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInterestAccrued() {
+    return interestAccrued;
+  }
+
+  public void setInterestAccrued(Double interestAccrued) {
+    this.interestAccrued = interestAccrued;
+  }
+
+  public SecurityDtlDTO isBaseRateManualUpdate(Boolean isBaseRateManualUpdate) {
+    this.isBaseRateManualUpdate = isBaseRateManualUpdate;
+    return this;
+  }
+
+   /**
+   * Get isBaseRateManualUpdate
+   * @return isBaseRateManualUpdate
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsBaseRateManualUpdate() {
+    return isBaseRateManualUpdate;
+  }
+
+  public void setIsBaseRateManualUpdate(Boolean isBaseRateManualUpdate) {
+    this.isBaseRateManualUpdate = isBaseRateManualUpdate;
+  }
+
+  public SecurityDtlDTO isGC(Boolean isGC) {
+    this.isGC = isGC;
+    return this;
+  }
+
+   /**
+   * Get isGC
+   * @return isGC
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsGC() {
+    return isGC;
+  }
+
+  public void setIsGC(Boolean isGC) {
+    this.isGC = isGC;
+  }
+
+  public SecurityDtlDTO isHotIndexManualUpdate(Boolean isHotIndexManualUpdate) {
+    this.isHotIndexManualUpdate = isHotIndexManualUpdate;
+    return this;
+  }
+
+   /**
+   * Get isHotIndexManualUpdate
+   * @return isHotIndexManualUpdate
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsHotIndexManualUpdate() {
+    return isHotIndexManualUpdate;
+  }
+
+  public void setIsHotIndexManualUpdate(Boolean isHotIndexManualUpdate) {
+    this.isHotIndexManualUpdate = isHotIndexManualUpdate;
+  }
+
+  public SecurityDtlDTO isin(String isin) {
+    this.isin = isin;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return isin
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getIsin() {
+    return isin;
+  }
+
+  public void setIsin(String isin) {
+    this.isin = isin;
+  }
+
+  public SecurityDtlDTO issueDate(LocalDateTime issueDate) {
+    this.issueDate = issueDate;
+    return this;
+  }
+
+   /**
+   * Get issueDate
+   * @return issueDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getIssueDate() {
+    return issueDate;
+  }
+
+  public void setIssueDate(LocalDateTime issueDate) {
+    this.issueDate = issueDate;
+  }
+
+  public SecurityDtlDTO issuerId(Integer issuerId) {
+    this.issuerId = issuerId;
+    return this;
+  }
+
+   /**
+   * Get issuerId
+   * @return issuerId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getIssuerId() {
+    return issuerId;
+  }
+
+  public void setIssuerId(Integer issuerId) {
+    this.issuerId = issuerId;
+  }
+
+  public SecurityDtlDTO issuerName(String issuerName) {
+    this.issuerName = issuerName;
+    return this;
+  }
+
+   /**
+   * Get issuerName
+   * @return issuerName
+  **/
+  @ApiModelProperty(value = "")
+  public String getIssuerName() {
+    return issuerName;
+  }
+
+  public void setIssuerName(String issuerName) {
+    this.issuerName = issuerName;
+  }
+
+  public SecurityDtlDTO lastPrice(Double lastPrice) {
+    this.lastPrice = lastPrice;
+    return this;
+  }
+
+   /**
+   * Get lastPrice
+   * @return lastPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getLastPrice() {
+    return lastPrice;
+  }
+
+  public void setLastPrice(Double lastPrice) {
+    this.lastPrice = lastPrice;
+  }
+
+  public SecurityDtlDTO longDuration(Boolean longDuration) {
+    this.longDuration = longDuration;
+    return this;
+  }
+
+   /**
+   * Get longDuration
+   * @return longDuration
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isLongDuration() {
+    return longDuration;
+  }
+
+  public void setLongDuration(Boolean longDuration) {
+    this.longDuration = longDuration;
+  }
+
+  public SecurityDtlDTO marketCap(Double marketCap) {
+    this.marketCap = marketCap;
+    return this;
+  }
+
+   /**
+   * Get marketCap
+   * @return marketCap
+  **/
+  @ApiModelProperty(value = "")
+  public Double getMarketCap() {
+    return marketCap;
+  }
+
+  public void setMarketCap(Double marketCap) {
+    this.marketCap = marketCap;
+  }
+
+  public SecurityDtlDTO marketVolume(Integer marketVolume) {
+    this.marketVolume = marketVolume;
+    return this;
+  }
+
+   /**
+   * Get marketVolume
+   * @return marketVolume
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMarketVolume() {
+    return marketVolume;
+  }
+
+  public void setMarketVolume(Integer marketVolume) {
+    this.marketVolume = marketVolume;
+  }
+
+  public SecurityDtlDTO maturityDate(LocalDateTime maturityDate) {
+    this.maturityDate = maturityDate;
+    return this;
+  }
+
+   /**
+   * Get maturityDate
+   * @return maturityDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getMaturityDate() {
+    return maturityDate;
+  }
+
+  public void setMaturityDate(LocalDateTime maturityDate) {
+    this.maturityDate = maturityDate;
+  }
+
+  public SecurityDtlDTO modDuration(Double modDuration) {
+    this.modDuration = modDuration;
+    return this;
+  }
+
+   /**
+   * Get modDuration
+   * @return modDuration
+  **/
+  @ApiModelProperty(value = "")
+  public Double getModDuration() {
+    return modDuration;
+  }
+
+  public void setModDuration(Double modDuration) {
+    this.modDuration = modDuration;
+  }
+
+  public SecurityDtlDTO moodyLongTermId(Integer moodyLongTermId) {
+    this.moodyLongTermId = moodyLongTermId;
+    return this;
+  }
+
+   /**
+   * Get moodyLongTermId
+   * @return moodyLongTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMoodyLongTermId() {
+    return moodyLongTermId;
+  }
+
+  public void setMoodyLongTermId(Integer moodyLongTermId) {
+    this.moodyLongTermId = moodyLongTermId;
+  }
+
+  public SecurityDtlDTO moodyShortTermId(Integer moodyShortTermId) {
+    this.moodyShortTermId = moodyShortTermId;
+    return this;
+  }
+
+   /**
+   * Get moodyShortTermId
+   * @return moodyShortTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMoodyShortTermId() {
+    return moodyShortTermId;
+  }
+
+  public void setMoodyShortTermId(Integer moodyShortTermId) {
+    this.moodyShortTermId = moodyShortTermId;
+  }
+
+  public SecurityDtlDTO nextPaymentDate(LocalDateTime nextPaymentDate) {
+    this.nextPaymentDate = nextPaymentDate;
+    return this;
+  }
+
+   /**
+   * Get nextPaymentDate
+   * @return nextPaymentDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getNextPaymentDate() {
+    return nextPaymentDate;
+  }
+
+  public void setNextPaymentDate(LocalDateTime nextPaymentDate) {
+    this.nextPaymentDate = nextPaymentDate;
+  }
+
+  public SecurityDtlDTO nextResetDate(LocalDateTime nextResetDate) {
+    this.nextResetDate = nextResetDate;
+    return this;
+  }
+
+   /**
+   * Get nextResetDate
+   * @return nextResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getNextResetDate() {
+    return nextResetDate;
+  }
+
+  public void setNextResetDate(LocalDateTime nextResetDate) {
+    this.nextResetDate = nextResetDate;
+  }
+
+  public SecurityDtlDTO openCloseTimeType(Integer openCloseTimeType) {
+    this.openCloseTimeType = openCloseTimeType;
+    return this;
+  }
+
+   /**
+   * Get openCloseTimeType
+   * @return openCloseTimeType
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getOpenCloseTimeType() {
+    return openCloseTimeType;
+  }
+
+  public void setOpenCloseTimeType(Integer openCloseTimeType) {
+    this.openCloseTimeType = openCloseTimeType;
+  }
+
+  public SecurityDtlDTO openTime(Integer openTime) {
+    this.openTime = openTime;
+    return this;
+  }
+
+   /**
+   * Get openTime
+   * @return openTime
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getOpenTime() {
+    return openTime;
+  }
+
+  public void setOpenTime(Integer openTime) {
+    this.openTime = openTime;
+  }
+
+  public SecurityDtlDTO payDelay(Integer payDelay) {
+    this.payDelay = payDelay;
+    return this;
+  }
+
+   /**
+   * Get payDelay
+   * @return payDelay
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPayDelay() {
+    return payDelay;
+  }
+
+  public void setPayDelay(Integer payDelay) {
+    this.payDelay = payDelay;
+  }
+
+  public SecurityDtlDTO payFrequency(Integer payFrequency) {
+    this.payFrequency = payFrequency;
+    return this;
+  }
+
+   /**
+   * Get payFrequency
+   * @return payFrequency
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPayFrequency() {
+    return payFrequency;
+  }
+
+  public void setPayFrequency(Integer payFrequency) {
+    this.payFrequency = payFrequency;
+  }
+
+  public SecurityDtlDTO prepaySpeed(Double prepaySpeed) {
+    this.prepaySpeed = prepaySpeed;
+    return this;
+  }
+
+   /**
+   * Get prepaySpeed
+   * @return prepaySpeed
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPrepaySpeed() {
+    return prepaySpeed;
+  }
+
+  public void setPrepaySpeed(Double prepaySpeed) {
+    this.prepaySpeed = prepaySpeed;
+  }
+
+  public SecurityDtlDTO prevAccrualDate(LocalDateTime prevAccrualDate) {
+    this.prevAccrualDate = prevAccrualDate;
+    return this;
+  }
+
+   /**
+   * Get prevAccrualDate
+   * @return prevAccrualDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPrevAccrualDate() {
+    return prevAccrualDate;
+  }
+
+  public void setPrevAccrualDate(LocalDateTime prevAccrualDate) {
+    this.prevAccrualDate = prevAccrualDate;
+  }
+
+  public SecurityDtlDTO prevPaymentDate(LocalDateTime prevPaymentDate) {
+    this.prevPaymentDate = prevPaymentDate;
+    return this;
+  }
+
+   /**
+   * Get prevPaymentDate
+   * @return prevPaymentDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPrevPaymentDate() {
+    return prevPaymentDate;
+  }
+
+  public void setPrevPaymentDate(LocalDateTime prevPaymentDate) {
+    this.prevPaymentDate = prevPaymentDate;
+  }
+
+  public SecurityDtlDTO prevResetDate(LocalDateTime prevResetDate) {
+    this.prevResetDate = prevResetDate;
+    return this;
+  }
+
+   /**
+   * Get prevResetDate
+   * @return prevResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPrevResetDate() {
+    return prevResetDate;
+  }
+
+  public void setPrevResetDate(LocalDateTime prevResetDate) {
+    this.prevResetDate = prevResetDate;
+  }
+
+  public SecurityDtlDTO previousPaymentDate(LocalDateTime previousPaymentDate) {
+    this.previousPaymentDate = previousPaymentDate;
+    return this;
+  }
+
+   /**
+   * Get previousPaymentDate
+   * @return previousPaymentDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPreviousPaymentDate() {
+    return previousPaymentDate;
+  }
+
+  public void setPreviousPaymentDate(LocalDateTime previousPaymentDate) {
+    this.previousPaymentDate = previousPaymentDate;
+  }
+
+  public SecurityDtlDTO previousResetDate(LocalDateTime previousResetDate) {
+    this.previousResetDate = previousResetDate;
+    return this;
+  }
+
+   /**
+   * Get previousResetDate
+   * @return previousResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPreviousResetDate() {
+    return previousResetDate;
+  }
+
+  public void setPreviousResetDate(LocalDateTime previousResetDate) {
+    this.previousResetDate = previousResetDate;
+  }
+
+  public SecurityDtlDTO price(Double price) {
+    this.price = price;
+    return this;
+  }
+
+   /**
+   * Get price
+   * @return price
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
+  public SecurityDtlDTO priceCurrencyId(Integer priceCurrencyId) {
+    this.priceCurrencyId = priceCurrencyId;
+    return this;
+  }
+
+   /**
+   * Get priceCurrencyId
+   * @return priceCurrencyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceCurrencyId() {
+    return priceCurrencyId;
+  }
+
+  public void setPriceCurrencyId(Integer priceCurrencyId) {
+    this.priceCurrencyId = priceCurrencyId;
+  }
+
+  public SecurityDtlDTO priceDate(LocalDateTime priceDate) {
+    this.priceDate = priceDate;
+    return this;
+  }
+
+   /**
+   * Get priceDate
+   * @return priceDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPriceDate() {
+    return priceDate;
+  }
+
+  public void setPriceDate(LocalDateTime priceDate) {
+    this.priceDate = priceDate;
+  }
+
+  public SecurityDtlDTO priceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+    return this;
+  }
+
+   /**
+   * Get priceFactor
+   * @return priceFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceFactor() {
+    return priceFactor;
+  }
+
+  public void setPriceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+  }
+
+  public SecurityDtlDTO priceSource(Integer priceSource) {
+    this.priceSource = priceSource;
+    return this;
+  }
+
+   /**
+   * Get priceSource
+   * @return priceSource
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceSource() {
+    return priceSource;
+  }
+
+  public void setPriceSource(Integer priceSource) {
+    this.priceSource = priceSource;
+  }
+
+  public SecurityDtlDTO primaryId(String primaryId) {
+    this.primaryId = primaryId;
+    return this;
+  }
+
+   /**
+   * Get primaryId
+   * @return primaryId
+  **/
+  @ApiModelProperty(value = "")
+  public String getPrimaryId() {
+    return primaryId;
+  }
+
+  public void setPrimaryId(String primaryId) {
+    this.primaryId = primaryId;
+  }
+
+  public SecurityDtlDTO primaryIdType(String primaryIdType) {
+    this.primaryIdType = primaryIdType;
+    return this;
+  }
+
+   /**
+   * Get primaryIdType
+   * @return primaryIdType
+  **/
+  @ApiModelProperty(value = "")
+  public String getPrimaryIdType() {
+    return primaryIdType;
+  }
+
+  public void setPrimaryIdType(String primaryIdType) {
+    this.primaryIdType = primaryIdType;
+  }
+
+  public SecurityDtlDTO primaryPricingSourceId(Integer primaryPricingSourceId) {
+    this.primaryPricingSourceId = primaryPricingSourceId;
+    return this;
+  }
+
+   /**
+   * Get primaryPricingSourceId
+   * @return primaryPricingSourceId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPrimaryPricingSourceId() {
+    return primaryPricingSourceId;
+  }
+
+  public void setPrimaryPricingSourceId(Integer primaryPricingSourceId) {
+    this.primaryPricingSourceId = primaryPricingSourceId;
+  }
+
+  public SecurityDtlDTO processingEndDate(LocalDateTime processingEndDate) {
+    this.processingEndDate = processingEndDate;
+    return this;
+  }
+
+   /**
+   * Get processingEndDate
+   * @return processingEndDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getProcessingEndDate() {
+    return processingEndDate;
+  }
+
+  public void setProcessingEndDate(LocalDateTime processingEndDate) {
+    this.processingEndDate = processingEndDate;
+  }
+
+  public SecurityDtlDTO processingStartDate(LocalDateTime processingStartDate) {
+    this.processingStartDate = processingStartDate;
+    return this;
+  }
+
+   /**
+   * Get processingStartDate
+   * @return processingStartDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getProcessingStartDate() {
+    return processingStartDate;
+  }
+
+  public void setProcessingStartDate(LocalDateTime processingStartDate) {
+    this.processingStartDate = processingStartDate;
+  }
+
+  public SecurityDtlDTO quickCode(String quickCode) {
+    this.quickCode = quickCode;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return quickCode
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getQuickCode() {
+    return quickCode;
+  }
+
+  public void setQuickCode(String quickCode) {
+    this.quickCode = quickCode;
+  }
+
+  public SecurityDtlDTO resetFrequency(Integer resetFrequency) {
+    this.resetFrequency = resetFrequency;
+    return this;
+  }
+
+   /**
+   * Get resetFrequency
+   * @return resetFrequency
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getResetFrequency() {
+    return resetFrequency;
+  }
+
+  public void setResetFrequency(Integer resetFrequency) {
+    this.resetFrequency = resetFrequency;
+  }
+
+  public SecurityDtlDTO securityBasis(Integer securityBasis) {
+    this.securityBasis = securityBasis;
+    return this;
+  }
+
+   /**
+   * Get securityBasis
+   * @return securityBasis
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityBasis() {
+    return securityBasis;
+  }
+
+  public void setSecurityBasis(Integer securityBasis) {
+    this.securityBasis = securityBasis;
+  }
+
+  public SecurityDtlDTO securityCalendar(Integer securityCalendar) {
+    this.securityCalendar = securityCalendar;
+    return this;
+  }
+
+   /**
+   * Get securityCalendar
+   * @return securityCalendar
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityCalendar() {
+    return securityCalendar;
+  }
+
+  public void setSecurityCalendar(Integer securityCalendar) {
+    this.securityCalendar = securityCalendar;
+  }
+
+  public SecurityDtlDTO securityId(Integer securityId) {
+    this.securityId = securityId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return securityId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public Integer getSecurityId() {
+    return securityId;
+  }
+
+  public void setSecurityId(Integer securityId) {
+    this.securityId = securityId;
+  }
+
+  public SecurityDtlDTO securityIdentifierDetailList(List<SecurityIdentifierDetailDTO> securityIdentifierDetailList) {
+    this.securityIdentifierDetailList = securityIdentifierDetailList;
+    return this;
+  }
+
+  public SecurityDtlDTO addSecurityIdentifierDetailListItem(SecurityIdentifierDetailDTO securityIdentifierDetailListItem) {
+    if (this.securityIdentifierDetailList == null) {
+      this.securityIdentifierDetailList = new ArrayList<>();
+    }
+    this.securityIdentifierDetailList.add(securityIdentifierDetailListItem);
+    return this;
+  }
+
+   /**
+   * Get securityIdentifierDetailList
+   * @return securityIdentifierDetailList
+  **/
+  @ApiModelProperty(value = "")
+  public List<SecurityIdentifierDetailDTO> getSecurityIdentifierDetailList() {
+    return securityIdentifierDetailList;
+  }
+
+  public void setSecurityIdentifierDetailList(List<SecurityIdentifierDetailDTO> securityIdentifierDetailList) {
+    this.securityIdentifierDetailList = securityIdentifierDetailList;
+  }
+
+  public SecurityDtlDTO securityIndex(Integer securityIndex) {
+    this.securityIndex = securityIndex;
+    return this;
+  }
+
+   /**
+   * Get securityIndex
+   * @return securityIndex
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityIndex() {
+    return securityIndex;
+  }
+
+  public void setSecurityIndex(Integer securityIndex) {
+    this.securityIndex = securityIndex;
+  }
+
+  public SecurityDtlDTO securityLookback(Integer securityLookback) {
+    this.securityLookback = securityLookback;
+    return this;
+  }
+
+   /**
+   * Get securityLookback
+   * @return securityLookback
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityLookback() {
+    return securityLookback;
+  }
+
+  public void setSecurityLookback(Integer securityLookback) {
+    this.securityLookback = securityLookback;
+  }
+
+  public SecurityDtlDTO securityRate(Double securityRate) {
+    this.securityRate = securityRate;
+    return this;
+  }
+
+   /**
+   * Get securityRate
+   * @return securityRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSecurityRate() {
+    return securityRate;
+  }
+
+  public void setSecurityRate(Double securityRate) {
+    this.securityRate = securityRate;
+  }
+
+  public SecurityDtlDTO securitySpread(Integer securitySpread) {
+    this.securitySpread = securitySpread;
+    return this;
+  }
+
+   /**
+   * Get securitySpread
+   * @return securitySpread
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecuritySpread() {
+    return securitySpread;
+  }
+
+  public void setSecuritySpread(Integer securitySpread) {
+    this.securitySpread = securitySpread;
+  }
+
+  public SecurityDtlDTO sedol(String sedol) {
+    this.sedol = sedol;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return sedol
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getSedol() {
+    return sedol;
+  }
+
+  public void setSedol(String sedol) {
+    this.sedol = sedol;
+  }
+
+  public SecurityDtlDTO sharesOutstanding(Double sharesOutstanding) {
+    this.sharesOutstanding = sharesOutstanding;
+    return this;
+  }
+
+   /**
+   * Get sharesOutstanding
+   * @return sharesOutstanding
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSharesOutstanding() {
+    return sharesOutstanding;
+  }
+
+  public void setSharesOutstanding(Double sharesOutstanding) {
+    this.sharesOutstanding = sharesOutstanding;
+  }
+
+  public SecurityDtlDTO shortInterest(Double shortInterest) {
+    this.shortInterest = shortInterest;
+    return this;
+  }
+
+   /**
+   * Get shortInterest
+   * @return shortInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getShortInterest() {
+    return shortInterest;
+  }
+
+  public void setShortInterest(Double shortInterest) {
+    this.shortInterest = shortInterest;
+  }
+
+  public SecurityDtlDTO shortName(String shortName) {
+    this.shortName = shortName;
+    return this;
+  }
+
+   /**
+   * Get shortName
+   * @return shortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getShortName() {
+    return shortName;
+  }
+
+  public void setShortName(String shortName) {
+    this.shortName = shortName;
+  }
+
+  public SecurityDtlDTO spLongTermId(Integer spLongTermId) {
+    this.spLongTermId = spLongTermId;
+    return this;
+  }
+
+   /**
+   * Get spLongTermId
+   * @return spLongTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSpLongTermId() {
+    return spLongTermId;
+  }
+
+  public void setSpLongTermId(Integer spLongTermId) {
+    this.spLongTermId = spLongTermId;
+  }
+
+  public SecurityDtlDTO spShortTermId(Integer spShortTermId) {
+    this.spShortTermId = spShortTermId;
+    return this;
+  }
+
+   /**
+   * Get spShortTermId
+   * @return spShortTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSpShortTermId() {
+    return spShortTermId;
+  }
+
+  public void setSpShortTermId(Integer spShortTermId) {
+    this.spShortTermId = spShortTermId;
+  }
+
+  public SecurityDtlDTO status(String status) {
+    this.status = status;
+    return this;
+  }
+
+   /**
+   * Get status
+   * @return status
+  **/
+  @ApiModelProperty(value = "")
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public SecurityDtlDTO submittedInformationType(Integer submittedInformationType) {
+    this.submittedInformationType = submittedInformationType;
+    return this;
+  }
+
+   /**
+   * Get submittedInformationType
+   * @return submittedInformationType
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSubmittedInformationType() {
+    return submittedInformationType;
+  }
+
+  public void setSubmittedInformationType(Integer submittedInformationType) {
+    this.submittedInformationType = submittedInformationType;
+  }
+
+  public SecurityDtlDTO ticker(String ticker) {
+    this.ticker = ticker;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required
+   * @return ticker
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either securityId or cusip or ticker or quickCode or isin or sedol or clientSecId is required")
+  public String getTicker() {
+    return ticker;
+  }
+
+  public void setTicker(String ticker) {
+    this.ticker = ticker;
+  }
+
+  public SecurityDtlDTO transferAgent(String transferAgent) {
+    this.transferAgent = transferAgent;
+    return this;
+  }
+
+   /**
+   * Get transferAgent
+   * @return transferAgent
+  **/
+  @ApiModelProperty(value = "")
+  public String getTransferAgent() {
+    return transferAgent;
+  }
+
+  public void setTransferAgent(String transferAgent) {
+    this.transferAgent = transferAgent;
+  }
+
+  public SecurityDtlDTO updateTransactions(Boolean updateTransactions) {
+    this.updateTransactions = updateTransactions;
+    return this;
+  }
+
+   /**
+   * Get updateTransactions
+   * @return updateTransactions
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isUpdateTransactions() {
+    return updateTransactions;
+  }
+
+  public void setUpdateTransactions(Boolean updateTransactions) {
+    this.updateTransactions = updateTransactions;
+  }
+
+  public SecurityDtlDTO volatility162W(Double volatility162W) {
+    this.volatility162W = volatility162W;
+    return this;
+  }
+
+   /**
+   * Get volatility162W
+   * @return volatility162W
+  **/
+  @ApiModelProperty(value = "")
+  public Double getVolatility162W() {
+    return volatility162W;
+  }
+
+  public void setVolatility162W(Double volatility162W) {
+    this.volatility162W = volatility162W;
+  }
+
+  public SecurityDtlDTO volatility360D(Double volatility360D) {
+    this.volatility360D = volatility360D;
+    return this;
+  }
+
+   /**
+   * Get volatility360D
+   * @return volatility360D
+  **/
+  @ApiModelProperty(value = "")
+  public Double getVolatility360D() {
+    return volatility360D;
+  }
+
+  public void setVolatility360D(Double volatility360D) {
+    this.volatility360D = volatility360D;
+  }
+
+  public SecurityDtlDTO volatility60D(Double volatility60D) {
+    this.volatility60D = volatility60D;
+    return this;
+  }
+
+   /**
+   * Get volatility60D
+   * @return volatility60D
+  **/
+  @ApiModelProperty(value = "")
+  public Double getVolatility60D() {
+    return volatility60D;
+  }
+
+  public void setVolatility60D(Double volatility60D) {
+    this.volatility60D = volatility60D;
+  }
+
+  public SecurityDtlDTO volatility90D(Double volatility90D) {
+    this.volatility90D = volatility90D;
+    return this;
+  }
+
+   /**
+   * Get volatility90D
+   * @return volatility90D
+  **/
+  @ApiModelProperty(value = "")
+  public Double getVolatility90D() {
+    return volatility90D;
+  }
+
+  public void setVolatility90D(Double volatility90D) {
+    this.volatility90D = volatility90D;
+  }
+
+  public SecurityDtlDTO wal(Double wal) {
+    this.wal = wal;
+    return this;
+  }
+
+   /**
+   * Get wal
+   * @return wal
+  **/
+  @ApiModelProperty(value = "")
+  public Double getWal() {
+    return wal;
+  }
+
+  public void setWal(Double wal) {
+    this.wal = wal;
+  }
+
+  public SecurityDtlDTO wam(Double wam) {
+    this.wam = wam;
+    return this;
+  }
+
+   /**
+   * Get wam
+   * @return wam
+  **/
+  @ApiModelProperty(value = "")
+  public Double getWam() {
+    return wam;
+  }
+
+  public void setWam(Double wam) {
+    this.wam = wam;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SecurityDtlDTO securityDtlDTO = (SecurityDtlDTO) o;
+    return Objects.equals(this.accrualResetDate, securityDtlDTO.accrualResetDate) &&
+        Objects.equals(this.active, securityDtlDTO.active) &&
+        Objects.equals(this.advisor, securityDtlDTO.advisor) &&
+        Objects.equals(this.askPrice, securityDtlDTO.askPrice) &&
+        Objects.equals(this.autoCloseTime, securityDtlDTO.autoCloseTime) &&
+        Objects.equals(this.autoOpenTime, securityDtlDTO.autoOpenTime) &&
+        Objects.equals(this.baseFeeRate, securityDtlDTO.baseFeeRate) &&
+        Objects.equals(this.baseRebateRate, securityDtlDTO.baseRebateRate) &&
+        Objects.equals(this.bidPrice, securityDtlDTO.bidPrice) &&
+        Objects.equals(this.category0Id, securityDtlDTO.category0Id) &&
+        Objects.equals(this.category1Id, securityDtlDTO.category1Id) &&
+        Objects.equals(this.category2Id, securityDtlDTO.category2Id) &&
+        Objects.equals(this.category3Id, securityDtlDTO.category3Id) &&
+        Objects.equals(this.categoryId, securityDtlDTO.categoryId) &&
+        Objects.equals(this.chilled, securityDtlDTO.chilled) &&
+        Objects.equals(this.clientCode, securityDtlDTO.clientCode) &&
+        Objects.equals(this.clientSecId, securityDtlDTO.clientSecId) &&
+        Objects.equals(this.closeTime, securityDtlDTO.closeTime) &&
+        Objects.equals(this.collatGrade, securityDtlDTO.collatGrade) &&
+        Objects.equals(this.comments, securityDtlDTO.comments) &&
+        Objects.equals(this.countryId, securityDtlDTO.countryId) &&
+        Objects.equals(this.countryKy, securityDtlDTO.countryKy) &&
+        Objects.equals(this.couponType, securityDtlDTO.couponType) &&
+        Objects.equals(this.currencyId, securityDtlDTO.currencyId) &&
+        Objects.equals(this.cusip, securityDtlDTO.cusip) &&
+        Objects.equals(this.defaultPriceFlag, securityDtlDTO.defaultPriceFlag) &&
+        Objects.equals(this.depositoryList, securityDtlDTO.depositoryList) &&
+        Objects.equals(this.description, securityDtlDTO.description) &&
+        Objects.equals(this.dirtyPrice, securityDtlDTO.dirtyPrice) &&
+        Objects.equals(this.distBusinessDay, securityDtlDTO.distBusinessDay) &&
+        Objects.equals(this.duration, securityDtlDTO.duration) &&
+        Objects.equals(this.earningDistFrequency, securityDtlDTO.earningDistFrequency) &&
+        Objects.equals(this.exchangeId, securityDtlDTO.exchangeId) &&
+        Objects.equals(this.expMaturityDate, securityDtlDTO.expMaturityDate) &&
+        Objects.equals(this.factor, securityDtlDTO.factor) &&
+        Objects.equals(this.firstAccrualDate, securityDtlDTO.firstAccrualDate) &&
+        Objects.equals(this.fitchLongTermId, securityDtlDTO.fitchLongTermId) &&
+        Objects.equals(this.fitchShortTermId, securityDtlDTO.fitchShortTermId) &&
+        Objects.equals(this.hotFactor, securityDtlDTO.hotFactor) &&
+        Objects.equals(this.industryId, securityDtlDTO.industryId) &&
+        Objects.equals(this.inflationIndex, securityDtlDTO.inflationIndex) &&
+        Objects.equals(this.inflationIndexedFlag, securityDtlDTO.inflationIndexedFlag) &&
+        Objects.equals(this.interestAccrued, securityDtlDTO.interestAccrued) &&
+        Objects.equals(this.isBaseRateManualUpdate, securityDtlDTO.isBaseRateManualUpdate) &&
+        Objects.equals(this.isGC, securityDtlDTO.isGC) &&
+        Objects.equals(this.isHotIndexManualUpdate, securityDtlDTO.isHotIndexManualUpdate) &&
+        Objects.equals(this.isin, securityDtlDTO.isin) &&
+        Objects.equals(this.issueDate, securityDtlDTO.issueDate) &&
+        Objects.equals(this.issuerId, securityDtlDTO.issuerId) &&
+        Objects.equals(this.issuerName, securityDtlDTO.issuerName) &&
+        Objects.equals(this.lastPrice, securityDtlDTO.lastPrice) &&
+        Objects.equals(this.longDuration, securityDtlDTO.longDuration) &&
+        Objects.equals(this.marketCap, securityDtlDTO.marketCap) &&
+        Objects.equals(this.marketVolume, securityDtlDTO.marketVolume) &&
+        Objects.equals(this.maturityDate, securityDtlDTO.maturityDate) &&
+        Objects.equals(this.modDuration, securityDtlDTO.modDuration) &&
+        Objects.equals(this.moodyLongTermId, securityDtlDTO.moodyLongTermId) &&
+        Objects.equals(this.moodyShortTermId, securityDtlDTO.moodyShortTermId) &&
+        Objects.equals(this.nextPaymentDate, securityDtlDTO.nextPaymentDate) &&
+        Objects.equals(this.nextResetDate, securityDtlDTO.nextResetDate) &&
+        Objects.equals(this.openCloseTimeType, securityDtlDTO.openCloseTimeType) &&
+        Objects.equals(this.openTime, securityDtlDTO.openTime) &&
+        Objects.equals(this.payDelay, securityDtlDTO.payDelay) &&
+        Objects.equals(this.payFrequency, securityDtlDTO.payFrequency) &&
+        Objects.equals(this.prepaySpeed, securityDtlDTO.prepaySpeed) &&
+        Objects.equals(this.prevAccrualDate, securityDtlDTO.prevAccrualDate) &&
+        Objects.equals(this.prevPaymentDate, securityDtlDTO.prevPaymentDate) &&
+        Objects.equals(this.prevResetDate, securityDtlDTO.prevResetDate) &&
+        Objects.equals(this.previousPaymentDate, securityDtlDTO.previousPaymentDate) &&
+        Objects.equals(this.previousResetDate, securityDtlDTO.previousResetDate) &&
+        Objects.equals(this.price, securityDtlDTO.price) &&
+        Objects.equals(this.priceCurrencyId, securityDtlDTO.priceCurrencyId) &&
+        Objects.equals(this.priceDate, securityDtlDTO.priceDate) &&
+        Objects.equals(this.priceFactor, securityDtlDTO.priceFactor) &&
+        Objects.equals(this.priceSource, securityDtlDTO.priceSource) &&
+        Objects.equals(this.primaryId, securityDtlDTO.primaryId) &&
+        Objects.equals(this.primaryIdType, securityDtlDTO.primaryIdType) &&
+        Objects.equals(this.primaryPricingSourceId, securityDtlDTO.primaryPricingSourceId) &&
+        Objects.equals(this.processingEndDate, securityDtlDTO.processingEndDate) &&
+        Objects.equals(this.processingStartDate, securityDtlDTO.processingStartDate) &&
+        Objects.equals(this.quickCode, securityDtlDTO.quickCode) &&
+        Objects.equals(this.resetFrequency, securityDtlDTO.resetFrequency) &&
+        Objects.equals(this.securityBasis, securityDtlDTO.securityBasis) &&
+        Objects.equals(this.securityCalendar, securityDtlDTO.securityCalendar) &&
+        Objects.equals(this.securityId, securityDtlDTO.securityId) &&
+        Objects.equals(this.securityIdentifierDetailList, securityDtlDTO.securityIdentifierDetailList) &&
+        Objects.equals(this.securityIndex, securityDtlDTO.securityIndex) &&
+        Objects.equals(this.securityLookback, securityDtlDTO.securityLookback) &&
+        Objects.equals(this.securityRate, securityDtlDTO.securityRate) &&
+        Objects.equals(this.securitySpread, securityDtlDTO.securitySpread) &&
+        Objects.equals(this.sedol, securityDtlDTO.sedol) &&
+        Objects.equals(this.sharesOutstanding, securityDtlDTO.sharesOutstanding) &&
+        Objects.equals(this.shortInterest, securityDtlDTO.shortInterest) &&
+        Objects.equals(this.shortName, securityDtlDTO.shortName) &&
+        Objects.equals(this.spLongTermId, securityDtlDTO.spLongTermId) &&
+        Objects.equals(this.spShortTermId, securityDtlDTO.spShortTermId) &&
+        Objects.equals(this.status, securityDtlDTO.status) &&
+        Objects.equals(this.submittedInformationType, securityDtlDTO.submittedInformationType) &&
+        Objects.equals(this.ticker, securityDtlDTO.ticker) &&
+        Objects.equals(this.transferAgent, securityDtlDTO.transferAgent) &&
+        Objects.equals(this.updateTransactions, securityDtlDTO.updateTransactions) &&
+        Objects.equals(this.volatility162W, securityDtlDTO.volatility162W) &&
+        Objects.equals(this.volatility360D, securityDtlDTO.volatility360D) &&
+        Objects.equals(this.volatility60D, securityDtlDTO.volatility60D) &&
+        Objects.equals(this.volatility90D, securityDtlDTO.volatility90D) &&
+        Objects.equals(this.wal, securityDtlDTO.wal) &&
+        Objects.equals(this.wam, securityDtlDTO.wam);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(accrualResetDate, active, advisor, askPrice, autoCloseTime, autoOpenTime, baseFeeRate, baseRebateRate, bidPrice, category0Id, category1Id, category2Id, category3Id, categoryId, chilled, clientCode, clientSecId, closeTime, collatGrade, comments, countryId, countryKy, couponType, currencyId, cusip, defaultPriceFlag, depositoryList, description, dirtyPrice, distBusinessDay, duration, earningDistFrequency, exchangeId, expMaturityDate, factor, firstAccrualDate, fitchLongTermId, fitchShortTermId, hotFactor, industryId, inflationIndex, inflationIndexedFlag, interestAccrued, isBaseRateManualUpdate, isGC, isHotIndexManualUpdate, isin, issueDate, issuerId, issuerName, lastPrice, longDuration, marketCap, marketVolume, maturityDate, modDuration, moodyLongTermId, moodyShortTermId, nextPaymentDate, nextResetDate, openCloseTimeType, openTime, payDelay, payFrequency, prepaySpeed, prevAccrualDate, prevPaymentDate, prevResetDate, previousPaymentDate, previousResetDate, price, priceCurrencyId, priceDate, priceFactor, priceSource, primaryId, primaryIdType, primaryPricingSourceId, processingEndDate, processingStartDate, quickCode, resetFrequency, securityBasis, securityCalendar, securityId, securityIdentifierDetailList, securityIndex, securityLookback, securityRate, securitySpread, sedol, sharesOutstanding, shortInterest, shortName, spLongTermId, spShortTermId, status, submittedInformationType, ticker, transferAgent, updateTransactions, volatility162W, volatility360D, volatility60D, volatility90D, wal, wam);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class SecurityDtlDTO {\n");
+    
+    sb.append("    accrualResetDate: ").append(toIndentedString(accrualResetDate)).append("\n");
+    sb.append("    active: ").append(toIndentedString(active)).append("\n");
+    sb.append("    advisor: ").append(toIndentedString(advisor)).append("\n");
+    sb.append("    askPrice: ").append(toIndentedString(askPrice)).append("\n");
+    sb.append("    autoCloseTime: ").append(toIndentedString(autoCloseTime)).append("\n");
+    sb.append("    autoOpenTime: ").append(toIndentedString(autoOpenTime)).append("\n");
+    sb.append("    baseFeeRate: ").append(toIndentedString(baseFeeRate)).append("\n");
+    sb.append("    baseRebateRate: ").append(toIndentedString(baseRebateRate)).append("\n");
+    sb.append("    bidPrice: ").append(toIndentedString(bidPrice)).append("\n");
+    sb.append("    category0Id: ").append(toIndentedString(category0Id)).append("\n");
+    sb.append("    category1Id: ").append(toIndentedString(category1Id)).append("\n");
+    sb.append("    category2Id: ").append(toIndentedString(category2Id)).append("\n");
+    sb.append("    category3Id: ").append(toIndentedString(category3Id)).append("\n");
+    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
+    sb.append("    chilled: ").append(toIndentedString(chilled)).append("\n");
+    sb.append("    clientCode: ").append(toIndentedString(clientCode)).append("\n");
+    sb.append("    clientSecId: ").append(toIndentedString(clientSecId)).append("\n");
+    sb.append("    closeTime: ").append(toIndentedString(closeTime)).append("\n");
+    sb.append("    collatGrade: ").append(toIndentedString(collatGrade)).append("\n");
+    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+    sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
+    sb.append("    countryKy: ").append(toIndentedString(countryKy)).append("\n");
+    sb.append("    couponType: ").append(toIndentedString(couponType)).append("\n");
+    sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
+    sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
+    sb.append("    defaultPriceFlag: ").append(toIndentedString(defaultPriceFlag)).append("\n");
+    sb.append("    depositoryList: ").append(toIndentedString(depositoryList)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    dirtyPrice: ").append(toIndentedString(dirtyPrice)).append("\n");
+    sb.append("    distBusinessDay: ").append(toIndentedString(distBusinessDay)).append("\n");
+    sb.append("    duration: ").append(toIndentedString(duration)).append("\n");
+    sb.append("    earningDistFrequency: ").append(toIndentedString(earningDistFrequency)).append("\n");
+    sb.append("    exchangeId: ").append(toIndentedString(exchangeId)).append("\n");
+    sb.append("    expMaturityDate: ").append(toIndentedString(expMaturityDate)).append("\n");
+    sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
+    sb.append("    firstAccrualDate: ").append(toIndentedString(firstAccrualDate)).append("\n");
+    sb.append("    fitchLongTermId: ").append(toIndentedString(fitchLongTermId)).append("\n");
+    sb.append("    fitchShortTermId: ").append(toIndentedString(fitchShortTermId)).append("\n");
+    sb.append("    hotFactor: ").append(toIndentedString(hotFactor)).append("\n");
+    sb.append("    industryId: ").append(toIndentedString(industryId)).append("\n");
+    sb.append("    inflationIndex: ").append(toIndentedString(inflationIndex)).append("\n");
+    sb.append("    inflationIndexedFlag: ").append(toIndentedString(inflationIndexedFlag)).append("\n");
+    sb.append("    interestAccrued: ").append(toIndentedString(interestAccrued)).append("\n");
+    sb.append("    isBaseRateManualUpdate: ").append(toIndentedString(isBaseRateManualUpdate)).append("\n");
+    sb.append("    isGC: ").append(toIndentedString(isGC)).append("\n");
+    sb.append("    isHotIndexManualUpdate: ").append(toIndentedString(isHotIndexManualUpdate)).append("\n");
+    sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
+    sb.append("    issueDate: ").append(toIndentedString(issueDate)).append("\n");
+    sb.append("    issuerId: ").append(toIndentedString(issuerId)).append("\n");
+    sb.append("    issuerName: ").append(toIndentedString(issuerName)).append("\n");
+    sb.append("    lastPrice: ").append(toIndentedString(lastPrice)).append("\n");
+    sb.append("    longDuration: ").append(toIndentedString(longDuration)).append("\n");
+    sb.append("    marketCap: ").append(toIndentedString(marketCap)).append("\n");
+    sb.append("    marketVolume: ").append(toIndentedString(marketVolume)).append("\n");
+    sb.append("    maturityDate: ").append(toIndentedString(maturityDate)).append("\n");
+    sb.append("    modDuration: ").append(toIndentedString(modDuration)).append("\n");
+    sb.append("    moodyLongTermId: ").append(toIndentedString(moodyLongTermId)).append("\n");
+    sb.append("    moodyShortTermId: ").append(toIndentedString(moodyShortTermId)).append("\n");
+    sb.append("    nextPaymentDate: ").append(toIndentedString(nextPaymentDate)).append("\n");
+    sb.append("    nextResetDate: ").append(toIndentedString(nextResetDate)).append("\n");
+    sb.append("    openCloseTimeType: ").append(toIndentedString(openCloseTimeType)).append("\n");
+    sb.append("    openTime: ").append(toIndentedString(openTime)).append("\n");
+    sb.append("    payDelay: ").append(toIndentedString(payDelay)).append("\n");
+    sb.append("    payFrequency: ").append(toIndentedString(payFrequency)).append("\n");
+    sb.append("    prepaySpeed: ").append(toIndentedString(prepaySpeed)).append("\n");
+    sb.append("    prevAccrualDate: ").append(toIndentedString(prevAccrualDate)).append("\n");
+    sb.append("    prevPaymentDate: ").append(toIndentedString(prevPaymentDate)).append("\n");
+    sb.append("    prevResetDate: ").append(toIndentedString(prevResetDate)).append("\n");
+    sb.append("    previousPaymentDate: ").append(toIndentedString(previousPaymentDate)).append("\n");
+    sb.append("    previousResetDate: ").append(toIndentedString(previousResetDate)).append("\n");
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
+    sb.append("    priceCurrencyId: ").append(toIndentedString(priceCurrencyId)).append("\n");
+    sb.append("    priceDate: ").append(toIndentedString(priceDate)).append("\n");
+    sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
+    sb.append("    priceSource: ").append(toIndentedString(priceSource)).append("\n");
+    sb.append("    primaryId: ").append(toIndentedString(primaryId)).append("\n");
+    sb.append("    primaryIdType: ").append(toIndentedString(primaryIdType)).append("\n");
+    sb.append("    primaryPricingSourceId: ").append(toIndentedString(primaryPricingSourceId)).append("\n");
+    sb.append("    processingEndDate: ").append(toIndentedString(processingEndDate)).append("\n");
+    sb.append("    processingStartDate: ").append(toIndentedString(processingStartDate)).append("\n");
+    sb.append("    quickCode: ").append(toIndentedString(quickCode)).append("\n");
+    sb.append("    resetFrequency: ").append(toIndentedString(resetFrequency)).append("\n");
+    sb.append("    securityBasis: ").append(toIndentedString(securityBasis)).append("\n");
+    sb.append("    securityCalendar: ").append(toIndentedString(securityCalendar)).append("\n");
+    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+    sb.append("    securityIdentifierDetailList: ").append(toIndentedString(securityIdentifierDetailList)).append("\n");
+    sb.append("    securityIndex: ").append(toIndentedString(securityIndex)).append("\n");
+    sb.append("    securityLookback: ").append(toIndentedString(securityLookback)).append("\n");
+    sb.append("    securityRate: ").append(toIndentedString(securityRate)).append("\n");
+    sb.append("    securitySpread: ").append(toIndentedString(securitySpread)).append("\n");
+    sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
+    sb.append("    sharesOutstanding: ").append(toIndentedString(sharesOutstanding)).append("\n");
+    sb.append("    shortInterest: ").append(toIndentedString(shortInterest)).append("\n");
+    sb.append("    shortName: ").append(toIndentedString(shortName)).append("\n");
+    sb.append("    spLongTermId: ").append(toIndentedString(spLongTermId)).append("\n");
+    sb.append("    spShortTermId: ").append(toIndentedString(spShortTermId)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    submittedInformationType: ").append(toIndentedString(submittedInformationType)).append("\n");
+    sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
+    sb.append("    transferAgent: ").append(toIndentedString(transferAgent)).append("\n");
+    sb.append("    updateTransactions: ").append(toIndentedString(updateTransactions)).append("\n");
+    sb.append("    volatility162W: ").append(toIndentedString(volatility162W)).append("\n");
+    sb.append("    volatility360D: ").append(toIndentedString(volatility360D)).append("\n");
+    sb.append("    volatility60D: ").append(toIndentedString(volatility60D)).append("\n");
+    sb.append("    volatility90D: ").append(toIndentedString(volatility90D)).append("\n");
+    sb.append("    wal: ").append(toIndentedString(wal)).append("\n");
+    sb.append("    wam: ").append(toIndentedString(wam)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

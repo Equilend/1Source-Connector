@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
@@ -57,7 +58,7 @@ public class RerateRoute extends RouteBuilder {
     public void configure() throws Exception {
 
         from("timer://eventTimer?period={{camel.newBackOfficeTradeEventTimer}}")
-            .routeId("NewBackOfficeTradeOutRoute")
+            .routeId("NewBackOfficeRerateTradeRoute")
             .log(">>>>> Started fetching BackOffice Rerate Trades")
             .bean(rerateProcessor, "fetchNewRerateTrades")
             .split(body())
@@ -66,22 +67,18 @@ public class RerateRoute extends RouteBuilder {
             .log("<<<<< Finished fetching BackOffice Rerate Trades");
 
         from("direct:recordRerateTrade")
-            .log(">>>>> Started recording Rerate Trades with tradeId ${body.tradeId}")
-            .choice()
-                .when(simple("${body.tradeOut.tradeType} == 'Rerate'"))
-                    .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CREATED)")
-                    .bean(rerateProcessor, "saveRerateTrade")
-                    .to("direct:processRerateTrade")
-                .endChoice()
-            .end()
-            .log(">>>>> Finished recording Rerate Trades with tradeId ${body.tradeId}");
+            .log(">>>>> Started recording BackOffice Rerate Trades with tradeId ${body.tradeId}")
+            .bean(rerateProcessor, "updateRerateTradeCreationDatetime")
+            .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CREATED)")
+            .bean(rerateProcessor, "saveRerateTrade")
+            .to("direct:processRerateTrade")
+            .log(">>>>> Finished recording BackOffice Rerate Trades with tradeId ${body.tradeId}");
 
         from("direct:processRerateTrade")
-            .log(">>>>> Started processing Rerate Trade with tradeId ${body.tradeId}")
-            .bean(rerateProcessor, "matchContract")
+            .log(">>>>> Started processing BackOffice Rerate Trade with tradeId ${body.tradeId}")
             .bean(rerateProcessor, "matchRerate")
-                .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<<<< Finished processing Rerate Trade with tradeId ${body.tradeId}");
+            .bean(rerateProcessor, "saveRerateTrade")
+            .log("<<<<< Finished processing BackOffice Rerate Trade with tradeId ${body.tradeId}");
 
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
@@ -92,10 +89,9 @@ public class RerateRoute extends RouteBuilder {
             .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
 
-        from(createRerateSQLEndpoint(CREATED))
-            .log(">>>>> Started processing Rerate with rerateId ${body.rerateId}")
+        from(createRerateSQLEndpoint(PROPOSED))
+            .log(">>>>> Started processing 1Source Rerate with rerateId ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "matchContract")
             .bean(rerateProcessor, "matchRerateTrade")
             .choice()
                 .when(simple("${body.matchingSpireTradeId} != null"))
@@ -106,7 +102,7 @@ public class RerateRoute extends RouteBuilder {
                 .endChoice()
             .end()
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished processing Rerate with rerateId ${body.rerateId}");
+            .log(">>>>> Finished processing 1Source Rerate with rerateId ${body.rerateId}");
 
     }
     //@formatter:on

@@ -21,6 +21,7 @@ public class RerateTradeEntity {
 
     @Id
     private Long tradeId;
+    private LocalDateTime creationDatetime;
     private LocalDateTime lastUpdateDatetime;
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;

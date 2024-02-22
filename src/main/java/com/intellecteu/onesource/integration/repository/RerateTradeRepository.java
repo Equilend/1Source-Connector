@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.repository;
 
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,6 @@ public interface RerateTradeRepository extends JpaRepository<RerateTradeEntity, 
 
     List<RerateTradeEntity> findByRelatedContractId(String contractId);
 
-    List<RerateTradeEntity> findByRelatedContractIdAndTradeOut_SettleDate(String contractId, LocalDateTime settleDate);
+    List<RerateTradeEntity> findByRelatedContractIdAndProcessingStatus(String contractId, ProcessingStatus processingStatus);
 
 }

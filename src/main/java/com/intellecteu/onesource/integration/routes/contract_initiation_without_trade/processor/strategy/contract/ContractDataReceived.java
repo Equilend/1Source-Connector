@@ -236,9 +236,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             final AccountDTO accountDTO = new AccountDTO();
             accountDTO.setDtc(
                 Long.valueOf(contractInstruction.getInstruction().getDtcParticipantNumber()));
-            final SwiftbicDTO swiftBic = new SwiftbicDTO(
-                contractInstruction.getInstruction().getSettlementBic(),
-                contractInstruction.getInstruction().getLocalAgentBic());
+            final SwiftbicDTO swiftBic = new SwiftbicDTO();
+            swiftBic.setBic(contractInstruction.getInstruction().getSettlementBic());
+            swiftBic.setBranch(contractInstruction.getInstruction().getLocalAgentBic());
 
             return InstructionDTO.builder()
                 .agentName(contractInstruction.getInstruction().getLocalAgentName())

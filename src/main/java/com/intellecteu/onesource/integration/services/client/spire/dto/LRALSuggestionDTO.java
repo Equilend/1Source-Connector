@@ -13,755 +13,700 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * LRALSuggestionDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class LRALSuggestionDTO {
+  @JsonProperty("allocationId")
+  private Long allocationId = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("counterpartyId")
+  private Long counterpartyId = null;
 
-    @JsonProperty("allocationId")
-    private Long allocationId = null;
+  @JsonProperty("counterpartyName")
+  private String counterpartyName = null;
 
-    @JsonProperty("counterpartyId")
-    private Long counterpartyId = null;
+  @JsonProperty("currentSourceAllocationQty")
+  private Integer currentSourceAllocationQty = null;
 
-    @JsonProperty("counterpartyName")
-    private String counterpartyName = null;
+  @JsonProperty("currentTargetAllocationQty")
+  private Integer currentTargetAllocationQty = null;
 
-    @JsonProperty("currentSourceAllocationQty")
-    private Integer currentSourceAllocationQty = null;
+  @JsonProperty("cusip")
+  private String cusip = null;
 
-    @JsonProperty("currentTargetAllocationQty")
-    private Integer currentTargetAllocationQty = null;
+  @JsonProperty("depoId")
+  private Integer depoId = null;
 
-    @JsonProperty("cusip")
-    private String cusip = null;
+  @JsonProperty("factor")
+  private Double factor = null;
 
-    @JsonProperty("depoId")
-    private Integer depoId = null;
+  @JsonProperty("isin")
+  private String isin = null;
 
-    @JsonProperty("factor")
-    private Double factor = null;
+  @JsonProperty("omniPositionId")
+  private Long omniPositionId = null;
 
-    @JsonProperty("isin")
-    private String isin = null;
+  @JsonProperty("omniQuantity")
+  private Double omniQuantity = null;
 
-    @JsonProperty("omniPositionId")
-    private Long omniPositionId = null;
+  @JsonProperty("positionType")
+  private String positionType = null;
 
-    @JsonProperty("omniQuantity")
-    private Double omniQuantity = null;
+  @JsonProperty("positionTypeId")
+  private Integer positionTypeId = null;
 
-    @JsonProperty("positionType")
-    private String positionType = null;
+  @JsonProperty("price")
+  private Double price = null;
 
-    @JsonProperty("positionTypeId")
-    private Integer positionTypeId = null;
+  @JsonProperty("priceFactor")
+  private Integer priceFactor = null;
 
-    @JsonProperty("price")
-    private Double price = null;
+  @JsonProperty("securityId")
+  private Long securityId = null;
 
-    @JsonProperty("priceFactor")
-    private Integer priceFactor = null;
+  @JsonProperty("sedol")
+  private String sedol = null;
 
-    @JsonProperty("securityId")
-    private Long securityId = null;
+  @JsonProperty("sourceCollateralAccountId")
+  private Long sourceCollateralAccountId = null;
 
-    @JsonProperty("sedol")
-    private String sedol = null;
+  @JsonProperty("sourceLendingAccountId")
+  private Long sourceLendingAccountId = null;
 
-    @JsonProperty("sourceCollateralAccountId")
-    private Long sourceCollateralAccountId = null;
+  @JsonProperty("sourceLendingAccountShortName")
+  private String sourceLendingAccountShortName = null;
 
-    @JsonProperty("sourceLendingAccountId")
-    private Long sourceLendingAccountId = null;
+  @JsonProperty("sourcePositionId")
+  private Long sourcePositionId = null;
 
-    @JsonProperty("sourceLendingAccountShortName")
-    private String sourceLendingAccountShortName = null;
-
-    @JsonProperty("sourcePositionId")
-    private Long sourcePositionId = null;
-
-    @JsonProperty("suggestedAllocationQty")
-    private Integer suggestedAllocationQty = null;
-
-    @JsonProperty("suggestedAmount")
-    private Double suggestedAmount = null;
-
-    @JsonProperty("targetCollateralAccountId")
-    private Long targetCollateralAccountId = null;
-
-    @JsonProperty("targetLendingAccountId")
-    private Long targetLendingAccountId = null;
-
-    @JsonProperty("targetLendingAccountShortName")
-    private String targetLendingAccountShortName = null;
-
-    @JsonProperty("targetPositionId")
-    private Long targetPositionId = null;
-
-    @JsonProperty("ticker")
-    private String ticker = null;
-
-    public LRALSuggestionDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
-    }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public LRALSuggestionDTO allocationId(Long allocationId) {
-        this.allocationId = allocationId;
-        return this;
-    }
-
-    /**
-     * Get allocationId
-     *
-     * @return allocationId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getAllocationId() {
-        return allocationId;
-    }
-
-    public void setAllocationId(Long allocationId) {
-        this.allocationId = allocationId;
-    }
-
-    public LRALSuggestionDTO counterpartyId(Long counterpartyId) {
-        this.counterpartyId = counterpartyId;
-        return this;
-    }
-
-    /**
-     * Get counterpartyId
-     *
-     * @return counterpartyId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCounterpartyId() {
-        return counterpartyId;
-    }
-
-    public void setCounterpartyId(Long counterpartyId) {
-        this.counterpartyId = counterpartyId;
-    }
-
-    public LRALSuggestionDTO counterpartyName(String counterpartyName) {
-        this.counterpartyName = counterpartyName;
-        return this;
-    }
-
-    /**
-     * Get counterpartyName
-     *
-     * @return counterpartyName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyName() {
-        return counterpartyName;
-    }
-
-    public void setCounterpartyName(String counterpartyName) {
-        this.counterpartyName = counterpartyName;
-    }
-
-    public LRALSuggestionDTO currentSourceAllocationQty(Integer currentSourceAllocationQty) {
-        this.currentSourceAllocationQty = currentSourceAllocationQty;
-        return this;
-    }
-
-    /**
-     * Get currentSourceAllocationQty
-     *
-     * @return currentSourceAllocationQty
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCurrentSourceAllocationQty() {
-        return currentSourceAllocationQty;
-    }
-
-    public void setCurrentSourceAllocationQty(Integer currentSourceAllocationQty) {
-        this.currentSourceAllocationQty = currentSourceAllocationQty;
-    }
-
-    public LRALSuggestionDTO currentTargetAllocationQty(Integer currentTargetAllocationQty) {
-        this.currentTargetAllocationQty = currentTargetAllocationQty;
-        return this;
-    }
-
-    /**
-     * Get currentTargetAllocationQty
-     *
-     * @return currentTargetAllocationQty
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCurrentTargetAllocationQty() {
-        return currentTargetAllocationQty;
-    }
-
-    public void setCurrentTargetAllocationQty(Integer currentTargetAllocationQty) {
-        this.currentTargetAllocationQty = currentTargetAllocationQty;
-    }
-
-    public LRALSuggestionDTO cusip(String cusip) {
-        this.cusip = cusip;
-        return this;
-    }
-
-    /**
-     * Get cusip
-     *
-     * @return cusip
-     **/
-    @ApiModelProperty(value = "")
-    public String getCusip() {
-        return cusip;
-    }
-
-    public void setCusip(String cusip) {
-        this.cusip = cusip;
-    }
-
-    public LRALSuggestionDTO depoId(Integer depoId) {
-        this.depoId = depoId;
-        return this;
-    }
-
-    /**
-     * Get depoId
-     *
-     * @return depoId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getDepoId() {
-        return depoId;
-    }
-
-    public void setDepoId(Integer depoId) {
-        this.depoId = depoId;
-    }
-
-    public LRALSuggestionDTO factor(Double factor) {
-        this.factor = factor;
-        return this;
-    }
-
-    /**
-     * Get factor
-     *
-     * @return factor
-     **/
-    @ApiModelProperty(value = "")
-    public Double getFactor() {
-        return factor;
-    }
-
-    public void setFactor(Double factor) {
-        this.factor = factor;
-    }
-
-    public LRALSuggestionDTO isin(String isin) {
-        this.isin = isin;
-        return this;
-    }
-
-    /**
-     * Get isin
-     *
-     * @return isin
-     **/
-    @ApiModelProperty(value = "")
-    public String getIsin() {
-        return isin;
-    }
-
-    public void setIsin(String isin) {
-        this.isin = isin;
-    }
-
-    public LRALSuggestionDTO omniPositionId(Long omniPositionId) {
-        this.omniPositionId = omniPositionId;
-        return this;
-    }
-
-    /**
-     * Get omniPositionId
-     *
-     * @return omniPositionId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getOmniPositionId() {
-        return omniPositionId;
-    }
-
-    public void setOmniPositionId(Long omniPositionId) {
-        this.omniPositionId = omniPositionId;
-    }
-
-    public LRALSuggestionDTO omniQuantity(Double omniQuantity) {
-        this.omniQuantity = omniQuantity;
-        return this;
-    }
-
-    /**
-     * Get omniQuantity
-     *
-     * @return omniQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getOmniQuantity() {
-        return omniQuantity;
-    }
-
-    public void setOmniQuantity(Double omniQuantity) {
-        this.omniQuantity = omniQuantity;
-    }
-
-    public LRALSuggestionDTO positionType(String positionType) {
-        this.positionType = positionType;
-        return this;
-    }
-
-    /**
-     * Get positionType
-     *
-     * @return positionType
-     **/
-    @ApiModelProperty(value = "")
-    public String getPositionType() {
-        return positionType;
-    }
-
-    public void setPositionType(String positionType) {
-        this.positionType = positionType;
-    }
-
-    public LRALSuggestionDTO positionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-        return this;
-    }
-
-    /**
-     * Get positionTypeId
-     *
-     * @return positionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPositionTypeId() {
-        return positionTypeId;
-    }
-
-    public void setPositionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-    }
-
-    public LRALSuggestionDTO price(Double price) {
-        this.price = price;
-        return this;
-    }
-
-    /**
-     * Get price
-     *
-     * @return price
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public LRALSuggestionDTO priceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-        return this;
-    }
-
-    /**
-     * Get priceFactor
-     *
-     * @return priceFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceFactor() {
-        return priceFactor;
-    }
-
-    public void setPriceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-    }
-
-    public LRALSuggestionDTO securityId(Long securityId) {
-        this.securityId = securityId;
-        return this;
-    }
-
-    /**
-     * Get securityId
-     *
-     * @return securityId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(Long securityId) {
-        this.securityId = securityId;
-    }
-
-    public LRALSuggestionDTO sedol(String sedol) {
-        this.sedol = sedol;
-        return this;
-    }
-
-    /**
-     * Get sedol
-     *
-     * @return sedol
-     **/
-    @ApiModelProperty(value = "")
-    public String getSedol() {
-        return sedol;
-    }
-
-    public void setSedol(String sedol) {
-        this.sedol = sedol;
-    }
-
-    public LRALSuggestionDTO sourceCollateralAccountId(Long sourceCollateralAccountId) {
-        this.sourceCollateralAccountId = sourceCollateralAccountId;
-        return this;
-    }
-
-    /**
-     * Get sourceCollateralAccountId
-     *
-     * @return sourceCollateralAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSourceCollateralAccountId() {
-        return sourceCollateralAccountId;
-    }
-
-    public void setSourceCollateralAccountId(Long sourceCollateralAccountId) {
-        this.sourceCollateralAccountId = sourceCollateralAccountId;
-    }
-
-    public LRALSuggestionDTO sourceLendingAccountId(Long sourceLendingAccountId) {
-        this.sourceLendingAccountId = sourceLendingAccountId;
-        return this;
-    }
-
-    /**
-     * Get sourceLendingAccountId
-     *
-     * @return sourceLendingAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSourceLendingAccountId() {
-        return sourceLendingAccountId;
-    }
-
-    public void setSourceLendingAccountId(Long sourceLendingAccountId) {
-        this.sourceLendingAccountId = sourceLendingAccountId;
-    }
-
-    public LRALSuggestionDTO sourceLendingAccountShortName(String sourceLendingAccountShortName) {
-        this.sourceLendingAccountShortName = sourceLendingAccountShortName;
-        return this;
-    }
-
-    /**
-     * Get sourceLendingAccountShortName
-     *
-     * @return sourceLendingAccountShortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getSourceLendingAccountShortName() {
-        return sourceLendingAccountShortName;
-    }
-
-    public void setSourceLendingAccountShortName(String sourceLendingAccountShortName) {
-        this.sourceLendingAccountShortName = sourceLendingAccountShortName;
-    }
-
-    public LRALSuggestionDTO sourcePositionId(Long sourcePositionId) {
-        this.sourcePositionId = sourcePositionId;
-        return this;
-    }
-
-    /**
-     * Get sourcePositionId
-     *
-     * @return sourcePositionId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSourcePositionId() {
-        return sourcePositionId;
-    }
-
-    public void setSourcePositionId(Long sourcePositionId) {
-        this.sourcePositionId = sourcePositionId;
-    }
-
-    public LRALSuggestionDTO suggestedAllocationQty(Integer suggestedAllocationQty) {
-        this.suggestedAllocationQty = suggestedAllocationQty;
-        return this;
-    }
-
-    /**
-     * Get suggestedAllocationQty
-     *
-     * @return suggestedAllocationQty
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSuggestedAllocationQty() {
-        return suggestedAllocationQty;
-    }
-
-    public void setSuggestedAllocationQty(Integer suggestedAllocationQty) {
-        this.suggestedAllocationQty = suggestedAllocationQty;
-    }
-
-    public LRALSuggestionDTO suggestedAmount(Double suggestedAmount) {
-        this.suggestedAmount = suggestedAmount;
-        return this;
-    }
-
-    /**
-     * Get suggestedAmount
-     *
-     * @return suggestedAmount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSuggestedAmount() {
-        return suggestedAmount;
-    }
-
-    public void setSuggestedAmount(Double suggestedAmount) {
-        this.suggestedAmount = suggestedAmount;
-    }
-
-    public LRALSuggestionDTO targetCollateralAccountId(Long targetCollateralAccountId) {
-        this.targetCollateralAccountId = targetCollateralAccountId;
-        return this;
-    }
-
-    /**
-     * Get targetCollateralAccountId
-     *
-     * @return targetCollateralAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getTargetCollateralAccountId() {
-        return targetCollateralAccountId;
-    }
-
-    public void setTargetCollateralAccountId(Long targetCollateralAccountId) {
-        this.targetCollateralAccountId = targetCollateralAccountId;
-    }
-
-    public LRALSuggestionDTO targetLendingAccountId(Long targetLendingAccountId) {
-        this.targetLendingAccountId = targetLendingAccountId;
-        return this;
-    }
-
-    /**
-     * Get targetLendingAccountId
-     *
-     * @return targetLendingAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getTargetLendingAccountId() {
-        return targetLendingAccountId;
-    }
-
-    public void setTargetLendingAccountId(Long targetLendingAccountId) {
-        this.targetLendingAccountId = targetLendingAccountId;
-    }
-
-    public LRALSuggestionDTO targetLendingAccountShortName(String targetLendingAccountShortName) {
-        this.targetLendingAccountShortName = targetLendingAccountShortName;
-        return this;
-    }
-
-    /**
-     * Get targetLendingAccountShortName
-     *
-     * @return targetLendingAccountShortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getTargetLendingAccountShortName() {
-        return targetLendingAccountShortName;
-    }
-
-    public void setTargetLendingAccountShortName(String targetLendingAccountShortName) {
-        this.targetLendingAccountShortName = targetLendingAccountShortName;
-    }
-
-    public LRALSuggestionDTO targetPositionId(Long targetPositionId) {
-        this.targetPositionId = targetPositionId;
-        return this;
-    }
-
-    /**
-     * Get targetPositionId
-     *
-     * @return targetPositionId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getTargetPositionId() {
-        return targetPositionId;
-    }
-
-    public void setTargetPositionId(Long targetPositionId) {
-        this.targetPositionId = targetPositionId;
-    }
-
-    public LRALSuggestionDTO ticker(String ticker) {
-        this.ticker = ticker;
-        return this;
-    }
-
-    /**
-     * Get ticker
-     *
-     * @return ticker
-     **/
-    @ApiModelProperty(value = "")
-    public String getTicker() {
-        return ticker;
-    }
-
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        LRALSuggestionDTO lrALSuggestionDTO = (LRALSuggestionDTO) o;
-        return Objects.equals(this.qualifiedName, lrALSuggestionDTO.qualifiedName) &&
-            Objects.equals(this.allocationId, lrALSuggestionDTO.allocationId) &&
-            Objects.equals(this.counterpartyId, lrALSuggestionDTO.counterpartyId) &&
-            Objects.equals(this.counterpartyName, lrALSuggestionDTO.counterpartyName) &&
-            Objects.equals(this.currentSourceAllocationQty, lrALSuggestionDTO.currentSourceAllocationQty) &&
-            Objects.equals(this.currentTargetAllocationQty, lrALSuggestionDTO.currentTargetAllocationQty) &&
-            Objects.equals(this.cusip, lrALSuggestionDTO.cusip) &&
-            Objects.equals(this.depoId, lrALSuggestionDTO.depoId) &&
-            Objects.equals(this.factor, lrALSuggestionDTO.factor) &&
-            Objects.equals(this.isin, lrALSuggestionDTO.isin) &&
-            Objects.equals(this.omniPositionId, lrALSuggestionDTO.omniPositionId) &&
-            Objects.equals(this.omniQuantity, lrALSuggestionDTO.omniQuantity) &&
-            Objects.equals(this.positionType, lrALSuggestionDTO.positionType) &&
-            Objects.equals(this.positionTypeId, lrALSuggestionDTO.positionTypeId) &&
-            Objects.equals(this.price, lrALSuggestionDTO.price) &&
-            Objects.equals(this.priceFactor, lrALSuggestionDTO.priceFactor) &&
-            Objects.equals(this.securityId, lrALSuggestionDTO.securityId) &&
-            Objects.equals(this.sedol, lrALSuggestionDTO.sedol) &&
-            Objects.equals(this.sourceCollateralAccountId, lrALSuggestionDTO.sourceCollateralAccountId) &&
-            Objects.equals(this.sourceLendingAccountId, lrALSuggestionDTO.sourceLendingAccountId) &&
-            Objects.equals(this.sourceLendingAccountShortName, lrALSuggestionDTO.sourceLendingAccountShortName) &&
-            Objects.equals(this.sourcePositionId, lrALSuggestionDTO.sourcePositionId) &&
-            Objects.equals(this.suggestedAllocationQty, lrALSuggestionDTO.suggestedAllocationQty) &&
-            Objects.equals(this.suggestedAmount, lrALSuggestionDTO.suggestedAmount) &&
-            Objects.equals(this.targetCollateralAccountId, lrALSuggestionDTO.targetCollateralAccountId) &&
-            Objects.equals(this.targetLendingAccountId, lrALSuggestionDTO.targetLendingAccountId) &&
-            Objects.equals(this.targetLendingAccountShortName, lrALSuggestionDTO.targetLendingAccountShortName) &&
-            Objects.equals(this.targetPositionId, lrALSuggestionDTO.targetPositionId) &&
-            Objects.equals(this.ticker, lrALSuggestionDTO.ticker);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, allocationId, counterpartyId, counterpartyName, currentSourceAllocationQty,
-            currentTargetAllocationQty, cusip, depoId, factor, isin, omniPositionId, omniQuantity, positionType,
-            positionTypeId, price, priceFactor, securityId, sedol, sourceCollateralAccountId, sourceLendingAccountId,
-            sourceLendingAccountShortName, sourcePositionId, suggestedAllocationQty, suggestedAmount,
-            targetCollateralAccountId, targetLendingAccountId, targetLendingAccountShortName, targetPositionId, ticker);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class LRALSuggestionDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    allocationId: ").append(toIndentedString(allocationId)).append("\n");
-        sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
-        sb.append("    counterpartyName: ").append(toIndentedString(counterpartyName)).append("\n");
-        sb.append("    currentSourceAllocationQty: ").append(toIndentedString(currentSourceAllocationQty)).append("\n");
-        sb.append("    currentTargetAllocationQty: ").append(toIndentedString(currentTargetAllocationQty)).append("\n");
-        sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
-        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-        sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
-        sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
-        sb.append("    omniPositionId: ").append(toIndentedString(omniPositionId)).append("\n");
-        sb.append("    omniQuantity: ").append(toIndentedString(omniQuantity)).append("\n");
-        sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
-        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-        sb.append("    price: ").append(toIndentedString(price)).append("\n");
-        sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
-        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-        sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
-        sb.append("    sourceCollateralAccountId: ").append(toIndentedString(sourceCollateralAccountId)).append("\n");
-        sb.append("    sourceLendingAccountId: ").append(toIndentedString(sourceLendingAccountId)).append("\n");
-        sb.append("    sourceLendingAccountShortName: ").append(toIndentedString(sourceLendingAccountShortName))
-            .append("\n");
-        sb.append("    sourcePositionId: ").append(toIndentedString(sourcePositionId)).append("\n");
-        sb.append("    suggestedAllocationQty: ").append(toIndentedString(suggestedAllocationQty)).append("\n");
-        sb.append("    suggestedAmount: ").append(toIndentedString(suggestedAmount)).append("\n");
-        sb.append("    targetCollateralAccountId: ").append(toIndentedString(targetCollateralAccountId)).append("\n");
-        sb.append("    targetLendingAccountId: ").append(toIndentedString(targetLendingAccountId)).append("\n");
-        sb.append("    targetLendingAccountShortName: ").append(toIndentedString(targetLendingAccountShortName))
-            .append("\n");
-        sb.append("    targetPositionId: ").append(toIndentedString(targetPositionId)).append("\n");
-        sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+  @JsonProperty("suggestedAllocationQty")
+  private Integer suggestedAllocationQty = null;
+
+  @JsonProperty("suggestedAmount")
+  private Double suggestedAmount = null;
+
+  @JsonProperty("targetCollateralAccountId")
+  private Long targetCollateralAccountId = null;
+
+  @JsonProperty("targetLendingAccountId")
+  private Long targetLendingAccountId = null;
+
+  @JsonProperty("targetLendingAccountShortName")
+  private String targetLendingAccountShortName = null;
+
+  @JsonProperty("targetPositionId")
+  private Long targetPositionId = null;
+
+  @JsonProperty("ticker")
+  private String ticker = null;
+
+  public LRALSuggestionDTO allocationId(Long allocationId) {
+    this.allocationId = allocationId;
+    return this;
+  }
+
+   /**
+   * Get allocationId
+   * @return allocationId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getAllocationId() {
+    return allocationId;
+  }
+
+  public void setAllocationId(Long allocationId) {
+    this.allocationId = allocationId;
+  }
+
+  public LRALSuggestionDTO counterpartyId(Long counterpartyId) {
+    this.counterpartyId = counterpartyId;
+    return this;
+  }
+
+   /**
+   * Get counterpartyId
+   * @return counterpartyId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCounterpartyId() {
+    return counterpartyId;
+  }
+
+  public void setCounterpartyId(Long counterpartyId) {
+    this.counterpartyId = counterpartyId;
+  }
+
+  public LRALSuggestionDTO counterpartyName(String counterpartyName) {
+    this.counterpartyName = counterpartyName;
+    return this;
+  }
+
+   /**
+   * Get counterpartyName
+   * @return counterpartyName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyName() {
+    return counterpartyName;
+  }
+
+  public void setCounterpartyName(String counterpartyName) {
+    this.counterpartyName = counterpartyName;
+  }
+
+  public LRALSuggestionDTO currentSourceAllocationQty(Integer currentSourceAllocationQty) {
+    this.currentSourceAllocationQty = currentSourceAllocationQty;
+    return this;
+  }
+
+   /**
+   * Get currentSourceAllocationQty
+   * @return currentSourceAllocationQty
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCurrentSourceAllocationQty() {
+    return currentSourceAllocationQty;
+  }
+
+  public void setCurrentSourceAllocationQty(Integer currentSourceAllocationQty) {
+    this.currentSourceAllocationQty = currentSourceAllocationQty;
+  }
+
+  public LRALSuggestionDTO currentTargetAllocationQty(Integer currentTargetAllocationQty) {
+    this.currentTargetAllocationQty = currentTargetAllocationQty;
+    return this;
+  }
+
+   /**
+   * Get currentTargetAllocationQty
+   * @return currentTargetAllocationQty
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCurrentTargetAllocationQty() {
+    return currentTargetAllocationQty;
+  }
+
+  public void setCurrentTargetAllocationQty(Integer currentTargetAllocationQty) {
+    this.currentTargetAllocationQty = currentTargetAllocationQty;
+  }
+
+  public LRALSuggestionDTO cusip(String cusip) {
+    this.cusip = cusip;
+    return this;
+  }
+
+   /**
+   * Get cusip
+   * @return cusip
+  **/
+  @ApiModelProperty(value = "")
+  public String getCusip() {
+    return cusip;
+  }
+
+  public void setCusip(String cusip) {
+    this.cusip = cusip;
+  }
+
+  public LRALSuggestionDTO depoId(Integer depoId) {
+    this.depoId = depoId;
+    return this;
+  }
+
+   /**
+   * Get depoId
+   * @return depoId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getDepoId() {
+    return depoId;
+  }
+
+  public void setDepoId(Integer depoId) {
+    this.depoId = depoId;
+  }
+
+  public LRALSuggestionDTO factor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
+
+   /**
+   * Get factor
+   * @return factor
+  **/
+  @ApiModelProperty(value = "")
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+
+  public LRALSuggestionDTO isin(String isin) {
+    this.isin = isin;
+    return this;
+  }
+
+   /**
+   * Get isin
+   * @return isin
+  **/
+  @ApiModelProperty(value = "")
+  public String getIsin() {
+    return isin;
+  }
+
+  public void setIsin(String isin) {
+    this.isin = isin;
+  }
+
+  public LRALSuggestionDTO omniPositionId(Long omniPositionId) {
+    this.omniPositionId = omniPositionId;
+    return this;
+  }
+
+   /**
+   * Get omniPositionId
+   * @return omniPositionId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getOmniPositionId() {
+    return omniPositionId;
+  }
+
+  public void setOmniPositionId(Long omniPositionId) {
+    this.omniPositionId = omniPositionId;
+  }
+
+  public LRALSuggestionDTO omniQuantity(Double omniQuantity) {
+    this.omniQuantity = omniQuantity;
+    return this;
+  }
+
+   /**
+   * Get omniQuantity
+   * @return omniQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getOmniQuantity() {
+    return omniQuantity;
+  }
+
+  public void setOmniQuantity(Double omniQuantity) {
+    this.omniQuantity = omniQuantity;
+  }
+
+  public LRALSuggestionDTO positionType(String positionType) {
+    this.positionType = positionType;
+    return this;
+  }
+
+   /**
+   * Get positionType
+   * @return positionType
+  **/
+  @ApiModelProperty(value = "")
+  public String getPositionType() {
+    return positionType;
+  }
+
+  public void setPositionType(String positionType) {
+    this.positionType = positionType;
+  }
+
+  public LRALSuggestionDTO positionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+    return this;
+  }
+
+   /**
+   * Get positionTypeId
+   * @return positionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPositionTypeId() {
+    return positionTypeId;
+  }
+
+  public void setPositionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+  }
+
+  public LRALSuggestionDTO price(Double price) {
+    this.price = price;
+    return this;
+  }
+
+   /**
+   * Get price
+   * @return price
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
+  public LRALSuggestionDTO priceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+    return this;
+  }
+
+   /**
+   * Get priceFactor
+   * @return priceFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceFactor() {
+    return priceFactor;
+  }
+
+  public void setPriceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+  }
+
+  public LRALSuggestionDTO securityId(Long securityId) {
+    this.securityId = securityId;
+    return this;
+  }
+
+   /**
+   * Get securityId
+   * @return securityId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSecurityId() {
+    return securityId;
+  }
+
+  public void setSecurityId(Long securityId) {
+    this.securityId = securityId;
+  }
+
+  public LRALSuggestionDTO sedol(String sedol) {
+    this.sedol = sedol;
+    return this;
+  }
+
+   /**
+   * Get sedol
+   * @return sedol
+  **/
+  @ApiModelProperty(value = "")
+  public String getSedol() {
+    return sedol;
+  }
+
+  public void setSedol(String sedol) {
+    this.sedol = sedol;
+  }
+
+  public LRALSuggestionDTO sourceCollateralAccountId(Long sourceCollateralAccountId) {
+    this.sourceCollateralAccountId = sourceCollateralAccountId;
+    return this;
+  }
+
+   /**
+   * Get sourceCollateralAccountId
+   * @return sourceCollateralAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSourceCollateralAccountId() {
+    return sourceCollateralAccountId;
+  }
+
+  public void setSourceCollateralAccountId(Long sourceCollateralAccountId) {
+    this.sourceCollateralAccountId = sourceCollateralAccountId;
+  }
+
+  public LRALSuggestionDTO sourceLendingAccountId(Long sourceLendingAccountId) {
+    this.sourceLendingAccountId = sourceLendingAccountId;
+    return this;
+  }
+
+   /**
+   * Get sourceLendingAccountId
+   * @return sourceLendingAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSourceLendingAccountId() {
+    return sourceLendingAccountId;
+  }
+
+  public void setSourceLendingAccountId(Long sourceLendingAccountId) {
+    this.sourceLendingAccountId = sourceLendingAccountId;
+  }
+
+  public LRALSuggestionDTO sourceLendingAccountShortName(String sourceLendingAccountShortName) {
+    this.sourceLendingAccountShortName = sourceLendingAccountShortName;
+    return this;
+  }
+
+   /**
+   * Get sourceLendingAccountShortName
+   * @return sourceLendingAccountShortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getSourceLendingAccountShortName() {
+    return sourceLendingAccountShortName;
+  }
+
+  public void setSourceLendingAccountShortName(String sourceLendingAccountShortName) {
+    this.sourceLendingAccountShortName = sourceLendingAccountShortName;
+  }
+
+  public LRALSuggestionDTO sourcePositionId(Long sourcePositionId) {
+    this.sourcePositionId = sourcePositionId;
+    return this;
+  }
+
+   /**
+   * Get sourcePositionId
+   * @return sourcePositionId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSourcePositionId() {
+    return sourcePositionId;
+  }
+
+  public void setSourcePositionId(Long sourcePositionId) {
+    this.sourcePositionId = sourcePositionId;
+  }
+
+  public LRALSuggestionDTO suggestedAllocationQty(Integer suggestedAllocationQty) {
+    this.suggestedAllocationQty = suggestedAllocationQty;
+    return this;
+  }
+
+   /**
+   * Get suggestedAllocationQty
+   * @return suggestedAllocationQty
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSuggestedAllocationQty() {
+    return suggestedAllocationQty;
+  }
+
+  public void setSuggestedAllocationQty(Integer suggestedAllocationQty) {
+    this.suggestedAllocationQty = suggestedAllocationQty;
+  }
+
+  public LRALSuggestionDTO suggestedAmount(Double suggestedAmount) {
+    this.suggestedAmount = suggestedAmount;
+    return this;
+  }
+
+   /**
+   * Get suggestedAmount
+   * @return suggestedAmount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSuggestedAmount() {
+    return suggestedAmount;
+  }
+
+  public void setSuggestedAmount(Double suggestedAmount) {
+    this.suggestedAmount = suggestedAmount;
+  }
+
+  public LRALSuggestionDTO targetCollateralAccountId(Long targetCollateralAccountId) {
+    this.targetCollateralAccountId = targetCollateralAccountId;
+    return this;
+  }
+
+   /**
+   * Get targetCollateralAccountId
+   * @return targetCollateralAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getTargetCollateralAccountId() {
+    return targetCollateralAccountId;
+  }
+
+  public void setTargetCollateralAccountId(Long targetCollateralAccountId) {
+    this.targetCollateralAccountId = targetCollateralAccountId;
+  }
+
+  public LRALSuggestionDTO targetLendingAccountId(Long targetLendingAccountId) {
+    this.targetLendingAccountId = targetLendingAccountId;
+    return this;
+  }
+
+   /**
+   * Get targetLendingAccountId
+   * @return targetLendingAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getTargetLendingAccountId() {
+    return targetLendingAccountId;
+  }
+
+  public void setTargetLendingAccountId(Long targetLendingAccountId) {
+    this.targetLendingAccountId = targetLendingAccountId;
+  }
+
+  public LRALSuggestionDTO targetLendingAccountShortName(String targetLendingAccountShortName) {
+    this.targetLendingAccountShortName = targetLendingAccountShortName;
+    return this;
+  }
+
+   /**
+   * Get targetLendingAccountShortName
+   * @return targetLendingAccountShortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getTargetLendingAccountShortName() {
+    return targetLendingAccountShortName;
+  }
+
+  public void setTargetLendingAccountShortName(String targetLendingAccountShortName) {
+    this.targetLendingAccountShortName = targetLendingAccountShortName;
+  }
+
+  public LRALSuggestionDTO targetPositionId(Long targetPositionId) {
+    this.targetPositionId = targetPositionId;
+    return this;
+  }
+
+   /**
+   * Get targetPositionId
+   * @return targetPositionId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getTargetPositionId() {
+    return targetPositionId;
+  }
+
+  public void setTargetPositionId(Long targetPositionId) {
+    this.targetPositionId = targetPositionId;
+  }
+
+  public LRALSuggestionDTO ticker(String ticker) {
+    this.ticker = ticker;
+    return this;
+  }
+
+   /**
+   * Get ticker
+   * @return ticker
+  **/
+  @ApiModelProperty(value = "")
+  public String getTicker() {
+    return ticker;
+  }
+
+  public void setTicker(String ticker) {
+    this.ticker = ticker;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    LRALSuggestionDTO lrALSuggestionDTO = (LRALSuggestionDTO) o;
+    return Objects.equals(this.allocationId, lrALSuggestionDTO.allocationId) &&
+        Objects.equals(this.counterpartyId, lrALSuggestionDTO.counterpartyId) &&
+        Objects.equals(this.counterpartyName, lrALSuggestionDTO.counterpartyName) &&
+        Objects.equals(this.currentSourceAllocationQty, lrALSuggestionDTO.currentSourceAllocationQty) &&
+        Objects.equals(this.currentTargetAllocationQty, lrALSuggestionDTO.currentTargetAllocationQty) &&
+        Objects.equals(this.cusip, lrALSuggestionDTO.cusip) &&
+        Objects.equals(this.depoId, lrALSuggestionDTO.depoId) &&
+        Objects.equals(this.factor, lrALSuggestionDTO.factor) &&
+        Objects.equals(this.isin, lrALSuggestionDTO.isin) &&
+        Objects.equals(this.omniPositionId, lrALSuggestionDTO.omniPositionId) &&
+        Objects.equals(this.omniQuantity, lrALSuggestionDTO.omniQuantity) &&
+        Objects.equals(this.positionType, lrALSuggestionDTO.positionType) &&
+        Objects.equals(this.positionTypeId, lrALSuggestionDTO.positionTypeId) &&
+        Objects.equals(this.price, lrALSuggestionDTO.price) &&
+        Objects.equals(this.priceFactor, lrALSuggestionDTO.priceFactor) &&
+        Objects.equals(this.securityId, lrALSuggestionDTO.securityId) &&
+        Objects.equals(this.sedol, lrALSuggestionDTO.sedol) &&
+        Objects.equals(this.sourceCollateralAccountId, lrALSuggestionDTO.sourceCollateralAccountId) &&
+        Objects.equals(this.sourceLendingAccountId, lrALSuggestionDTO.sourceLendingAccountId) &&
+        Objects.equals(this.sourceLendingAccountShortName, lrALSuggestionDTO.sourceLendingAccountShortName) &&
+        Objects.equals(this.sourcePositionId, lrALSuggestionDTO.sourcePositionId) &&
+        Objects.equals(this.suggestedAllocationQty, lrALSuggestionDTO.suggestedAllocationQty) &&
+        Objects.equals(this.suggestedAmount, lrALSuggestionDTO.suggestedAmount) &&
+        Objects.equals(this.targetCollateralAccountId, lrALSuggestionDTO.targetCollateralAccountId) &&
+        Objects.equals(this.targetLendingAccountId, lrALSuggestionDTO.targetLendingAccountId) &&
+        Objects.equals(this.targetLendingAccountShortName, lrALSuggestionDTO.targetLendingAccountShortName) &&
+        Objects.equals(this.targetPositionId, lrALSuggestionDTO.targetPositionId) &&
+        Objects.equals(this.ticker, lrALSuggestionDTO.ticker);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(allocationId, counterpartyId, counterpartyName, currentSourceAllocationQty, currentTargetAllocationQty, cusip, depoId, factor, isin, omniPositionId, omniQuantity, positionType, positionTypeId, price, priceFactor, securityId, sedol, sourceCollateralAccountId, sourceLendingAccountId, sourceLendingAccountShortName, sourcePositionId, suggestedAllocationQty, suggestedAmount, targetCollateralAccountId, targetLendingAccountId, targetLendingAccountShortName, targetPositionId, ticker);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class LRALSuggestionDTO {\n");
+    
+    sb.append("    allocationId: ").append(toIndentedString(allocationId)).append("\n");
+    sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
+    sb.append("    counterpartyName: ").append(toIndentedString(counterpartyName)).append("\n");
+    sb.append("    currentSourceAllocationQty: ").append(toIndentedString(currentSourceAllocationQty)).append("\n");
+    sb.append("    currentTargetAllocationQty: ").append(toIndentedString(currentTargetAllocationQty)).append("\n");
+    sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
+    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+    sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
+    sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
+    sb.append("    omniPositionId: ").append(toIndentedString(omniPositionId)).append("\n");
+    sb.append("    omniQuantity: ").append(toIndentedString(omniQuantity)).append("\n");
+    sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
+    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
+    sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
+    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+    sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
+    sb.append("    sourceCollateralAccountId: ").append(toIndentedString(sourceCollateralAccountId)).append("\n");
+    sb.append("    sourceLendingAccountId: ").append(toIndentedString(sourceLendingAccountId)).append("\n");
+    sb.append("    sourceLendingAccountShortName: ").append(toIndentedString(sourceLendingAccountShortName)).append("\n");
+    sb.append("    sourcePositionId: ").append(toIndentedString(sourcePositionId)).append("\n");
+    sb.append("    suggestedAllocationQty: ").append(toIndentedString(suggestedAllocationQty)).append("\n");
+    sb.append("    suggestedAmount: ").append(toIndentedString(suggestedAmount)).append("\n");
+    sb.append("    targetCollateralAccountId: ").append(toIndentedString(targetCollateralAccountId)).append("\n");
+    sb.append("    targetLendingAccountId: ").append(toIndentedString(targetLendingAccountId)).append("\n");
+    sb.append("    targetLendingAccountShortName: ").append(toIndentedString(targetLendingAccountShortName)).append("\n");
+    sb.append("    targetPositionId: ").append(toIndentedString(targetPositionId)).append("\n");
+    sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

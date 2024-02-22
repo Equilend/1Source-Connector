@@ -31,7 +31,9 @@ public enum ProcessingStatus {
     TO_DECLINE("TO_DECLINE"),
     UPDATED("UPDATED"),
     VALIDATED("VALIDATED"),
-    MATCHED_RERATE_TRADE("MATCHED_RERATE_TRADE");
+    MATCHED("MATCHED"),
+    UNMATCHED("UNMATCHED"),
+    SUBMITTED("SUBMITTED");
 
     private final String value;
 

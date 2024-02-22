@@ -16,6 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class IndexEntity {
 
+    private Integer indexId;
     private String indexName;
     private Double spread;
 

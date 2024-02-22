@@ -162,6 +162,7 @@ CREATE TABLE IF NOT EXISTS position
     cp_account_id         BIGINT       NULL,
     cp_lei                VARCHAR(255) NULL,
     info                VARCHAR(255) NULL,
+    index_id                 INTEGER,
     index_name                VARCHAR(255) NULL,
     description                VARCHAR(255) NULL,
     status                VARCHAR(255) NULL,
@@ -353,17 +354,25 @@ CREATE TABLE IF NOT EXISTS trade_out
     trade_id                 BIGINT NOT NULL,
     post_date                TIMESTAMP,
     settle_date              TIMESTAMP,
+    accrual_date             TIMESTAMP,
     trade_date               TIMESTAMP,
+    rate_or_spread           DOUBLE PRECISION NULL,
     trade_type               VARCHAR(255),
     trade_type_id            INTEGER,
+    index_id                 INTEGER,
+    index_name               VARCHAR(255),
+    index_spread             DOUBLE PRECISION NULL,
+    status                   VARCHAR(255),
+    status_id                INTEGER,
     position_spire_position_id     VARCHAR(255) NULL,
     CONSTRAINT pk_trade_out PRIMARY KEY (trade_id),
     CONSTRAINT fk_position_out FOREIGN KEY (position_spire_position_id) REFERENCES position (spire_position_id)
-);
+    );
 
 CREATE TABLE IF NOT EXISTS rerate_trade
 (
     trade_id             BIGINT NOT NULL,
+    creation_datetime TIMESTAMP,
     last_update_datetime TIMESTAMP,
     matching_rerate_id   VARCHAR(255),
     processing_status    VARCHAR(255),
@@ -378,6 +387,7 @@ CREATE TABLE IF NOT EXISTS rerate
 (
     rerate_id                 VARCHAR(255) NOT NULL,
     contract_id               VARCHAR(255),
+    create_update_datetime    TIMESTAMP,
     last_update_datetime      TIMESTAMP,
     matching_spire_trade_id   BIGINT,
     processing_status         VARCHAR(255),

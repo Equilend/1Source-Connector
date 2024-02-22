@@ -13,5496 +13,5212 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.Character;
+import com.intellecteu.onesource.integration.services.client.spire.dto.PositionHistoryKeyDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalDateTime;
 
 /**
  * PositionHistoryDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class PositionHistoryDTO {
+  @JsonProperty("accountGroupDTO")
+  private AccountDTO accountGroupDTO = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("accountId")
+  private Long accountId = null;
 
-    @JsonProperty("accountGroupDTO")
-    private AccountDTO accountGroupDTO = null;
+  @JsonProperty("accountId2")
+  private Long accountId2 = null;
 
-    @JsonProperty("accountId")
-    private Long accountId = null;
+  @JsonProperty("accountNo")
+  private String accountNo = null;
 
-    @JsonProperty("accountId2")
-    private Long accountId2 = null;
+  @JsonProperty("accountNo2")
+  private String accountNo2 = null;
 
-    @JsonProperty("accountNo")
-    private String accountNo = null;
+  @JsonProperty("accountingAmount")
+  private Double accountingAmount = null;
 
-    @JsonProperty("accountNo2")
-    private String accountNo2 = null;
+  @JsonProperty("accountingAmountNew")
+  private Double accountingAmountNew = null;
 
-    @JsonProperty("accountingAmount")
-    private Double accountingAmount = null;
+  @JsonProperty("accruedInt")
+  private Double accruedInt = null;
 
-    @JsonProperty("accountingAmountNew")
-    private Double accountingAmountNew = null;
+  @JsonProperty("amortizedDp")
+  private Double amortizedDp = null;
 
-    @JsonProperty("accruedInt")
-    private Double accruedInt = null;
+  @JsonProperty("amount")
+  private Double amount = null;
 
-    @JsonProperty("amortizedDp")
-    private Double amortizedDp = null;
+  @JsonProperty("basisId")
+  private Integer basisId = null;
 
-    @JsonProperty("amount")
-    private Double amount = null;
+  @JsonProperty("basisName")
+  private String basisName = null;
 
-    @JsonProperty("basisId")
-    private Integer basisId = null;
+  @JsonProperty("bookValue")
+  private Double bookValue = null;
 
-    @JsonProperty("basisName")
-    private String basisName = null;
+  @JsonProperty("borrowPremium")
+  private Double borrowPremium = null;
 
-    @JsonProperty("bookValue")
-    private Double bookValue = null;
+  @JsonProperty("borrowPremiumNew")
+  private Double borrowPremiumNew = null;
 
-    @JsonProperty("borrowPremium")
-    private Double borrowPremium = null;
+  @JsonProperty("borrowRebate")
+  private Double borrowRebate = null;
 
-    @JsonProperty("borrowPremiumNew")
-    private Double borrowPremiumNew = null;
+  @JsonProperty("borrowRebateNew")
+  private Double borrowRebateNew = null;
 
-    @JsonProperty("borrowRebate")
-    private Double borrowRebate = null;
+  @JsonProperty("calendarId")
+  private Integer calendarId = null;
 
-    @JsonProperty("borrowRebateNew")
-    private Double borrowRebateNew = null;
+  @JsonProperty("cashBalanced")
+  private Long cashBalanced = null;
 
-    @JsonProperty("calendarId")
-    private Integer calendarId = null;
+  @JsonProperty("category0Id")
+  private Integer category0Id = null;
 
-    @JsonProperty("cashBalanced")
-    private Long cashBalanced = null;
+  @JsonProperty("category0Name")
+  private String category0Name = null;
 
-    @JsonProperty("category0Id")
-    private Integer category0Id = null;
+  @JsonProperty("category1Id")
+  private Integer category1Id = null;
 
-    @JsonProperty("category0Name")
-    private String category0Name = null;
+  @JsonProperty("category1Name")
+  private String category1Name = null;
 
-    @JsonProperty("category1Id")
-    private Integer category1Id = null;
+  @JsonProperty("category2Id")
+  private Integer category2Id = null;
 
-    @JsonProperty("category1Name")
-    private String category1Name = null;
+  @JsonProperty("category2Name")
+  private String category2Name = null;
 
-    @JsonProperty("category2Id")
-    private Integer category2Id = null;
+  @JsonProperty("category3Id")
+  private Integer category3Id = null;
 
-    @JsonProperty("category2Name")
-    private String category2Name = null;
+  @JsonProperty("category3Name")
+  private String category3Name = null;
 
-    @JsonProperty("category3Id")
-    private Integer category3Id = null;
+  @JsonProperty("categoryId")
+  private Integer categoryId = null;
 
-    @JsonProperty("category3Name")
-    private String category3Name = null;
+  @JsonProperty("categoryName")
+  private String categoryName = null;
 
-    @JsonProperty("categoryId")
-    private Integer categoryId = null;
+  @JsonProperty("cleanMarketValue")
+  private Double cleanMarketValue = null;
 
-    @JsonProperty("categoryName")
-    private String categoryName = null;
+  @JsonProperty("clientCategory")
+  private String clientCategory = null;
 
-    @JsonProperty("cleanMarketValue")
-    private Double cleanMarketValue = null;
+  @JsonProperty("clientSecId")
+  private String clientSecId = null;
 
-    @JsonProperty("clientCategory")
-    private String clientCategory = null;
+  @JsonProperty("collateralAccountId")
+  private Long collateralAccountId = null;
 
-    @JsonProperty("clientSecId")
-    private String clientSecId = null;
+  @JsonProperty("collateralAccountNo")
+  private String collateralAccountNo = null;
 
-    @JsonProperty("collateralAccountId")
-    private Long collateralAccountId = null;
+  @JsonProperty("collateralIndicator")
+  private Boolean collateralIndicator = null;
 
-    @JsonProperty("collateralAccountNo")
-    private String collateralAccountNo = null;
+  @JsonProperty("collateralType")
+  private String collateralType = null;
 
-    @JsonProperty("collateralIndicator")
-    private Boolean collateralIndicator = null;
+  @JsonProperty("collateralTypeId")
+  private Integer collateralTypeId = null;
 
-    @JsonProperty("collateralType")
-    private String collateralType = null;
+  @JsonProperty("comments")
+  private String comments = null;
 
-    @JsonProperty("collateralTypeId")
-    private Integer collateralTypeId = null;
+  @JsonProperty("cost")
+  private Double cost = null;
 
-    @JsonProperty("comments")
-    private String comments = null;
+  @JsonProperty("counterpartyGroupAccountNo")
+  private String counterpartyGroupAccountNo = null;
 
-    @JsonProperty("cost")
-    private Double cost = null;
+  @JsonProperty("counterpartyGroupAccountNo2")
+  private String counterpartyGroupAccountNo2 = null;
 
-    @JsonProperty("counterpartyGroupAccountNo")
-    private String counterpartyGroupAccountNo = null;
+  @JsonProperty("counterpartyGroupName")
+  private String counterpartyGroupName = null;
 
-    @JsonProperty("counterpartyGroupAccountNo2")
-    private String counterpartyGroupAccountNo2 = null;
+  @JsonProperty("counterpartyGroupdtcNo")
+  private String counterpartyGroupdtcNo = null;
 
-    @JsonProperty("counterpartyGroupName")
-    private String counterpartyGroupName = null;
+  @JsonProperty("counterpartyId")
+  private Long counterpartyId = null;
 
-    @JsonProperty("counterpartyGroupdtcNo")
-    private String counterpartyGroupdtcNo = null;
+  @JsonProperty("counterpartyLegalName")
+  private String counterpartyLegalName = null;
 
-    @JsonProperty("counterpartyId")
-    private Long counterpartyId = null;
+  @JsonProperty("counterpartyShortName")
+  private String counterpartyShortName = null;
 
-    @JsonProperty("counterpartyLegalName")
-    private String counterpartyLegalName = null;
+  @JsonProperty("countryId")
+  private Integer countryId = null;
 
-    @JsonProperty("counterpartyShortName")
-    private String counterpartyShortName = null;
+  @JsonProperty("currencyId")
+  private Integer currencyId = null;
 
-    @JsonProperty("countryId")
-    private Integer countryId = null;
+  @JsonProperty("currencyKy")
+  private String currencyKy = null;
 
-    @JsonProperty("currencyId")
-    private Integer currencyId = null;
+  @JsonProperty("currentAmount")
+  private Double currentAmount = null;
 
-    @JsonProperty("currencyKy")
-    private String currencyKy = null;
+  @JsonProperty("currentPrice")
+  private Double currentPrice = null;
 
-    @JsonProperty("currentAmount")
-    private Double currentAmount = null;
+  @JsonProperty("cusip")
+  private String cusip = null;
 
-    @JsonProperty("currentPrice")
-    private Double currentPrice = null;
+  @JsonProperty("custodianBankShortName")
+  private String custodianBankShortName = null;
 
-    @JsonProperty("cusip")
-    private String cusip = null;
+  @JsonProperty("dailyAccrual")
+  private Double dailyAccrual = null;
 
-    @JsonProperty("custodianBankShortName")
-    private String custodianBankShortName = null;
+  @JsonProperty("dailyDp")
+  private Double dailyDp = null;
 
-    @JsonProperty("dailyAccrual")
-    private Double dailyAccrual = null;
+  @JsonProperty("depoGroup")
+  private String depoGroup = null;
 
-    @JsonProperty("dailyDp")
-    private Double dailyDp = null;
+  @JsonProperty("depoId")
+  private Integer depoId = null;
 
-    @JsonProperty("depoGroup")
-    private String depoGroup = null;
+  @JsonProperty("depoKy")
+  private String depoKy = null;
 
-    @JsonProperty("depoId")
-    private Integer depoId = null;
+  @JsonProperty("description")
+  private String description = null;
 
-    @JsonProperty("depoKy")
-    private String depoKy = null;
+  @JsonProperty("dtc")
+  private Long dtc = null;
 
-    @JsonProperty("description")
-    private String description = null;
+  @JsonProperty("encumberedQuantity")
+  private Long encumberedQuantity = null;
 
-    @JsonProperty("dtc")
-    private Long dtc = null;
+  @JsonProperty("endDate")
+  private LocalDateTime endDate = null;
 
-    @JsonProperty("encumberedQuantity")
-    private Long encumberedQuantity = null;
+  @JsonProperty("expMaturity")
+  private LocalDateTime expMaturity = null;
 
-    @JsonProperty("endDate")
-    private LocalDateTime endDate = null;
+  @JsonProperty("exposureIndicator")
+  private Boolean exposureIndicator = null;
 
-    @JsonProperty("expMaturity")
-    private LocalDateTime expMaturity = null;
+  @JsonProperty("factor")
+  private Double factor = null;
 
-    @JsonProperty("exposureIndicator")
-    private Boolean exposureIndicator = null;
+  @JsonProperty("fxRate")
+  private Double fxRate = null;
 
-    @JsonProperty("factor")
-    private Double factor = null;
+  @JsonProperty("haircutPrice")
+  private Double haircutPrice = null;
 
-    @JsonProperty("fxRate")
-    private Double fxRate = null;
+  @JsonProperty("histType")
+  private String histType = null;
 
-    @JsonProperty("haircutPrice")
-    private Double haircutPrice = null;
+  @JsonProperty("id")
+  private PositionHistoryKeyDTO id = null;
 
-    @JsonProperty("histType")
-    private String histType = null;
+  @JsonProperty("impairmentLossReserve")
+  private Double impairmentLossReserve = null;
 
-    @JsonProperty("id")
-    private PositionHistoryKeyDTO id = null;
+  @JsonProperty("impairmentLossReserveNew")
+  private Double impairmentLossReserveNew = null;
 
-    @JsonProperty("impairmentLossReserve")
-    private Double impairmentLossReserve = null;
+  @JsonProperty("indexId")
+  private Long indexId = null;
 
-    @JsonProperty("impairmentLossReserveNew")
-    private Double impairmentLossReserveNew = null;
+  @JsonProperty("indexName")
+  private String indexName = null;
 
-    @JsonProperty("indexId")
-    private Long indexId = null;
+  @JsonProperty("interest")
+  private Double interest = null;
 
-    @JsonProperty("indexName")
-    private String indexName = null;
+  @JsonProperty("interestExpenseNew")
+  private Double interestExpenseNew = null;
 
-    @JsonProperty("interest")
-    private Double interest = null;
+  @JsonProperty("interestNew")
+  private Double interestNew = null;
 
-    @JsonProperty("interestExpenseNew")
-    private Double interestExpenseNew = null;
+  @JsonProperty("isAccounting")
+  private Boolean isAccounting = null;
 
-    @JsonProperty("interestNew")
-    private Double interestNew = null;
+  @JsonProperty("isBorrow")
+  private Boolean isBorrow = null;
 
-    @JsonProperty("isAccounting")
-    private Boolean isAccounting = null;
+  @JsonProperty("isCollateralPledged")
+  private Boolean isCollateralPledged = null;
 
-    @JsonProperty("isBorrow")
-    private Boolean isBorrow = null;
+  @JsonProperty("isCollateralReceived")
+  private Boolean isCollateralReceived = null;
 
-    @JsonProperty("isCollateralPledged")
-    private Boolean isCollateralPledged = null;
+  @JsonProperty("isInvestment")
+  private Boolean isInvestment = null;
 
-    @JsonProperty("isCollateralReceived")
-    private Boolean isCollateralReceived = null;
+  @JsonProperty("isLoan")
+  private Boolean isLoan = null;
 
-    @JsonProperty("isInvestment")
-    private Boolean isInvestment = null;
+  @JsonProperty("isPooled")
+  private Boolean isPooled = null;
 
-    @JsonProperty("isLoan")
-    private Boolean isLoan = null;
+  @JsonProperty("isRepo")
+  private Boolean isRepo = null;
 
-    @JsonProperty("isPooled")
-    private Boolean isPooled = null;
+  @JsonProperty("isReverseRepo")
+  private Boolean isReverseRepo = null;
 
-    @JsonProperty("isRepo")
-    private Boolean isRepo = null;
+  @JsonProperty("isSubAccount")
+  private Boolean isSubAccount = null;
 
-    @JsonProperty("isReverseRepo")
-    private Boolean isReverseRepo = null;
+  @JsonProperty("isin")
+  private String isin = null;
 
-    @JsonProperty("isSubAccount")
-    private Boolean isSubAccount = null;
+  @JsonProperty("issuerId")
+  private Long issuerId = null;
 
-    @JsonProperty("isin")
-    private String isin = null;
+  @JsonProperty("loanPremium")
+  private Double loanPremium = null;
 
-    @JsonProperty("issuerId")
-    private Long issuerId = null;
+  @JsonProperty("loanPremiumNew")
+  private Double loanPremiumNew = null;
 
-    @JsonProperty("loanPremium")
-    private Double loanPremium = null;
+  @JsonProperty("lookBack")
+  private Integer lookBack = null;
 
-    @JsonProperty("loanPremiumNew")
-    private Double loanPremiumNew = null;
+  @JsonProperty("marketPrice")
+  private Double marketPrice = null;
 
-    @JsonProperty("lookBack")
-    private Integer lookBack = null;
+  @JsonProperty("marketValue")
+  private Double marketValue = null;
 
-    @JsonProperty("marketPrice")
-    private Double marketPrice = null;
+  @JsonProperty("navPrice")
+  private Double navPrice = null;
 
-    @JsonProperty("marketValue")
-    private Double marketValue = null;
+  @JsonProperty("newAccruedInt")
+  private Double newAccruedInt = null;
 
-    @JsonProperty("navPrice")
-    private Double navPrice = null;
+  @JsonProperty("newAmortizedDp")
+  private Double newAmortizedDp = null;
 
-    @JsonProperty("newAccruedInt")
-    private Double newAccruedInt = null;
+  @JsonProperty("newAmount")
+  private Double newAmount = null;
 
-    @JsonProperty("newAmortizedDp")
-    private Double newAmortizedDp = null;
+  @JsonProperty("newBasisId")
+  private Integer newBasisId = null;
 
-    @JsonProperty("newAmount")
-    private Double newAmount = null;
+  @JsonProperty("newBasisName")
+  private String newBasisName = null;
 
-    @JsonProperty("newBasisId")
-    private Integer newBasisId = null;
+  @JsonProperty("newBookValue")
+  private Double newBookValue = null;
 
-    @JsonProperty("newBasisName")
-    private String newBasisName = null;
+  @JsonProperty("newCleanMarketValue")
+  private Double newCleanMarketValue = null;
 
-    @JsonProperty("newBookValue")
-    private Double newBookValue = null;
+  @JsonProperty("newCollateralIndicator")
+  private Boolean newCollateralIndicator = null;
 
-    @JsonProperty("newCleanMarketValue")
-    private Double newCleanMarketValue = null;
+  @JsonProperty("newCollateralTypeId")
+  private Integer newCollateralTypeId = null;
 
-    @JsonProperty("newCollateralIndicator")
-    private Boolean newCollateralIndicator = null;
+  @JsonProperty("newCost")
+  private Double newCost = null;
 
-    @JsonProperty("newCollateralTypeId")
-    private Integer newCollateralTypeId = null;
+  @JsonProperty("newDailyAccrual")
+  private Double newDailyAccrual = null;
 
-    @JsonProperty("newCost")
-    private Double newCost = null;
+  @JsonProperty("newDailyDp")
+  private Double newDailyDp = null;
 
-    @JsonProperty("newDailyAccrual")
-    private Double newDailyAccrual = null;
+  @JsonProperty("newEndDate")
+  private LocalDateTime newEndDate = null;
 
-    @JsonProperty("newDailyDp")
-    private Double newDailyDp = null;
+  @JsonProperty("newExposureIndicator")
+  private Boolean newExposureIndicator = null;
 
-    @JsonProperty("newEndDate")
-    private LocalDateTime newEndDate = null;
+  @JsonProperty("newFactor")
+  private Double newFactor = null;
 
-    @JsonProperty("newExposureIndicator")
-    private Boolean newExposureIndicator = null;
+  @JsonProperty("newHaircutPrice")
+  private Double newHaircutPrice = null;
 
-    @JsonProperty("newFactor")
-    private Double newFactor = null;
+  @JsonProperty("newIndexId")
+  private Long newIndexId = null;
 
-    @JsonProperty("newHaircutPrice")
-    private Double newHaircutPrice = null;
+  @JsonProperty("newIndexName")
+  private String newIndexName = null;
 
-    @JsonProperty("newIndexId")
-    private Long newIndexId = null;
+  @JsonProperty("newIsAccounting")
+  private Boolean newIsAccounting = null;
 
-    @JsonProperty("newIndexName")
-    private String newIndexName = null;
+  @JsonProperty("newIsBorrow")
+  private Boolean newIsBorrow = null;
 
-    @JsonProperty("newIsAccounting")
-    private Boolean newIsAccounting = null;
+  @JsonProperty("newIsCollateralPledged")
+  private Boolean newIsCollateralPledged = null;
 
-    @JsonProperty("newIsBorrow")
-    private Boolean newIsBorrow = null;
+  @JsonProperty("newIsCollateralReceived")
+  private Boolean newIsCollateralReceived = null;
 
-    @JsonProperty("newIsCollateralPledged")
-    private Boolean newIsCollateralPledged = null;
+  @JsonProperty("newIsInvestment")
+  private Boolean newIsInvestment = null;
 
-    @JsonProperty("newIsCollateralReceived")
-    private Boolean newIsCollateralReceived = null;
+  @JsonProperty("newIsLoan")
+  private Boolean newIsLoan = null;
 
-    @JsonProperty("newIsInvestment")
-    private Boolean newIsInvestment = null;
+  @JsonProperty("newIsRepo")
+  private Boolean newIsRepo = null;
 
-    @JsonProperty("newIsLoan")
-    private Boolean newIsLoan = null;
+  @JsonProperty("newIsReverseRepo")
+  private Boolean newIsReverseRepo = null;
 
-    @JsonProperty("newIsRepo")
-    private Boolean newIsRepo = null;
+  @JsonProperty("newLookBack")
+  private Integer newLookBack = null;
 
-    @JsonProperty("newIsReverseRepo")
-    private Boolean newIsReverseRepo = null;
+  @JsonProperty("newMarketPrice")
+  private Double newMarketPrice = null;
 
-    @JsonProperty("newLookBack")
-    private Integer newLookBack = null;
+  @JsonProperty("newMarketValue")
+  private Double newMarketValue = null;
 
-    @JsonProperty("newMarketPrice")
-    private Double newMarketPrice = null;
+  @JsonProperty("newParentPositionTypeId")
+  private Integer newParentPositionTypeId = null;
 
-    @JsonProperty("newMarketValue")
-    private Double newMarketValue = null;
+  @JsonProperty("newPledgedMarketValue")
+  private Double newPledgedMarketValue = null;
 
-    @JsonProperty("newParentPositionTypeId")
-    private Integer newParentPositionTypeId = null;
+  @JsonProperty("newPledgedValue")
+  private Double newPledgedValue = null;
 
-    @JsonProperty("newPledgedMarketValue")
-    private Double newPledgedMarketValue = null;
+  @JsonProperty("newPositionType")
+  private String newPositionType = null;
 
-    @JsonProperty("newPledgedValue")
-    private Double newPledgedValue = null;
+  @JsonProperty("newPositionTypeId")
+  private Integer newPositionTypeId = null;
 
-    @JsonProperty("newPositionType")
-    private String newPositionType = null;
+  @JsonProperty("newPrice")
+  private Double newPrice = null;
 
-    @JsonProperty("newPositionTypeId")
-    private Integer newPositionTypeId = null;
+  @JsonProperty("newQuantity")
+  private Double newQuantity = null;
 
-    @JsonProperty("newPrice")
-    private Double newPrice = null;
+  @JsonProperty("newRate")
+  private Double newRate = null;
 
-    @JsonProperty("newQuantity")
-    private Double newQuantity = null;
+  @JsonProperty("newReceivedMarketValue")
+  private Double newReceivedMarketValue = null;
 
-    @JsonProperty("newRate")
-    private Double newRate = null;
+  @JsonProperty("newReceivedValue")
+  private Double newReceivedValue = null;
 
-    @JsonProperty("newReceivedMarketValue")
-    private Double newReceivedMarketValue = null;
+  @JsonProperty("newResetDate")
+  private LocalDateTime newResetDate = null;
 
-    @JsonProperty("newReceivedValue")
-    private Double newReceivedValue = null;
+  @JsonProperty("newSettledQuantity")
+  private Double newSettledQuantity = null;
 
-    @JsonProperty("newResetDate")
-    private LocalDateTime newResetDate = null;
+  @JsonProperty("newSpread")
+  private Double newSpread = null;
 
-    @JsonProperty("newSettledQuantity")
-    private Double newSettledQuantity = null;
+  @JsonProperty("newStatus")
+  private String newStatus = null;
 
-    @JsonProperty("newSpread")
-    private Double newSpread = null;
+  @JsonProperty("newStatusId")
+  private Integer newStatusId = null;
 
-    @JsonProperty("newStatus")
-    private String newStatus = null;
+  @JsonProperty("newTargetPrice")
+  private Double newTargetPrice = null;
 
-    @JsonProperty("newStatusId")
-    private Integer newStatusId = null;
+  @JsonProperty("newTerm")
+  private String newTerm = null;
 
-    @JsonProperty("newTargetPrice")
-    private Double newTargetPrice = null;
+  @JsonProperty("newTermId")
+  private Integer newTermId = null;
 
-    @JsonProperty("newTerm")
-    private String newTerm = null;
+  @JsonProperty("newTotalValue")
+  private Double newTotalValue = null;
 
-    @JsonProperty("newTermId")
-    private Integer newTermId = null;
+  @JsonProperty("newUnamortizedDp")
+  private Double newUnamortizedDp = null;
 
-    @JsonProperty("newTotalValue")
-    private Double newTotalValue = null;
+  @JsonProperty("newYield")
+  private Double newYield = null;
 
-    @JsonProperty("newUnamortizedDp")
-    private Double newUnamortizedDp = null;
+  @JsonProperty("outstandingPremium")
+  private Double outstandingPremium = null;
 
-    @JsonProperty("newYield")
-    private Double newYield = null;
+  @JsonProperty("outstandingRebate")
+  private Double outstandingRebate = null;
 
-    @JsonProperty("outstandingPremium")
-    private Double outstandingPremium = null;
+  @JsonProperty("parentPositionTypeId")
+  private Integer parentPositionTypeId = null;
 
-    @JsonProperty("outstandingRebate")
-    private Double outstandingRebate = null;
+  @JsonProperty("pledgedMarketValue")
+  private Double pledgedMarketValue = null;
 
-    @JsonProperty("parentPositionTypeId")
-    private Integer parentPositionTypeId = null;
+  @JsonProperty("pledgedValue")
+  private Double pledgedValue = null;
 
-    @JsonProperty("pledgedMarketValue")
-    private Double pledgedMarketValue = null;
+  @JsonProperty("poolPositionId")
+  private Long poolPositionId = null;
 
-    @JsonProperty("pledgedValue")
-    private Double pledgedValue = null;
+  @JsonProperty("positionRef")
+  private String positionRef = null;
 
-    @JsonProperty("poolPositionId")
-    private Long poolPositionId = null;
+  @JsonProperty("positionType")
+  private String positionType = null;
 
-    @JsonProperty("positionRef")
-    private String positionRef = null;
+  @JsonProperty("positionTypeId")
+  private Integer positionTypeId = null;
 
-    @JsonProperty("positionType")
-    private String positionType = null;
+  @JsonProperty("price")
+  private Double price = null;
 
-    @JsonProperty("positionTypeId")
-    private Integer positionTypeId = null;
+  @JsonProperty("priceFactor")
+  private Integer priceFactor = null;
 
-    @JsonProperty("price")
-    private Double price = null;
+  @JsonProperty("primaryId")
+  private String primaryId = null;
 
-    @JsonProperty("priceFactor")
-    private Integer priceFactor = null;
+  @JsonProperty("primaryIdType")
+  private String primaryIdType = null;
 
-    @JsonProperty("primaryId")
-    private String primaryId = null;
+  @JsonProperty("principalOrInterest")
+  private Character principalOrInterest = null;
 
-    @JsonProperty("primaryIdType")
-    private String primaryIdType = null;
+  @JsonProperty("purchasedInterest")
+  private Double purchasedInterest = null;
 
-    @JsonProperty("principalOrInterest")
-    private Character principalOrInterest = null;
+  @JsonProperty("purchasedInterestNew")
+  private Double purchasedInterestNew = null;
 
-    @JsonProperty("purchasedInterest")
-    private Double purchasedInterest = null;
+  @JsonProperty("quantity")
+  private Double quantity = null;
 
-    @JsonProperty("purchasedInterestNew")
-    private Double purchasedInterestNew = null;
+  @JsonProperty("quickCode")
+  private String quickCode = null;
 
-    @JsonProperty("quantity")
-    private Double quantity = null;
+  @JsonProperty("rate")
+  private Double rate = null;
 
-    @JsonProperty("quickCode")
-    private String quickCode = null;
+  @JsonProperty("rebate")
+  private Double rebate = null;
 
-    @JsonProperty("rate")
-    private Double rate = null;
+  @JsonProperty("rebateNew")
+  private Double rebateNew = null;
 
-    @JsonProperty("rebate")
-    private Double rebate = null;
+  @JsonProperty("receivedMarketValue")
+  private Double receivedMarketValue = null;
 
-    @JsonProperty("rebateNew")
-    private Double rebateNew = null;
+  @JsonProperty("receivedValue")
+  private Double receivedValue = null;
 
-    @JsonProperty("receivedMarketValue")
-    private Double receivedMarketValue = null;
+  @JsonProperty("repoPremium")
+  private Double repoPremium = null;
 
-    @JsonProperty("receivedValue")
-    private Double receivedValue = null;
+  @JsonProperty("repoPremiumNew")
+  private Double repoPremiumNew = null;
 
-    @JsonProperty("repoPremium")
-    private Double repoPremium = null;
+  @JsonProperty("repoRebate")
+  private Double repoRebate = null;
 
-    @JsonProperty("repoPremiumNew")
-    private Double repoPremiumNew = null;
+  @JsonProperty("repoRebateNew")
+  private Double repoRebateNew = null;
 
-    @JsonProperty("repoRebate")
-    private Double repoRebate = null;
+  @JsonProperty("resetDate")
+  private LocalDateTime resetDate = null;
 
-    @JsonProperty("repoRebateNew")
-    private Double repoRebateNew = null;
+  @JsonProperty("revRepoInterestExpense")
+  private Double revRepoInterestExpense = null;
 
-    @JsonProperty("resetDate")
-    private LocalDateTime resetDate = null;
+  @JsonProperty("revRepoInterestExpenseNew")
+  private Double revRepoInterestExpenseNew = null;
 
-    @JsonProperty("revRepoInterestExpense")
-    private Double revRepoInterestExpense = null;
+  @JsonProperty("revRepoInterestReceive")
+  private Double revRepoInterestReceive = null;
 
-    @JsonProperty("revRepoInterestExpenseNew")
-    private Double revRepoInterestExpenseNew = null;
+  @JsonProperty("revRepoInterestReceiveNew")
+  private Double revRepoInterestReceiveNew = null;
 
-    @JsonProperty("revRepoInterestReceive")
-    private Double revRepoInterestReceive = null;
+  @JsonProperty("securityId")
+  private Long securityId = null;
 
-    @JsonProperty("revRepoInterestReceiveNew")
-    private Double revRepoInterestReceiveNew = null;
+  @JsonProperty("securityNextResetDate")
+  private LocalDateTime securityNextResetDate = null;
 
-    @JsonProperty("securityId")
-    private Long securityId = null;
+  @JsonProperty("sedol")
+  private String sedol = null;
 
-    @JsonProperty("securityNextResetDate")
-    private LocalDateTime securityNextResetDate = null;
+  @JsonProperty("settleDate")
+  private LocalDateTime settleDate = null;
 
-    @JsonProperty("sedol")
-    private String sedol = null;
+  @JsonProperty("settledAccountingAmount")
+  private Double settledAccountingAmount = null;
 
-    @JsonProperty("settleDate")
-    private LocalDateTime settleDate = null;
+  @JsonProperty("settledAccountingAmountNew")
+  private Double settledAccountingAmountNew = null;
 
-    @JsonProperty("settledAccountingAmount")
-    private Double settledAccountingAmount = null;
+  @JsonProperty("settledBorrowPremium")
+  private Double settledBorrowPremium = null;
 
-    @JsonProperty("settledAccountingAmountNew")
-    private Double settledAccountingAmountNew = null;
+  @JsonProperty("settledBorrowPremiumNew")
+  private Double settledBorrowPremiumNew = null;
 
-    @JsonProperty("settledBorrowPremium")
-    private Double settledBorrowPremium = null;
+  @JsonProperty("settledBorrowRebate")
+  private Double settledBorrowRebate = null;
 
-    @JsonProperty("settledBorrowPremiumNew")
-    private Double settledBorrowPremiumNew = null;
+  @JsonProperty("settledBorrowRebateNew")
+  private Double settledBorrowRebateNew = null;
 
-    @JsonProperty("settledBorrowRebate")
-    private Double settledBorrowRebate = null;
+  @JsonProperty("settledInterest")
+  private Double settledInterest = null;
 
-    @JsonProperty("settledBorrowRebateNew")
-    private Double settledBorrowRebateNew = null;
+  @JsonProperty("settledInterestExpenseNew")
+  private Double settledInterestExpenseNew = null;
 
-    @JsonProperty("settledInterest")
-    private Double settledInterest = null;
+  @JsonProperty("settledInterestNew")
+  private Double settledInterestNew = null;
 
-    @JsonProperty("settledInterestExpenseNew")
-    private Double settledInterestExpenseNew = null;
+  @JsonProperty("settledLoanPremium")
+  private Double settledLoanPremium = null;
 
-    @JsonProperty("settledInterestNew")
-    private Double settledInterestNew = null;
+  @JsonProperty("settledLoanPremiumNew")
+  private Double settledLoanPremiumNew = null;
 
-    @JsonProperty("settledLoanPremium")
-    private Double settledLoanPremium = null;
+  @JsonProperty("settledPurchasedInterest")
+  private Double settledPurchasedInterest = null;
 
-    @JsonProperty("settledLoanPremiumNew")
-    private Double settledLoanPremiumNew = null;
+  @JsonProperty("settledPurchasedInterestNew")
+  private Double settledPurchasedInterestNew = null;
 
-    @JsonProperty("settledPurchasedInterest")
-    private Double settledPurchasedInterest = null;
+  @JsonProperty("settledQuantity")
+  private Double settledQuantity = null;
 
-    @JsonProperty("settledPurchasedInterestNew")
-    private Double settledPurchasedInterestNew = null;
+  @JsonProperty("settledRebate")
+  private Double settledRebate = null;
 
-    @JsonProperty("settledQuantity")
-    private Double settledQuantity = null;
+  @JsonProperty("settledRebateNew")
+  private Double settledRebateNew = null;
 
-    @JsonProperty("settledRebate")
-    private Double settledRebate = null;
+  @JsonProperty("settledRepoPremium")
+  private Double settledRepoPremium = null;
 
-    @JsonProperty("settledRebateNew")
-    private Double settledRebateNew = null;
+  @JsonProperty("settledRepoPremiumNew")
+  private Double settledRepoPremiumNew = null;
 
-    @JsonProperty("settledRepoPremium")
-    private Double settledRepoPremium = null;
+  @JsonProperty("settledRepoRebate")
+  private Double settledRepoRebate = null;
 
-    @JsonProperty("settledRepoPremiumNew")
-    private Double settledRepoPremiumNew = null;
+  @JsonProperty("settledRepoRebateNew")
+  private Double settledRepoRebateNew = null;
 
-    @JsonProperty("settledRepoRebate")
-    private Double settledRepoRebate = null;
+  @JsonProperty("settledRevRepoInterestExpense")
+  private Double settledRevRepoInterestExpense = null;
 
-    @JsonProperty("settledRepoRebateNew")
-    private Double settledRepoRebateNew = null;
+  @JsonProperty("settledRevRepoInterestExpenseNew")
+  private Double settledRevRepoInterestExpenseNew = null;
 
-    @JsonProperty("settledRevRepoInterestExpense")
-    private Double settledRevRepoInterestExpense = null;
+  @JsonProperty("settledRevRepoInterestReceive")
+  private Double settledRevRepoInterestReceive = null;
 
-    @JsonProperty("settledRevRepoInterestExpenseNew")
-    private Double settledRevRepoInterestExpenseNew = null;
+  @JsonProperty("settledRevRepoInterestReceiveNew")
+  private Double settledRevRepoInterestReceiveNew = null;
 
-    @JsonProperty("settledRevRepoInterestReceive")
-    private Double settledRevRepoInterestReceive = null;
+  @JsonProperty("shortName")
+  private String shortName = null;
 
-    @JsonProperty("settledRevRepoInterestReceiveNew")
-    private Double settledRevRepoInterestReceiveNew = null;
+  @JsonProperty("spread")
+  private Double spread = null;
 
-    @JsonProperty("shortName")
-    private String shortName = null;
+  @JsonProperty("status")
+  private String status = null;
 
-    @JsonProperty("spread")
-    private Double spread = null;
+  @JsonProperty("statusId")
+  private Integer statusId = null;
 
-    @JsonProperty("status")
-    private String status = null;
+  @JsonProperty("targetPrice")
+  private Double targetPrice = null;
 
-    @JsonProperty("statusId")
-    private Integer statusId = null;
+  @JsonProperty("taxWhRate")
+  private Double taxWhRate = null;
 
-    @JsonProperty("targetPrice")
-    private Double targetPrice = null;
+  @JsonProperty("term")
+  private String term = null;
 
-    @JsonProperty("taxWhRate")
-    private Double taxWhRate = null;
+  @JsonProperty("termId")
+  private Integer termId = null;
 
-    @JsonProperty("term")
-    private String term = null;
+  @JsonProperty("ticker")
+  private String ticker = null;
 
-    @JsonProperty("termId")
-    private Integer termId = null;
+  @JsonProperty("totalValue")
+  private Double totalValue = null;
 
-    @JsonProperty("ticker")
-    private String ticker = null;
+  @JsonProperty("tradeDate")
+  private LocalDateTime tradeDate = null;
 
-    @JsonProperty("totalValue")
-    private Double totalValue = null;
+  @JsonProperty("tradingDeskId")
+  private Integer tradingDeskId = null;
 
-    @JsonProperty("tradeDate")
-    private LocalDateTime tradeDate = null;
+  @JsonProperty("unamortizedDiscount")
+  private Double unamortizedDiscount = null;
 
-    @JsonProperty("tradingDeskId")
-    private Integer tradingDeskId = null;
+  @JsonProperty("unamortizedDiscountNew")
+  private Double unamortizedDiscountNew = null;
 
-    @JsonProperty("unamortizedDiscount")
-    private Double unamortizedDiscount = null;
+  @JsonProperty("unamortizedDp")
+  private Double unamortizedDp = null;
 
-    @JsonProperty("unamortizedDiscountNew")
-    private Double unamortizedDiscountNew = null;
+  @JsonProperty("unamortizedPremium")
+  private Double unamortizedPremium = null;
 
-    @JsonProperty("unamortizedDp")
-    private Double unamortizedDp = null;
+  @JsonProperty("unamortizedPremiumNew")
+  private Double unamortizedPremiumNew = null;
 
-    @JsonProperty("unamortizedPremium")
-    private Double unamortizedPremium = null;
+  @JsonProperty("userId")
+  private Long userId = null;
 
-    @JsonProperty("unamortizedPremiumNew")
-    private Double unamortizedPremiumNew = null;
+  @JsonProperty("wal")
+  private Double wal = null;
 
-    @JsonProperty("userId")
-    private Long userId = null;
+  @JsonProperty("yield")
+  private Double yield = null;
 
-    @JsonProperty("wal")
-    private Double wal = null;
+  public PositionHistoryDTO accountGroupDTO(AccountDTO accountGroupDTO) {
+    this.accountGroupDTO = accountGroupDTO;
+    return this;
+  }
 
-    @JsonProperty("yield")
-    private Double yield = null;
+   /**
+   * Get accountGroupDTO
+   * @return accountGroupDTO
+  **/
+  @ApiModelProperty(value = "")
+  public AccountDTO getAccountGroupDTO() {
+    return accountGroupDTO;
+  }
 
-    public PositionHistoryDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
-    }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public PositionHistoryDTO accountGroupDTO(AccountDTO accountGroupDTO) {
-        this.accountGroupDTO = accountGroupDTO;
-        return this;
-    }
-
-    /**
-     * Get accountGroupDTO
-     *
-     * @return accountGroupDTO
-     **/
-    @ApiModelProperty(value = "")
-    public AccountDTO getAccountGroupDTO() {
-        return accountGroupDTO;
-    }
-
-    public void setAccountGroupDTO(AccountDTO accountGroupDTO) {
-        this.accountGroupDTO = accountGroupDTO;
-    }
-
-    public PositionHistoryDTO accountId(Long accountId) {
-        this.accountId = accountId;
-        return this;
-    }
-
-    /**
-     * Get accountId
-     *
-     * @return accountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public PositionHistoryDTO accountId2(Long accountId2) {
-        this.accountId2 = accountId2;
-        return this;
-    }
-
-    /**
-     * Get accountId2
-     *
-     * @return accountId2
-     **/
-    @ApiModelProperty(value = "")
-    public Long getAccountId2() {
-        return accountId2;
-    }
-
-    public void setAccountId2(Long accountId2) {
-        this.accountId2 = accountId2;
-    }
-
-    public PositionHistoryDTO accountNo(String accountNo) {
-        this.accountNo = accountNo;
-        return this;
-    }
-
-    /**
-     * Get accountNo
-     *
-     * @return accountNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public PositionHistoryDTO accountNo2(String accountNo2) {
-        this.accountNo2 = accountNo2;
-        return this;
-    }
-
-    /**
-     * Get accountNo2
-     *
-     * @return accountNo2
-     **/
-    @ApiModelProperty(value = "")
-    public String getAccountNo2() {
-        return accountNo2;
-    }
-
-    public void setAccountNo2(String accountNo2) {
-        this.accountNo2 = accountNo2;
-    }
-
-    public PositionHistoryDTO accountingAmount(Double accountingAmount) {
-        this.accountingAmount = accountingAmount;
-        return this;
-    }
-
-    /**
-     * Get accountingAmount
-     *
-     * @return accountingAmount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAccountingAmount() {
-        return accountingAmount;
-    }
-
-    public void setAccountingAmount(Double accountingAmount) {
-        this.accountingAmount = accountingAmount;
-    }
-
-    public PositionHistoryDTO accountingAmountNew(Double accountingAmountNew) {
-        this.accountingAmountNew = accountingAmountNew;
-        return this;
-    }
-
-    /**
-     * Get accountingAmountNew
-     *
-     * @return accountingAmountNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAccountingAmountNew() {
-        return accountingAmountNew;
-    }
-
-    public void setAccountingAmountNew(Double accountingAmountNew) {
-        this.accountingAmountNew = accountingAmountNew;
-    }
-
-    public PositionHistoryDTO accruedInt(Double accruedInt) {
-        this.accruedInt = accruedInt;
-        return this;
-    }
-
-    /**
-     * Get accruedInt
-     *
-     * @return accruedInt
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAccruedInt() {
-        return accruedInt;
-    }
-
-    public void setAccruedInt(Double accruedInt) {
-        this.accruedInt = accruedInt;
-    }
-
-    public PositionHistoryDTO amortizedDp(Double amortizedDp) {
-        this.amortizedDp = amortizedDp;
-        return this;
-    }
-
-    /**
-     * Get amortizedDp
-     *
-     * @return amortizedDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAmortizedDp() {
-        return amortizedDp;
-    }
-
-    public void setAmortizedDp(Double amortizedDp) {
-        this.amortizedDp = amortizedDp;
-    }
-
-    public PositionHistoryDTO amount(Double amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return amount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public PositionHistoryDTO basisId(Integer basisId) {
-        this.basisId = basisId;
-        return this;
-    }
-
-    /**
-     * Get basisId
-     *
-     * @return basisId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getBasisId() {
-        return basisId;
-    }
-
-    public void setBasisId(Integer basisId) {
-        this.basisId = basisId;
-    }
-
-    public PositionHistoryDTO basisName(String basisName) {
-        this.basisName = basisName;
-        return this;
-    }
-
-    /**
-     * Get basisName
-     *
-     * @return basisName
-     **/
-    @ApiModelProperty(value = "")
-    public String getBasisName() {
-        return basisName;
-    }
-
-    public void setBasisName(String basisName) {
-        this.basisName = basisName;
-    }
-
-    public PositionHistoryDTO bookValue(Double bookValue) {
-        this.bookValue = bookValue;
-        return this;
-    }
-
-    /**
-     * Get bookValue
-     *
-     * @return bookValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBookValue() {
-        return bookValue;
-    }
-
-    public void setBookValue(Double bookValue) {
-        this.bookValue = bookValue;
-    }
-
-    public PositionHistoryDTO borrowPremium(Double borrowPremium) {
-        this.borrowPremium = borrowPremium;
-        return this;
-    }
-
-    /**
-     * Get borrowPremium
-     *
-     * @return borrowPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBorrowPremium() {
-        return borrowPremium;
-    }
-
-    public void setBorrowPremium(Double borrowPremium) {
-        this.borrowPremium = borrowPremium;
-    }
-
-    public PositionHistoryDTO borrowPremiumNew(Double borrowPremiumNew) {
-        this.borrowPremiumNew = borrowPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get borrowPremiumNew
-     *
-     * @return borrowPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBorrowPremiumNew() {
-        return borrowPremiumNew;
-    }
-
-    public void setBorrowPremiumNew(Double borrowPremiumNew) {
-        this.borrowPremiumNew = borrowPremiumNew;
-    }
-
-    public PositionHistoryDTO borrowRebate(Double borrowRebate) {
-        this.borrowRebate = borrowRebate;
-        return this;
-    }
-
-    /**
-     * Get borrowRebate
-     *
-     * @return borrowRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBorrowRebate() {
-        return borrowRebate;
-    }
-
-    public void setBorrowRebate(Double borrowRebate) {
-        this.borrowRebate = borrowRebate;
-    }
-
-    public PositionHistoryDTO borrowRebateNew(Double borrowRebateNew) {
-        this.borrowRebateNew = borrowRebateNew;
-        return this;
-    }
-
-    /**
-     * Get borrowRebateNew
-     *
-     * @return borrowRebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getBorrowRebateNew() {
-        return borrowRebateNew;
-    }
-
-    public void setBorrowRebateNew(Double borrowRebateNew) {
-        this.borrowRebateNew = borrowRebateNew;
-    }
-
-    public PositionHistoryDTO calendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-        return this;
-    }
-
-    /**
-     * Get calendarId
-     *
-     * @return calendarId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCalendarId() {
-        return calendarId;
-    }
-
-    public void setCalendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-    }
-
-    public PositionHistoryDTO cashBalanced(Long cashBalanced) {
-        this.cashBalanced = cashBalanced;
-        return this;
-    }
-
-    /**
-     * Get cashBalanced
-     *
-     * @return cashBalanced
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCashBalanced() {
-        return cashBalanced;
-    }
-
-    public void setCashBalanced(Long cashBalanced) {
-        this.cashBalanced = cashBalanced;
-    }
-
-    public PositionHistoryDTO category0Id(Integer category0Id) {
-        this.category0Id = category0Id;
-        return this;
-    }
-
-    /**
-     * Get category0Id
-     *
-     * @return category0Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory0Id() {
-        return category0Id;
-    }
-
-    public void setCategory0Id(Integer category0Id) {
-        this.category0Id = category0Id;
-    }
-
-    public PositionHistoryDTO category0Name(String category0Name) {
-        this.category0Name = category0Name;
-        return this;
-    }
-
-    /**
-     * Get category0Name
-     *
-     * @return category0Name
-     **/
-    @ApiModelProperty(value = "")
-    public String getCategory0Name() {
-        return category0Name;
-    }
-
-    public void setCategory0Name(String category0Name) {
-        this.category0Name = category0Name;
-    }
-
-    public PositionHistoryDTO category1Id(Integer category1Id) {
-        this.category1Id = category1Id;
-        return this;
-    }
-
-    /**
-     * Get category1Id
-     *
-     * @return category1Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory1Id() {
-        return category1Id;
-    }
-
-    public void setCategory1Id(Integer category1Id) {
-        this.category1Id = category1Id;
-    }
-
-    public PositionHistoryDTO category1Name(String category1Name) {
-        this.category1Name = category1Name;
-        return this;
-    }
-
-    /**
-     * Get category1Name
-     *
-     * @return category1Name
-     **/
-    @ApiModelProperty(value = "")
-    public String getCategory1Name() {
-        return category1Name;
-    }
-
-    public void setCategory1Name(String category1Name) {
-        this.category1Name = category1Name;
-    }
-
-    public PositionHistoryDTO category2Id(Integer category2Id) {
-        this.category2Id = category2Id;
-        return this;
-    }
-
-    /**
-     * Get category2Id
-     *
-     * @return category2Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory2Id() {
-        return category2Id;
-    }
-
-    public void setCategory2Id(Integer category2Id) {
-        this.category2Id = category2Id;
-    }
-
-    public PositionHistoryDTO category2Name(String category2Name) {
-        this.category2Name = category2Name;
-        return this;
-    }
-
-    /**
-     * Get category2Name
-     *
-     * @return category2Name
-     **/
-    @ApiModelProperty(value = "")
-    public String getCategory2Name() {
-        return category2Name;
-    }
-
-    public void setCategory2Name(String category2Name) {
-        this.category2Name = category2Name;
-    }
-
-    public PositionHistoryDTO category3Id(Integer category3Id) {
-        this.category3Id = category3Id;
-        return this;
-    }
-
-    /**
-     * Get category3Id
-     *
-     * @return category3Id
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategory3Id() {
-        return category3Id;
-    }
-
-    public void setCategory3Id(Integer category3Id) {
-        this.category3Id = category3Id;
-    }
-
-    public PositionHistoryDTO category3Name(String category3Name) {
-        this.category3Name = category3Name;
-        return this;
-    }
-
-    /**
-     * Get category3Name
-     *
-     * @return category3Name
-     **/
-    @ApiModelProperty(value = "")
-    public String getCategory3Name() {
-        return category3Name;
-    }
-
-    public void setCategory3Name(String category3Name) {
-        this.category3Name = category3Name;
-    }
-
-    public PositionHistoryDTO categoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-        return this;
-    }
-
-    /**
-     * Get categoryId
-     *
-     * @return categoryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(Integer categoryId) {
-        this.categoryId = categoryId;
-    }
-
-    public PositionHistoryDTO categoryName(String categoryName) {
-        this.categoryName = categoryName;
-        return this;
-    }
-
-    /**
-     * Get categoryName
-     *
-     * @return categoryName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCategoryName() {
-        return categoryName;
-    }
-
-    public void setCategoryName(String categoryName) {
-        this.categoryName = categoryName;
-    }
-
-    public PositionHistoryDTO cleanMarketValue(Double cleanMarketValue) {
-        this.cleanMarketValue = cleanMarketValue;
-        return this;
-    }
-
-    /**
-     * Get cleanMarketValue
-     *
-     * @return cleanMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCleanMarketValue() {
-        return cleanMarketValue;
-    }
-
-    public void setCleanMarketValue(Double cleanMarketValue) {
-        this.cleanMarketValue = cleanMarketValue;
-    }
-
-    public PositionHistoryDTO clientCategory(String clientCategory) {
-        this.clientCategory = clientCategory;
-        return this;
-    }
-
-    /**
-     * Get clientCategory
-     *
-     * @return clientCategory
-     **/
-    @ApiModelProperty(value = "")
-    public String getClientCategory() {
-        return clientCategory;
-    }
-
-    public void setClientCategory(String clientCategory) {
-        this.clientCategory = clientCategory;
-    }
-
-    public PositionHistoryDTO clientSecId(String clientSecId) {
-        this.clientSecId = clientSecId;
-        return this;
-    }
-
-    /**
-     * Get clientSecId
-     *
-     * @return clientSecId
-     **/
-    @ApiModelProperty(value = "")
-    public String getClientSecId() {
-        return clientSecId;
-    }
-
-    public void setClientSecId(String clientSecId) {
-        this.clientSecId = clientSecId;
-    }
-
-    public PositionHistoryDTO collateralAccountId(Long collateralAccountId) {
-        this.collateralAccountId = collateralAccountId;
-        return this;
-    }
-
-    /**
-     * Get collateralAccountId
-     *
-     * @return collateralAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCollateralAccountId() {
-        return collateralAccountId;
-    }
-
-    public void setCollateralAccountId(Long collateralAccountId) {
-        this.collateralAccountId = collateralAccountId;
-    }
-
-    public PositionHistoryDTO collateralAccountNo(String collateralAccountNo) {
-        this.collateralAccountNo = collateralAccountNo;
-        return this;
-    }
-
-    /**
-     * Get collateralAccountNo
-     *
-     * @return collateralAccountNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getCollateralAccountNo() {
-        return collateralAccountNo;
-    }
-
-    public void setCollateralAccountNo(String collateralAccountNo) {
-        this.collateralAccountNo = collateralAccountNo;
-    }
-
-    public PositionHistoryDTO collateralIndicator(Boolean collateralIndicator) {
-        this.collateralIndicator = collateralIndicator;
-        return this;
-    }
-
-    /**
-     * Get collateralIndicator
-     *
-     * @return collateralIndicator
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isCollateralIndicator() {
-        return collateralIndicator;
-    }
-
-    public void setCollateralIndicator(Boolean collateralIndicator) {
-        this.collateralIndicator = collateralIndicator;
-    }
-
-    public PositionHistoryDTO collateralType(String collateralType) {
-        this.collateralType = collateralType;
-        return this;
-    }
-
-    /**
-     * Get collateralType
-     *
-     * @return collateralType
-     **/
-    @ApiModelProperty(value = "")
-    public String getCollateralType() {
-        return collateralType;
-    }
-
-    public void setCollateralType(String collateralType) {
-        this.collateralType = collateralType;
-    }
-
-    public PositionHistoryDTO collateralTypeId(Integer collateralTypeId) {
-        this.collateralTypeId = collateralTypeId;
-        return this;
-    }
-
-    /**
-     * Get collateralTypeId
-     *
-     * @return collateralTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCollateralTypeId() {
-        return collateralTypeId;
-    }
-
-    public void setCollateralTypeId(Integer collateralTypeId) {
-        this.collateralTypeId = collateralTypeId;
-    }
-
-    public PositionHistoryDTO comments(String comments) {
-        this.comments = comments;
-        return this;
-    }
-
-    /**
-     * Get comments
-     *
-     * @return comments
-     **/
-    @ApiModelProperty(value = "")
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public PositionHistoryDTO cost(Double cost) {
-        this.cost = cost;
-        return this;
-    }
-
-    /**
-     * Get cost
-     *
-     * @return cost
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCost() {
-        return cost;
-    }
-
-    public void setCost(Double cost) {
-        this.cost = cost;
-    }
-
-    public PositionHistoryDTO counterpartyGroupAccountNo(String counterpartyGroupAccountNo) {
-        this.counterpartyGroupAccountNo = counterpartyGroupAccountNo;
-        return this;
-    }
-
-    /**
-     * Get counterpartyGroupAccountNo
-     *
-     * @return counterpartyGroupAccountNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyGroupAccountNo() {
-        return counterpartyGroupAccountNo;
-    }
-
-    public void setCounterpartyGroupAccountNo(String counterpartyGroupAccountNo) {
-        this.counterpartyGroupAccountNo = counterpartyGroupAccountNo;
-    }
-
-    public PositionHistoryDTO counterpartyGroupAccountNo2(String counterpartyGroupAccountNo2) {
-        this.counterpartyGroupAccountNo2 = counterpartyGroupAccountNo2;
-        return this;
-    }
-
-    /**
-     * Get counterpartyGroupAccountNo2
-     *
-     * @return counterpartyGroupAccountNo2
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyGroupAccountNo2() {
-        return counterpartyGroupAccountNo2;
-    }
-
-    public void setCounterpartyGroupAccountNo2(String counterpartyGroupAccountNo2) {
-        this.counterpartyGroupAccountNo2 = counterpartyGroupAccountNo2;
-    }
-
-    public PositionHistoryDTO counterpartyGroupName(String counterpartyGroupName) {
-        this.counterpartyGroupName = counterpartyGroupName;
-        return this;
-    }
-
-    /**
-     * Get counterpartyGroupName
-     *
-     * @return counterpartyGroupName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyGroupName() {
-        return counterpartyGroupName;
-    }
-
-    public void setCounterpartyGroupName(String counterpartyGroupName) {
-        this.counterpartyGroupName = counterpartyGroupName;
-    }
-
-    public PositionHistoryDTO counterpartyGroupdtcNo(String counterpartyGroupdtcNo) {
-        this.counterpartyGroupdtcNo = counterpartyGroupdtcNo;
-        return this;
-    }
-
-    /**
-     * Get counterpartyGroupdtcNo
-     *
-     * @return counterpartyGroupdtcNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyGroupdtcNo() {
-        return counterpartyGroupdtcNo;
-    }
-
-    public void setCounterpartyGroupdtcNo(String counterpartyGroupdtcNo) {
-        this.counterpartyGroupdtcNo = counterpartyGroupdtcNo;
-    }
-
-    public PositionHistoryDTO counterpartyId(Long counterpartyId) {
-        this.counterpartyId = counterpartyId;
-        return this;
-    }
-
-    /**
-     * Get counterpartyId
-     *
-     * @return counterpartyId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCounterpartyId() {
-        return counterpartyId;
-    }
-
-    public void setCounterpartyId(Long counterpartyId) {
-        this.counterpartyId = counterpartyId;
-    }
-
-    public PositionHistoryDTO counterpartyLegalName(String counterpartyLegalName) {
-        this.counterpartyLegalName = counterpartyLegalName;
-        return this;
-    }
-
-    /**
-     * Get counterpartyLegalName
-     *
-     * @return counterpartyLegalName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyLegalName() {
-        return counterpartyLegalName;
-    }
-
-    public void setCounterpartyLegalName(String counterpartyLegalName) {
-        this.counterpartyLegalName = counterpartyLegalName;
-    }
-
-    public PositionHistoryDTO counterpartyShortName(String counterpartyShortName) {
-        this.counterpartyShortName = counterpartyShortName;
-        return this;
-    }
-
-    /**
-     * Get counterpartyShortName
-     *
-     * @return counterpartyShortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCounterpartyShortName() {
-        return counterpartyShortName;
-    }
-
-    public void setCounterpartyShortName(String counterpartyShortName) {
-        this.counterpartyShortName = counterpartyShortName;
-    }
-
-    public PositionHistoryDTO countryId(Integer countryId) {
-        this.countryId = countryId;
-        return this;
-    }
-
-    /**
-     * Get countryId
-     *
-     * @return countryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
-    public PositionHistoryDTO currencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-        return this;
-    }
-
-    /**
-     * Get currencyId
-     *
-     * @return currencyId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-    }
-
-    public PositionHistoryDTO currencyKy(String currencyKy) {
-        this.currencyKy = currencyKy;
-        return this;
-    }
-
-    /**
-     * Get currencyKy
-     *
-     * @return currencyKy
-     **/
-    @ApiModelProperty(value = "")
-    public String getCurrencyKy() {
-        return currencyKy;
-    }
-
-    public void setCurrencyKy(String currencyKy) {
-        this.currencyKy = currencyKy;
-    }
-
-    public PositionHistoryDTO currentAmount(Double currentAmount) {
-        this.currentAmount = currentAmount;
-        return this;
-    }
-
-    /**
-     * Get currentAmount
-     *
-     * @return currentAmount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCurrentAmount() {
-        return currentAmount;
-    }
-
-    public void setCurrentAmount(Double currentAmount) {
-        this.currentAmount = currentAmount;
-    }
-
-    public PositionHistoryDTO currentPrice(Double currentPrice) {
-        this.currentPrice = currentPrice;
-        return this;
-    }
-
-    /**
-     * Get currentPrice
-     *
-     * @return currentPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCurrentPrice() {
-        return currentPrice;
-    }
-
-    public void setCurrentPrice(Double currentPrice) {
-        this.currentPrice = currentPrice;
-    }
-
-    public PositionHistoryDTO cusip(String cusip) {
-        this.cusip = cusip;
-        return this;
-    }
-
-    /**
-     * Get cusip
-     *
-     * @return cusip
-     **/
-    @ApiModelProperty(value = "")
-    public String getCusip() {
-        return cusip;
-    }
-
-    public void setCusip(String cusip) {
-        this.cusip = cusip;
-    }
-
-    public PositionHistoryDTO custodianBankShortName(String custodianBankShortName) {
-        this.custodianBankShortName = custodianBankShortName;
-        return this;
-    }
-
-    /**
-     * Get custodianBankShortName
-     *
-     * @return custodianBankShortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCustodianBankShortName() {
-        return custodianBankShortName;
-    }
-
-    public void setCustodianBankShortName(String custodianBankShortName) {
-        this.custodianBankShortName = custodianBankShortName;
-    }
-
-    public PositionHistoryDTO dailyAccrual(Double dailyAccrual) {
-        this.dailyAccrual = dailyAccrual;
-        return this;
-    }
-
-    /**
-     * Get dailyAccrual
-     *
-     * @return dailyAccrual
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDailyAccrual() {
-        return dailyAccrual;
-    }
-
-    public void setDailyAccrual(Double dailyAccrual) {
-        this.dailyAccrual = dailyAccrual;
-    }
-
-    public PositionHistoryDTO dailyDp(Double dailyDp) {
-        this.dailyDp = dailyDp;
-        return this;
-    }
-
-    /**
-     * Get dailyDp
-     *
-     * @return dailyDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDailyDp() {
-        return dailyDp;
-    }
-
-    public void setDailyDp(Double dailyDp) {
-        this.dailyDp = dailyDp;
-    }
-
-    public PositionHistoryDTO depoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-        return this;
-    }
-
-    /**
-     * Get depoGroup
-     *
-     * @return depoGroup
-     **/
-    @ApiModelProperty(value = "")
-    public String getDepoGroup() {
-        return depoGroup;
-    }
-
-    public void setDepoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-    }
-
-    public PositionHistoryDTO depoId(Integer depoId) {
-        this.depoId = depoId;
-        return this;
-    }
-
-    /**
-     * Get depoId
-     *
-     * @return depoId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getDepoId() {
-        return depoId;
-    }
-
-    public void setDepoId(Integer depoId) {
-        this.depoId = depoId;
-    }
-
-    public PositionHistoryDTO depoKy(String depoKy) {
-        this.depoKy = depoKy;
-        return this;
-    }
-
-    /**
-     * Get depoKy
-     *
-     * @return depoKy
-     **/
-    @ApiModelProperty(value = "")
-    public String getDepoKy() {
-        return depoKy;
-    }
-
-    public void setDepoKy(String depoKy) {
-        this.depoKy = depoKy;
-    }
-
-    public PositionHistoryDTO description(String description) {
-        this.description = description;
-        return this;
-    }
-
-    /**
-     * Get description
-     *
-     * @return description
-     **/
-    @ApiModelProperty(value = "")
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public PositionHistoryDTO dtc(Long dtc) {
-        this.dtc = dtc;
-        return this;
-    }
-
-    /**
-     * Get dtc
-     *
-     * @return dtc
-     **/
-    @ApiModelProperty(value = "")
-    public Long getDtc() {
-        return dtc;
-    }
-
-    public void setDtc(Long dtc) {
-        this.dtc = dtc;
-    }
-
-    public PositionHistoryDTO encumberedQuantity(Long encumberedQuantity) {
-        this.encumberedQuantity = encumberedQuantity;
-        return this;
-    }
-
-    /**
-     * Get encumberedQuantity
-     *
-     * @return encumberedQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Long getEncumberedQuantity() {
-        return encumberedQuantity;
-    }
-
-    public void setEncumberedQuantity(Long encumberedQuantity) {
-        this.encumberedQuantity = encumberedQuantity;
-    }
-
-    public PositionHistoryDTO endDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-        return this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return endDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public PositionHistoryDTO expMaturity(LocalDateTime expMaturity) {
-        this.expMaturity = expMaturity;
-        return this;
-    }
-
-    /**
-     * Get expMaturity
-     *
-     * @return expMaturity
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getExpMaturity() {
-        return expMaturity;
-    }
-
-    public void setExpMaturity(LocalDateTime expMaturity) {
-        this.expMaturity = expMaturity;
-    }
-
-    public PositionHistoryDTO exposureIndicator(Boolean exposureIndicator) {
-        this.exposureIndicator = exposureIndicator;
-        return this;
-    }
-
-    /**
-     * Get exposureIndicator
-     *
-     * @return exposureIndicator
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isExposureIndicator() {
-        return exposureIndicator;
-    }
-
-    public void setExposureIndicator(Boolean exposureIndicator) {
-        this.exposureIndicator = exposureIndicator;
-    }
-
-    public PositionHistoryDTO factor(Double factor) {
-        this.factor = factor;
-        return this;
-    }
-
-    /**
-     * Get factor
-     *
-     * @return factor
-     **/
-    @ApiModelProperty(value = "")
-    public Double getFactor() {
-        return factor;
-    }
-
-    public void setFactor(Double factor) {
-        this.factor = factor;
-    }
-
-    public PositionHistoryDTO fxRate(Double fxRate) {
-        this.fxRate = fxRate;
-        return this;
-    }
-
-    /**
-     * Get fxRate
-     *
-     * @return fxRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getFxRate() {
-        return fxRate;
-    }
-
-    public void setFxRate(Double fxRate) {
-        this.fxRate = fxRate;
-    }
-
-    public PositionHistoryDTO haircutPrice(Double haircutPrice) {
-        this.haircutPrice = haircutPrice;
-        return this;
-    }
-
-    /**
-     * Get haircutPrice
-     *
-     * @return haircutPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getHaircutPrice() {
-        return haircutPrice;
-    }
-
-    public void setHaircutPrice(Double haircutPrice) {
-        this.haircutPrice = haircutPrice;
-    }
-
-    public PositionHistoryDTO histType(String histType) {
-        this.histType = histType;
-        return this;
-    }
-
-    /**
-     * Get histType
-     *
-     * @return histType
-     **/
-    @ApiModelProperty(value = "")
-    public String getHistType() {
-        return histType;
-    }
-
-    public void setHistType(String histType) {
-        this.histType = histType;
-    }
-
-    public PositionHistoryDTO id(PositionHistoryKeyDTO id) {
-        this.id = id;
-        return this;
-    }
-
-    /**
-     * Get id
-     *
-     * @return id
-     **/
-    @ApiModelProperty(value = "")
-    public PositionHistoryKeyDTO getId() {
-        return id;
-    }
-
-    public void setId(PositionHistoryKeyDTO id) {
-        this.id = id;
-    }
-
-    public PositionHistoryDTO impairmentLossReserve(Double impairmentLossReserve) {
-        this.impairmentLossReserve = impairmentLossReserve;
-        return this;
-    }
-
-    /**
-     * Get impairmentLossReserve
-     *
-     * @return impairmentLossReserve
-     **/
-    @ApiModelProperty(value = "")
-    public Double getImpairmentLossReserve() {
-        return impairmentLossReserve;
-    }
-
-    public void setImpairmentLossReserve(Double impairmentLossReserve) {
-        this.impairmentLossReserve = impairmentLossReserve;
-    }
-
-    public PositionHistoryDTO impairmentLossReserveNew(Double impairmentLossReserveNew) {
-        this.impairmentLossReserveNew = impairmentLossReserveNew;
-        return this;
-    }
-
-    /**
-     * Get impairmentLossReserveNew
-     *
-     * @return impairmentLossReserveNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getImpairmentLossReserveNew() {
-        return impairmentLossReserveNew;
-    }
-
-    public void setImpairmentLossReserveNew(Double impairmentLossReserveNew) {
-        this.impairmentLossReserveNew = impairmentLossReserveNew;
-    }
-
-    public PositionHistoryDTO indexId(Long indexId) {
-        this.indexId = indexId;
-        return this;
-    }
-
-    /**
-     * Get indexId
-     *
-     * @return indexId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getIndexId() {
-        return indexId;
-    }
-
-    public void setIndexId(Long indexId) {
-        this.indexId = indexId;
-    }
-
-    public PositionHistoryDTO indexName(String indexName) {
-        this.indexName = indexName;
-        return this;
-    }
-
-    /**
-     * Get indexName
-     *
-     * @return indexName
-     **/
-    @ApiModelProperty(value = "")
-    public String getIndexName() {
-        return indexName;
-    }
-
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
-    }
-
-    public PositionHistoryDTO interest(Double interest) {
-        this.interest = interest;
-        return this;
-    }
-
-    /**
-     * Get interest
-     *
-     * @return interest
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInterest() {
-        return interest;
-    }
-
-    public void setInterest(Double interest) {
-        this.interest = interest;
-    }
-
-    public PositionHistoryDTO interestExpenseNew(Double interestExpenseNew) {
-        this.interestExpenseNew = interestExpenseNew;
-        return this;
-    }
-
-    /**
-     * Get interestExpenseNew
-     *
-     * @return interestExpenseNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInterestExpenseNew() {
-        return interestExpenseNew;
-    }
-
-    public void setInterestExpenseNew(Double interestExpenseNew) {
-        this.interestExpenseNew = interestExpenseNew;
-    }
-
-    public PositionHistoryDTO interestNew(Double interestNew) {
-        this.interestNew = interestNew;
-        return this;
-    }
-
-    /**
-     * Get interestNew
-     *
-     * @return interestNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInterestNew() {
-        return interestNew;
-    }
-
-    public void setInterestNew(Double interestNew) {
-        this.interestNew = interestNew;
-    }
-
-    public PositionHistoryDTO isAccounting(Boolean isAccounting) {
-        this.isAccounting = isAccounting;
-        return this;
-    }
-
-    /**
-     * Get isAccounting
-     *
-     * @return isAccounting
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsAccounting() {
-        return isAccounting;
-    }
-
-    public void setIsAccounting(Boolean isAccounting) {
-        this.isAccounting = isAccounting;
-    }
-
-    public PositionHistoryDTO isBorrow(Boolean isBorrow) {
-        this.isBorrow = isBorrow;
-        return this;
-    }
-
-    /**
-     * Get isBorrow
-     *
-     * @return isBorrow
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsBorrow() {
-        return isBorrow;
-    }
-
-    public void setIsBorrow(Boolean isBorrow) {
-        this.isBorrow = isBorrow;
-    }
-
-    public PositionHistoryDTO isCollateralPledged(Boolean isCollateralPledged) {
-        this.isCollateralPledged = isCollateralPledged;
-        return this;
-    }
-
-    /**
-     * Get isCollateralPledged
-     *
-     * @return isCollateralPledged
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsCollateralPledged() {
-        return isCollateralPledged;
-    }
-
-    public void setIsCollateralPledged(Boolean isCollateralPledged) {
-        this.isCollateralPledged = isCollateralPledged;
-    }
-
-    public PositionHistoryDTO isCollateralReceived(Boolean isCollateralReceived) {
-        this.isCollateralReceived = isCollateralReceived;
-        return this;
-    }
-
-    /**
-     * Get isCollateralReceived
-     *
-     * @return isCollateralReceived
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsCollateralReceived() {
-        return isCollateralReceived;
-    }
-
-    public void setIsCollateralReceived(Boolean isCollateralReceived) {
-        this.isCollateralReceived = isCollateralReceived;
-    }
-
-    public PositionHistoryDTO isInvestment(Boolean isInvestment) {
-        this.isInvestment = isInvestment;
-        return this;
-    }
-
-    /**
-     * Get isInvestment
-     *
-     * @return isInvestment
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsInvestment() {
-        return isInvestment;
-    }
-
-    public void setIsInvestment(Boolean isInvestment) {
-        this.isInvestment = isInvestment;
-    }
-
-    public PositionHistoryDTO isLoan(Boolean isLoan) {
-        this.isLoan = isLoan;
-        return this;
-    }
-
-    /**
-     * Get isLoan
-     *
-     * @return isLoan
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsLoan() {
-        return isLoan;
-    }
-
-    public void setIsLoan(Boolean isLoan) {
-        this.isLoan = isLoan;
-    }
-
-    public PositionHistoryDTO isPooled(Boolean isPooled) {
-        this.isPooled = isPooled;
-        return this;
-    }
-
-    /**
-     * Get isPooled
-     *
-     * @return isPooled
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsPooled() {
-        return isPooled;
-    }
-
-    public void setIsPooled(Boolean isPooled) {
-        this.isPooled = isPooled;
-    }
-
-    public PositionHistoryDTO isRepo(Boolean isRepo) {
-        this.isRepo = isRepo;
-        return this;
-    }
-
-    /**
-     * Get isRepo
-     *
-     * @return isRepo
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsRepo() {
-        return isRepo;
-    }
-
-    public void setIsRepo(Boolean isRepo) {
-        this.isRepo = isRepo;
-    }
-
-    public PositionHistoryDTO isReverseRepo(Boolean isReverseRepo) {
-        this.isReverseRepo = isReverseRepo;
-        return this;
-    }
-
-    /**
-     * Get isReverseRepo
-     *
-     * @return isReverseRepo
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsReverseRepo() {
-        return isReverseRepo;
-    }
-
-    public void setIsReverseRepo(Boolean isReverseRepo) {
-        this.isReverseRepo = isReverseRepo;
-    }
-
-    public PositionHistoryDTO isSubAccount(Boolean isSubAccount) {
-        this.isSubAccount = isSubAccount;
-        return this;
-    }
-
-    /**
-     * Get isSubAccount
-     *
-     * @return isSubAccount
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsSubAccount() {
-        return isSubAccount;
-    }
-
-    public void setIsSubAccount(Boolean isSubAccount) {
-        this.isSubAccount = isSubAccount;
-    }
-
-    public PositionHistoryDTO isin(String isin) {
-        this.isin = isin;
-        return this;
-    }
-
-    /**
-     * Get isin
-     *
-     * @return isin
-     **/
-    @ApiModelProperty(value = "")
-    public String getIsin() {
-        return isin;
-    }
-
-    public void setIsin(String isin) {
-        this.isin = isin;
-    }
-
-    public PositionHistoryDTO issuerId(Long issuerId) {
-        this.issuerId = issuerId;
-        return this;
-    }
-
-    /**
-     * Get issuerId
-     *
-     * @return issuerId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getIssuerId() {
-        return issuerId;
-    }
-
-    public void setIssuerId(Long issuerId) {
-        this.issuerId = issuerId;
-    }
-
-    public PositionHistoryDTO loanPremium(Double loanPremium) {
-        this.loanPremium = loanPremium;
-        return this;
-    }
-
-    /**
-     * Get loanPremium
-     *
-     * @return loanPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getLoanPremium() {
-        return loanPremium;
-    }
-
-    public void setLoanPremium(Double loanPremium) {
-        this.loanPremium = loanPremium;
-    }
-
-    public PositionHistoryDTO loanPremiumNew(Double loanPremiumNew) {
-        this.loanPremiumNew = loanPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get loanPremiumNew
-     *
-     * @return loanPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getLoanPremiumNew() {
-        return loanPremiumNew;
-    }
-
-    public void setLoanPremiumNew(Double loanPremiumNew) {
-        this.loanPremiumNew = loanPremiumNew;
-    }
-
-    public PositionHistoryDTO lookBack(Integer lookBack) {
-        this.lookBack = lookBack;
-        return this;
-    }
-
-    /**
-     * Get lookBack
-     *
-     * @return lookBack
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getLookBack() {
-        return lookBack;
-    }
-
-    public void setLookBack(Integer lookBack) {
-        this.lookBack = lookBack;
-    }
-
-    public PositionHistoryDTO marketPrice(Double marketPrice) {
-        this.marketPrice = marketPrice;
-        return this;
-    }
-
-    /**
-     * Get marketPrice
-     *
-     * @return marketPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getMarketPrice() {
-        return marketPrice;
-    }
-
-    public void setMarketPrice(Double marketPrice) {
-        this.marketPrice = marketPrice;
-    }
-
-    public PositionHistoryDTO marketValue(Double marketValue) {
-        this.marketValue = marketValue;
-        return this;
-    }
-
-    /**
-     * Get marketValue
-     *
-     * @return marketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getMarketValue() {
-        return marketValue;
-    }
-
-    public void setMarketValue(Double marketValue) {
-        this.marketValue = marketValue;
-    }
-
-    public PositionHistoryDTO navPrice(Double navPrice) {
-        this.navPrice = navPrice;
-        return this;
-    }
-
-    /**
-     * Get navPrice
-     *
-     * @return navPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNavPrice() {
-        return navPrice;
-    }
-
-    public void setNavPrice(Double navPrice) {
-        this.navPrice = navPrice;
-    }
-
-    public PositionHistoryDTO newAccruedInt(Double newAccruedInt) {
-        this.newAccruedInt = newAccruedInt;
-        return this;
-    }
-
-    /**
-     * Get newAccruedInt
-     *
-     * @return newAccruedInt
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewAccruedInt() {
-        return newAccruedInt;
-    }
-
-    public void setNewAccruedInt(Double newAccruedInt) {
-        this.newAccruedInt = newAccruedInt;
-    }
-
-    public PositionHistoryDTO newAmortizedDp(Double newAmortizedDp) {
-        this.newAmortizedDp = newAmortizedDp;
-        return this;
-    }
-
-    /**
-     * Get newAmortizedDp
-     *
-     * @return newAmortizedDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewAmortizedDp() {
-        return newAmortizedDp;
-    }
-
-    public void setNewAmortizedDp(Double newAmortizedDp) {
-        this.newAmortizedDp = newAmortizedDp;
-    }
-
-    public PositionHistoryDTO newAmount(Double newAmount) {
-        this.newAmount = newAmount;
-        return this;
-    }
-
-    /**
-     * Get newAmount
-     *
-     * @return newAmount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewAmount() {
-        return newAmount;
-    }
-
-    public void setNewAmount(Double newAmount) {
-        this.newAmount = newAmount;
-    }
-
-    public PositionHistoryDTO newBasisId(Integer newBasisId) {
-        this.newBasisId = newBasisId;
-        return this;
-    }
-
-    /**
-     * Get newBasisId
-     *
-     * @return newBasisId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewBasisId() {
-        return newBasisId;
-    }
-
-    public void setNewBasisId(Integer newBasisId) {
-        this.newBasisId = newBasisId;
-    }
-
-    public PositionHistoryDTO newBasisName(String newBasisName) {
-        this.newBasisName = newBasisName;
-        return this;
-    }
-
-    /**
-     * Get newBasisName
-     *
-     * @return newBasisName
-     **/
-    @ApiModelProperty(value = "")
-    public String getNewBasisName() {
-        return newBasisName;
-    }
-
-    public void setNewBasisName(String newBasisName) {
-        this.newBasisName = newBasisName;
-    }
-
-    public PositionHistoryDTO newBookValue(Double newBookValue) {
-        this.newBookValue = newBookValue;
-        return this;
-    }
-
-    /**
-     * Get newBookValue
-     *
-     * @return newBookValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewBookValue() {
-        return newBookValue;
-    }
-
-    public void setNewBookValue(Double newBookValue) {
-        this.newBookValue = newBookValue;
-    }
-
-    public PositionHistoryDTO newCleanMarketValue(Double newCleanMarketValue) {
-        this.newCleanMarketValue = newCleanMarketValue;
-        return this;
-    }
-
-    /**
-     * Get newCleanMarketValue
-     *
-     * @return newCleanMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewCleanMarketValue() {
-        return newCleanMarketValue;
-    }
-
-    public void setNewCleanMarketValue(Double newCleanMarketValue) {
-        this.newCleanMarketValue = newCleanMarketValue;
-    }
-
-    public PositionHistoryDTO newCollateralIndicator(Boolean newCollateralIndicator) {
-        this.newCollateralIndicator = newCollateralIndicator;
-        return this;
-    }
-
-    /**
-     * Get newCollateralIndicator
-     *
-     * @return newCollateralIndicator
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewCollateralIndicator() {
-        return newCollateralIndicator;
-    }
-
-    public void setNewCollateralIndicator(Boolean newCollateralIndicator) {
-        this.newCollateralIndicator = newCollateralIndicator;
-    }
-
-    public PositionHistoryDTO newCollateralTypeId(Integer newCollateralTypeId) {
-        this.newCollateralTypeId = newCollateralTypeId;
-        return this;
-    }
-
-    /**
-     * Get newCollateralTypeId
-     *
-     * @return newCollateralTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewCollateralTypeId() {
-        return newCollateralTypeId;
-    }
-
-    public void setNewCollateralTypeId(Integer newCollateralTypeId) {
-        this.newCollateralTypeId = newCollateralTypeId;
-    }
-
-    public PositionHistoryDTO newCost(Double newCost) {
-        this.newCost = newCost;
-        return this;
-    }
-
-    /**
-     * Get newCost
-     *
-     * @return newCost
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewCost() {
-        return newCost;
-    }
-
-    public void setNewCost(Double newCost) {
-        this.newCost = newCost;
-    }
-
-    public PositionHistoryDTO newDailyAccrual(Double newDailyAccrual) {
-        this.newDailyAccrual = newDailyAccrual;
-        return this;
-    }
-
-    /**
-     * Get newDailyAccrual
-     *
-     * @return newDailyAccrual
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewDailyAccrual() {
-        return newDailyAccrual;
-    }
-
-    public void setNewDailyAccrual(Double newDailyAccrual) {
-        this.newDailyAccrual = newDailyAccrual;
-    }
-
-    public PositionHistoryDTO newDailyDp(Double newDailyDp) {
-        this.newDailyDp = newDailyDp;
-        return this;
-    }
-
-    /**
-     * Get newDailyDp
-     *
-     * @return newDailyDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewDailyDp() {
-        return newDailyDp;
-    }
-
-    public void setNewDailyDp(Double newDailyDp) {
-        this.newDailyDp = newDailyDp;
-    }
-
-    public PositionHistoryDTO newEndDate(LocalDateTime newEndDate) {
-        this.newEndDate = newEndDate;
-        return this;
-    }
-
-    /**
-     * Get newEndDate
-     *
-     * @return newEndDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getNewEndDate() {
-        return newEndDate;
-    }
-
-    public void setNewEndDate(LocalDateTime newEndDate) {
-        this.newEndDate = newEndDate;
-    }
-
-    public PositionHistoryDTO newExposureIndicator(Boolean newExposureIndicator) {
-        this.newExposureIndicator = newExposureIndicator;
-        return this;
-    }
-
-    /**
-     * Get newExposureIndicator
-     *
-     * @return newExposureIndicator
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewExposureIndicator() {
-        return newExposureIndicator;
-    }
-
-    public void setNewExposureIndicator(Boolean newExposureIndicator) {
-        this.newExposureIndicator = newExposureIndicator;
-    }
-
-    public PositionHistoryDTO newFactor(Double newFactor) {
-        this.newFactor = newFactor;
-        return this;
-    }
-
-    /**
-     * Get newFactor
-     *
-     * @return newFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewFactor() {
-        return newFactor;
-    }
-
-    public void setNewFactor(Double newFactor) {
-        this.newFactor = newFactor;
-    }
-
-    public PositionHistoryDTO newHaircutPrice(Double newHaircutPrice) {
-        this.newHaircutPrice = newHaircutPrice;
-        return this;
-    }
-
-    /**
-     * Get newHaircutPrice
-     *
-     * @return newHaircutPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewHaircutPrice() {
-        return newHaircutPrice;
-    }
-
-    public void setNewHaircutPrice(Double newHaircutPrice) {
-        this.newHaircutPrice = newHaircutPrice;
-    }
-
-    public PositionHistoryDTO newIndexId(Long newIndexId) {
-        this.newIndexId = newIndexId;
-        return this;
-    }
-
-    /**
-     * Get newIndexId
-     *
-     * @return newIndexId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getNewIndexId() {
-        return newIndexId;
-    }
-
-    public void setNewIndexId(Long newIndexId) {
-        this.newIndexId = newIndexId;
-    }
-
-    public PositionHistoryDTO newIndexName(String newIndexName) {
-        this.newIndexName = newIndexName;
-        return this;
-    }
-
-    /**
-     * Get newIndexName
-     *
-     * @return newIndexName
-     **/
-    @ApiModelProperty(value = "")
-    public String getNewIndexName() {
-        return newIndexName;
-    }
-
-    public void setNewIndexName(String newIndexName) {
-        this.newIndexName = newIndexName;
-    }
-
-    public PositionHistoryDTO newIsAccounting(Boolean newIsAccounting) {
-        this.newIsAccounting = newIsAccounting;
-        return this;
-    }
-
-    /**
-     * Get newIsAccounting
-     *
-     * @return newIsAccounting
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsAccounting() {
-        return newIsAccounting;
-    }
-
-    public void setNewIsAccounting(Boolean newIsAccounting) {
-        this.newIsAccounting = newIsAccounting;
-    }
-
-    public PositionHistoryDTO newIsBorrow(Boolean newIsBorrow) {
-        this.newIsBorrow = newIsBorrow;
-        return this;
-    }
-
-    /**
-     * Get newIsBorrow
-     *
-     * @return newIsBorrow
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsBorrow() {
-        return newIsBorrow;
-    }
-
-    public void setNewIsBorrow(Boolean newIsBorrow) {
-        this.newIsBorrow = newIsBorrow;
-    }
-
-    public PositionHistoryDTO newIsCollateralPledged(Boolean newIsCollateralPledged) {
-        this.newIsCollateralPledged = newIsCollateralPledged;
-        return this;
-    }
-
-    /**
-     * Get newIsCollateralPledged
-     *
-     * @return newIsCollateralPledged
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsCollateralPledged() {
-        return newIsCollateralPledged;
-    }
-
-    public void setNewIsCollateralPledged(Boolean newIsCollateralPledged) {
-        this.newIsCollateralPledged = newIsCollateralPledged;
-    }
-
-    public PositionHistoryDTO newIsCollateralReceived(Boolean newIsCollateralReceived) {
-        this.newIsCollateralReceived = newIsCollateralReceived;
-        return this;
-    }
-
-    /**
-     * Get newIsCollateralReceived
-     *
-     * @return newIsCollateralReceived
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsCollateralReceived() {
-        return newIsCollateralReceived;
-    }
-
-    public void setNewIsCollateralReceived(Boolean newIsCollateralReceived) {
-        this.newIsCollateralReceived = newIsCollateralReceived;
-    }
-
-    public PositionHistoryDTO newIsInvestment(Boolean newIsInvestment) {
-        this.newIsInvestment = newIsInvestment;
-        return this;
-    }
-
-    /**
-     * Get newIsInvestment
-     *
-     * @return newIsInvestment
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsInvestment() {
-        return newIsInvestment;
-    }
-
-    public void setNewIsInvestment(Boolean newIsInvestment) {
-        this.newIsInvestment = newIsInvestment;
-    }
-
-    public PositionHistoryDTO newIsLoan(Boolean newIsLoan) {
-        this.newIsLoan = newIsLoan;
-        return this;
-    }
-
-    /**
-     * Get newIsLoan
-     *
-     * @return newIsLoan
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsLoan() {
-        return newIsLoan;
-    }
-
-    public void setNewIsLoan(Boolean newIsLoan) {
-        this.newIsLoan = newIsLoan;
-    }
-
-    public PositionHistoryDTO newIsRepo(Boolean newIsRepo) {
-        this.newIsRepo = newIsRepo;
-        return this;
-    }
-
-    /**
-     * Get newIsRepo
-     *
-     * @return newIsRepo
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsRepo() {
-        return newIsRepo;
-    }
-
-    public void setNewIsRepo(Boolean newIsRepo) {
-        this.newIsRepo = newIsRepo;
-    }
-
-    public PositionHistoryDTO newIsReverseRepo(Boolean newIsReverseRepo) {
-        this.newIsReverseRepo = newIsReverseRepo;
-        return this;
-    }
-
-    /**
-     * Get newIsReverseRepo
-     *
-     * @return newIsReverseRepo
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isNewIsReverseRepo() {
-        return newIsReverseRepo;
-    }
-
-    public void setNewIsReverseRepo(Boolean newIsReverseRepo) {
-        this.newIsReverseRepo = newIsReverseRepo;
-    }
-
-    public PositionHistoryDTO newLookBack(Integer newLookBack) {
-        this.newLookBack = newLookBack;
-        return this;
-    }
-
-    /**
-     * Get newLookBack
-     *
-     * @return newLookBack
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewLookBack() {
-        return newLookBack;
-    }
-
-    public void setNewLookBack(Integer newLookBack) {
-        this.newLookBack = newLookBack;
-    }
-
-    public PositionHistoryDTO newMarketPrice(Double newMarketPrice) {
-        this.newMarketPrice = newMarketPrice;
-        return this;
-    }
-
-    /**
-     * Get newMarketPrice
-     *
-     * @return newMarketPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewMarketPrice() {
-        return newMarketPrice;
-    }
-
-    public void setNewMarketPrice(Double newMarketPrice) {
-        this.newMarketPrice = newMarketPrice;
-    }
-
-    public PositionHistoryDTO newMarketValue(Double newMarketValue) {
-        this.newMarketValue = newMarketValue;
-        return this;
-    }
-
-    /**
-     * Get newMarketValue
-     *
-     * @return newMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewMarketValue() {
-        return newMarketValue;
-    }
-
-    public void setNewMarketValue(Double newMarketValue) {
-        this.newMarketValue = newMarketValue;
-    }
-
-    public PositionHistoryDTO newParentPositionTypeId(Integer newParentPositionTypeId) {
-        this.newParentPositionTypeId = newParentPositionTypeId;
-        return this;
-    }
-
-    /**
-     * Get newParentPositionTypeId
-     *
-     * @return newParentPositionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewParentPositionTypeId() {
-        return newParentPositionTypeId;
-    }
-
-    public void setNewParentPositionTypeId(Integer newParentPositionTypeId) {
-        this.newParentPositionTypeId = newParentPositionTypeId;
-    }
-
-    public PositionHistoryDTO newPledgedMarketValue(Double newPledgedMarketValue) {
-        this.newPledgedMarketValue = newPledgedMarketValue;
-        return this;
-    }
-
-    /**
-     * Get newPledgedMarketValue
-     *
-     * @return newPledgedMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewPledgedMarketValue() {
-        return newPledgedMarketValue;
-    }
-
-    public void setNewPledgedMarketValue(Double newPledgedMarketValue) {
-        this.newPledgedMarketValue = newPledgedMarketValue;
-    }
-
-    public PositionHistoryDTO newPledgedValue(Double newPledgedValue) {
-        this.newPledgedValue = newPledgedValue;
-        return this;
-    }
-
-    /**
-     * Get newPledgedValue
-     *
-     * @return newPledgedValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewPledgedValue() {
-        return newPledgedValue;
-    }
-
-    public void setNewPledgedValue(Double newPledgedValue) {
-        this.newPledgedValue = newPledgedValue;
-    }
-
-    public PositionHistoryDTO newPositionType(String newPositionType) {
-        this.newPositionType = newPositionType;
-        return this;
-    }
-
-    /**
-     * Get newPositionType
-     *
-     * @return newPositionType
-     **/
-    @ApiModelProperty(value = "")
-    public String getNewPositionType() {
-        return newPositionType;
-    }
-
-    public void setNewPositionType(String newPositionType) {
-        this.newPositionType = newPositionType;
-    }
-
-    public PositionHistoryDTO newPositionTypeId(Integer newPositionTypeId) {
-        this.newPositionTypeId = newPositionTypeId;
-        return this;
-    }
-
-    /**
-     * Get newPositionTypeId
-     *
-     * @return newPositionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewPositionTypeId() {
-        return newPositionTypeId;
-    }
-
-    public void setNewPositionTypeId(Integer newPositionTypeId) {
-        this.newPositionTypeId = newPositionTypeId;
-    }
-
-    public PositionHistoryDTO newPrice(Double newPrice) {
-        this.newPrice = newPrice;
-        return this;
-    }
-
-    /**
-     * Get newPrice
-     *
-     * @return newPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewPrice() {
-        return newPrice;
-    }
-
-    public void setNewPrice(Double newPrice) {
-        this.newPrice = newPrice;
-    }
-
-    public PositionHistoryDTO newQuantity(Double newQuantity) {
-        this.newQuantity = newQuantity;
-        return this;
-    }
-
-    /**
-     * Get newQuantity
-     *
-     * @return newQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewQuantity() {
-        return newQuantity;
-    }
-
-    public void setNewQuantity(Double newQuantity) {
-        this.newQuantity = newQuantity;
-    }
-
-    public PositionHistoryDTO newRate(Double newRate) {
-        this.newRate = newRate;
-        return this;
-    }
-
-    /**
-     * Get newRate
-     *
-     * @return newRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewRate() {
-        return newRate;
-    }
-
-    public void setNewRate(Double newRate) {
-        this.newRate = newRate;
-    }
-
-    public PositionHistoryDTO newReceivedMarketValue(Double newReceivedMarketValue) {
-        this.newReceivedMarketValue = newReceivedMarketValue;
-        return this;
-    }
-
-    /**
-     * Get newReceivedMarketValue
-     *
-     * @return newReceivedMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewReceivedMarketValue() {
-        return newReceivedMarketValue;
-    }
-
-    public void setNewReceivedMarketValue(Double newReceivedMarketValue) {
-        this.newReceivedMarketValue = newReceivedMarketValue;
-    }
-
-    public PositionHistoryDTO newReceivedValue(Double newReceivedValue) {
-        this.newReceivedValue = newReceivedValue;
-        return this;
-    }
-
-    /**
-     * Get newReceivedValue
-     *
-     * @return newReceivedValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewReceivedValue() {
-        return newReceivedValue;
-    }
-
-    public void setNewReceivedValue(Double newReceivedValue) {
-        this.newReceivedValue = newReceivedValue;
-    }
-
-    public PositionHistoryDTO newResetDate(LocalDateTime newResetDate) {
-        this.newResetDate = newResetDate;
-        return this;
-    }
-
-    /**
-     * Get newResetDate
-     *
-     * @return newResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getNewResetDate() {
-        return newResetDate;
-    }
-
-    public void setNewResetDate(LocalDateTime newResetDate) {
-        this.newResetDate = newResetDate;
-    }
-
-    public PositionHistoryDTO newSettledQuantity(Double newSettledQuantity) {
-        this.newSettledQuantity = newSettledQuantity;
-        return this;
-    }
-
-    /**
-     * Get newSettledQuantity
-     *
-     * @return newSettledQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewSettledQuantity() {
-        return newSettledQuantity;
-    }
-
-    public void setNewSettledQuantity(Double newSettledQuantity) {
-        this.newSettledQuantity = newSettledQuantity;
-    }
-
-    public PositionHistoryDTO newSpread(Double newSpread) {
-        this.newSpread = newSpread;
-        return this;
-    }
-
-    /**
-     * Get newSpread
-     *
-     * @return newSpread
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewSpread() {
-        return newSpread;
-    }
-
-    public void setNewSpread(Double newSpread) {
-        this.newSpread = newSpread;
-    }
-
-    public PositionHistoryDTO newStatus(String newStatus) {
-        this.newStatus = newStatus;
-        return this;
-    }
-
-    /**
-     * Get newStatus
-     *
-     * @return newStatus
-     **/
-    @ApiModelProperty(value = "")
-    public String getNewStatus() {
-        return newStatus;
-    }
-
-    public void setNewStatus(String newStatus) {
-        this.newStatus = newStatus;
-    }
-
-    public PositionHistoryDTO newStatusId(Integer newStatusId) {
-        this.newStatusId = newStatusId;
-        return this;
-    }
-
-    /**
-     * Get newStatusId
-     *
-     * @return newStatusId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewStatusId() {
-        return newStatusId;
-    }
-
-    public void setNewStatusId(Integer newStatusId) {
-        this.newStatusId = newStatusId;
-    }
-
-    public PositionHistoryDTO newTargetPrice(Double newTargetPrice) {
-        this.newTargetPrice = newTargetPrice;
-        return this;
-    }
-
-    /**
-     * Get newTargetPrice
-     *
-     * @return newTargetPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewTargetPrice() {
-        return newTargetPrice;
-    }
-
-    public void setNewTargetPrice(Double newTargetPrice) {
-        this.newTargetPrice = newTargetPrice;
-    }
-
-    public PositionHistoryDTO newTerm(String newTerm) {
-        this.newTerm = newTerm;
-        return this;
-    }
-
-    /**
-     * Get newTerm
-     *
-     * @return newTerm
-     **/
-    @ApiModelProperty(value = "")
-    public String getNewTerm() {
-        return newTerm;
-    }
-
-    public void setNewTerm(String newTerm) {
-        this.newTerm = newTerm;
-    }
-
-    public PositionHistoryDTO newTermId(Integer newTermId) {
-        this.newTermId = newTermId;
-        return this;
-    }
-
-    /**
-     * Get newTermId
-     *
-     * @return newTermId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getNewTermId() {
-        return newTermId;
-    }
-
-    public void setNewTermId(Integer newTermId) {
-        this.newTermId = newTermId;
-    }
-
-    public PositionHistoryDTO newTotalValue(Double newTotalValue) {
-        this.newTotalValue = newTotalValue;
-        return this;
-    }
-
-    /**
-     * Get newTotalValue
-     *
-     * @return newTotalValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewTotalValue() {
-        return newTotalValue;
-    }
-
-    public void setNewTotalValue(Double newTotalValue) {
-        this.newTotalValue = newTotalValue;
-    }
-
-    public PositionHistoryDTO newUnamortizedDp(Double newUnamortizedDp) {
-        this.newUnamortizedDp = newUnamortizedDp;
-        return this;
-    }
-
-    /**
-     * Get newUnamortizedDp
-     *
-     * @return newUnamortizedDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewUnamortizedDp() {
-        return newUnamortizedDp;
-    }
-
-    public void setNewUnamortizedDp(Double newUnamortizedDp) {
-        this.newUnamortizedDp = newUnamortizedDp;
-    }
-
-    public PositionHistoryDTO newYield(Double newYield) {
-        this.newYield = newYield;
-        return this;
-    }
-
-    /**
-     * Get newYield
-     *
-     * @return newYield
-     **/
-    @ApiModelProperty(value = "")
-    public Double getNewYield() {
-        return newYield;
-    }
-
-    public void setNewYield(Double newYield) {
-        this.newYield = newYield;
-    }
-
-    public PositionHistoryDTO outstandingPremium(Double outstandingPremium) {
-        this.outstandingPremium = outstandingPremium;
-        return this;
-    }
-
-    /**
-     * Get outstandingPremium
-     *
-     * @return outstandingPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getOutstandingPremium() {
-        return outstandingPremium;
-    }
-
-    public void setOutstandingPremium(Double outstandingPremium) {
-        this.outstandingPremium = outstandingPremium;
-    }
-
-    public PositionHistoryDTO outstandingRebate(Double outstandingRebate) {
-        this.outstandingRebate = outstandingRebate;
-        return this;
-    }
-
-    /**
-     * Get outstandingRebate
-     *
-     * @return outstandingRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getOutstandingRebate() {
-        return outstandingRebate;
-    }
-
-    public void setOutstandingRebate(Double outstandingRebate) {
-        this.outstandingRebate = outstandingRebate;
-    }
-
-    public PositionHistoryDTO parentPositionTypeId(Integer parentPositionTypeId) {
-        this.parentPositionTypeId = parentPositionTypeId;
-        return this;
-    }
-
-    /**
-     * Get parentPositionTypeId
-     *
-     * @return parentPositionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getParentPositionTypeId() {
-        return parentPositionTypeId;
-    }
-
-    public void setParentPositionTypeId(Integer parentPositionTypeId) {
-        this.parentPositionTypeId = parentPositionTypeId;
-    }
-
-    public PositionHistoryDTO pledgedMarketValue(Double pledgedMarketValue) {
-        this.pledgedMarketValue = pledgedMarketValue;
-        return this;
-    }
-
-    /**
-     * Get pledgedMarketValue
-     *
-     * @return pledgedMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPledgedMarketValue() {
-        return pledgedMarketValue;
-    }
-
-    public void setPledgedMarketValue(Double pledgedMarketValue) {
-        this.pledgedMarketValue = pledgedMarketValue;
-    }
-
-    public PositionHistoryDTO pledgedValue(Double pledgedValue) {
-        this.pledgedValue = pledgedValue;
-        return this;
-    }
-
-    /**
-     * Get pledgedValue
-     *
-     * @return pledgedValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPledgedValue() {
-        return pledgedValue;
-    }
-
-    public void setPledgedValue(Double pledgedValue) {
-        this.pledgedValue = pledgedValue;
-    }
-
-    public PositionHistoryDTO poolPositionId(Long poolPositionId) {
-        this.poolPositionId = poolPositionId;
-        return this;
-    }
-
-    /**
-     * Get poolPositionId
-     *
-     * @return poolPositionId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getPoolPositionId() {
-        return poolPositionId;
-    }
-
-    public void setPoolPositionId(Long poolPositionId) {
-        this.poolPositionId = poolPositionId;
-    }
-
-    public PositionHistoryDTO positionRef(String positionRef) {
-        this.positionRef = positionRef;
-        return this;
-    }
-
-    /**
-     * Get positionRef
-     *
-     * @return positionRef
-     **/
-    @ApiModelProperty(value = "")
-    public String getPositionRef() {
-        return positionRef;
-    }
-
-    public void setPositionRef(String positionRef) {
-        this.positionRef = positionRef;
-    }
-
-    public PositionHistoryDTO positionType(String positionType) {
-        this.positionType = positionType;
-        return this;
-    }
-
-    /**
-     * Get positionType
-     *
-     * @return positionType
-     **/
-    @ApiModelProperty(value = "")
-    public String getPositionType() {
-        return positionType;
-    }
-
-    public void setPositionType(String positionType) {
-        this.positionType = positionType;
-    }
-
-    public PositionHistoryDTO positionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-        return this;
-    }
-
-    /**
-     * Get positionTypeId
-     *
-     * @return positionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPositionTypeId() {
-        return positionTypeId;
-    }
-
-    public void setPositionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-    }
-
-    public PositionHistoryDTO price(Double price) {
-        this.price = price;
-        return this;
-    }
-
-    /**
-     * Get price
-     *
-     * @return price
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public PositionHistoryDTO priceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-        return this;
-    }
-
-    /**
-     * Get priceFactor
-     *
-     * @return priceFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceFactor() {
-        return priceFactor;
-    }
-
-    public void setPriceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-    }
-
-    public PositionHistoryDTO primaryId(String primaryId) {
-        this.primaryId = primaryId;
-        return this;
-    }
-
-    /**
-     * Get primaryId
-     *
-     * @return primaryId
-     **/
-    @ApiModelProperty(value = "")
-    public String getPrimaryId() {
-        return primaryId;
-    }
-
-    public void setPrimaryId(String primaryId) {
-        this.primaryId = primaryId;
-    }
-
-    public PositionHistoryDTO primaryIdType(String primaryIdType) {
-        this.primaryIdType = primaryIdType;
-        return this;
-    }
-
-    /**
-     * Get primaryIdType
-     *
-     * @return primaryIdType
-     **/
-    @ApiModelProperty(value = "")
-    public String getPrimaryIdType() {
-        return primaryIdType;
-    }
-
-    public void setPrimaryIdType(String primaryIdType) {
-        this.primaryIdType = primaryIdType;
-    }
-
-    public PositionHistoryDTO principalOrInterest(Character principalOrInterest) {
-        this.principalOrInterest = principalOrInterest;
-        return this;
-    }
-
-    /**
-     * Get principalOrInterest
-     *
-     * @return principalOrInterest
-     **/
-    @ApiModelProperty(value = "")
-    public Character getPrincipalOrInterest() {
-        return principalOrInterest;
-    }
-
-    public void setPrincipalOrInterest(Character principalOrInterest) {
-        this.principalOrInterest = principalOrInterest;
-    }
-
-    public PositionHistoryDTO purchasedInterest(Double purchasedInterest) {
-        this.purchasedInterest = purchasedInterest;
-        return this;
-    }
-
-    /**
-     * Get purchasedInterest
-     *
-     * @return purchasedInterest
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPurchasedInterest() {
-        return purchasedInterest;
-    }
-
-    public void setPurchasedInterest(Double purchasedInterest) {
-        this.purchasedInterest = purchasedInterest;
-    }
-
-    public PositionHistoryDTO purchasedInterestNew(Double purchasedInterestNew) {
-        this.purchasedInterestNew = purchasedInterestNew;
-        return this;
-    }
-
-    /**
-     * Get purchasedInterestNew
-     *
-     * @return purchasedInterestNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPurchasedInterestNew() {
-        return purchasedInterestNew;
-    }
-
-    public void setPurchasedInterestNew(Double purchasedInterestNew) {
-        this.purchasedInterestNew = purchasedInterestNew;
-    }
-
-    public PositionHistoryDTO quantity(Double quantity) {
-        this.quantity = quantity;
-        return this;
-    }
-
-    /**
-     * Get quantity
-     *
-     * @return quantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-
-    public PositionHistoryDTO quickCode(String quickCode) {
-        this.quickCode = quickCode;
-        return this;
-    }
-
-    /**
-     * Get quickCode
-     *
-     * @return quickCode
-     **/
-    @ApiModelProperty(value = "")
-    public String getQuickCode() {
-        return quickCode;
-    }
-
-    public void setQuickCode(String quickCode) {
-        this.quickCode = quickCode;
-    }
-
-    public PositionHistoryDTO rate(Double rate) {
-        this.rate = rate;
-        return this;
-    }
-
-    /**
-     * Get rate
-     *
-     * @return rate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
-
-    public PositionHistoryDTO rebate(Double rebate) {
-        this.rebate = rebate;
-        return this;
-    }
-
-    /**
-     * Get rebate
-     *
-     * @return rebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebate() {
-        return rebate;
-    }
-
-    public void setRebate(Double rebate) {
-        this.rebate = rebate;
-    }
-
-    public PositionHistoryDTO rebateNew(Double rebateNew) {
-        this.rebateNew = rebateNew;
-        return this;
-    }
-
-    /**
-     * Get rebateNew
-     *
-     * @return rebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebateNew() {
-        return rebateNew;
-    }
-
-    public void setRebateNew(Double rebateNew) {
-        this.rebateNew = rebateNew;
-    }
-
-    public PositionHistoryDTO receivedMarketValue(Double receivedMarketValue) {
-        this.receivedMarketValue = receivedMarketValue;
-        return this;
-    }
-
-    /**
-     * Get receivedMarketValue
-     *
-     * @return receivedMarketValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getReceivedMarketValue() {
-        return receivedMarketValue;
-    }
-
-    public void setReceivedMarketValue(Double receivedMarketValue) {
-        this.receivedMarketValue = receivedMarketValue;
-    }
-
-    public PositionHistoryDTO receivedValue(Double receivedValue) {
-        this.receivedValue = receivedValue;
-        return this;
-    }
-
-    /**
-     * Get receivedValue
-     *
-     * @return receivedValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getReceivedValue() {
-        return receivedValue;
-    }
-
-    public void setReceivedValue(Double receivedValue) {
-        this.receivedValue = receivedValue;
-    }
-
-    public PositionHistoryDTO repoPremium(Double repoPremium) {
-        this.repoPremium = repoPremium;
-        return this;
-    }
-
-    /**
-     * Get repoPremium
-     *
-     * @return repoPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRepoPremium() {
-        return repoPremium;
-    }
-
-    public void setRepoPremium(Double repoPremium) {
-        this.repoPremium = repoPremium;
-    }
-
-    public PositionHistoryDTO repoPremiumNew(Double repoPremiumNew) {
-        this.repoPremiumNew = repoPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get repoPremiumNew
-     *
-     * @return repoPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRepoPremiumNew() {
-        return repoPremiumNew;
-    }
-
-    public void setRepoPremiumNew(Double repoPremiumNew) {
-        this.repoPremiumNew = repoPremiumNew;
-    }
-
-    public PositionHistoryDTO repoRebate(Double repoRebate) {
-        this.repoRebate = repoRebate;
-        return this;
-    }
-
-    /**
-     * Get repoRebate
-     *
-     * @return repoRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRepoRebate() {
-        return repoRebate;
-    }
-
-    public void setRepoRebate(Double repoRebate) {
-        this.repoRebate = repoRebate;
-    }
+  public void setAccountGroupDTO(AccountDTO accountGroupDTO) {
+    this.accountGroupDTO = accountGroupDTO;
+  }
 
-    public PositionHistoryDTO repoRebateNew(Double repoRebateNew) {
-        this.repoRebateNew = repoRebateNew;
-        return this;
-    }
-
-    /**
-     * Get repoRebateNew
-     *
-     * @return repoRebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRepoRebateNew() {
-        return repoRebateNew;
-    }
-
-    public void setRepoRebateNew(Double repoRebateNew) {
-        this.repoRebateNew = repoRebateNew;
-    }
-
-    public PositionHistoryDTO resetDate(LocalDateTime resetDate) {
-        this.resetDate = resetDate;
-        return this;
-    }
-
-    /**
-     * Get resetDate
-     *
-     * @return resetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getResetDate() {
-        return resetDate;
-    }
-
-    public void setResetDate(LocalDateTime resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public PositionHistoryDTO revRepoInterestExpense(Double revRepoInterestExpense) {
-        this.revRepoInterestExpense = revRepoInterestExpense;
-        return this;
-    }
-
-    /**
-     * Get revRepoInterestExpense
-     *
-     * @return revRepoInterestExpense
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRevRepoInterestExpense() {
-        return revRepoInterestExpense;
-    }
-
-    public void setRevRepoInterestExpense(Double revRepoInterestExpense) {
-        this.revRepoInterestExpense = revRepoInterestExpense;
-    }
-
-    public PositionHistoryDTO revRepoInterestExpenseNew(Double revRepoInterestExpenseNew) {
-        this.revRepoInterestExpenseNew = revRepoInterestExpenseNew;
-        return this;
-    }
-
-    /**
-     * Get revRepoInterestExpenseNew
-     *
-     * @return revRepoInterestExpenseNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRevRepoInterestExpenseNew() {
-        return revRepoInterestExpenseNew;
-    }
-
-    public void setRevRepoInterestExpenseNew(Double revRepoInterestExpenseNew) {
-        this.revRepoInterestExpenseNew = revRepoInterestExpenseNew;
-    }
-
-    public PositionHistoryDTO revRepoInterestReceive(Double revRepoInterestReceive) {
-        this.revRepoInterestReceive = revRepoInterestReceive;
-        return this;
-    }
-
-    /**
-     * Get revRepoInterestReceive
-     *
-     * @return revRepoInterestReceive
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRevRepoInterestReceive() {
-        return revRepoInterestReceive;
-    }
-
-    public void setRevRepoInterestReceive(Double revRepoInterestReceive) {
-        this.revRepoInterestReceive = revRepoInterestReceive;
-    }
-
-    public PositionHistoryDTO revRepoInterestReceiveNew(Double revRepoInterestReceiveNew) {
-        this.revRepoInterestReceiveNew = revRepoInterestReceiveNew;
-        return this;
-    }
-
-    /**
-     * Get revRepoInterestReceiveNew
-     *
-     * @return revRepoInterestReceiveNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRevRepoInterestReceiveNew() {
-        return revRepoInterestReceiveNew;
-    }
-
-    public void setRevRepoInterestReceiveNew(Double revRepoInterestReceiveNew) {
-        this.revRepoInterestReceiveNew = revRepoInterestReceiveNew;
-    }
-
-    public PositionHistoryDTO securityId(Long securityId) {
-        this.securityId = securityId;
-        return this;
-    }
-
-    /**
-     * Get securityId
-     *
-     * @return securityId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(Long securityId) {
-        this.securityId = securityId;
-    }
-
-    public PositionHistoryDTO securityNextResetDate(LocalDateTime securityNextResetDate) {
-        this.securityNextResetDate = securityNextResetDate;
-        return this;
-    }
-
-    /**
-     * Get securityNextResetDate
-     *
-     * @return securityNextResetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getSecurityNextResetDate() {
-        return securityNextResetDate;
-    }
-
-    public void setSecurityNextResetDate(LocalDateTime securityNextResetDate) {
-        this.securityNextResetDate = securityNextResetDate;
-    }
-
-    public PositionHistoryDTO sedol(String sedol) {
-        this.sedol = sedol;
-        return this;
-    }
-
-    /**
-     * Get sedol
-     *
-     * @return sedol
-     **/
-    @ApiModelProperty(value = "")
-    public String getSedol() {
-        return sedol;
-    }
-
-    public void setSedol(String sedol) {
-        this.sedol = sedol;
-    }
-
-    public PositionHistoryDTO settleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-        return this;
-    }
-
-    /**
-     * Get settleDate
-     *
-     * @return settleDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getSettleDate() {
-        return settleDate;
-    }
-
-    public void setSettleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-    }
-
-    public PositionHistoryDTO settledAccountingAmount(Double settledAccountingAmount) {
-        this.settledAccountingAmount = settledAccountingAmount;
-        return this;
-    }
-
-    /**
-     * Get settledAccountingAmount
-     *
-     * @return settledAccountingAmount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledAccountingAmount() {
-        return settledAccountingAmount;
-    }
-
-    public void setSettledAccountingAmount(Double settledAccountingAmount) {
-        this.settledAccountingAmount = settledAccountingAmount;
-    }
-
-    public PositionHistoryDTO settledAccountingAmountNew(Double settledAccountingAmountNew) {
-        this.settledAccountingAmountNew = settledAccountingAmountNew;
-        return this;
-    }
-
-    /**
-     * Get settledAccountingAmountNew
-     *
-     * @return settledAccountingAmountNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledAccountingAmountNew() {
-        return settledAccountingAmountNew;
-    }
-
-    public void setSettledAccountingAmountNew(Double settledAccountingAmountNew) {
-        this.settledAccountingAmountNew = settledAccountingAmountNew;
-    }
-
-    public PositionHistoryDTO settledBorrowPremium(Double settledBorrowPremium) {
-        this.settledBorrowPremium = settledBorrowPremium;
-        return this;
-    }
-
-    /**
-     * Get settledBorrowPremium
-     *
-     * @return settledBorrowPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledBorrowPremium() {
-        return settledBorrowPremium;
-    }
-
-    public void setSettledBorrowPremium(Double settledBorrowPremium) {
-        this.settledBorrowPremium = settledBorrowPremium;
-    }
-
-    public PositionHistoryDTO settledBorrowPremiumNew(Double settledBorrowPremiumNew) {
-        this.settledBorrowPremiumNew = settledBorrowPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get settledBorrowPremiumNew
-     *
-     * @return settledBorrowPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledBorrowPremiumNew() {
-        return settledBorrowPremiumNew;
-    }
-
-    public void setSettledBorrowPremiumNew(Double settledBorrowPremiumNew) {
-        this.settledBorrowPremiumNew = settledBorrowPremiumNew;
-    }
-
-    public PositionHistoryDTO settledBorrowRebate(Double settledBorrowRebate) {
-        this.settledBorrowRebate = settledBorrowRebate;
-        return this;
-    }
-
-    /**
-     * Get settledBorrowRebate
-     *
-     * @return settledBorrowRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledBorrowRebate() {
-        return settledBorrowRebate;
-    }
-
-    public void setSettledBorrowRebate(Double settledBorrowRebate) {
-        this.settledBorrowRebate = settledBorrowRebate;
-    }
-
-    public PositionHistoryDTO settledBorrowRebateNew(Double settledBorrowRebateNew) {
-        this.settledBorrowRebateNew = settledBorrowRebateNew;
-        return this;
-    }
-
-    /**
-     * Get settledBorrowRebateNew
-     *
-     * @return settledBorrowRebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledBorrowRebateNew() {
-        return settledBorrowRebateNew;
-    }
-
-    public void setSettledBorrowRebateNew(Double settledBorrowRebateNew) {
-        this.settledBorrowRebateNew = settledBorrowRebateNew;
-    }
-
-    public PositionHistoryDTO settledInterest(Double settledInterest) {
-        this.settledInterest = settledInterest;
-        return this;
-    }
-
-    /**
-     * Get settledInterest
-     *
-     * @return settledInterest
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledInterest() {
-        return settledInterest;
-    }
-
-    public void setSettledInterest(Double settledInterest) {
-        this.settledInterest = settledInterest;
-    }
-
-    public PositionHistoryDTO settledInterestExpenseNew(Double settledInterestExpenseNew) {
-        this.settledInterestExpenseNew = settledInterestExpenseNew;
-        return this;
-    }
-
-    /**
-     * Get settledInterestExpenseNew
-     *
-     * @return settledInterestExpenseNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledInterestExpenseNew() {
-        return settledInterestExpenseNew;
-    }
-
-    public void setSettledInterestExpenseNew(Double settledInterestExpenseNew) {
-        this.settledInterestExpenseNew = settledInterestExpenseNew;
-    }
-
-    public PositionHistoryDTO settledInterestNew(Double settledInterestNew) {
-        this.settledInterestNew = settledInterestNew;
-        return this;
-    }
-
-    /**
-     * Get settledInterestNew
-     *
-     * @return settledInterestNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledInterestNew() {
-        return settledInterestNew;
-    }
-
-    public void setSettledInterestNew(Double settledInterestNew) {
-        this.settledInterestNew = settledInterestNew;
-    }
-
-    public PositionHistoryDTO settledLoanPremium(Double settledLoanPremium) {
-        this.settledLoanPremium = settledLoanPremium;
-        return this;
-    }
-
-    /**
-     * Get settledLoanPremium
-     *
-     * @return settledLoanPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledLoanPremium() {
-        return settledLoanPremium;
-    }
-
-    public void setSettledLoanPremium(Double settledLoanPremium) {
-        this.settledLoanPremium = settledLoanPremium;
-    }
-
-    public PositionHistoryDTO settledLoanPremiumNew(Double settledLoanPremiumNew) {
-        this.settledLoanPremiumNew = settledLoanPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get settledLoanPremiumNew
-     *
-     * @return settledLoanPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledLoanPremiumNew() {
-        return settledLoanPremiumNew;
-    }
-
-    public void setSettledLoanPremiumNew(Double settledLoanPremiumNew) {
-        this.settledLoanPremiumNew = settledLoanPremiumNew;
-    }
-
-    public PositionHistoryDTO settledPurchasedInterest(Double settledPurchasedInterest) {
-        this.settledPurchasedInterest = settledPurchasedInterest;
-        return this;
-    }
-
-    /**
-     * Get settledPurchasedInterest
-     *
-     * @return settledPurchasedInterest
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledPurchasedInterest() {
-        return settledPurchasedInterest;
-    }
-
-    public void setSettledPurchasedInterest(Double settledPurchasedInterest) {
-        this.settledPurchasedInterest = settledPurchasedInterest;
-    }
-
-    public PositionHistoryDTO settledPurchasedInterestNew(Double settledPurchasedInterestNew) {
-        this.settledPurchasedInterestNew = settledPurchasedInterestNew;
-        return this;
-    }
-
-    /**
-     * Get settledPurchasedInterestNew
-     *
-     * @return settledPurchasedInterestNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledPurchasedInterestNew() {
-        return settledPurchasedInterestNew;
-    }
-
-    public void setSettledPurchasedInterestNew(Double settledPurchasedInterestNew) {
-        this.settledPurchasedInterestNew = settledPurchasedInterestNew;
-    }
-
-    public PositionHistoryDTO settledQuantity(Double settledQuantity) {
-        this.settledQuantity = settledQuantity;
-        return this;
-    }
-
-    /**
-     * Get settledQuantity
-     *
-     * @return settledQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledQuantity() {
-        return settledQuantity;
-    }
-
-    public void setSettledQuantity(Double settledQuantity) {
-        this.settledQuantity = settledQuantity;
-    }
-
-    public PositionHistoryDTO settledRebate(Double settledRebate) {
-        this.settledRebate = settledRebate;
-        return this;
-    }
-
-    /**
-     * Get settledRebate
-     *
-     * @return settledRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRebate() {
-        return settledRebate;
-    }
-
-    public void setSettledRebate(Double settledRebate) {
-        this.settledRebate = settledRebate;
-    }
-
-    public PositionHistoryDTO settledRebateNew(Double settledRebateNew) {
-        this.settledRebateNew = settledRebateNew;
-        return this;
-    }
-
-    /**
-     * Get settledRebateNew
-     *
-     * @return settledRebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRebateNew() {
-        return settledRebateNew;
-    }
-
-    public void setSettledRebateNew(Double settledRebateNew) {
-        this.settledRebateNew = settledRebateNew;
-    }
-
-    public PositionHistoryDTO settledRepoPremium(Double settledRepoPremium) {
-        this.settledRepoPremium = settledRepoPremium;
-        return this;
-    }
-
-    /**
-     * Get settledRepoPremium
-     *
-     * @return settledRepoPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRepoPremium() {
-        return settledRepoPremium;
-    }
-
-    public void setSettledRepoPremium(Double settledRepoPremium) {
-        this.settledRepoPremium = settledRepoPremium;
-    }
-
-    public PositionHistoryDTO settledRepoPremiumNew(Double settledRepoPremiumNew) {
-        this.settledRepoPremiumNew = settledRepoPremiumNew;
-        return this;
-    }
-
-    /**
-     * Get settledRepoPremiumNew
-     *
-     * @return settledRepoPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRepoPremiumNew() {
-        return settledRepoPremiumNew;
-    }
-
-    public void setSettledRepoPremiumNew(Double settledRepoPremiumNew) {
-        this.settledRepoPremiumNew = settledRepoPremiumNew;
-    }
-
-    public PositionHistoryDTO settledRepoRebate(Double settledRepoRebate) {
-        this.settledRepoRebate = settledRepoRebate;
-        return this;
-    }
-
-    /**
-     * Get settledRepoRebate
-     *
-     * @return settledRepoRebate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRepoRebate() {
-        return settledRepoRebate;
-    }
-
-    public void setSettledRepoRebate(Double settledRepoRebate) {
-        this.settledRepoRebate = settledRepoRebate;
-    }
-
-    public PositionHistoryDTO settledRepoRebateNew(Double settledRepoRebateNew) {
-        this.settledRepoRebateNew = settledRepoRebateNew;
-        return this;
-    }
-
-    /**
-     * Get settledRepoRebateNew
-     *
-     * @return settledRepoRebateNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRepoRebateNew() {
-        return settledRepoRebateNew;
-    }
-
-    public void setSettledRepoRebateNew(Double settledRepoRebateNew) {
-        this.settledRepoRebateNew = settledRepoRebateNew;
-    }
-
-    public PositionHistoryDTO settledRevRepoInterestExpense(Double settledRevRepoInterestExpense) {
-        this.settledRevRepoInterestExpense = settledRevRepoInterestExpense;
-        return this;
-    }
-
-    /**
-     * Get settledRevRepoInterestExpense
-     *
-     * @return settledRevRepoInterestExpense
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRevRepoInterestExpense() {
-        return settledRevRepoInterestExpense;
-    }
+  public PositionHistoryDTO accountId(Long accountId) {
+    this.accountId = accountId;
+    return this;
+  }
 
-    public void setSettledRevRepoInterestExpense(Double settledRevRepoInterestExpense) {
-        this.settledRevRepoInterestExpense = settledRevRepoInterestExpense;
-    }
+   /**
+   * Get accountId
+   * @return accountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getAccountId() {
+    return accountId;
+  }
 
-    public PositionHistoryDTO settledRevRepoInterestExpenseNew(Double settledRevRepoInterestExpenseNew) {
-        this.settledRevRepoInterestExpenseNew = settledRevRepoInterestExpenseNew;
-        return this;
-    }
+  public void setAccountId(Long accountId) {
+    this.accountId = accountId;
+  }
 
-    /**
-     * Get settledRevRepoInterestExpenseNew
-     *
-     * @return settledRevRepoInterestExpenseNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRevRepoInterestExpenseNew() {
-        return settledRevRepoInterestExpenseNew;
-    }
+  public PositionHistoryDTO accountId2(Long accountId2) {
+    this.accountId2 = accountId2;
+    return this;
+  }
 
-    public void setSettledRevRepoInterestExpenseNew(Double settledRevRepoInterestExpenseNew) {
-        this.settledRevRepoInterestExpenseNew = settledRevRepoInterestExpenseNew;
-    }
+   /**
+   * Get accountId2
+   * @return accountId2
+  **/
+  @ApiModelProperty(value = "")
+  public Long getAccountId2() {
+    return accountId2;
+  }
 
-    public PositionHistoryDTO settledRevRepoInterestReceive(Double settledRevRepoInterestReceive) {
-        this.settledRevRepoInterestReceive = settledRevRepoInterestReceive;
-        return this;
-    }
+  public void setAccountId2(Long accountId2) {
+    this.accountId2 = accountId2;
+  }
 
-    /**
-     * Get settledRevRepoInterestReceive
-     *
-     * @return settledRevRepoInterestReceive
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRevRepoInterestReceive() {
-        return settledRevRepoInterestReceive;
-    }
+  public PositionHistoryDTO accountNo(String accountNo) {
+    this.accountNo = accountNo;
+    return this;
+  }
 
-    public void setSettledRevRepoInterestReceive(Double settledRevRepoInterestReceive) {
-        this.settledRevRepoInterestReceive = settledRevRepoInterestReceive;
-    }
+   /**
+   * Get accountNo
+   * @return accountNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getAccountNo() {
+    return accountNo;
+  }
 
-    public PositionHistoryDTO settledRevRepoInterestReceiveNew(Double settledRevRepoInterestReceiveNew) {
-        this.settledRevRepoInterestReceiveNew = settledRevRepoInterestReceiveNew;
-        return this;
-    }
+  public void setAccountNo(String accountNo) {
+    this.accountNo = accountNo;
+  }
 
-    /**
-     * Get settledRevRepoInterestReceiveNew
-     *
-     * @return settledRevRepoInterestReceiveNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSettledRevRepoInterestReceiveNew() {
-        return settledRevRepoInterestReceiveNew;
-    }
+  public PositionHistoryDTO accountNo2(String accountNo2) {
+    this.accountNo2 = accountNo2;
+    return this;
+  }
 
-    public void setSettledRevRepoInterestReceiveNew(Double settledRevRepoInterestReceiveNew) {
-        this.settledRevRepoInterestReceiveNew = settledRevRepoInterestReceiveNew;
-    }
+   /**
+   * Get accountNo2
+   * @return accountNo2
+  **/
+  @ApiModelProperty(value = "")
+  public String getAccountNo2() {
+    return accountNo2;
+  }
 
-    public PositionHistoryDTO shortName(String shortName) {
-        this.shortName = shortName;
-        return this;
-    }
+  public void setAccountNo2(String accountNo2) {
+    this.accountNo2 = accountNo2;
+  }
 
-    /**
-     * Get shortName
-     *
-     * @return shortName
-     **/
-    @ApiModelProperty(value = "")
-    public String getShortName() {
-        return shortName;
-    }
+  public PositionHistoryDTO accountingAmount(Double accountingAmount) {
+    this.accountingAmount = accountingAmount;
+    return this;
+  }
 
-    public void setShortName(String shortName) {
-        this.shortName = shortName;
-    }
+   /**
+   * Get accountingAmount
+   * @return accountingAmount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAccountingAmount() {
+    return accountingAmount;
+  }
 
-    public PositionHistoryDTO spread(Double spread) {
-        this.spread = spread;
-        return this;
-    }
+  public void setAccountingAmount(Double accountingAmount) {
+    this.accountingAmount = accountingAmount;
+  }
 
-    /**
-     * Get spread
-     *
-     * @return spread
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSpread() {
-        return spread;
-    }
+  public PositionHistoryDTO accountingAmountNew(Double accountingAmountNew) {
+    this.accountingAmountNew = accountingAmountNew;
+    return this;
+  }
 
-    public void setSpread(Double spread) {
-        this.spread = spread;
-    }
+   /**
+   * Get accountingAmountNew
+   * @return accountingAmountNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAccountingAmountNew() {
+    return accountingAmountNew;
+  }
 
-    public PositionHistoryDTO status(String status) {
-        this.status = status;
-        return this;
-    }
+  public void setAccountingAmountNew(Double accountingAmountNew) {
+    this.accountingAmountNew = accountingAmountNew;
+  }
 
-    /**
-     * Get status
-     *
-     * @return status
-     **/
-    @ApiModelProperty(value = "")
-    public String getStatus() {
-        return status;
-    }
+  public PositionHistoryDTO accruedInt(Double accruedInt) {
+    this.accruedInt = accruedInt;
+    return this;
+  }
 
-    public void setStatus(String status) {
-        this.status = status;
-    }
+   /**
+   * Get accruedInt
+   * @return accruedInt
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAccruedInt() {
+    return accruedInt;
+  }
 
-    public PositionHistoryDTO statusId(Integer statusId) {
-        this.statusId = statusId;
-        return this;
-    }
+  public void setAccruedInt(Double accruedInt) {
+    this.accruedInt = accruedInt;
+  }
 
-    /**
-     * Get statusId
-     *
-     * @return statusId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getStatusId() {
-        return statusId;
-    }
+  public PositionHistoryDTO amortizedDp(Double amortizedDp) {
+    this.amortizedDp = amortizedDp;
+    return this;
+  }
 
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
-    }
+   /**
+   * Get amortizedDp
+   * @return amortizedDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAmortizedDp() {
+    return amortizedDp;
+  }
 
-    public PositionHistoryDTO targetPrice(Double targetPrice) {
-        this.targetPrice = targetPrice;
-        return this;
-    }
+  public void setAmortizedDp(Double amortizedDp) {
+    this.amortizedDp = amortizedDp;
+  }
 
-    /**
-     * Get targetPrice
-     *
-     * @return targetPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTargetPrice() {
-        return targetPrice;
-    }
+  public PositionHistoryDTO amount(Double amount) {
+    this.amount = amount;
+    return this;
+  }
 
-    public void setTargetPrice(Double targetPrice) {
-        this.targetPrice = targetPrice;
-    }
+   /**
+   * Get amount
+   * @return amount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAmount() {
+    return amount;
+  }
 
-    public PositionHistoryDTO taxWhRate(Double taxWhRate) {
-        this.taxWhRate = taxWhRate;
-        return this;
-    }
+  public void setAmount(Double amount) {
+    this.amount = amount;
+  }
 
-    /**
-     * Get taxWhRate
-     *
-     * @return taxWhRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTaxWhRate() {
-        return taxWhRate;
-    }
+  public PositionHistoryDTO basisId(Integer basisId) {
+    this.basisId = basisId;
+    return this;
+  }
 
-    public void setTaxWhRate(Double taxWhRate) {
-        this.taxWhRate = taxWhRate;
-    }
+   /**
+   * Get basisId
+   * @return basisId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getBasisId() {
+    return basisId;
+  }
 
-    public PositionHistoryDTO term(String term) {
-        this.term = term;
-        return this;
-    }
+  public void setBasisId(Integer basisId) {
+    this.basisId = basisId;
+  }
 
-    /**
-     * Get term
-     *
-     * @return term
-     **/
-    @ApiModelProperty(value = "")
-    public String getTerm() {
-        return term;
-    }
+  public PositionHistoryDTO basisName(String basisName) {
+    this.basisName = basisName;
+    return this;
+  }
 
-    public void setTerm(String term) {
-        this.term = term;
-    }
+   /**
+   * Get basisName
+   * @return basisName
+  **/
+  @ApiModelProperty(value = "")
+  public String getBasisName() {
+    return basisName;
+  }
 
-    public PositionHistoryDTO termId(Integer termId) {
-        this.termId = termId;
-        return this;
-    }
+  public void setBasisName(String basisName) {
+    this.basisName = basisName;
+  }
 
-    /**
-     * Get termId
-     *
-     * @return termId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTermId() {
-        return termId;
-    }
+  public PositionHistoryDTO bookValue(Double bookValue) {
+    this.bookValue = bookValue;
+    return this;
+  }
 
-    public void setTermId(Integer termId) {
-        this.termId = termId;
-    }
+   /**
+   * Get bookValue
+   * @return bookValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBookValue() {
+    return bookValue;
+  }
 
-    public PositionHistoryDTO ticker(String ticker) {
-        this.ticker = ticker;
-        return this;
-    }
+  public void setBookValue(Double bookValue) {
+    this.bookValue = bookValue;
+  }
 
-    /**
-     * Get ticker
-     *
-     * @return ticker
-     **/
-    @ApiModelProperty(value = "")
-    public String getTicker() {
-        return ticker;
-    }
+  public PositionHistoryDTO borrowPremium(Double borrowPremium) {
+    this.borrowPremium = borrowPremium;
+    return this;
+  }
 
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
-    }
+   /**
+   * Get borrowPremium
+   * @return borrowPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBorrowPremium() {
+    return borrowPremium;
+  }
 
-    public PositionHistoryDTO totalValue(Double totalValue) {
-        this.totalValue = totalValue;
-        return this;
-    }
+  public void setBorrowPremium(Double borrowPremium) {
+    this.borrowPremium = borrowPremium;
+  }
 
-    /**
-     * Get totalValue
-     *
-     * @return totalValue
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTotalValue() {
-        return totalValue;
-    }
+  public PositionHistoryDTO borrowPremiumNew(Double borrowPremiumNew) {
+    this.borrowPremiumNew = borrowPremiumNew;
+    return this;
+  }
 
-    public void setTotalValue(Double totalValue) {
-        this.totalValue = totalValue;
-    }
+   /**
+   * Get borrowPremiumNew
+   * @return borrowPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBorrowPremiumNew() {
+    return borrowPremiumNew;
+  }
 
-    public PositionHistoryDTO tradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-        return this;
-    }
+  public void setBorrowPremiumNew(Double borrowPremiumNew) {
+    this.borrowPremiumNew = borrowPremiumNew;
+  }
 
-    /**
-     * Get tradeDate
-     *
-     * @return tradeDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getTradeDate() {
-        return tradeDate;
-    }
+  public PositionHistoryDTO borrowRebate(Double borrowRebate) {
+    this.borrowRebate = borrowRebate;
+    return this;
+  }
 
-    public void setTradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-    }
+   /**
+   * Get borrowRebate
+   * @return borrowRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBorrowRebate() {
+    return borrowRebate;
+  }
 
-    public PositionHistoryDTO tradingDeskId(Integer tradingDeskId) {
-        this.tradingDeskId = tradingDeskId;
-        return this;
-    }
+  public void setBorrowRebate(Double borrowRebate) {
+    this.borrowRebate = borrowRebate;
+  }
 
-    /**
-     * Get tradingDeskId
-     *
-     * @return tradingDeskId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTradingDeskId() {
-        return tradingDeskId;
-    }
+  public PositionHistoryDTO borrowRebateNew(Double borrowRebateNew) {
+    this.borrowRebateNew = borrowRebateNew;
+    return this;
+  }
 
-    public void setTradingDeskId(Integer tradingDeskId) {
-        this.tradingDeskId = tradingDeskId;
-    }
+   /**
+   * Get borrowRebateNew
+   * @return borrowRebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getBorrowRebateNew() {
+    return borrowRebateNew;
+  }
 
-    public PositionHistoryDTO unamortizedDiscount(Double unamortizedDiscount) {
-        this.unamortizedDiscount = unamortizedDiscount;
-        return this;
-    }
+  public void setBorrowRebateNew(Double borrowRebateNew) {
+    this.borrowRebateNew = borrowRebateNew;
+  }
 
-    /**
-     * Get unamortizedDiscount
-     *
-     * @return unamortizedDiscount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getUnamortizedDiscount() {
-        return unamortizedDiscount;
-    }
+  public PositionHistoryDTO calendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+    return this;
+  }
 
-    public void setUnamortizedDiscount(Double unamortizedDiscount) {
-        this.unamortizedDiscount = unamortizedDiscount;
-    }
+   /**
+   * Get calendarId
+   * @return calendarId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCalendarId() {
+    return calendarId;
+  }
 
-    public PositionHistoryDTO unamortizedDiscountNew(Double unamortizedDiscountNew) {
-        this.unamortizedDiscountNew = unamortizedDiscountNew;
-        return this;
-    }
+  public void setCalendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+  }
 
-    /**
-     * Get unamortizedDiscountNew
-     *
-     * @return unamortizedDiscountNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getUnamortizedDiscountNew() {
-        return unamortizedDiscountNew;
-    }
+  public PositionHistoryDTO cashBalanced(Long cashBalanced) {
+    this.cashBalanced = cashBalanced;
+    return this;
+  }
 
-    public void setUnamortizedDiscountNew(Double unamortizedDiscountNew) {
-        this.unamortizedDiscountNew = unamortizedDiscountNew;
-    }
+   /**
+   * Get cashBalanced
+   * @return cashBalanced
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCashBalanced() {
+    return cashBalanced;
+  }
 
-    public PositionHistoryDTO unamortizedDp(Double unamortizedDp) {
-        this.unamortizedDp = unamortizedDp;
-        return this;
-    }
+  public void setCashBalanced(Long cashBalanced) {
+    this.cashBalanced = cashBalanced;
+  }
 
-    /**
-     * Get unamortizedDp
-     *
-     * @return unamortizedDp
-     **/
-    @ApiModelProperty(value = "")
-    public Double getUnamortizedDp() {
-        return unamortizedDp;
-    }
+  public PositionHistoryDTO category0Id(Integer category0Id) {
+    this.category0Id = category0Id;
+    return this;
+  }
 
-    public void setUnamortizedDp(Double unamortizedDp) {
-        this.unamortizedDp = unamortizedDp;
-    }
+   /**
+   * Get category0Id
+   * @return category0Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory0Id() {
+    return category0Id;
+  }
 
-    public PositionHistoryDTO unamortizedPremium(Double unamortizedPremium) {
-        this.unamortizedPremium = unamortizedPremium;
-        return this;
-    }
+  public void setCategory0Id(Integer category0Id) {
+    this.category0Id = category0Id;
+  }
 
-    /**
-     * Get unamortizedPremium
-     *
-     * @return unamortizedPremium
-     **/
-    @ApiModelProperty(value = "")
-    public Double getUnamortizedPremium() {
-        return unamortizedPremium;
-    }
+  public PositionHistoryDTO category0Name(String category0Name) {
+    this.category0Name = category0Name;
+    return this;
+  }
 
-    public void setUnamortizedPremium(Double unamortizedPremium) {
-        this.unamortizedPremium = unamortizedPremium;
-    }
+   /**
+   * Get category0Name
+   * @return category0Name
+  **/
+  @ApiModelProperty(value = "")
+  public String getCategory0Name() {
+    return category0Name;
+  }
 
-    public PositionHistoryDTO unamortizedPremiumNew(Double unamortizedPremiumNew) {
-        this.unamortizedPremiumNew = unamortizedPremiumNew;
-        return this;
-    }
+  public void setCategory0Name(String category0Name) {
+    this.category0Name = category0Name;
+  }
 
-    /**
-     * Get unamortizedPremiumNew
-     *
-     * @return unamortizedPremiumNew
-     **/
-    @ApiModelProperty(value = "")
-    public Double getUnamortizedPremiumNew() {
-        return unamortizedPremiumNew;
-    }
+  public PositionHistoryDTO category1Id(Integer category1Id) {
+    this.category1Id = category1Id;
+    return this;
+  }
 
-    public void setUnamortizedPremiumNew(Double unamortizedPremiumNew) {
-        this.unamortizedPremiumNew = unamortizedPremiumNew;
-    }
+   /**
+   * Get category1Id
+   * @return category1Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory1Id() {
+    return category1Id;
+  }
 
-    public PositionHistoryDTO userId(Long userId) {
-        this.userId = userId;
-        return this;
-    }
+  public void setCategory1Id(Integer category1Id) {
+    this.category1Id = category1Id;
+  }
 
-    /**
-     * Get userId
-     *
-     * @return userId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getUserId() {
-        return userId;
-    }
+  public PositionHistoryDTO category1Name(String category1Name) {
+    this.category1Name = category1Name;
+    return this;
+  }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
+   /**
+   * Get category1Name
+   * @return category1Name
+  **/
+  @ApiModelProperty(value = "")
+  public String getCategory1Name() {
+    return category1Name;
+  }
 
-    public PositionHistoryDTO wal(Double wal) {
-        this.wal = wal;
-        return this;
-    }
+  public void setCategory1Name(String category1Name) {
+    this.category1Name = category1Name;
+  }
 
-    /**
-     * Get wal
-     *
-     * @return wal
-     **/
-    @ApiModelProperty(value = "")
-    public Double getWal() {
-        return wal;
-    }
+  public PositionHistoryDTO category2Id(Integer category2Id) {
+    this.category2Id = category2Id;
+    return this;
+  }
 
-    public void setWal(Double wal) {
-        this.wal = wal;
-    }
+   /**
+   * Get category2Id
+   * @return category2Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory2Id() {
+    return category2Id;
+  }
 
-    public PositionHistoryDTO yield(Double yield) {
-        this.yield = yield;
-        return this;
-    }
+  public void setCategory2Id(Integer category2Id) {
+    this.category2Id = category2Id;
+  }
 
-    /**
-     * Get yield
-     *
-     * @return yield
-     **/
-    @ApiModelProperty(value = "")
-    public Double getYield() {
-        return yield;
-    }
+  public PositionHistoryDTO category2Name(String category2Name) {
+    this.category2Name = category2Name;
+    return this;
+  }
 
-    public void setYield(Double yield) {
-        this.yield = yield;
-    }
+   /**
+   * Get category2Name
+   * @return category2Name
+  **/
+  @ApiModelProperty(value = "")
+  public String getCategory2Name() {
+    return category2Name;
+  }
 
+  public void setCategory2Name(String category2Name) {
+    this.category2Name = category2Name;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PositionHistoryDTO positionHistoryDTO = (PositionHistoryDTO) o;
-        return Objects.equals(this.qualifiedName, positionHistoryDTO.qualifiedName) &&
-            Objects.equals(this.accountGroupDTO, positionHistoryDTO.accountGroupDTO) &&
-            Objects.equals(this.accountId, positionHistoryDTO.accountId) &&
-            Objects.equals(this.accountId2, positionHistoryDTO.accountId2) &&
-            Objects.equals(this.accountNo, positionHistoryDTO.accountNo) &&
-            Objects.equals(this.accountNo2, positionHistoryDTO.accountNo2) &&
-            Objects.equals(this.accountingAmount, positionHistoryDTO.accountingAmount) &&
-            Objects.equals(this.accountingAmountNew, positionHistoryDTO.accountingAmountNew) &&
-            Objects.equals(this.accruedInt, positionHistoryDTO.accruedInt) &&
-            Objects.equals(this.amortizedDp, positionHistoryDTO.amortizedDp) &&
-            Objects.equals(this.amount, positionHistoryDTO.amount) &&
-            Objects.equals(this.basisId, positionHistoryDTO.basisId) &&
-            Objects.equals(this.basisName, positionHistoryDTO.basisName) &&
-            Objects.equals(this.bookValue, positionHistoryDTO.bookValue) &&
-            Objects.equals(this.borrowPremium, positionHistoryDTO.borrowPremium) &&
-            Objects.equals(this.borrowPremiumNew, positionHistoryDTO.borrowPremiumNew) &&
-            Objects.equals(this.borrowRebate, positionHistoryDTO.borrowRebate) &&
-            Objects.equals(this.borrowRebateNew, positionHistoryDTO.borrowRebateNew) &&
-            Objects.equals(this.calendarId, positionHistoryDTO.calendarId) &&
-            Objects.equals(this.cashBalanced, positionHistoryDTO.cashBalanced) &&
-            Objects.equals(this.category0Id, positionHistoryDTO.category0Id) &&
-            Objects.equals(this.category0Name, positionHistoryDTO.category0Name) &&
-            Objects.equals(this.category1Id, positionHistoryDTO.category1Id) &&
-            Objects.equals(this.category1Name, positionHistoryDTO.category1Name) &&
-            Objects.equals(this.category2Id, positionHistoryDTO.category2Id) &&
-            Objects.equals(this.category2Name, positionHistoryDTO.category2Name) &&
-            Objects.equals(this.category3Id, positionHistoryDTO.category3Id) &&
-            Objects.equals(this.category3Name, positionHistoryDTO.category3Name) &&
-            Objects.equals(this.categoryId, positionHistoryDTO.categoryId) &&
-            Objects.equals(this.categoryName, positionHistoryDTO.categoryName) &&
-            Objects.equals(this.cleanMarketValue, positionHistoryDTO.cleanMarketValue) &&
-            Objects.equals(this.clientCategory, positionHistoryDTO.clientCategory) &&
-            Objects.equals(this.clientSecId, positionHistoryDTO.clientSecId) &&
-            Objects.equals(this.collateralAccountId, positionHistoryDTO.collateralAccountId) &&
-            Objects.equals(this.collateralAccountNo, positionHistoryDTO.collateralAccountNo) &&
-            Objects.equals(this.collateralIndicator, positionHistoryDTO.collateralIndicator) &&
-            Objects.equals(this.collateralType, positionHistoryDTO.collateralType) &&
-            Objects.equals(this.collateralTypeId, positionHistoryDTO.collateralTypeId) &&
-            Objects.equals(this.comments, positionHistoryDTO.comments) &&
-            Objects.equals(this.cost, positionHistoryDTO.cost) &&
-            Objects.equals(this.counterpartyGroupAccountNo, positionHistoryDTO.counterpartyGroupAccountNo) &&
-            Objects.equals(this.counterpartyGroupAccountNo2, positionHistoryDTO.counterpartyGroupAccountNo2) &&
-            Objects.equals(this.counterpartyGroupName, positionHistoryDTO.counterpartyGroupName) &&
-            Objects.equals(this.counterpartyGroupdtcNo, positionHistoryDTO.counterpartyGroupdtcNo) &&
-            Objects.equals(this.counterpartyId, positionHistoryDTO.counterpartyId) &&
-            Objects.equals(this.counterpartyLegalName, positionHistoryDTO.counterpartyLegalName) &&
-            Objects.equals(this.counterpartyShortName, positionHistoryDTO.counterpartyShortName) &&
-            Objects.equals(this.countryId, positionHistoryDTO.countryId) &&
-            Objects.equals(this.currencyId, positionHistoryDTO.currencyId) &&
-            Objects.equals(this.currencyKy, positionHistoryDTO.currencyKy) &&
-            Objects.equals(this.currentAmount, positionHistoryDTO.currentAmount) &&
-            Objects.equals(this.currentPrice, positionHistoryDTO.currentPrice) &&
-            Objects.equals(this.cusip, positionHistoryDTO.cusip) &&
-            Objects.equals(this.custodianBankShortName, positionHistoryDTO.custodianBankShortName) &&
-            Objects.equals(this.dailyAccrual, positionHistoryDTO.dailyAccrual) &&
-            Objects.equals(this.dailyDp, positionHistoryDTO.dailyDp) &&
-            Objects.equals(this.depoGroup, positionHistoryDTO.depoGroup) &&
-            Objects.equals(this.depoId, positionHistoryDTO.depoId) &&
-            Objects.equals(this.depoKy, positionHistoryDTO.depoKy) &&
-            Objects.equals(this.description, positionHistoryDTO.description) &&
-            Objects.equals(this.dtc, positionHistoryDTO.dtc) &&
-            Objects.equals(this.encumberedQuantity, positionHistoryDTO.encumberedQuantity) &&
-            Objects.equals(this.endDate, positionHistoryDTO.endDate) &&
-            Objects.equals(this.expMaturity, positionHistoryDTO.expMaturity) &&
-            Objects.equals(this.exposureIndicator, positionHistoryDTO.exposureIndicator) &&
-            Objects.equals(this.factor, positionHistoryDTO.factor) &&
-            Objects.equals(this.fxRate, positionHistoryDTO.fxRate) &&
-            Objects.equals(this.haircutPrice, positionHistoryDTO.haircutPrice) &&
-            Objects.equals(this.histType, positionHistoryDTO.histType) &&
-            Objects.equals(this.id, positionHistoryDTO.id) &&
-            Objects.equals(this.impairmentLossReserve, positionHistoryDTO.impairmentLossReserve) &&
-            Objects.equals(this.impairmentLossReserveNew, positionHistoryDTO.impairmentLossReserveNew) &&
-            Objects.equals(this.indexId, positionHistoryDTO.indexId) &&
-            Objects.equals(this.indexName, positionHistoryDTO.indexName) &&
-            Objects.equals(this.interest, positionHistoryDTO.interest) &&
-            Objects.equals(this.interestExpenseNew, positionHistoryDTO.interestExpenseNew) &&
-            Objects.equals(this.interestNew, positionHistoryDTO.interestNew) &&
-            Objects.equals(this.isAccounting, positionHistoryDTO.isAccounting) &&
-            Objects.equals(this.isBorrow, positionHistoryDTO.isBorrow) &&
-            Objects.equals(this.isCollateralPledged, positionHistoryDTO.isCollateralPledged) &&
-            Objects.equals(this.isCollateralReceived, positionHistoryDTO.isCollateralReceived) &&
-            Objects.equals(this.isInvestment, positionHistoryDTO.isInvestment) &&
-            Objects.equals(this.isLoan, positionHistoryDTO.isLoan) &&
-            Objects.equals(this.isPooled, positionHistoryDTO.isPooled) &&
-            Objects.equals(this.isRepo, positionHistoryDTO.isRepo) &&
-            Objects.equals(this.isReverseRepo, positionHistoryDTO.isReverseRepo) &&
-            Objects.equals(this.isSubAccount, positionHistoryDTO.isSubAccount) &&
-            Objects.equals(this.isin, positionHistoryDTO.isin) &&
-            Objects.equals(this.issuerId, positionHistoryDTO.issuerId) &&
-            Objects.equals(this.loanPremium, positionHistoryDTO.loanPremium) &&
-            Objects.equals(this.loanPremiumNew, positionHistoryDTO.loanPremiumNew) &&
-            Objects.equals(this.lookBack, positionHistoryDTO.lookBack) &&
-            Objects.equals(this.marketPrice, positionHistoryDTO.marketPrice) &&
-            Objects.equals(this.marketValue, positionHistoryDTO.marketValue) &&
-            Objects.equals(this.navPrice, positionHistoryDTO.navPrice) &&
-            Objects.equals(this.newAccruedInt, positionHistoryDTO.newAccruedInt) &&
-            Objects.equals(this.newAmortizedDp, positionHistoryDTO.newAmortizedDp) &&
-            Objects.equals(this.newAmount, positionHistoryDTO.newAmount) &&
-            Objects.equals(this.newBasisId, positionHistoryDTO.newBasisId) &&
-            Objects.equals(this.newBasisName, positionHistoryDTO.newBasisName) &&
-            Objects.equals(this.newBookValue, positionHistoryDTO.newBookValue) &&
-            Objects.equals(this.newCleanMarketValue, positionHistoryDTO.newCleanMarketValue) &&
-            Objects.equals(this.newCollateralIndicator, positionHistoryDTO.newCollateralIndicator) &&
-            Objects.equals(this.newCollateralTypeId, positionHistoryDTO.newCollateralTypeId) &&
-            Objects.equals(this.newCost, positionHistoryDTO.newCost) &&
-            Objects.equals(this.newDailyAccrual, positionHistoryDTO.newDailyAccrual) &&
-            Objects.equals(this.newDailyDp, positionHistoryDTO.newDailyDp) &&
-            Objects.equals(this.newEndDate, positionHistoryDTO.newEndDate) &&
-            Objects.equals(this.newExposureIndicator, positionHistoryDTO.newExposureIndicator) &&
-            Objects.equals(this.newFactor, positionHistoryDTO.newFactor) &&
-            Objects.equals(this.newHaircutPrice, positionHistoryDTO.newHaircutPrice) &&
-            Objects.equals(this.newIndexId, positionHistoryDTO.newIndexId) &&
-            Objects.equals(this.newIndexName, positionHistoryDTO.newIndexName) &&
-            Objects.equals(this.newIsAccounting, positionHistoryDTO.newIsAccounting) &&
-            Objects.equals(this.newIsBorrow, positionHistoryDTO.newIsBorrow) &&
-            Objects.equals(this.newIsCollateralPledged, positionHistoryDTO.newIsCollateralPledged) &&
-            Objects.equals(this.newIsCollateralReceived, positionHistoryDTO.newIsCollateralReceived) &&
-            Objects.equals(this.newIsInvestment, positionHistoryDTO.newIsInvestment) &&
-            Objects.equals(this.newIsLoan, positionHistoryDTO.newIsLoan) &&
-            Objects.equals(this.newIsRepo, positionHistoryDTO.newIsRepo) &&
-            Objects.equals(this.newIsReverseRepo, positionHistoryDTO.newIsReverseRepo) &&
-            Objects.equals(this.newLookBack, positionHistoryDTO.newLookBack) &&
-            Objects.equals(this.newMarketPrice, positionHistoryDTO.newMarketPrice) &&
-            Objects.equals(this.newMarketValue, positionHistoryDTO.newMarketValue) &&
-            Objects.equals(this.newParentPositionTypeId, positionHistoryDTO.newParentPositionTypeId) &&
-            Objects.equals(this.newPledgedMarketValue, positionHistoryDTO.newPledgedMarketValue) &&
-            Objects.equals(this.newPledgedValue, positionHistoryDTO.newPledgedValue) &&
-            Objects.equals(this.newPositionType, positionHistoryDTO.newPositionType) &&
-            Objects.equals(this.newPositionTypeId, positionHistoryDTO.newPositionTypeId) &&
-            Objects.equals(this.newPrice, positionHistoryDTO.newPrice) &&
-            Objects.equals(this.newQuantity, positionHistoryDTO.newQuantity) &&
-            Objects.equals(this.newRate, positionHistoryDTO.newRate) &&
-            Objects.equals(this.newReceivedMarketValue, positionHistoryDTO.newReceivedMarketValue) &&
-            Objects.equals(this.newReceivedValue, positionHistoryDTO.newReceivedValue) &&
-            Objects.equals(this.newResetDate, positionHistoryDTO.newResetDate) &&
-            Objects.equals(this.newSettledQuantity, positionHistoryDTO.newSettledQuantity) &&
-            Objects.equals(this.newSpread, positionHistoryDTO.newSpread) &&
-            Objects.equals(this.newStatus, positionHistoryDTO.newStatus) &&
-            Objects.equals(this.newStatusId, positionHistoryDTO.newStatusId) &&
-            Objects.equals(this.newTargetPrice, positionHistoryDTO.newTargetPrice) &&
-            Objects.equals(this.newTerm, positionHistoryDTO.newTerm) &&
-            Objects.equals(this.newTermId, positionHistoryDTO.newTermId) &&
-            Objects.equals(this.newTotalValue, positionHistoryDTO.newTotalValue) &&
-            Objects.equals(this.newUnamortizedDp, positionHistoryDTO.newUnamortizedDp) &&
-            Objects.equals(this.newYield, positionHistoryDTO.newYield) &&
-            Objects.equals(this.outstandingPremium, positionHistoryDTO.outstandingPremium) &&
-            Objects.equals(this.outstandingRebate, positionHistoryDTO.outstandingRebate) &&
-            Objects.equals(this.parentPositionTypeId, positionHistoryDTO.parentPositionTypeId) &&
-            Objects.equals(this.pledgedMarketValue, positionHistoryDTO.pledgedMarketValue) &&
-            Objects.equals(this.pledgedValue, positionHistoryDTO.pledgedValue) &&
-            Objects.equals(this.poolPositionId, positionHistoryDTO.poolPositionId) &&
-            Objects.equals(this.positionRef, positionHistoryDTO.positionRef) &&
-            Objects.equals(this.positionType, positionHistoryDTO.positionType) &&
-            Objects.equals(this.positionTypeId, positionHistoryDTO.positionTypeId) &&
-            Objects.equals(this.price, positionHistoryDTO.price) &&
-            Objects.equals(this.priceFactor, positionHistoryDTO.priceFactor) &&
-            Objects.equals(this.primaryId, positionHistoryDTO.primaryId) &&
-            Objects.equals(this.primaryIdType, positionHistoryDTO.primaryIdType) &&
-            Objects.equals(this.principalOrInterest, positionHistoryDTO.principalOrInterest) &&
-            Objects.equals(this.purchasedInterest, positionHistoryDTO.purchasedInterest) &&
-            Objects.equals(this.purchasedInterestNew, positionHistoryDTO.purchasedInterestNew) &&
-            Objects.equals(this.quantity, positionHistoryDTO.quantity) &&
-            Objects.equals(this.quickCode, positionHistoryDTO.quickCode) &&
-            Objects.equals(this.rate, positionHistoryDTO.rate) &&
-            Objects.equals(this.rebate, positionHistoryDTO.rebate) &&
-            Objects.equals(this.rebateNew, positionHistoryDTO.rebateNew) &&
-            Objects.equals(this.receivedMarketValue, positionHistoryDTO.receivedMarketValue) &&
-            Objects.equals(this.receivedValue, positionHistoryDTO.receivedValue) &&
-            Objects.equals(this.repoPremium, positionHistoryDTO.repoPremium) &&
-            Objects.equals(this.repoPremiumNew, positionHistoryDTO.repoPremiumNew) &&
-            Objects.equals(this.repoRebate, positionHistoryDTO.repoRebate) &&
-            Objects.equals(this.repoRebateNew, positionHistoryDTO.repoRebateNew) &&
-            Objects.equals(this.resetDate, positionHistoryDTO.resetDate) &&
-            Objects.equals(this.revRepoInterestExpense, positionHistoryDTO.revRepoInterestExpense) &&
-            Objects.equals(this.revRepoInterestExpenseNew, positionHistoryDTO.revRepoInterestExpenseNew) &&
-            Objects.equals(this.revRepoInterestReceive, positionHistoryDTO.revRepoInterestReceive) &&
-            Objects.equals(this.revRepoInterestReceiveNew, positionHistoryDTO.revRepoInterestReceiveNew) &&
-            Objects.equals(this.securityId, positionHistoryDTO.securityId) &&
-            Objects.equals(this.securityNextResetDate, positionHistoryDTO.securityNextResetDate) &&
-            Objects.equals(this.sedol, positionHistoryDTO.sedol) &&
-            Objects.equals(this.settleDate, positionHistoryDTO.settleDate) &&
-            Objects.equals(this.settledAccountingAmount, positionHistoryDTO.settledAccountingAmount) &&
-            Objects.equals(this.settledAccountingAmountNew, positionHistoryDTO.settledAccountingAmountNew) &&
-            Objects.equals(this.settledBorrowPremium, positionHistoryDTO.settledBorrowPremium) &&
-            Objects.equals(this.settledBorrowPremiumNew, positionHistoryDTO.settledBorrowPremiumNew) &&
-            Objects.equals(this.settledBorrowRebate, positionHistoryDTO.settledBorrowRebate) &&
-            Objects.equals(this.settledBorrowRebateNew, positionHistoryDTO.settledBorrowRebateNew) &&
-            Objects.equals(this.settledInterest, positionHistoryDTO.settledInterest) &&
-            Objects.equals(this.settledInterestExpenseNew, positionHistoryDTO.settledInterestExpenseNew) &&
-            Objects.equals(this.settledInterestNew, positionHistoryDTO.settledInterestNew) &&
-            Objects.equals(this.settledLoanPremium, positionHistoryDTO.settledLoanPremium) &&
-            Objects.equals(this.settledLoanPremiumNew, positionHistoryDTO.settledLoanPremiumNew) &&
-            Objects.equals(this.settledPurchasedInterest, positionHistoryDTO.settledPurchasedInterest) &&
-            Objects.equals(this.settledPurchasedInterestNew, positionHistoryDTO.settledPurchasedInterestNew) &&
-            Objects.equals(this.settledQuantity, positionHistoryDTO.settledQuantity) &&
-            Objects.equals(this.settledRebate, positionHistoryDTO.settledRebate) &&
-            Objects.equals(this.settledRebateNew, positionHistoryDTO.settledRebateNew) &&
-            Objects.equals(this.settledRepoPremium, positionHistoryDTO.settledRepoPremium) &&
-            Objects.equals(this.settledRepoPremiumNew, positionHistoryDTO.settledRepoPremiumNew) &&
-            Objects.equals(this.settledRepoRebate, positionHistoryDTO.settledRepoRebate) &&
-            Objects.equals(this.settledRepoRebateNew, positionHistoryDTO.settledRepoRebateNew) &&
-            Objects.equals(this.settledRevRepoInterestExpense, positionHistoryDTO.settledRevRepoInterestExpense) &&
-            Objects.equals(this.settledRevRepoInterestExpenseNew, positionHistoryDTO.settledRevRepoInterestExpenseNew)
-            &&
-            Objects.equals(this.settledRevRepoInterestReceive, positionHistoryDTO.settledRevRepoInterestReceive) &&
-            Objects.equals(this.settledRevRepoInterestReceiveNew, positionHistoryDTO.settledRevRepoInterestReceiveNew)
-            &&
-            Objects.equals(this.shortName, positionHistoryDTO.shortName) &&
-            Objects.equals(this.spread, positionHistoryDTO.spread) &&
-            Objects.equals(this.status, positionHistoryDTO.status) &&
-            Objects.equals(this.statusId, positionHistoryDTO.statusId) &&
-            Objects.equals(this.targetPrice, positionHistoryDTO.targetPrice) &&
-            Objects.equals(this.taxWhRate, positionHistoryDTO.taxWhRate) &&
-            Objects.equals(this.term, positionHistoryDTO.term) &&
-            Objects.equals(this.termId, positionHistoryDTO.termId) &&
-            Objects.equals(this.ticker, positionHistoryDTO.ticker) &&
-            Objects.equals(this.totalValue, positionHistoryDTO.totalValue) &&
-            Objects.equals(this.tradeDate, positionHistoryDTO.tradeDate) &&
-            Objects.equals(this.tradingDeskId, positionHistoryDTO.tradingDeskId) &&
-            Objects.equals(this.unamortizedDiscount, positionHistoryDTO.unamortizedDiscount) &&
-            Objects.equals(this.unamortizedDiscountNew, positionHistoryDTO.unamortizedDiscountNew) &&
-            Objects.equals(this.unamortizedDp, positionHistoryDTO.unamortizedDp) &&
-            Objects.equals(this.unamortizedPremium, positionHistoryDTO.unamortizedPremium) &&
-            Objects.equals(this.unamortizedPremiumNew, positionHistoryDTO.unamortizedPremiumNew) &&
-            Objects.equals(this.userId, positionHistoryDTO.userId) &&
-            Objects.equals(this.wal, positionHistoryDTO.wal) &&
-            Objects.equals(this.yield, positionHistoryDTO.yield);
-    }
+  public PositionHistoryDTO category3Id(Integer category3Id) {
+    this.category3Id = category3Id;
+    return this;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, accountGroupDTO, accountId, accountId2, accountNo, accountNo2,
-            accountingAmount, accountingAmountNew, accruedInt, amortizedDp, amount, basisId, basisName, bookValue,
-            borrowPremium, borrowPremiumNew, borrowRebate, borrowRebateNew, calendarId, cashBalanced, category0Id,
-            category0Name, category1Id, category1Name, category2Id, category2Name, category3Id, category3Name,
-            categoryId, categoryName, cleanMarketValue, clientCategory, clientSecId, collateralAccountId,
-            collateralAccountNo, collateralIndicator, collateralType, collateralTypeId, comments, cost,
-            counterpartyGroupAccountNo, counterpartyGroupAccountNo2, counterpartyGroupName, counterpartyGroupdtcNo,
-            counterpartyId, counterpartyLegalName, counterpartyShortName, countryId, currencyId, currencyKy,
-            currentAmount, currentPrice, cusip, custodianBankShortName, dailyAccrual, dailyDp, depoGroup, depoId,
-            depoKy, description, dtc, encumberedQuantity, endDate, expMaturity, exposureIndicator, factor, fxRate,
-            haircutPrice, histType, id, impairmentLossReserve, impairmentLossReserveNew, indexId, indexName, interest,
-            interestExpenseNew, interestNew, isAccounting, isBorrow, isCollateralPledged, isCollateralReceived,
-            isInvestment, isLoan, isPooled, isRepo, isReverseRepo, isSubAccount, isin, issuerId, loanPremium,
-            loanPremiumNew, lookBack, marketPrice, marketValue, navPrice, newAccruedInt, newAmortizedDp, newAmount,
-            newBasisId, newBasisName, newBookValue, newCleanMarketValue, newCollateralIndicator, newCollateralTypeId,
-            newCost, newDailyAccrual, newDailyDp, newEndDate, newExposureIndicator, newFactor, newHaircutPrice,
-            newIndexId, newIndexName, newIsAccounting, newIsBorrow, newIsCollateralPledged, newIsCollateralReceived,
-            newIsInvestment, newIsLoan, newIsRepo, newIsReverseRepo, newLookBack, newMarketPrice, newMarketValue,
-            newParentPositionTypeId, newPledgedMarketValue, newPledgedValue, newPositionType, newPositionTypeId,
-            newPrice, newQuantity, newRate, newReceivedMarketValue, newReceivedValue, newResetDate, newSettledQuantity,
-            newSpread, newStatus, newStatusId, newTargetPrice, newTerm, newTermId, newTotalValue, newUnamortizedDp,
-            newYield, outstandingPremium, outstandingRebate, parentPositionTypeId, pledgedMarketValue, pledgedValue,
-            poolPositionId, positionRef, positionType, positionTypeId, price, priceFactor, primaryId, primaryIdType,
-            principalOrInterest, purchasedInterest, purchasedInterestNew, quantity, quickCode, rate, rebate, rebateNew,
-            receivedMarketValue, receivedValue, repoPremium, repoPremiumNew, repoRebate, repoRebateNew, resetDate,
-            revRepoInterestExpense, revRepoInterestExpenseNew, revRepoInterestReceive, revRepoInterestReceiveNew,
-            securityId, securityNextResetDate, sedol, settleDate, settledAccountingAmount, settledAccountingAmountNew,
-            settledBorrowPremium, settledBorrowPremiumNew, settledBorrowRebate, settledBorrowRebateNew, settledInterest,
-            settledInterestExpenseNew, settledInterestNew, settledLoanPremium, settledLoanPremiumNew,
-            settledPurchasedInterest, settledPurchasedInterestNew, settledQuantity, settledRebate, settledRebateNew,
-            settledRepoPremium, settledRepoPremiumNew, settledRepoRebate, settledRepoRebateNew,
-            settledRevRepoInterestExpense, settledRevRepoInterestExpenseNew, settledRevRepoInterestReceive,
-            settledRevRepoInterestReceiveNew, shortName, spread, status, statusId, targetPrice, taxWhRate, term, termId,
-            ticker, totalValue, tradeDate, tradingDeskId, unamortizedDiscount, unamortizedDiscountNew, unamortizedDp,
-            unamortizedPremium, unamortizedPremiumNew, userId, wal, yield);
-    }
+   /**
+   * Get category3Id
+   * @return category3Id
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategory3Id() {
+    return category3Id;
+  }
 
+  public void setCategory3Id(Integer category3Id) {
+    this.category3Id = category3Id;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class PositionHistoryDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    accountGroupDTO: ").append(toIndentedString(accountGroupDTO)).append("\n");
-        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-        sb.append("    accountId2: ").append(toIndentedString(accountId2)).append("\n");
-        sb.append("    accountNo: ").append(toIndentedString(accountNo)).append("\n");
-        sb.append("    accountNo2: ").append(toIndentedString(accountNo2)).append("\n");
-        sb.append("    accountingAmount: ").append(toIndentedString(accountingAmount)).append("\n");
-        sb.append("    accountingAmountNew: ").append(toIndentedString(accountingAmountNew)).append("\n");
-        sb.append("    accruedInt: ").append(toIndentedString(accruedInt)).append("\n");
-        sb.append("    amortizedDp: ").append(toIndentedString(amortizedDp)).append("\n");
-        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-        sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
-        sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
-        sb.append("    bookValue: ").append(toIndentedString(bookValue)).append("\n");
-        sb.append("    borrowPremium: ").append(toIndentedString(borrowPremium)).append("\n");
-        sb.append("    borrowPremiumNew: ").append(toIndentedString(borrowPremiumNew)).append("\n");
-        sb.append("    borrowRebate: ").append(toIndentedString(borrowRebate)).append("\n");
-        sb.append("    borrowRebateNew: ").append(toIndentedString(borrowRebateNew)).append("\n");
-        sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
-        sb.append("    cashBalanced: ").append(toIndentedString(cashBalanced)).append("\n");
-        sb.append("    category0Id: ").append(toIndentedString(category0Id)).append("\n");
-        sb.append("    category0Name: ").append(toIndentedString(category0Name)).append("\n");
-        sb.append("    category1Id: ").append(toIndentedString(category1Id)).append("\n");
-        sb.append("    category1Name: ").append(toIndentedString(category1Name)).append("\n");
-        sb.append("    category2Id: ").append(toIndentedString(category2Id)).append("\n");
-        sb.append("    category2Name: ").append(toIndentedString(category2Name)).append("\n");
-        sb.append("    category3Id: ").append(toIndentedString(category3Id)).append("\n");
-        sb.append("    category3Name: ").append(toIndentedString(category3Name)).append("\n");
-        sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
-        sb.append("    categoryName: ").append(toIndentedString(categoryName)).append("\n");
-        sb.append("    cleanMarketValue: ").append(toIndentedString(cleanMarketValue)).append("\n");
-        sb.append("    clientCategory: ").append(toIndentedString(clientCategory)).append("\n");
-        sb.append("    clientSecId: ").append(toIndentedString(clientSecId)).append("\n");
-        sb.append("    collateralAccountId: ").append(toIndentedString(collateralAccountId)).append("\n");
-        sb.append("    collateralAccountNo: ").append(toIndentedString(collateralAccountNo)).append("\n");
-        sb.append("    collateralIndicator: ").append(toIndentedString(collateralIndicator)).append("\n");
-        sb.append("    collateralType: ").append(toIndentedString(collateralType)).append("\n");
-        sb.append("    collateralTypeId: ").append(toIndentedString(collateralTypeId)).append("\n");
-        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-        sb.append("    cost: ").append(toIndentedString(cost)).append("\n");
-        sb.append("    counterpartyGroupAccountNo: ").append(toIndentedString(counterpartyGroupAccountNo)).append("\n");
-        sb.append("    counterpartyGroupAccountNo2: ").append(toIndentedString(counterpartyGroupAccountNo2))
-            .append("\n");
-        sb.append("    counterpartyGroupName: ").append(toIndentedString(counterpartyGroupName)).append("\n");
-        sb.append("    counterpartyGroupdtcNo: ").append(toIndentedString(counterpartyGroupdtcNo)).append("\n");
-        sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
-        sb.append("    counterpartyLegalName: ").append(toIndentedString(counterpartyLegalName)).append("\n");
-        sb.append("    counterpartyShortName: ").append(toIndentedString(counterpartyShortName)).append("\n");
-        sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
-        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-        sb.append("    currencyKy: ").append(toIndentedString(currencyKy)).append("\n");
-        sb.append("    currentAmount: ").append(toIndentedString(currentAmount)).append("\n");
-        sb.append("    currentPrice: ").append(toIndentedString(currentPrice)).append("\n");
-        sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
-        sb.append("    custodianBankShortName: ").append(toIndentedString(custodianBankShortName)).append("\n");
-        sb.append("    dailyAccrual: ").append(toIndentedString(dailyAccrual)).append("\n");
-        sb.append("    dailyDp: ").append(toIndentedString(dailyDp)).append("\n");
-        sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
-        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-        sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
-        sb.append("    description: ").append(toIndentedString(description)).append("\n");
-        sb.append("    dtc: ").append(toIndentedString(dtc)).append("\n");
-        sb.append("    encumberedQuantity: ").append(toIndentedString(encumberedQuantity)).append("\n");
-        sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
-        sb.append("    expMaturity: ").append(toIndentedString(expMaturity)).append("\n");
-        sb.append("    exposureIndicator: ").append(toIndentedString(exposureIndicator)).append("\n");
-        sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
-        sb.append("    fxRate: ").append(toIndentedString(fxRate)).append("\n");
-        sb.append("    haircutPrice: ").append(toIndentedString(haircutPrice)).append("\n");
-        sb.append("    histType: ").append(toIndentedString(histType)).append("\n");
-        sb.append("    id: ").append(toIndentedString(id)).append("\n");
-        sb.append("    impairmentLossReserve: ").append(toIndentedString(impairmentLossReserve)).append("\n");
-        sb.append("    impairmentLossReserveNew: ").append(toIndentedString(impairmentLossReserveNew)).append("\n");
-        sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
-        sb.append("    indexName: ").append(toIndentedString(indexName)).append("\n");
-        sb.append("    interest: ").append(toIndentedString(interest)).append("\n");
-        sb.append("    interestExpenseNew: ").append(toIndentedString(interestExpenseNew)).append("\n");
-        sb.append("    interestNew: ").append(toIndentedString(interestNew)).append("\n");
-        sb.append("    isAccounting: ").append(toIndentedString(isAccounting)).append("\n");
-        sb.append("    isBorrow: ").append(toIndentedString(isBorrow)).append("\n");
-        sb.append("    isCollateralPledged: ").append(toIndentedString(isCollateralPledged)).append("\n");
-        sb.append("    isCollateralReceived: ").append(toIndentedString(isCollateralReceived)).append("\n");
-        sb.append("    isInvestment: ").append(toIndentedString(isInvestment)).append("\n");
-        sb.append("    isLoan: ").append(toIndentedString(isLoan)).append("\n");
-        sb.append("    isPooled: ").append(toIndentedString(isPooled)).append("\n");
-        sb.append("    isRepo: ").append(toIndentedString(isRepo)).append("\n");
-        sb.append("    isReverseRepo: ").append(toIndentedString(isReverseRepo)).append("\n");
-        sb.append("    isSubAccount: ").append(toIndentedString(isSubAccount)).append("\n");
-        sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
-        sb.append("    issuerId: ").append(toIndentedString(issuerId)).append("\n");
-        sb.append("    loanPremium: ").append(toIndentedString(loanPremium)).append("\n");
-        sb.append("    loanPremiumNew: ").append(toIndentedString(loanPremiumNew)).append("\n");
-        sb.append("    lookBack: ").append(toIndentedString(lookBack)).append("\n");
-        sb.append("    marketPrice: ").append(toIndentedString(marketPrice)).append("\n");
-        sb.append("    marketValue: ").append(toIndentedString(marketValue)).append("\n");
-        sb.append("    navPrice: ").append(toIndentedString(navPrice)).append("\n");
-        sb.append("    newAccruedInt: ").append(toIndentedString(newAccruedInt)).append("\n");
-        sb.append("    newAmortizedDp: ").append(toIndentedString(newAmortizedDp)).append("\n");
-        sb.append("    newAmount: ").append(toIndentedString(newAmount)).append("\n");
-        sb.append("    newBasisId: ").append(toIndentedString(newBasisId)).append("\n");
-        sb.append("    newBasisName: ").append(toIndentedString(newBasisName)).append("\n");
-        sb.append("    newBookValue: ").append(toIndentedString(newBookValue)).append("\n");
-        sb.append("    newCleanMarketValue: ").append(toIndentedString(newCleanMarketValue)).append("\n");
-        sb.append("    newCollateralIndicator: ").append(toIndentedString(newCollateralIndicator)).append("\n");
-        sb.append("    newCollateralTypeId: ").append(toIndentedString(newCollateralTypeId)).append("\n");
-        sb.append("    newCost: ").append(toIndentedString(newCost)).append("\n");
-        sb.append("    newDailyAccrual: ").append(toIndentedString(newDailyAccrual)).append("\n");
-        sb.append("    newDailyDp: ").append(toIndentedString(newDailyDp)).append("\n");
-        sb.append("    newEndDate: ").append(toIndentedString(newEndDate)).append("\n");
-        sb.append("    newExposureIndicator: ").append(toIndentedString(newExposureIndicator)).append("\n");
-        sb.append("    newFactor: ").append(toIndentedString(newFactor)).append("\n");
-        sb.append("    newHaircutPrice: ").append(toIndentedString(newHaircutPrice)).append("\n");
-        sb.append("    newIndexId: ").append(toIndentedString(newIndexId)).append("\n");
-        sb.append("    newIndexName: ").append(toIndentedString(newIndexName)).append("\n");
-        sb.append("    newIsAccounting: ").append(toIndentedString(newIsAccounting)).append("\n");
-        sb.append("    newIsBorrow: ").append(toIndentedString(newIsBorrow)).append("\n");
-        sb.append("    newIsCollateralPledged: ").append(toIndentedString(newIsCollateralPledged)).append("\n");
-        sb.append("    newIsCollateralReceived: ").append(toIndentedString(newIsCollateralReceived)).append("\n");
-        sb.append("    newIsInvestment: ").append(toIndentedString(newIsInvestment)).append("\n");
-        sb.append("    newIsLoan: ").append(toIndentedString(newIsLoan)).append("\n");
-        sb.append("    newIsRepo: ").append(toIndentedString(newIsRepo)).append("\n");
-        sb.append("    newIsReverseRepo: ").append(toIndentedString(newIsReverseRepo)).append("\n");
-        sb.append("    newLookBack: ").append(toIndentedString(newLookBack)).append("\n");
-        sb.append("    newMarketPrice: ").append(toIndentedString(newMarketPrice)).append("\n");
-        sb.append("    newMarketValue: ").append(toIndentedString(newMarketValue)).append("\n");
-        sb.append("    newParentPositionTypeId: ").append(toIndentedString(newParentPositionTypeId)).append("\n");
-        sb.append("    newPledgedMarketValue: ").append(toIndentedString(newPledgedMarketValue)).append("\n");
-        sb.append("    newPledgedValue: ").append(toIndentedString(newPledgedValue)).append("\n");
-        sb.append("    newPositionType: ").append(toIndentedString(newPositionType)).append("\n");
-        sb.append("    newPositionTypeId: ").append(toIndentedString(newPositionTypeId)).append("\n");
-        sb.append("    newPrice: ").append(toIndentedString(newPrice)).append("\n");
-        sb.append("    newQuantity: ").append(toIndentedString(newQuantity)).append("\n");
-        sb.append("    newRate: ").append(toIndentedString(newRate)).append("\n");
-        sb.append("    newReceivedMarketValue: ").append(toIndentedString(newReceivedMarketValue)).append("\n");
-        sb.append("    newReceivedValue: ").append(toIndentedString(newReceivedValue)).append("\n");
-        sb.append("    newResetDate: ").append(toIndentedString(newResetDate)).append("\n");
-        sb.append("    newSettledQuantity: ").append(toIndentedString(newSettledQuantity)).append("\n");
-        sb.append("    newSpread: ").append(toIndentedString(newSpread)).append("\n");
-        sb.append("    newStatus: ").append(toIndentedString(newStatus)).append("\n");
-        sb.append("    newStatusId: ").append(toIndentedString(newStatusId)).append("\n");
-        sb.append("    newTargetPrice: ").append(toIndentedString(newTargetPrice)).append("\n");
-        sb.append("    newTerm: ").append(toIndentedString(newTerm)).append("\n");
-        sb.append("    newTermId: ").append(toIndentedString(newTermId)).append("\n");
-        sb.append("    newTotalValue: ").append(toIndentedString(newTotalValue)).append("\n");
-        sb.append("    newUnamortizedDp: ").append(toIndentedString(newUnamortizedDp)).append("\n");
-        sb.append("    newYield: ").append(toIndentedString(newYield)).append("\n");
-        sb.append("    outstandingPremium: ").append(toIndentedString(outstandingPremium)).append("\n");
-        sb.append("    outstandingRebate: ").append(toIndentedString(outstandingRebate)).append("\n");
-        sb.append("    parentPositionTypeId: ").append(toIndentedString(parentPositionTypeId)).append("\n");
-        sb.append("    pledgedMarketValue: ").append(toIndentedString(pledgedMarketValue)).append("\n");
-        sb.append("    pledgedValue: ").append(toIndentedString(pledgedValue)).append("\n");
-        sb.append("    poolPositionId: ").append(toIndentedString(poolPositionId)).append("\n");
-        sb.append("    positionRef: ").append(toIndentedString(positionRef)).append("\n");
-        sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
-        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-        sb.append("    price: ").append(toIndentedString(price)).append("\n");
-        sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
-        sb.append("    primaryId: ").append(toIndentedString(primaryId)).append("\n");
-        sb.append("    primaryIdType: ").append(toIndentedString(primaryIdType)).append("\n");
-        sb.append("    principalOrInterest: ").append(toIndentedString(principalOrInterest)).append("\n");
-        sb.append("    purchasedInterest: ").append(toIndentedString(purchasedInterest)).append("\n");
-        sb.append("    purchasedInterestNew: ").append(toIndentedString(purchasedInterestNew)).append("\n");
-        sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-        sb.append("    quickCode: ").append(toIndentedString(quickCode)).append("\n");
-        sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-        sb.append("    rebate: ").append(toIndentedString(rebate)).append("\n");
-        sb.append("    rebateNew: ").append(toIndentedString(rebateNew)).append("\n");
-        sb.append("    receivedMarketValue: ").append(toIndentedString(receivedMarketValue)).append("\n");
-        sb.append("    receivedValue: ").append(toIndentedString(receivedValue)).append("\n");
-        sb.append("    repoPremium: ").append(toIndentedString(repoPremium)).append("\n");
-        sb.append("    repoPremiumNew: ").append(toIndentedString(repoPremiumNew)).append("\n");
-        sb.append("    repoRebate: ").append(toIndentedString(repoRebate)).append("\n");
-        sb.append("    repoRebateNew: ").append(toIndentedString(repoRebateNew)).append("\n");
-        sb.append("    resetDate: ").append(toIndentedString(resetDate)).append("\n");
-        sb.append("    revRepoInterestExpense: ").append(toIndentedString(revRepoInterestExpense)).append("\n");
-        sb.append("    revRepoInterestExpenseNew: ").append(toIndentedString(revRepoInterestExpenseNew)).append("\n");
-        sb.append("    revRepoInterestReceive: ").append(toIndentedString(revRepoInterestReceive)).append("\n");
-        sb.append("    revRepoInterestReceiveNew: ").append(toIndentedString(revRepoInterestReceiveNew)).append("\n");
-        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-        sb.append("    securityNextResetDate: ").append(toIndentedString(securityNextResetDate)).append("\n");
-        sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
-        sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
-        sb.append("    settledAccountingAmount: ").append(toIndentedString(settledAccountingAmount)).append("\n");
-        sb.append("    settledAccountingAmountNew: ").append(toIndentedString(settledAccountingAmountNew)).append("\n");
-        sb.append("    settledBorrowPremium: ").append(toIndentedString(settledBorrowPremium)).append("\n");
-        sb.append("    settledBorrowPremiumNew: ").append(toIndentedString(settledBorrowPremiumNew)).append("\n");
-        sb.append("    settledBorrowRebate: ").append(toIndentedString(settledBorrowRebate)).append("\n");
-        sb.append("    settledBorrowRebateNew: ").append(toIndentedString(settledBorrowRebateNew)).append("\n");
-        sb.append("    settledInterest: ").append(toIndentedString(settledInterest)).append("\n");
-        sb.append("    settledInterestExpenseNew: ").append(toIndentedString(settledInterestExpenseNew)).append("\n");
-        sb.append("    settledInterestNew: ").append(toIndentedString(settledInterestNew)).append("\n");
-        sb.append("    settledLoanPremium: ").append(toIndentedString(settledLoanPremium)).append("\n");
-        sb.append("    settledLoanPremiumNew: ").append(toIndentedString(settledLoanPremiumNew)).append("\n");
-        sb.append("    settledPurchasedInterest: ").append(toIndentedString(settledPurchasedInterest)).append("\n");
-        sb.append("    settledPurchasedInterestNew: ").append(toIndentedString(settledPurchasedInterestNew))
-            .append("\n");
-        sb.append("    settledQuantity: ").append(toIndentedString(settledQuantity)).append("\n");
-        sb.append("    settledRebate: ").append(toIndentedString(settledRebate)).append("\n");
-        sb.append("    settledRebateNew: ").append(toIndentedString(settledRebateNew)).append("\n");
-        sb.append("    settledRepoPremium: ").append(toIndentedString(settledRepoPremium)).append("\n");
-        sb.append("    settledRepoPremiumNew: ").append(toIndentedString(settledRepoPremiumNew)).append("\n");
-        sb.append("    settledRepoRebate: ").append(toIndentedString(settledRepoRebate)).append("\n");
-        sb.append("    settledRepoRebateNew: ").append(toIndentedString(settledRepoRebateNew)).append("\n");
-        sb.append("    settledRevRepoInterestExpense: ").append(toIndentedString(settledRevRepoInterestExpense))
-            .append("\n");
-        sb.append("    settledRevRepoInterestExpenseNew: ").append(toIndentedString(settledRevRepoInterestExpenseNew))
-            .append("\n");
-        sb.append("    settledRevRepoInterestReceive: ").append(toIndentedString(settledRevRepoInterestReceive))
-            .append("\n");
-        sb.append("    settledRevRepoInterestReceiveNew: ").append(toIndentedString(settledRevRepoInterestReceiveNew))
-            .append("\n");
-        sb.append("    shortName: ").append(toIndentedString(shortName)).append("\n");
-        sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
-        sb.append("    targetPrice: ").append(toIndentedString(targetPrice)).append("\n");
-        sb.append("    taxWhRate: ").append(toIndentedString(taxWhRate)).append("\n");
-        sb.append("    term: ").append(toIndentedString(term)).append("\n");
-        sb.append("    termId: ").append(toIndentedString(termId)).append("\n");
-        sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
-        sb.append("    totalValue: ").append(toIndentedString(totalValue)).append("\n");
-        sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
-        sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
-        sb.append("    unamortizedDiscount: ").append(toIndentedString(unamortizedDiscount)).append("\n");
-        sb.append("    unamortizedDiscountNew: ").append(toIndentedString(unamortizedDiscountNew)).append("\n");
-        sb.append("    unamortizedDp: ").append(toIndentedString(unamortizedDp)).append("\n");
-        sb.append("    unamortizedPremium: ").append(toIndentedString(unamortizedPremium)).append("\n");
-        sb.append("    unamortizedPremiumNew: ").append(toIndentedString(unamortizedPremiumNew)).append("\n");
-        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-        sb.append("    wal: ").append(toIndentedString(wal)).append("\n");
-        sb.append("    yield: ").append(toIndentedString(yield)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
+  public PositionHistoryDTO category3Name(String category3Name) {
+    this.category3Name = category3Name;
+    return this;
+  }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+   /**
+   * Get category3Name
+   * @return category3Name
+  **/
+  @ApiModelProperty(value = "")
+  public String getCategory3Name() {
+    return category3Name;
+  }
+
+  public void setCategory3Name(String category3Name) {
+    this.category3Name = category3Name;
+  }
+
+  public PositionHistoryDTO categoryId(Integer categoryId) {
+    this.categoryId = categoryId;
+    return this;
+  }
+
+   /**
+   * Get categoryId
+   * @return categoryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCategoryId() {
+    return categoryId;
+  }
+
+  public void setCategoryId(Integer categoryId) {
+    this.categoryId = categoryId;
+  }
+
+  public PositionHistoryDTO categoryName(String categoryName) {
+    this.categoryName = categoryName;
+    return this;
+  }
+
+   /**
+   * Get categoryName
+   * @return categoryName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCategoryName() {
+    return categoryName;
+  }
+
+  public void setCategoryName(String categoryName) {
+    this.categoryName = categoryName;
+  }
+
+  public PositionHistoryDTO cleanMarketValue(Double cleanMarketValue) {
+    this.cleanMarketValue = cleanMarketValue;
+    return this;
+  }
+
+   /**
+   * Get cleanMarketValue
+   * @return cleanMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCleanMarketValue() {
+    return cleanMarketValue;
+  }
+
+  public void setCleanMarketValue(Double cleanMarketValue) {
+    this.cleanMarketValue = cleanMarketValue;
+  }
+
+  public PositionHistoryDTO clientCategory(String clientCategory) {
+    this.clientCategory = clientCategory;
+    return this;
+  }
+
+   /**
+   * Get clientCategory
+   * @return clientCategory
+  **/
+  @ApiModelProperty(value = "")
+  public String getClientCategory() {
+    return clientCategory;
+  }
+
+  public void setClientCategory(String clientCategory) {
+    this.clientCategory = clientCategory;
+  }
+
+  public PositionHistoryDTO clientSecId(String clientSecId) {
+    this.clientSecId = clientSecId;
+    return this;
+  }
+
+   /**
+   * Get clientSecId
+   * @return clientSecId
+  **/
+  @ApiModelProperty(value = "")
+  public String getClientSecId() {
+    return clientSecId;
+  }
+
+  public void setClientSecId(String clientSecId) {
+    this.clientSecId = clientSecId;
+  }
+
+  public PositionHistoryDTO collateralAccountId(Long collateralAccountId) {
+    this.collateralAccountId = collateralAccountId;
+    return this;
+  }
+
+   /**
+   * Get collateralAccountId
+   * @return collateralAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCollateralAccountId() {
+    return collateralAccountId;
+  }
+
+  public void setCollateralAccountId(Long collateralAccountId) {
+    this.collateralAccountId = collateralAccountId;
+  }
+
+  public PositionHistoryDTO collateralAccountNo(String collateralAccountNo) {
+    this.collateralAccountNo = collateralAccountNo;
+    return this;
+  }
+
+   /**
+   * Get collateralAccountNo
+   * @return collateralAccountNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getCollateralAccountNo() {
+    return collateralAccountNo;
+  }
+
+  public void setCollateralAccountNo(String collateralAccountNo) {
+    this.collateralAccountNo = collateralAccountNo;
+  }
+
+  public PositionHistoryDTO collateralIndicator(Boolean collateralIndicator) {
+    this.collateralIndicator = collateralIndicator;
+    return this;
+  }
+
+   /**
+   * Get collateralIndicator
+   * @return collateralIndicator
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isCollateralIndicator() {
+    return collateralIndicator;
+  }
+
+  public void setCollateralIndicator(Boolean collateralIndicator) {
+    this.collateralIndicator = collateralIndicator;
+  }
+
+  public PositionHistoryDTO collateralType(String collateralType) {
+    this.collateralType = collateralType;
+    return this;
+  }
+
+   /**
+   * Get collateralType
+   * @return collateralType
+  **/
+  @ApiModelProperty(value = "")
+  public String getCollateralType() {
+    return collateralType;
+  }
+
+  public void setCollateralType(String collateralType) {
+    this.collateralType = collateralType;
+  }
+
+  public PositionHistoryDTO collateralTypeId(Integer collateralTypeId) {
+    this.collateralTypeId = collateralTypeId;
+    return this;
+  }
+
+   /**
+   * Get collateralTypeId
+   * @return collateralTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCollateralTypeId() {
+    return collateralTypeId;
+  }
+
+  public void setCollateralTypeId(Integer collateralTypeId) {
+    this.collateralTypeId = collateralTypeId;
+  }
+
+  public PositionHistoryDTO comments(String comments) {
+    this.comments = comments;
+    return this;
+  }
+
+   /**
+   * Get comments
+   * @return comments
+  **/
+  @ApiModelProperty(value = "")
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public PositionHistoryDTO cost(Double cost) {
+    this.cost = cost;
+    return this;
+  }
+
+   /**
+   * Get cost
+   * @return cost
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCost() {
+    return cost;
+  }
+
+  public void setCost(Double cost) {
+    this.cost = cost;
+  }
+
+  public PositionHistoryDTO counterpartyGroupAccountNo(String counterpartyGroupAccountNo) {
+    this.counterpartyGroupAccountNo = counterpartyGroupAccountNo;
+    return this;
+  }
+
+   /**
+   * Get counterpartyGroupAccountNo
+   * @return counterpartyGroupAccountNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyGroupAccountNo() {
+    return counterpartyGroupAccountNo;
+  }
+
+  public void setCounterpartyGroupAccountNo(String counterpartyGroupAccountNo) {
+    this.counterpartyGroupAccountNo = counterpartyGroupAccountNo;
+  }
+
+  public PositionHistoryDTO counterpartyGroupAccountNo2(String counterpartyGroupAccountNo2) {
+    this.counterpartyGroupAccountNo2 = counterpartyGroupAccountNo2;
+    return this;
+  }
+
+   /**
+   * Get counterpartyGroupAccountNo2
+   * @return counterpartyGroupAccountNo2
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyGroupAccountNo2() {
+    return counterpartyGroupAccountNo2;
+  }
+
+  public void setCounterpartyGroupAccountNo2(String counterpartyGroupAccountNo2) {
+    this.counterpartyGroupAccountNo2 = counterpartyGroupAccountNo2;
+  }
+
+  public PositionHistoryDTO counterpartyGroupName(String counterpartyGroupName) {
+    this.counterpartyGroupName = counterpartyGroupName;
+    return this;
+  }
+
+   /**
+   * Get counterpartyGroupName
+   * @return counterpartyGroupName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyGroupName() {
+    return counterpartyGroupName;
+  }
+
+  public void setCounterpartyGroupName(String counterpartyGroupName) {
+    this.counterpartyGroupName = counterpartyGroupName;
+  }
+
+  public PositionHistoryDTO counterpartyGroupdtcNo(String counterpartyGroupdtcNo) {
+    this.counterpartyGroupdtcNo = counterpartyGroupdtcNo;
+    return this;
+  }
+
+   /**
+   * Get counterpartyGroupdtcNo
+   * @return counterpartyGroupdtcNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyGroupdtcNo() {
+    return counterpartyGroupdtcNo;
+  }
+
+  public void setCounterpartyGroupdtcNo(String counterpartyGroupdtcNo) {
+    this.counterpartyGroupdtcNo = counterpartyGroupdtcNo;
+  }
+
+  public PositionHistoryDTO counterpartyId(Long counterpartyId) {
+    this.counterpartyId = counterpartyId;
+    return this;
+  }
+
+   /**
+   * Get counterpartyId
+   * @return counterpartyId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCounterpartyId() {
+    return counterpartyId;
+  }
+
+  public void setCounterpartyId(Long counterpartyId) {
+    this.counterpartyId = counterpartyId;
+  }
+
+  public PositionHistoryDTO counterpartyLegalName(String counterpartyLegalName) {
+    this.counterpartyLegalName = counterpartyLegalName;
+    return this;
+  }
+
+   /**
+   * Get counterpartyLegalName
+   * @return counterpartyLegalName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyLegalName() {
+    return counterpartyLegalName;
+  }
+
+  public void setCounterpartyLegalName(String counterpartyLegalName) {
+    this.counterpartyLegalName = counterpartyLegalName;
+  }
+
+  public PositionHistoryDTO counterpartyShortName(String counterpartyShortName) {
+    this.counterpartyShortName = counterpartyShortName;
+    return this;
+  }
+
+   /**
+   * Get counterpartyShortName
+   * @return counterpartyShortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCounterpartyShortName() {
+    return counterpartyShortName;
+  }
+
+  public void setCounterpartyShortName(String counterpartyShortName) {
+    this.counterpartyShortName = counterpartyShortName;
+  }
+
+  public PositionHistoryDTO countryId(Integer countryId) {
+    this.countryId = countryId;
+    return this;
+  }
+
+   /**
+   * Get countryId
+   * @return countryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Integer countryId) {
+    this.countryId = countryId;
+  }
+
+  public PositionHistoryDTO currencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+    return this;
+  }
+
+   /**
+   * Get currencyId
+   * @return currencyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+  }
+
+  public PositionHistoryDTO currencyKy(String currencyKy) {
+    this.currencyKy = currencyKy;
+    return this;
+  }
+
+   /**
+   * Get currencyKy
+   * @return currencyKy
+  **/
+  @ApiModelProperty(value = "")
+  public String getCurrencyKy() {
+    return currencyKy;
+  }
+
+  public void setCurrencyKy(String currencyKy) {
+    this.currencyKy = currencyKy;
+  }
+
+  public PositionHistoryDTO currentAmount(Double currentAmount) {
+    this.currentAmount = currentAmount;
+    return this;
+  }
+
+   /**
+   * Get currentAmount
+   * @return currentAmount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCurrentAmount() {
+    return currentAmount;
+  }
+
+  public void setCurrentAmount(Double currentAmount) {
+    this.currentAmount = currentAmount;
+  }
+
+  public PositionHistoryDTO currentPrice(Double currentPrice) {
+    this.currentPrice = currentPrice;
+    return this;
+  }
+
+   /**
+   * Get currentPrice
+   * @return currentPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCurrentPrice() {
+    return currentPrice;
+  }
+
+  public void setCurrentPrice(Double currentPrice) {
+    this.currentPrice = currentPrice;
+  }
+
+  public PositionHistoryDTO cusip(String cusip) {
+    this.cusip = cusip;
+    return this;
+  }
+
+   /**
+   * Get cusip
+   * @return cusip
+  **/
+  @ApiModelProperty(value = "")
+  public String getCusip() {
+    return cusip;
+  }
+
+  public void setCusip(String cusip) {
+    this.cusip = cusip;
+  }
+
+  public PositionHistoryDTO custodianBankShortName(String custodianBankShortName) {
+    this.custodianBankShortName = custodianBankShortName;
+    return this;
+  }
+
+   /**
+   * Get custodianBankShortName
+   * @return custodianBankShortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCustodianBankShortName() {
+    return custodianBankShortName;
+  }
+
+  public void setCustodianBankShortName(String custodianBankShortName) {
+    this.custodianBankShortName = custodianBankShortName;
+  }
+
+  public PositionHistoryDTO dailyAccrual(Double dailyAccrual) {
+    this.dailyAccrual = dailyAccrual;
+    return this;
+  }
+
+   /**
+   * Get dailyAccrual
+   * @return dailyAccrual
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDailyAccrual() {
+    return dailyAccrual;
+  }
+
+  public void setDailyAccrual(Double dailyAccrual) {
+    this.dailyAccrual = dailyAccrual;
+  }
+
+  public PositionHistoryDTO dailyDp(Double dailyDp) {
+    this.dailyDp = dailyDp;
+    return this;
+  }
+
+   /**
+   * Get dailyDp
+   * @return dailyDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDailyDp() {
+    return dailyDp;
+  }
+
+  public void setDailyDp(Double dailyDp) {
+    this.dailyDp = dailyDp;
+  }
+
+  public PositionHistoryDTO depoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+    return this;
+  }
+
+   /**
+   * Get depoGroup
+   * @return depoGroup
+  **/
+  @ApiModelProperty(value = "")
+  public String getDepoGroup() {
+    return depoGroup;
+  }
+
+  public void setDepoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+  }
+
+  public PositionHistoryDTO depoId(Integer depoId) {
+    this.depoId = depoId;
+    return this;
+  }
+
+   /**
+   * Get depoId
+   * @return depoId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getDepoId() {
+    return depoId;
+  }
+
+  public void setDepoId(Integer depoId) {
+    this.depoId = depoId;
+  }
+
+  public PositionHistoryDTO depoKy(String depoKy) {
+    this.depoKy = depoKy;
+    return this;
+  }
+
+   /**
+   * Get depoKy
+   * @return depoKy
+  **/
+  @ApiModelProperty(value = "")
+  public String getDepoKy() {
+    return depoKy;
+  }
+
+  public void setDepoKy(String depoKy) {
+    this.depoKy = depoKy;
+  }
+
+  public PositionHistoryDTO description(String description) {
+    this.description = description;
+    return this;
+  }
+
+   /**
+   * Get description
+   * @return description
+  **/
+  @ApiModelProperty(value = "")
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public PositionHistoryDTO dtc(Long dtc) {
+    this.dtc = dtc;
+    return this;
+  }
+
+   /**
+   * Get dtc
+   * @return dtc
+  **/
+  @ApiModelProperty(value = "")
+  public Long getDtc() {
+    return dtc;
+  }
+
+  public void setDtc(Long dtc) {
+    this.dtc = dtc;
+  }
+
+  public PositionHistoryDTO encumberedQuantity(Long encumberedQuantity) {
+    this.encumberedQuantity = encumberedQuantity;
+    return this;
+  }
+
+   /**
+   * Get encumberedQuantity
+   * @return encumberedQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Long getEncumberedQuantity() {
+    return encumberedQuantity;
+  }
+
+  public void setEncumberedQuantity(Long encumberedQuantity) {
+    this.encumberedQuantity = encumberedQuantity;
+  }
+
+  public PositionHistoryDTO endDate(LocalDateTime endDate) {
+    this.endDate = endDate;
+    return this;
+  }
+
+   /**
+   * Get endDate
+   * @return endDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(LocalDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+  public PositionHistoryDTO expMaturity(LocalDateTime expMaturity) {
+    this.expMaturity = expMaturity;
+    return this;
+  }
+
+   /**
+   * Get expMaturity
+   * @return expMaturity
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getExpMaturity() {
+    return expMaturity;
+  }
+
+  public void setExpMaturity(LocalDateTime expMaturity) {
+    this.expMaturity = expMaturity;
+  }
+
+  public PositionHistoryDTO exposureIndicator(Boolean exposureIndicator) {
+    this.exposureIndicator = exposureIndicator;
+    return this;
+  }
+
+   /**
+   * Get exposureIndicator
+   * @return exposureIndicator
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isExposureIndicator() {
+    return exposureIndicator;
+  }
+
+  public void setExposureIndicator(Boolean exposureIndicator) {
+    this.exposureIndicator = exposureIndicator;
+  }
+
+  public PositionHistoryDTO factor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
+
+   /**
+   * Get factor
+   * @return factor
+  **/
+  @ApiModelProperty(value = "")
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+
+  public PositionHistoryDTO fxRate(Double fxRate) {
+    this.fxRate = fxRate;
+    return this;
+  }
+
+   /**
+   * Get fxRate
+   * @return fxRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getFxRate() {
+    return fxRate;
+  }
+
+  public void setFxRate(Double fxRate) {
+    this.fxRate = fxRate;
+  }
+
+  public PositionHistoryDTO haircutPrice(Double haircutPrice) {
+    this.haircutPrice = haircutPrice;
+    return this;
+  }
+
+   /**
+   * Get haircutPrice
+   * @return haircutPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getHaircutPrice() {
+    return haircutPrice;
+  }
+
+  public void setHaircutPrice(Double haircutPrice) {
+    this.haircutPrice = haircutPrice;
+  }
+
+  public PositionHistoryDTO histType(String histType) {
+    this.histType = histType;
+    return this;
+  }
+
+   /**
+   * Get histType
+   * @return histType
+  **/
+  @ApiModelProperty(value = "")
+  public String getHistType() {
+    return histType;
+  }
+
+  public void setHistType(String histType) {
+    this.histType = histType;
+  }
+
+  public PositionHistoryDTO id(PositionHistoryKeyDTO id) {
+    this.id = id;
+    return this;
+  }
+
+   /**
+   * Get id
+   * @return id
+  **/
+  @ApiModelProperty(value = "")
+  public PositionHistoryKeyDTO getId() {
+    return id;
+  }
+
+  public void setId(PositionHistoryKeyDTO id) {
+    this.id = id;
+  }
+
+  public PositionHistoryDTO impairmentLossReserve(Double impairmentLossReserve) {
+    this.impairmentLossReserve = impairmentLossReserve;
+    return this;
+  }
+
+   /**
+   * Get impairmentLossReserve
+   * @return impairmentLossReserve
+  **/
+  @ApiModelProperty(value = "")
+  public Double getImpairmentLossReserve() {
+    return impairmentLossReserve;
+  }
+
+  public void setImpairmentLossReserve(Double impairmentLossReserve) {
+    this.impairmentLossReserve = impairmentLossReserve;
+  }
+
+  public PositionHistoryDTO impairmentLossReserveNew(Double impairmentLossReserveNew) {
+    this.impairmentLossReserveNew = impairmentLossReserveNew;
+    return this;
+  }
+
+   /**
+   * Get impairmentLossReserveNew
+   * @return impairmentLossReserveNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getImpairmentLossReserveNew() {
+    return impairmentLossReserveNew;
+  }
+
+  public void setImpairmentLossReserveNew(Double impairmentLossReserveNew) {
+    this.impairmentLossReserveNew = impairmentLossReserveNew;
+  }
+
+  public PositionHistoryDTO indexId(Long indexId) {
+    this.indexId = indexId;
+    return this;
+  }
+
+   /**
+   * Get indexId
+   * @return indexId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getIndexId() {
+    return indexId;
+  }
+
+  public void setIndexId(Long indexId) {
+    this.indexId = indexId;
+  }
+
+  public PositionHistoryDTO indexName(String indexName) {
+    this.indexName = indexName;
+    return this;
+  }
+
+   /**
+   * Get indexName
+   * @return indexName
+  **/
+  @ApiModelProperty(value = "")
+  public String getIndexName() {
+    return indexName;
+  }
+
+  public void setIndexName(String indexName) {
+    this.indexName = indexName;
+  }
+
+  public PositionHistoryDTO interest(Double interest) {
+    this.interest = interest;
+    return this;
+  }
+
+   /**
+   * Get interest
+   * @return interest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInterest() {
+    return interest;
+  }
+
+  public void setInterest(Double interest) {
+    this.interest = interest;
+  }
+
+  public PositionHistoryDTO interestExpenseNew(Double interestExpenseNew) {
+    this.interestExpenseNew = interestExpenseNew;
+    return this;
+  }
+
+   /**
+   * Get interestExpenseNew
+   * @return interestExpenseNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInterestExpenseNew() {
+    return interestExpenseNew;
+  }
+
+  public void setInterestExpenseNew(Double interestExpenseNew) {
+    this.interestExpenseNew = interestExpenseNew;
+  }
+
+  public PositionHistoryDTO interestNew(Double interestNew) {
+    this.interestNew = interestNew;
+    return this;
+  }
+
+   /**
+   * Get interestNew
+   * @return interestNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInterestNew() {
+    return interestNew;
+  }
+
+  public void setInterestNew(Double interestNew) {
+    this.interestNew = interestNew;
+  }
+
+  public PositionHistoryDTO isAccounting(Boolean isAccounting) {
+    this.isAccounting = isAccounting;
+    return this;
+  }
+
+   /**
+   * Get isAccounting
+   * @return isAccounting
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsAccounting() {
+    return isAccounting;
+  }
+
+  public void setIsAccounting(Boolean isAccounting) {
+    this.isAccounting = isAccounting;
+  }
+
+  public PositionHistoryDTO isBorrow(Boolean isBorrow) {
+    this.isBorrow = isBorrow;
+    return this;
+  }
+
+   /**
+   * Get isBorrow
+   * @return isBorrow
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsBorrow() {
+    return isBorrow;
+  }
+
+  public void setIsBorrow(Boolean isBorrow) {
+    this.isBorrow = isBorrow;
+  }
+
+  public PositionHistoryDTO isCollateralPledged(Boolean isCollateralPledged) {
+    this.isCollateralPledged = isCollateralPledged;
+    return this;
+  }
+
+   /**
+   * Get isCollateralPledged
+   * @return isCollateralPledged
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsCollateralPledged() {
+    return isCollateralPledged;
+  }
+
+  public void setIsCollateralPledged(Boolean isCollateralPledged) {
+    this.isCollateralPledged = isCollateralPledged;
+  }
+
+  public PositionHistoryDTO isCollateralReceived(Boolean isCollateralReceived) {
+    this.isCollateralReceived = isCollateralReceived;
+    return this;
+  }
+
+   /**
+   * Get isCollateralReceived
+   * @return isCollateralReceived
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsCollateralReceived() {
+    return isCollateralReceived;
+  }
+
+  public void setIsCollateralReceived(Boolean isCollateralReceived) {
+    this.isCollateralReceived = isCollateralReceived;
+  }
+
+  public PositionHistoryDTO isInvestment(Boolean isInvestment) {
+    this.isInvestment = isInvestment;
+    return this;
+  }
+
+   /**
+   * Get isInvestment
+   * @return isInvestment
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsInvestment() {
+    return isInvestment;
+  }
+
+  public void setIsInvestment(Boolean isInvestment) {
+    this.isInvestment = isInvestment;
+  }
+
+  public PositionHistoryDTO isLoan(Boolean isLoan) {
+    this.isLoan = isLoan;
+    return this;
+  }
+
+   /**
+   * Get isLoan
+   * @return isLoan
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsLoan() {
+    return isLoan;
+  }
+
+  public void setIsLoan(Boolean isLoan) {
+    this.isLoan = isLoan;
+  }
+
+  public PositionHistoryDTO isPooled(Boolean isPooled) {
+    this.isPooled = isPooled;
+    return this;
+  }
+
+   /**
+   * Get isPooled
+   * @return isPooled
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsPooled() {
+    return isPooled;
+  }
+
+  public void setIsPooled(Boolean isPooled) {
+    this.isPooled = isPooled;
+  }
+
+  public PositionHistoryDTO isRepo(Boolean isRepo) {
+    this.isRepo = isRepo;
+    return this;
+  }
+
+   /**
+   * Get isRepo
+   * @return isRepo
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsRepo() {
+    return isRepo;
+  }
+
+  public void setIsRepo(Boolean isRepo) {
+    this.isRepo = isRepo;
+  }
+
+  public PositionHistoryDTO isReverseRepo(Boolean isReverseRepo) {
+    this.isReverseRepo = isReverseRepo;
+    return this;
+  }
+
+   /**
+   * Get isReverseRepo
+   * @return isReverseRepo
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsReverseRepo() {
+    return isReverseRepo;
+  }
+
+  public void setIsReverseRepo(Boolean isReverseRepo) {
+    this.isReverseRepo = isReverseRepo;
+  }
+
+  public PositionHistoryDTO isSubAccount(Boolean isSubAccount) {
+    this.isSubAccount = isSubAccount;
+    return this;
+  }
+
+   /**
+   * Get isSubAccount
+   * @return isSubAccount
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsSubAccount() {
+    return isSubAccount;
+  }
+
+  public void setIsSubAccount(Boolean isSubAccount) {
+    this.isSubAccount = isSubAccount;
+  }
+
+  public PositionHistoryDTO isin(String isin) {
+    this.isin = isin;
+    return this;
+  }
+
+   /**
+   * Get isin
+   * @return isin
+  **/
+  @ApiModelProperty(value = "")
+  public String getIsin() {
+    return isin;
+  }
+
+  public void setIsin(String isin) {
+    this.isin = isin;
+  }
+
+  public PositionHistoryDTO issuerId(Long issuerId) {
+    this.issuerId = issuerId;
+    return this;
+  }
+
+   /**
+   * Get issuerId
+   * @return issuerId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getIssuerId() {
+    return issuerId;
+  }
+
+  public void setIssuerId(Long issuerId) {
+    this.issuerId = issuerId;
+  }
+
+  public PositionHistoryDTO loanPremium(Double loanPremium) {
+    this.loanPremium = loanPremium;
+    return this;
+  }
+
+   /**
+   * Get loanPremium
+   * @return loanPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getLoanPremium() {
+    return loanPremium;
+  }
+
+  public void setLoanPremium(Double loanPremium) {
+    this.loanPremium = loanPremium;
+  }
+
+  public PositionHistoryDTO loanPremiumNew(Double loanPremiumNew) {
+    this.loanPremiumNew = loanPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get loanPremiumNew
+   * @return loanPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getLoanPremiumNew() {
+    return loanPremiumNew;
+  }
+
+  public void setLoanPremiumNew(Double loanPremiumNew) {
+    this.loanPremiumNew = loanPremiumNew;
+  }
+
+  public PositionHistoryDTO lookBack(Integer lookBack) {
+    this.lookBack = lookBack;
+    return this;
+  }
+
+   /**
+   * Get lookBack
+   * @return lookBack
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getLookBack() {
+    return lookBack;
+  }
+
+  public void setLookBack(Integer lookBack) {
+    this.lookBack = lookBack;
+  }
+
+  public PositionHistoryDTO marketPrice(Double marketPrice) {
+    this.marketPrice = marketPrice;
+    return this;
+  }
+
+   /**
+   * Get marketPrice
+   * @return marketPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getMarketPrice() {
+    return marketPrice;
+  }
+
+  public void setMarketPrice(Double marketPrice) {
+    this.marketPrice = marketPrice;
+  }
+
+  public PositionHistoryDTO marketValue(Double marketValue) {
+    this.marketValue = marketValue;
+    return this;
+  }
+
+   /**
+   * Get marketValue
+   * @return marketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getMarketValue() {
+    return marketValue;
+  }
+
+  public void setMarketValue(Double marketValue) {
+    this.marketValue = marketValue;
+  }
+
+  public PositionHistoryDTO navPrice(Double navPrice) {
+    this.navPrice = navPrice;
+    return this;
+  }
+
+   /**
+   * Get navPrice
+   * @return navPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNavPrice() {
+    return navPrice;
+  }
+
+  public void setNavPrice(Double navPrice) {
+    this.navPrice = navPrice;
+  }
+
+  public PositionHistoryDTO newAccruedInt(Double newAccruedInt) {
+    this.newAccruedInt = newAccruedInt;
+    return this;
+  }
+
+   /**
+   * Get newAccruedInt
+   * @return newAccruedInt
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewAccruedInt() {
+    return newAccruedInt;
+  }
+
+  public void setNewAccruedInt(Double newAccruedInt) {
+    this.newAccruedInt = newAccruedInt;
+  }
+
+  public PositionHistoryDTO newAmortizedDp(Double newAmortizedDp) {
+    this.newAmortizedDp = newAmortizedDp;
+    return this;
+  }
+
+   /**
+   * Get newAmortizedDp
+   * @return newAmortizedDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewAmortizedDp() {
+    return newAmortizedDp;
+  }
+
+  public void setNewAmortizedDp(Double newAmortizedDp) {
+    this.newAmortizedDp = newAmortizedDp;
+  }
+
+  public PositionHistoryDTO newAmount(Double newAmount) {
+    this.newAmount = newAmount;
+    return this;
+  }
+
+   /**
+   * Get newAmount
+   * @return newAmount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewAmount() {
+    return newAmount;
+  }
+
+  public void setNewAmount(Double newAmount) {
+    this.newAmount = newAmount;
+  }
+
+  public PositionHistoryDTO newBasisId(Integer newBasisId) {
+    this.newBasisId = newBasisId;
+    return this;
+  }
+
+   /**
+   * Get newBasisId
+   * @return newBasisId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewBasisId() {
+    return newBasisId;
+  }
+
+  public void setNewBasisId(Integer newBasisId) {
+    this.newBasisId = newBasisId;
+  }
+
+  public PositionHistoryDTO newBasisName(String newBasisName) {
+    this.newBasisName = newBasisName;
+    return this;
+  }
+
+   /**
+   * Get newBasisName
+   * @return newBasisName
+  **/
+  @ApiModelProperty(value = "")
+  public String getNewBasisName() {
+    return newBasisName;
+  }
+
+  public void setNewBasisName(String newBasisName) {
+    this.newBasisName = newBasisName;
+  }
+
+  public PositionHistoryDTO newBookValue(Double newBookValue) {
+    this.newBookValue = newBookValue;
+    return this;
+  }
+
+   /**
+   * Get newBookValue
+   * @return newBookValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewBookValue() {
+    return newBookValue;
+  }
+
+  public void setNewBookValue(Double newBookValue) {
+    this.newBookValue = newBookValue;
+  }
+
+  public PositionHistoryDTO newCleanMarketValue(Double newCleanMarketValue) {
+    this.newCleanMarketValue = newCleanMarketValue;
+    return this;
+  }
+
+   /**
+   * Get newCleanMarketValue
+   * @return newCleanMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewCleanMarketValue() {
+    return newCleanMarketValue;
+  }
+
+  public void setNewCleanMarketValue(Double newCleanMarketValue) {
+    this.newCleanMarketValue = newCleanMarketValue;
+  }
+
+  public PositionHistoryDTO newCollateralIndicator(Boolean newCollateralIndicator) {
+    this.newCollateralIndicator = newCollateralIndicator;
+    return this;
+  }
+
+   /**
+   * Get newCollateralIndicator
+   * @return newCollateralIndicator
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewCollateralIndicator() {
+    return newCollateralIndicator;
+  }
+
+  public void setNewCollateralIndicator(Boolean newCollateralIndicator) {
+    this.newCollateralIndicator = newCollateralIndicator;
+  }
+
+  public PositionHistoryDTO newCollateralTypeId(Integer newCollateralTypeId) {
+    this.newCollateralTypeId = newCollateralTypeId;
+    return this;
+  }
+
+   /**
+   * Get newCollateralTypeId
+   * @return newCollateralTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewCollateralTypeId() {
+    return newCollateralTypeId;
+  }
+
+  public void setNewCollateralTypeId(Integer newCollateralTypeId) {
+    this.newCollateralTypeId = newCollateralTypeId;
+  }
+
+  public PositionHistoryDTO newCost(Double newCost) {
+    this.newCost = newCost;
+    return this;
+  }
+
+   /**
+   * Get newCost
+   * @return newCost
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewCost() {
+    return newCost;
+  }
+
+  public void setNewCost(Double newCost) {
+    this.newCost = newCost;
+  }
+
+  public PositionHistoryDTO newDailyAccrual(Double newDailyAccrual) {
+    this.newDailyAccrual = newDailyAccrual;
+    return this;
+  }
+
+   /**
+   * Get newDailyAccrual
+   * @return newDailyAccrual
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewDailyAccrual() {
+    return newDailyAccrual;
+  }
+
+  public void setNewDailyAccrual(Double newDailyAccrual) {
+    this.newDailyAccrual = newDailyAccrual;
+  }
+
+  public PositionHistoryDTO newDailyDp(Double newDailyDp) {
+    this.newDailyDp = newDailyDp;
+    return this;
+  }
+
+   /**
+   * Get newDailyDp
+   * @return newDailyDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewDailyDp() {
+    return newDailyDp;
+  }
+
+  public void setNewDailyDp(Double newDailyDp) {
+    this.newDailyDp = newDailyDp;
+  }
+
+  public PositionHistoryDTO newEndDate(LocalDateTime newEndDate) {
+    this.newEndDate = newEndDate;
+    return this;
+  }
+
+   /**
+   * Get newEndDate
+   * @return newEndDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getNewEndDate() {
+    return newEndDate;
+  }
+
+  public void setNewEndDate(LocalDateTime newEndDate) {
+    this.newEndDate = newEndDate;
+  }
+
+  public PositionHistoryDTO newExposureIndicator(Boolean newExposureIndicator) {
+    this.newExposureIndicator = newExposureIndicator;
+    return this;
+  }
+
+   /**
+   * Get newExposureIndicator
+   * @return newExposureIndicator
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewExposureIndicator() {
+    return newExposureIndicator;
+  }
+
+  public void setNewExposureIndicator(Boolean newExposureIndicator) {
+    this.newExposureIndicator = newExposureIndicator;
+  }
+
+  public PositionHistoryDTO newFactor(Double newFactor) {
+    this.newFactor = newFactor;
+    return this;
+  }
+
+   /**
+   * Get newFactor
+   * @return newFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewFactor() {
+    return newFactor;
+  }
+
+  public void setNewFactor(Double newFactor) {
+    this.newFactor = newFactor;
+  }
+
+  public PositionHistoryDTO newHaircutPrice(Double newHaircutPrice) {
+    this.newHaircutPrice = newHaircutPrice;
+    return this;
+  }
+
+   /**
+   * Get newHaircutPrice
+   * @return newHaircutPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewHaircutPrice() {
+    return newHaircutPrice;
+  }
+
+  public void setNewHaircutPrice(Double newHaircutPrice) {
+    this.newHaircutPrice = newHaircutPrice;
+  }
+
+  public PositionHistoryDTO newIndexId(Long newIndexId) {
+    this.newIndexId = newIndexId;
+    return this;
+  }
+
+   /**
+   * Get newIndexId
+   * @return newIndexId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getNewIndexId() {
+    return newIndexId;
+  }
+
+  public void setNewIndexId(Long newIndexId) {
+    this.newIndexId = newIndexId;
+  }
+
+  public PositionHistoryDTO newIndexName(String newIndexName) {
+    this.newIndexName = newIndexName;
+    return this;
+  }
+
+   /**
+   * Get newIndexName
+   * @return newIndexName
+  **/
+  @ApiModelProperty(value = "")
+  public String getNewIndexName() {
+    return newIndexName;
+  }
+
+  public void setNewIndexName(String newIndexName) {
+    this.newIndexName = newIndexName;
+  }
+
+  public PositionHistoryDTO newIsAccounting(Boolean newIsAccounting) {
+    this.newIsAccounting = newIsAccounting;
+    return this;
+  }
+
+   /**
+   * Get newIsAccounting
+   * @return newIsAccounting
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsAccounting() {
+    return newIsAccounting;
+  }
+
+  public void setNewIsAccounting(Boolean newIsAccounting) {
+    this.newIsAccounting = newIsAccounting;
+  }
+
+  public PositionHistoryDTO newIsBorrow(Boolean newIsBorrow) {
+    this.newIsBorrow = newIsBorrow;
+    return this;
+  }
+
+   /**
+   * Get newIsBorrow
+   * @return newIsBorrow
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsBorrow() {
+    return newIsBorrow;
+  }
+
+  public void setNewIsBorrow(Boolean newIsBorrow) {
+    this.newIsBorrow = newIsBorrow;
+  }
+
+  public PositionHistoryDTO newIsCollateralPledged(Boolean newIsCollateralPledged) {
+    this.newIsCollateralPledged = newIsCollateralPledged;
+    return this;
+  }
+
+   /**
+   * Get newIsCollateralPledged
+   * @return newIsCollateralPledged
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsCollateralPledged() {
+    return newIsCollateralPledged;
+  }
+
+  public void setNewIsCollateralPledged(Boolean newIsCollateralPledged) {
+    this.newIsCollateralPledged = newIsCollateralPledged;
+  }
+
+  public PositionHistoryDTO newIsCollateralReceived(Boolean newIsCollateralReceived) {
+    this.newIsCollateralReceived = newIsCollateralReceived;
+    return this;
+  }
+
+   /**
+   * Get newIsCollateralReceived
+   * @return newIsCollateralReceived
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsCollateralReceived() {
+    return newIsCollateralReceived;
+  }
+
+  public void setNewIsCollateralReceived(Boolean newIsCollateralReceived) {
+    this.newIsCollateralReceived = newIsCollateralReceived;
+  }
+
+  public PositionHistoryDTO newIsInvestment(Boolean newIsInvestment) {
+    this.newIsInvestment = newIsInvestment;
+    return this;
+  }
+
+   /**
+   * Get newIsInvestment
+   * @return newIsInvestment
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsInvestment() {
+    return newIsInvestment;
+  }
+
+  public void setNewIsInvestment(Boolean newIsInvestment) {
+    this.newIsInvestment = newIsInvestment;
+  }
+
+  public PositionHistoryDTO newIsLoan(Boolean newIsLoan) {
+    this.newIsLoan = newIsLoan;
+    return this;
+  }
+
+   /**
+   * Get newIsLoan
+   * @return newIsLoan
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsLoan() {
+    return newIsLoan;
+  }
+
+  public void setNewIsLoan(Boolean newIsLoan) {
+    this.newIsLoan = newIsLoan;
+  }
+
+  public PositionHistoryDTO newIsRepo(Boolean newIsRepo) {
+    this.newIsRepo = newIsRepo;
+    return this;
+  }
+
+   /**
+   * Get newIsRepo
+   * @return newIsRepo
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsRepo() {
+    return newIsRepo;
+  }
+
+  public void setNewIsRepo(Boolean newIsRepo) {
+    this.newIsRepo = newIsRepo;
+  }
+
+  public PositionHistoryDTO newIsReverseRepo(Boolean newIsReverseRepo) {
+    this.newIsReverseRepo = newIsReverseRepo;
+    return this;
+  }
+
+   /**
+   * Get newIsReverseRepo
+   * @return newIsReverseRepo
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isNewIsReverseRepo() {
+    return newIsReverseRepo;
+  }
+
+  public void setNewIsReverseRepo(Boolean newIsReverseRepo) {
+    this.newIsReverseRepo = newIsReverseRepo;
+  }
+
+  public PositionHistoryDTO newLookBack(Integer newLookBack) {
+    this.newLookBack = newLookBack;
+    return this;
+  }
+
+   /**
+   * Get newLookBack
+   * @return newLookBack
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewLookBack() {
+    return newLookBack;
+  }
+
+  public void setNewLookBack(Integer newLookBack) {
+    this.newLookBack = newLookBack;
+  }
+
+  public PositionHistoryDTO newMarketPrice(Double newMarketPrice) {
+    this.newMarketPrice = newMarketPrice;
+    return this;
+  }
+
+   /**
+   * Get newMarketPrice
+   * @return newMarketPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewMarketPrice() {
+    return newMarketPrice;
+  }
+
+  public void setNewMarketPrice(Double newMarketPrice) {
+    this.newMarketPrice = newMarketPrice;
+  }
+
+  public PositionHistoryDTO newMarketValue(Double newMarketValue) {
+    this.newMarketValue = newMarketValue;
+    return this;
+  }
+
+   /**
+   * Get newMarketValue
+   * @return newMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewMarketValue() {
+    return newMarketValue;
+  }
+
+  public void setNewMarketValue(Double newMarketValue) {
+    this.newMarketValue = newMarketValue;
+  }
+
+  public PositionHistoryDTO newParentPositionTypeId(Integer newParentPositionTypeId) {
+    this.newParentPositionTypeId = newParentPositionTypeId;
+    return this;
+  }
+
+   /**
+   * Get newParentPositionTypeId
+   * @return newParentPositionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewParentPositionTypeId() {
+    return newParentPositionTypeId;
+  }
+
+  public void setNewParentPositionTypeId(Integer newParentPositionTypeId) {
+    this.newParentPositionTypeId = newParentPositionTypeId;
+  }
+
+  public PositionHistoryDTO newPledgedMarketValue(Double newPledgedMarketValue) {
+    this.newPledgedMarketValue = newPledgedMarketValue;
+    return this;
+  }
+
+   /**
+   * Get newPledgedMarketValue
+   * @return newPledgedMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewPledgedMarketValue() {
+    return newPledgedMarketValue;
+  }
+
+  public void setNewPledgedMarketValue(Double newPledgedMarketValue) {
+    this.newPledgedMarketValue = newPledgedMarketValue;
+  }
+
+  public PositionHistoryDTO newPledgedValue(Double newPledgedValue) {
+    this.newPledgedValue = newPledgedValue;
+    return this;
+  }
+
+   /**
+   * Get newPledgedValue
+   * @return newPledgedValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewPledgedValue() {
+    return newPledgedValue;
+  }
+
+  public void setNewPledgedValue(Double newPledgedValue) {
+    this.newPledgedValue = newPledgedValue;
+  }
+
+  public PositionHistoryDTO newPositionType(String newPositionType) {
+    this.newPositionType = newPositionType;
+    return this;
+  }
+
+   /**
+   * Get newPositionType
+   * @return newPositionType
+  **/
+  @ApiModelProperty(value = "")
+  public String getNewPositionType() {
+    return newPositionType;
+  }
+
+  public void setNewPositionType(String newPositionType) {
+    this.newPositionType = newPositionType;
+  }
+
+  public PositionHistoryDTO newPositionTypeId(Integer newPositionTypeId) {
+    this.newPositionTypeId = newPositionTypeId;
+    return this;
+  }
+
+   /**
+   * Get newPositionTypeId
+   * @return newPositionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewPositionTypeId() {
+    return newPositionTypeId;
+  }
+
+  public void setNewPositionTypeId(Integer newPositionTypeId) {
+    this.newPositionTypeId = newPositionTypeId;
+  }
+
+  public PositionHistoryDTO newPrice(Double newPrice) {
+    this.newPrice = newPrice;
+    return this;
+  }
+
+   /**
+   * Get newPrice
+   * @return newPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewPrice() {
+    return newPrice;
+  }
+
+  public void setNewPrice(Double newPrice) {
+    this.newPrice = newPrice;
+  }
+
+  public PositionHistoryDTO newQuantity(Double newQuantity) {
+    this.newQuantity = newQuantity;
+    return this;
+  }
+
+   /**
+   * Get newQuantity
+   * @return newQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewQuantity() {
+    return newQuantity;
+  }
+
+  public void setNewQuantity(Double newQuantity) {
+    this.newQuantity = newQuantity;
+  }
+
+  public PositionHistoryDTO newRate(Double newRate) {
+    this.newRate = newRate;
+    return this;
+  }
+
+   /**
+   * Get newRate
+   * @return newRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewRate() {
+    return newRate;
+  }
+
+  public void setNewRate(Double newRate) {
+    this.newRate = newRate;
+  }
+
+  public PositionHistoryDTO newReceivedMarketValue(Double newReceivedMarketValue) {
+    this.newReceivedMarketValue = newReceivedMarketValue;
+    return this;
+  }
+
+   /**
+   * Get newReceivedMarketValue
+   * @return newReceivedMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewReceivedMarketValue() {
+    return newReceivedMarketValue;
+  }
+
+  public void setNewReceivedMarketValue(Double newReceivedMarketValue) {
+    this.newReceivedMarketValue = newReceivedMarketValue;
+  }
+
+  public PositionHistoryDTO newReceivedValue(Double newReceivedValue) {
+    this.newReceivedValue = newReceivedValue;
+    return this;
+  }
+
+   /**
+   * Get newReceivedValue
+   * @return newReceivedValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewReceivedValue() {
+    return newReceivedValue;
+  }
+
+  public void setNewReceivedValue(Double newReceivedValue) {
+    this.newReceivedValue = newReceivedValue;
+  }
+
+  public PositionHistoryDTO newResetDate(LocalDateTime newResetDate) {
+    this.newResetDate = newResetDate;
+    return this;
+  }
+
+   /**
+   * Get newResetDate
+   * @return newResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getNewResetDate() {
+    return newResetDate;
+  }
+
+  public void setNewResetDate(LocalDateTime newResetDate) {
+    this.newResetDate = newResetDate;
+  }
+
+  public PositionHistoryDTO newSettledQuantity(Double newSettledQuantity) {
+    this.newSettledQuantity = newSettledQuantity;
+    return this;
+  }
+
+   /**
+   * Get newSettledQuantity
+   * @return newSettledQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewSettledQuantity() {
+    return newSettledQuantity;
+  }
+
+  public void setNewSettledQuantity(Double newSettledQuantity) {
+    this.newSettledQuantity = newSettledQuantity;
+  }
+
+  public PositionHistoryDTO newSpread(Double newSpread) {
+    this.newSpread = newSpread;
+    return this;
+  }
+
+   /**
+   * Get newSpread
+   * @return newSpread
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewSpread() {
+    return newSpread;
+  }
+
+  public void setNewSpread(Double newSpread) {
+    this.newSpread = newSpread;
+  }
+
+  public PositionHistoryDTO newStatus(String newStatus) {
+    this.newStatus = newStatus;
+    return this;
+  }
+
+   /**
+   * Get newStatus
+   * @return newStatus
+  **/
+  @ApiModelProperty(value = "")
+  public String getNewStatus() {
+    return newStatus;
+  }
+
+  public void setNewStatus(String newStatus) {
+    this.newStatus = newStatus;
+  }
+
+  public PositionHistoryDTO newStatusId(Integer newStatusId) {
+    this.newStatusId = newStatusId;
+    return this;
+  }
+
+   /**
+   * Get newStatusId
+   * @return newStatusId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewStatusId() {
+    return newStatusId;
+  }
+
+  public void setNewStatusId(Integer newStatusId) {
+    this.newStatusId = newStatusId;
+  }
+
+  public PositionHistoryDTO newTargetPrice(Double newTargetPrice) {
+    this.newTargetPrice = newTargetPrice;
+    return this;
+  }
+
+   /**
+   * Get newTargetPrice
+   * @return newTargetPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewTargetPrice() {
+    return newTargetPrice;
+  }
+
+  public void setNewTargetPrice(Double newTargetPrice) {
+    this.newTargetPrice = newTargetPrice;
+  }
+
+  public PositionHistoryDTO newTerm(String newTerm) {
+    this.newTerm = newTerm;
+    return this;
+  }
+
+   /**
+   * Get newTerm
+   * @return newTerm
+  **/
+  @ApiModelProperty(value = "")
+  public String getNewTerm() {
+    return newTerm;
+  }
+
+  public void setNewTerm(String newTerm) {
+    this.newTerm = newTerm;
+  }
+
+  public PositionHistoryDTO newTermId(Integer newTermId) {
+    this.newTermId = newTermId;
+    return this;
+  }
+
+   /**
+   * Get newTermId
+   * @return newTermId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getNewTermId() {
+    return newTermId;
+  }
+
+  public void setNewTermId(Integer newTermId) {
+    this.newTermId = newTermId;
+  }
+
+  public PositionHistoryDTO newTotalValue(Double newTotalValue) {
+    this.newTotalValue = newTotalValue;
+    return this;
+  }
+
+   /**
+   * Get newTotalValue
+   * @return newTotalValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewTotalValue() {
+    return newTotalValue;
+  }
+
+  public void setNewTotalValue(Double newTotalValue) {
+    this.newTotalValue = newTotalValue;
+  }
+
+  public PositionHistoryDTO newUnamortizedDp(Double newUnamortizedDp) {
+    this.newUnamortizedDp = newUnamortizedDp;
+    return this;
+  }
+
+   /**
+   * Get newUnamortizedDp
+   * @return newUnamortizedDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewUnamortizedDp() {
+    return newUnamortizedDp;
+  }
+
+  public void setNewUnamortizedDp(Double newUnamortizedDp) {
+    this.newUnamortizedDp = newUnamortizedDp;
+  }
+
+  public PositionHistoryDTO newYield(Double newYield) {
+    this.newYield = newYield;
+    return this;
+  }
+
+   /**
+   * Get newYield
+   * @return newYield
+  **/
+  @ApiModelProperty(value = "")
+  public Double getNewYield() {
+    return newYield;
+  }
+
+  public void setNewYield(Double newYield) {
+    this.newYield = newYield;
+  }
+
+  public PositionHistoryDTO outstandingPremium(Double outstandingPremium) {
+    this.outstandingPremium = outstandingPremium;
+    return this;
+  }
+
+   /**
+   * Get outstandingPremium
+   * @return outstandingPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getOutstandingPremium() {
+    return outstandingPremium;
+  }
+
+  public void setOutstandingPremium(Double outstandingPremium) {
+    this.outstandingPremium = outstandingPremium;
+  }
+
+  public PositionHistoryDTO outstandingRebate(Double outstandingRebate) {
+    this.outstandingRebate = outstandingRebate;
+    return this;
+  }
+
+   /**
+   * Get outstandingRebate
+   * @return outstandingRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getOutstandingRebate() {
+    return outstandingRebate;
+  }
+
+  public void setOutstandingRebate(Double outstandingRebate) {
+    this.outstandingRebate = outstandingRebate;
+  }
+
+  public PositionHistoryDTO parentPositionTypeId(Integer parentPositionTypeId) {
+    this.parentPositionTypeId = parentPositionTypeId;
+    return this;
+  }
+
+   /**
+   * Get parentPositionTypeId
+   * @return parentPositionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getParentPositionTypeId() {
+    return parentPositionTypeId;
+  }
+
+  public void setParentPositionTypeId(Integer parentPositionTypeId) {
+    this.parentPositionTypeId = parentPositionTypeId;
+  }
+
+  public PositionHistoryDTO pledgedMarketValue(Double pledgedMarketValue) {
+    this.pledgedMarketValue = pledgedMarketValue;
+    return this;
+  }
+
+   /**
+   * Get pledgedMarketValue
+   * @return pledgedMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPledgedMarketValue() {
+    return pledgedMarketValue;
+  }
+
+  public void setPledgedMarketValue(Double pledgedMarketValue) {
+    this.pledgedMarketValue = pledgedMarketValue;
+  }
+
+  public PositionHistoryDTO pledgedValue(Double pledgedValue) {
+    this.pledgedValue = pledgedValue;
+    return this;
+  }
+
+   /**
+   * Get pledgedValue
+   * @return pledgedValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPledgedValue() {
+    return pledgedValue;
+  }
+
+  public void setPledgedValue(Double pledgedValue) {
+    this.pledgedValue = pledgedValue;
+  }
+
+  public PositionHistoryDTO poolPositionId(Long poolPositionId) {
+    this.poolPositionId = poolPositionId;
+    return this;
+  }
+
+   /**
+   * Get poolPositionId
+   * @return poolPositionId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getPoolPositionId() {
+    return poolPositionId;
+  }
+
+  public void setPoolPositionId(Long poolPositionId) {
+    this.poolPositionId = poolPositionId;
+  }
+
+  public PositionHistoryDTO positionRef(String positionRef) {
+    this.positionRef = positionRef;
+    return this;
+  }
+
+   /**
+   * Get positionRef
+   * @return positionRef
+  **/
+  @ApiModelProperty(value = "")
+  public String getPositionRef() {
+    return positionRef;
+  }
+
+  public void setPositionRef(String positionRef) {
+    this.positionRef = positionRef;
+  }
+
+  public PositionHistoryDTO positionType(String positionType) {
+    this.positionType = positionType;
+    return this;
+  }
+
+   /**
+   * Get positionType
+   * @return positionType
+  **/
+  @ApiModelProperty(value = "")
+  public String getPositionType() {
+    return positionType;
+  }
+
+  public void setPositionType(String positionType) {
+    this.positionType = positionType;
+  }
+
+  public PositionHistoryDTO positionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+    return this;
+  }
+
+   /**
+   * Get positionTypeId
+   * @return positionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPositionTypeId() {
+    return positionTypeId;
+  }
+
+  public void setPositionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+  }
+
+  public PositionHistoryDTO price(Double price) {
+    this.price = price;
+    return this;
+  }
+
+   /**
+   * Get price
+   * @return price
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
+  public PositionHistoryDTO priceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+    return this;
+  }
+
+   /**
+   * Get priceFactor
+   * @return priceFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceFactor() {
+    return priceFactor;
+  }
+
+  public void setPriceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+  }
+
+  public PositionHistoryDTO primaryId(String primaryId) {
+    this.primaryId = primaryId;
+    return this;
+  }
+
+   /**
+   * Get primaryId
+   * @return primaryId
+  **/
+  @ApiModelProperty(value = "")
+  public String getPrimaryId() {
+    return primaryId;
+  }
+
+  public void setPrimaryId(String primaryId) {
+    this.primaryId = primaryId;
+  }
+
+  public PositionHistoryDTO primaryIdType(String primaryIdType) {
+    this.primaryIdType = primaryIdType;
+    return this;
+  }
+
+   /**
+   * Get primaryIdType
+   * @return primaryIdType
+  **/
+  @ApiModelProperty(value = "")
+  public String getPrimaryIdType() {
+    return primaryIdType;
+  }
+
+  public void setPrimaryIdType(String primaryIdType) {
+    this.primaryIdType = primaryIdType;
+  }
+
+  public PositionHistoryDTO principalOrInterest(Character principalOrInterest) {
+    this.principalOrInterest = principalOrInterest;
+    return this;
+  }
+
+   /**
+   * Get principalOrInterest
+   * @return principalOrInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Character getPrincipalOrInterest() {
+    return principalOrInterest;
+  }
+
+  public void setPrincipalOrInterest(Character principalOrInterest) {
+    this.principalOrInterest = principalOrInterest;
+  }
+
+  public PositionHistoryDTO purchasedInterest(Double purchasedInterest) {
+    this.purchasedInterest = purchasedInterest;
+    return this;
+  }
+
+   /**
+   * Get purchasedInterest
+   * @return purchasedInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPurchasedInterest() {
+    return purchasedInterest;
+  }
+
+  public void setPurchasedInterest(Double purchasedInterest) {
+    this.purchasedInterest = purchasedInterest;
+  }
+
+  public PositionHistoryDTO purchasedInterestNew(Double purchasedInterestNew) {
+    this.purchasedInterestNew = purchasedInterestNew;
+    return this;
+  }
+
+   /**
+   * Get purchasedInterestNew
+   * @return purchasedInterestNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPurchasedInterestNew() {
+    return purchasedInterestNew;
+  }
+
+  public void setPurchasedInterestNew(Double purchasedInterestNew) {
+    this.purchasedInterestNew = purchasedInterestNew;
+  }
+
+  public PositionHistoryDTO quantity(Double quantity) {
+    this.quantity = quantity;
+    return this;
+  }
+
+   /**
+   * Get quantity
+   * @return quantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(Double quantity) {
+    this.quantity = quantity;
+  }
+
+  public PositionHistoryDTO quickCode(String quickCode) {
+    this.quickCode = quickCode;
+    return this;
+  }
+
+   /**
+   * Get quickCode
+   * @return quickCode
+  **/
+  @ApiModelProperty(value = "")
+  public String getQuickCode() {
+    return quickCode;
+  }
+
+  public void setQuickCode(String quickCode) {
+    this.quickCode = quickCode;
+  }
+
+  public PositionHistoryDTO rate(Double rate) {
+    this.rate = rate;
+    return this;
+  }
+
+   /**
+   * Get rate
+   * @return rate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRate() {
+    return rate;
+  }
+
+  public void setRate(Double rate) {
+    this.rate = rate;
+  }
+
+  public PositionHistoryDTO rebate(Double rebate) {
+    this.rebate = rebate;
+    return this;
+  }
+
+   /**
+   * Get rebate
+   * @return rebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebate() {
+    return rebate;
+  }
+
+  public void setRebate(Double rebate) {
+    this.rebate = rebate;
+  }
+
+  public PositionHistoryDTO rebateNew(Double rebateNew) {
+    this.rebateNew = rebateNew;
+    return this;
+  }
+
+   /**
+   * Get rebateNew
+   * @return rebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebateNew() {
+    return rebateNew;
+  }
+
+  public void setRebateNew(Double rebateNew) {
+    this.rebateNew = rebateNew;
+  }
+
+  public PositionHistoryDTO receivedMarketValue(Double receivedMarketValue) {
+    this.receivedMarketValue = receivedMarketValue;
+    return this;
+  }
+
+   /**
+   * Get receivedMarketValue
+   * @return receivedMarketValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getReceivedMarketValue() {
+    return receivedMarketValue;
+  }
+
+  public void setReceivedMarketValue(Double receivedMarketValue) {
+    this.receivedMarketValue = receivedMarketValue;
+  }
+
+  public PositionHistoryDTO receivedValue(Double receivedValue) {
+    this.receivedValue = receivedValue;
+    return this;
+  }
+
+   /**
+   * Get receivedValue
+   * @return receivedValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getReceivedValue() {
+    return receivedValue;
+  }
+
+  public void setReceivedValue(Double receivedValue) {
+    this.receivedValue = receivedValue;
+  }
+
+  public PositionHistoryDTO repoPremium(Double repoPremium) {
+    this.repoPremium = repoPremium;
+    return this;
+  }
+
+   /**
+   * Get repoPremium
+   * @return repoPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRepoPremium() {
+    return repoPremium;
+  }
+
+  public void setRepoPremium(Double repoPremium) {
+    this.repoPremium = repoPremium;
+  }
+
+  public PositionHistoryDTO repoPremiumNew(Double repoPremiumNew) {
+    this.repoPremiumNew = repoPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get repoPremiumNew
+   * @return repoPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRepoPremiumNew() {
+    return repoPremiumNew;
+  }
+
+  public void setRepoPremiumNew(Double repoPremiumNew) {
+    this.repoPremiumNew = repoPremiumNew;
+  }
+
+  public PositionHistoryDTO repoRebate(Double repoRebate) {
+    this.repoRebate = repoRebate;
+    return this;
+  }
+
+   /**
+   * Get repoRebate
+   * @return repoRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRepoRebate() {
+    return repoRebate;
+  }
+
+  public void setRepoRebate(Double repoRebate) {
+    this.repoRebate = repoRebate;
+  }
+
+  public PositionHistoryDTO repoRebateNew(Double repoRebateNew) {
+    this.repoRebateNew = repoRebateNew;
+    return this;
+  }
+
+   /**
+   * Get repoRebateNew
+   * @return repoRebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRepoRebateNew() {
+    return repoRebateNew;
+  }
+
+  public void setRepoRebateNew(Double repoRebateNew) {
+    this.repoRebateNew = repoRebateNew;
+  }
+
+  public PositionHistoryDTO resetDate(LocalDateTime resetDate) {
+    this.resetDate = resetDate;
+    return this;
+  }
+
+   /**
+   * Get resetDate
+   * @return resetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getResetDate() {
+    return resetDate;
+  }
+
+  public void setResetDate(LocalDateTime resetDate) {
+    this.resetDate = resetDate;
+  }
+
+  public PositionHistoryDTO revRepoInterestExpense(Double revRepoInterestExpense) {
+    this.revRepoInterestExpense = revRepoInterestExpense;
+    return this;
+  }
+
+   /**
+   * Get revRepoInterestExpense
+   * @return revRepoInterestExpense
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRevRepoInterestExpense() {
+    return revRepoInterestExpense;
+  }
+
+  public void setRevRepoInterestExpense(Double revRepoInterestExpense) {
+    this.revRepoInterestExpense = revRepoInterestExpense;
+  }
+
+  public PositionHistoryDTO revRepoInterestExpenseNew(Double revRepoInterestExpenseNew) {
+    this.revRepoInterestExpenseNew = revRepoInterestExpenseNew;
+    return this;
+  }
+
+   /**
+   * Get revRepoInterestExpenseNew
+   * @return revRepoInterestExpenseNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRevRepoInterestExpenseNew() {
+    return revRepoInterestExpenseNew;
+  }
+
+  public void setRevRepoInterestExpenseNew(Double revRepoInterestExpenseNew) {
+    this.revRepoInterestExpenseNew = revRepoInterestExpenseNew;
+  }
+
+  public PositionHistoryDTO revRepoInterestReceive(Double revRepoInterestReceive) {
+    this.revRepoInterestReceive = revRepoInterestReceive;
+    return this;
+  }
+
+   /**
+   * Get revRepoInterestReceive
+   * @return revRepoInterestReceive
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRevRepoInterestReceive() {
+    return revRepoInterestReceive;
+  }
+
+  public void setRevRepoInterestReceive(Double revRepoInterestReceive) {
+    this.revRepoInterestReceive = revRepoInterestReceive;
+  }
+
+  public PositionHistoryDTO revRepoInterestReceiveNew(Double revRepoInterestReceiveNew) {
+    this.revRepoInterestReceiveNew = revRepoInterestReceiveNew;
+    return this;
+  }
+
+   /**
+   * Get revRepoInterestReceiveNew
+   * @return revRepoInterestReceiveNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRevRepoInterestReceiveNew() {
+    return revRepoInterestReceiveNew;
+  }
+
+  public void setRevRepoInterestReceiveNew(Double revRepoInterestReceiveNew) {
+    this.revRepoInterestReceiveNew = revRepoInterestReceiveNew;
+  }
+
+  public PositionHistoryDTO securityId(Long securityId) {
+    this.securityId = securityId;
+    return this;
+  }
+
+   /**
+   * Get securityId
+   * @return securityId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSecurityId() {
+    return securityId;
+  }
+
+  public void setSecurityId(Long securityId) {
+    this.securityId = securityId;
+  }
+
+  public PositionHistoryDTO securityNextResetDate(LocalDateTime securityNextResetDate) {
+    this.securityNextResetDate = securityNextResetDate;
+    return this;
+  }
+
+   /**
+   * Get securityNextResetDate
+   * @return securityNextResetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getSecurityNextResetDate() {
+    return securityNextResetDate;
+  }
+
+  public void setSecurityNextResetDate(LocalDateTime securityNextResetDate) {
+    this.securityNextResetDate = securityNextResetDate;
+  }
+
+  public PositionHistoryDTO sedol(String sedol) {
+    this.sedol = sedol;
+    return this;
+  }
+
+   /**
+   * Get sedol
+   * @return sedol
+  **/
+  @ApiModelProperty(value = "")
+  public String getSedol() {
+    return sedol;
+  }
+
+  public void setSedol(String sedol) {
+    this.sedol = sedol;
+  }
+
+  public PositionHistoryDTO settleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+    return this;
+  }
+
+   /**
+   * Get settleDate
+   * @return settleDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getSettleDate() {
+    return settleDate;
+  }
+
+  public void setSettleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+  }
+
+  public PositionHistoryDTO settledAccountingAmount(Double settledAccountingAmount) {
+    this.settledAccountingAmount = settledAccountingAmount;
+    return this;
+  }
+
+   /**
+   * Get settledAccountingAmount
+   * @return settledAccountingAmount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledAccountingAmount() {
+    return settledAccountingAmount;
+  }
+
+  public void setSettledAccountingAmount(Double settledAccountingAmount) {
+    this.settledAccountingAmount = settledAccountingAmount;
+  }
+
+  public PositionHistoryDTO settledAccountingAmountNew(Double settledAccountingAmountNew) {
+    this.settledAccountingAmountNew = settledAccountingAmountNew;
+    return this;
+  }
+
+   /**
+   * Get settledAccountingAmountNew
+   * @return settledAccountingAmountNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledAccountingAmountNew() {
+    return settledAccountingAmountNew;
+  }
+
+  public void setSettledAccountingAmountNew(Double settledAccountingAmountNew) {
+    this.settledAccountingAmountNew = settledAccountingAmountNew;
+  }
+
+  public PositionHistoryDTO settledBorrowPremium(Double settledBorrowPremium) {
+    this.settledBorrowPremium = settledBorrowPremium;
+    return this;
+  }
+
+   /**
+   * Get settledBorrowPremium
+   * @return settledBorrowPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledBorrowPremium() {
+    return settledBorrowPremium;
+  }
+
+  public void setSettledBorrowPremium(Double settledBorrowPremium) {
+    this.settledBorrowPremium = settledBorrowPremium;
+  }
+
+  public PositionHistoryDTO settledBorrowPremiumNew(Double settledBorrowPremiumNew) {
+    this.settledBorrowPremiumNew = settledBorrowPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get settledBorrowPremiumNew
+   * @return settledBorrowPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledBorrowPremiumNew() {
+    return settledBorrowPremiumNew;
+  }
+
+  public void setSettledBorrowPremiumNew(Double settledBorrowPremiumNew) {
+    this.settledBorrowPremiumNew = settledBorrowPremiumNew;
+  }
+
+  public PositionHistoryDTO settledBorrowRebate(Double settledBorrowRebate) {
+    this.settledBorrowRebate = settledBorrowRebate;
+    return this;
+  }
+
+   /**
+   * Get settledBorrowRebate
+   * @return settledBorrowRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledBorrowRebate() {
+    return settledBorrowRebate;
+  }
+
+  public void setSettledBorrowRebate(Double settledBorrowRebate) {
+    this.settledBorrowRebate = settledBorrowRebate;
+  }
+
+  public PositionHistoryDTO settledBorrowRebateNew(Double settledBorrowRebateNew) {
+    this.settledBorrowRebateNew = settledBorrowRebateNew;
+    return this;
+  }
+
+   /**
+   * Get settledBorrowRebateNew
+   * @return settledBorrowRebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledBorrowRebateNew() {
+    return settledBorrowRebateNew;
+  }
+
+  public void setSettledBorrowRebateNew(Double settledBorrowRebateNew) {
+    this.settledBorrowRebateNew = settledBorrowRebateNew;
+  }
+
+  public PositionHistoryDTO settledInterest(Double settledInterest) {
+    this.settledInterest = settledInterest;
+    return this;
+  }
+
+   /**
+   * Get settledInterest
+   * @return settledInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledInterest() {
+    return settledInterest;
+  }
+
+  public void setSettledInterest(Double settledInterest) {
+    this.settledInterest = settledInterest;
+  }
+
+  public PositionHistoryDTO settledInterestExpenseNew(Double settledInterestExpenseNew) {
+    this.settledInterestExpenseNew = settledInterestExpenseNew;
+    return this;
+  }
+
+   /**
+   * Get settledInterestExpenseNew
+   * @return settledInterestExpenseNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledInterestExpenseNew() {
+    return settledInterestExpenseNew;
+  }
+
+  public void setSettledInterestExpenseNew(Double settledInterestExpenseNew) {
+    this.settledInterestExpenseNew = settledInterestExpenseNew;
+  }
+
+  public PositionHistoryDTO settledInterestNew(Double settledInterestNew) {
+    this.settledInterestNew = settledInterestNew;
+    return this;
+  }
+
+   /**
+   * Get settledInterestNew
+   * @return settledInterestNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledInterestNew() {
+    return settledInterestNew;
+  }
+
+  public void setSettledInterestNew(Double settledInterestNew) {
+    this.settledInterestNew = settledInterestNew;
+  }
+
+  public PositionHistoryDTO settledLoanPremium(Double settledLoanPremium) {
+    this.settledLoanPremium = settledLoanPremium;
+    return this;
+  }
+
+   /**
+   * Get settledLoanPremium
+   * @return settledLoanPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledLoanPremium() {
+    return settledLoanPremium;
+  }
+
+  public void setSettledLoanPremium(Double settledLoanPremium) {
+    this.settledLoanPremium = settledLoanPremium;
+  }
+
+  public PositionHistoryDTO settledLoanPremiumNew(Double settledLoanPremiumNew) {
+    this.settledLoanPremiumNew = settledLoanPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get settledLoanPremiumNew
+   * @return settledLoanPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledLoanPremiumNew() {
+    return settledLoanPremiumNew;
+  }
+
+  public void setSettledLoanPremiumNew(Double settledLoanPremiumNew) {
+    this.settledLoanPremiumNew = settledLoanPremiumNew;
+  }
+
+  public PositionHistoryDTO settledPurchasedInterest(Double settledPurchasedInterest) {
+    this.settledPurchasedInterest = settledPurchasedInterest;
+    return this;
+  }
+
+   /**
+   * Get settledPurchasedInterest
+   * @return settledPurchasedInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledPurchasedInterest() {
+    return settledPurchasedInterest;
+  }
+
+  public void setSettledPurchasedInterest(Double settledPurchasedInterest) {
+    this.settledPurchasedInterest = settledPurchasedInterest;
+  }
+
+  public PositionHistoryDTO settledPurchasedInterestNew(Double settledPurchasedInterestNew) {
+    this.settledPurchasedInterestNew = settledPurchasedInterestNew;
+    return this;
+  }
+
+   /**
+   * Get settledPurchasedInterestNew
+   * @return settledPurchasedInterestNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledPurchasedInterestNew() {
+    return settledPurchasedInterestNew;
+  }
+
+  public void setSettledPurchasedInterestNew(Double settledPurchasedInterestNew) {
+    this.settledPurchasedInterestNew = settledPurchasedInterestNew;
+  }
+
+  public PositionHistoryDTO settledQuantity(Double settledQuantity) {
+    this.settledQuantity = settledQuantity;
+    return this;
+  }
+
+   /**
+   * Get settledQuantity
+   * @return settledQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledQuantity() {
+    return settledQuantity;
+  }
+
+  public void setSettledQuantity(Double settledQuantity) {
+    this.settledQuantity = settledQuantity;
+  }
+
+  public PositionHistoryDTO settledRebate(Double settledRebate) {
+    this.settledRebate = settledRebate;
+    return this;
+  }
+
+   /**
+   * Get settledRebate
+   * @return settledRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRebate() {
+    return settledRebate;
+  }
+
+  public void setSettledRebate(Double settledRebate) {
+    this.settledRebate = settledRebate;
+  }
+
+  public PositionHistoryDTO settledRebateNew(Double settledRebateNew) {
+    this.settledRebateNew = settledRebateNew;
+    return this;
+  }
+
+   /**
+   * Get settledRebateNew
+   * @return settledRebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRebateNew() {
+    return settledRebateNew;
+  }
+
+  public void setSettledRebateNew(Double settledRebateNew) {
+    this.settledRebateNew = settledRebateNew;
+  }
+
+  public PositionHistoryDTO settledRepoPremium(Double settledRepoPremium) {
+    this.settledRepoPremium = settledRepoPremium;
+    return this;
+  }
+
+   /**
+   * Get settledRepoPremium
+   * @return settledRepoPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRepoPremium() {
+    return settledRepoPremium;
+  }
+
+  public void setSettledRepoPremium(Double settledRepoPremium) {
+    this.settledRepoPremium = settledRepoPremium;
+  }
+
+  public PositionHistoryDTO settledRepoPremiumNew(Double settledRepoPremiumNew) {
+    this.settledRepoPremiumNew = settledRepoPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get settledRepoPremiumNew
+   * @return settledRepoPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRepoPremiumNew() {
+    return settledRepoPremiumNew;
+  }
+
+  public void setSettledRepoPremiumNew(Double settledRepoPremiumNew) {
+    this.settledRepoPremiumNew = settledRepoPremiumNew;
+  }
+
+  public PositionHistoryDTO settledRepoRebate(Double settledRepoRebate) {
+    this.settledRepoRebate = settledRepoRebate;
+    return this;
+  }
+
+   /**
+   * Get settledRepoRebate
+   * @return settledRepoRebate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRepoRebate() {
+    return settledRepoRebate;
+  }
+
+  public void setSettledRepoRebate(Double settledRepoRebate) {
+    this.settledRepoRebate = settledRepoRebate;
+  }
+
+  public PositionHistoryDTO settledRepoRebateNew(Double settledRepoRebateNew) {
+    this.settledRepoRebateNew = settledRepoRebateNew;
+    return this;
+  }
+
+   /**
+   * Get settledRepoRebateNew
+   * @return settledRepoRebateNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRepoRebateNew() {
+    return settledRepoRebateNew;
+  }
+
+  public void setSettledRepoRebateNew(Double settledRepoRebateNew) {
+    this.settledRepoRebateNew = settledRepoRebateNew;
+  }
+
+  public PositionHistoryDTO settledRevRepoInterestExpense(Double settledRevRepoInterestExpense) {
+    this.settledRevRepoInterestExpense = settledRevRepoInterestExpense;
+    return this;
+  }
+
+   /**
+   * Get settledRevRepoInterestExpense
+   * @return settledRevRepoInterestExpense
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRevRepoInterestExpense() {
+    return settledRevRepoInterestExpense;
+  }
+
+  public void setSettledRevRepoInterestExpense(Double settledRevRepoInterestExpense) {
+    this.settledRevRepoInterestExpense = settledRevRepoInterestExpense;
+  }
+
+  public PositionHistoryDTO settledRevRepoInterestExpenseNew(Double settledRevRepoInterestExpenseNew) {
+    this.settledRevRepoInterestExpenseNew = settledRevRepoInterestExpenseNew;
+    return this;
+  }
+
+   /**
+   * Get settledRevRepoInterestExpenseNew
+   * @return settledRevRepoInterestExpenseNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRevRepoInterestExpenseNew() {
+    return settledRevRepoInterestExpenseNew;
+  }
+
+  public void setSettledRevRepoInterestExpenseNew(Double settledRevRepoInterestExpenseNew) {
+    this.settledRevRepoInterestExpenseNew = settledRevRepoInterestExpenseNew;
+  }
+
+  public PositionHistoryDTO settledRevRepoInterestReceive(Double settledRevRepoInterestReceive) {
+    this.settledRevRepoInterestReceive = settledRevRepoInterestReceive;
+    return this;
+  }
+
+   /**
+   * Get settledRevRepoInterestReceive
+   * @return settledRevRepoInterestReceive
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRevRepoInterestReceive() {
+    return settledRevRepoInterestReceive;
+  }
+
+  public void setSettledRevRepoInterestReceive(Double settledRevRepoInterestReceive) {
+    this.settledRevRepoInterestReceive = settledRevRepoInterestReceive;
+  }
+
+  public PositionHistoryDTO settledRevRepoInterestReceiveNew(Double settledRevRepoInterestReceiveNew) {
+    this.settledRevRepoInterestReceiveNew = settledRevRepoInterestReceiveNew;
+    return this;
+  }
+
+   /**
+   * Get settledRevRepoInterestReceiveNew
+   * @return settledRevRepoInterestReceiveNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSettledRevRepoInterestReceiveNew() {
+    return settledRevRepoInterestReceiveNew;
+  }
+
+  public void setSettledRevRepoInterestReceiveNew(Double settledRevRepoInterestReceiveNew) {
+    this.settledRevRepoInterestReceiveNew = settledRevRepoInterestReceiveNew;
+  }
+
+  public PositionHistoryDTO shortName(String shortName) {
+    this.shortName = shortName;
+    return this;
+  }
+
+   /**
+   * Get shortName
+   * @return shortName
+  **/
+  @ApiModelProperty(value = "")
+  public String getShortName() {
+    return shortName;
+  }
+
+  public void setShortName(String shortName) {
+    this.shortName = shortName;
+  }
+
+  public PositionHistoryDTO spread(Double spread) {
+    this.spread = spread;
+    return this;
+  }
+
+   /**
+   * Get spread
+   * @return spread
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSpread() {
+    return spread;
+  }
+
+  public void setSpread(Double spread) {
+    this.spread = spread;
+  }
+
+  public PositionHistoryDTO status(String status) {
+    this.status = status;
+    return this;
+  }
+
+   /**
+   * Get status
+   * @return status
+  **/
+  @ApiModelProperty(value = "")
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public PositionHistoryDTO statusId(Integer statusId) {
+    this.statusId = statusId;
+    return this;
+  }
+
+   /**
+   * Get statusId
+   * @return statusId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getStatusId() {
+    return statusId;
+  }
+
+  public void setStatusId(Integer statusId) {
+    this.statusId = statusId;
+  }
+
+  public PositionHistoryDTO targetPrice(Double targetPrice) {
+    this.targetPrice = targetPrice;
+    return this;
+  }
+
+   /**
+   * Get targetPrice
+   * @return targetPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTargetPrice() {
+    return targetPrice;
+  }
+
+  public void setTargetPrice(Double targetPrice) {
+    this.targetPrice = targetPrice;
+  }
+
+  public PositionHistoryDTO taxWhRate(Double taxWhRate) {
+    this.taxWhRate = taxWhRate;
+    return this;
+  }
+
+   /**
+   * Get taxWhRate
+   * @return taxWhRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTaxWhRate() {
+    return taxWhRate;
+  }
+
+  public void setTaxWhRate(Double taxWhRate) {
+    this.taxWhRate = taxWhRate;
+  }
+
+  public PositionHistoryDTO term(String term) {
+    this.term = term;
+    return this;
+  }
+
+   /**
+   * Get term
+   * @return term
+  **/
+  @ApiModelProperty(value = "")
+  public String getTerm() {
+    return term;
+  }
+
+  public void setTerm(String term) {
+    this.term = term;
+  }
+
+  public PositionHistoryDTO termId(Integer termId) {
+    this.termId = termId;
+    return this;
+  }
+
+   /**
+   * Get termId
+   * @return termId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTermId() {
+    return termId;
+  }
+
+  public void setTermId(Integer termId) {
+    this.termId = termId;
+  }
+
+  public PositionHistoryDTO ticker(String ticker) {
+    this.ticker = ticker;
+    return this;
+  }
+
+   /**
+   * Get ticker
+   * @return ticker
+  **/
+  @ApiModelProperty(value = "")
+  public String getTicker() {
+    return ticker;
+  }
+
+  public void setTicker(String ticker) {
+    this.ticker = ticker;
+  }
+
+  public PositionHistoryDTO totalValue(Double totalValue) {
+    this.totalValue = totalValue;
+    return this;
+  }
+
+   /**
+   * Get totalValue
+   * @return totalValue
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTotalValue() {
+    return totalValue;
+  }
+
+  public void setTotalValue(Double totalValue) {
+    this.totalValue = totalValue;
+  }
+
+  public PositionHistoryDTO tradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+    return this;
+  }
+
+   /**
+   * Get tradeDate
+   * @return tradeDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getTradeDate() {
+    return tradeDate;
+  }
+
+  public void setTradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+  }
+
+  public PositionHistoryDTO tradingDeskId(Integer tradingDeskId) {
+    this.tradingDeskId = tradingDeskId;
+    return this;
+  }
+
+   /**
+   * Get tradingDeskId
+   * @return tradingDeskId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTradingDeskId() {
+    return tradingDeskId;
+  }
+
+  public void setTradingDeskId(Integer tradingDeskId) {
+    this.tradingDeskId = tradingDeskId;
+  }
+
+  public PositionHistoryDTO unamortizedDiscount(Double unamortizedDiscount) {
+    this.unamortizedDiscount = unamortizedDiscount;
+    return this;
+  }
+
+   /**
+   * Get unamortizedDiscount
+   * @return unamortizedDiscount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getUnamortizedDiscount() {
+    return unamortizedDiscount;
+  }
+
+  public void setUnamortizedDiscount(Double unamortizedDiscount) {
+    this.unamortizedDiscount = unamortizedDiscount;
+  }
+
+  public PositionHistoryDTO unamortizedDiscountNew(Double unamortizedDiscountNew) {
+    this.unamortizedDiscountNew = unamortizedDiscountNew;
+    return this;
+  }
+
+   /**
+   * Get unamortizedDiscountNew
+   * @return unamortizedDiscountNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getUnamortizedDiscountNew() {
+    return unamortizedDiscountNew;
+  }
+
+  public void setUnamortizedDiscountNew(Double unamortizedDiscountNew) {
+    this.unamortizedDiscountNew = unamortizedDiscountNew;
+  }
+
+  public PositionHistoryDTO unamortizedDp(Double unamortizedDp) {
+    this.unamortizedDp = unamortizedDp;
+    return this;
+  }
+
+   /**
+   * Get unamortizedDp
+   * @return unamortizedDp
+  **/
+  @ApiModelProperty(value = "")
+  public Double getUnamortizedDp() {
+    return unamortizedDp;
+  }
+
+  public void setUnamortizedDp(Double unamortizedDp) {
+    this.unamortizedDp = unamortizedDp;
+  }
+
+  public PositionHistoryDTO unamortizedPremium(Double unamortizedPremium) {
+    this.unamortizedPremium = unamortizedPremium;
+    return this;
+  }
+
+   /**
+   * Get unamortizedPremium
+   * @return unamortizedPremium
+  **/
+  @ApiModelProperty(value = "")
+  public Double getUnamortizedPremium() {
+    return unamortizedPremium;
+  }
+
+  public void setUnamortizedPremium(Double unamortizedPremium) {
+    this.unamortizedPremium = unamortizedPremium;
+  }
+
+  public PositionHistoryDTO unamortizedPremiumNew(Double unamortizedPremiumNew) {
+    this.unamortizedPremiumNew = unamortizedPremiumNew;
+    return this;
+  }
+
+   /**
+   * Get unamortizedPremiumNew
+   * @return unamortizedPremiumNew
+  **/
+  @ApiModelProperty(value = "")
+  public Double getUnamortizedPremiumNew() {
+    return unamortizedPremiumNew;
+  }
+
+  public void setUnamortizedPremiumNew(Double unamortizedPremiumNew) {
+    this.unamortizedPremiumNew = unamortizedPremiumNew;
+  }
+
+  public PositionHistoryDTO userId(Long userId) {
+    this.userId = userId;
+    return this;
+  }
+
+   /**
+   * Get userId
+   * @return userId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
+  public PositionHistoryDTO wal(Double wal) {
+    this.wal = wal;
+    return this;
+  }
+
+   /**
+   * Get wal
+   * @return wal
+  **/
+  @ApiModelProperty(value = "")
+  public Double getWal() {
+    return wal;
+  }
+
+  public void setWal(Double wal) {
+    this.wal = wal;
+  }
+
+  public PositionHistoryDTO yield(Double yield) {
+    this.yield = yield;
+    return this;
+  }
+
+   /**
+   * Get yield
+   * @return yield
+  **/
+  @ApiModelProperty(value = "")
+  public Double getYield() {
+    return yield;
+  }
+
+  public void setYield(Double yield) {
+    this.yield = yield;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    PositionHistoryDTO positionHistoryDTO = (PositionHistoryDTO) o;
+    return Objects.equals(this.accountGroupDTO, positionHistoryDTO.accountGroupDTO) &&
+        Objects.equals(this.accountId, positionHistoryDTO.accountId) &&
+        Objects.equals(this.accountId2, positionHistoryDTO.accountId2) &&
+        Objects.equals(this.accountNo, positionHistoryDTO.accountNo) &&
+        Objects.equals(this.accountNo2, positionHistoryDTO.accountNo2) &&
+        Objects.equals(this.accountingAmount, positionHistoryDTO.accountingAmount) &&
+        Objects.equals(this.accountingAmountNew, positionHistoryDTO.accountingAmountNew) &&
+        Objects.equals(this.accruedInt, positionHistoryDTO.accruedInt) &&
+        Objects.equals(this.amortizedDp, positionHistoryDTO.amortizedDp) &&
+        Objects.equals(this.amount, positionHistoryDTO.amount) &&
+        Objects.equals(this.basisId, positionHistoryDTO.basisId) &&
+        Objects.equals(this.basisName, positionHistoryDTO.basisName) &&
+        Objects.equals(this.bookValue, positionHistoryDTO.bookValue) &&
+        Objects.equals(this.borrowPremium, positionHistoryDTO.borrowPremium) &&
+        Objects.equals(this.borrowPremiumNew, positionHistoryDTO.borrowPremiumNew) &&
+        Objects.equals(this.borrowRebate, positionHistoryDTO.borrowRebate) &&
+        Objects.equals(this.borrowRebateNew, positionHistoryDTO.borrowRebateNew) &&
+        Objects.equals(this.calendarId, positionHistoryDTO.calendarId) &&
+        Objects.equals(this.cashBalanced, positionHistoryDTO.cashBalanced) &&
+        Objects.equals(this.category0Id, positionHistoryDTO.category0Id) &&
+        Objects.equals(this.category0Name, positionHistoryDTO.category0Name) &&
+        Objects.equals(this.category1Id, positionHistoryDTO.category1Id) &&
+        Objects.equals(this.category1Name, positionHistoryDTO.category1Name) &&
+        Objects.equals(this.category2Id, positionHistoryDTO.category2Id) &&
+        Objects.equals(this.category2Name, positionHistoryDTO.category2Name) &&
+        Objects.equals(this.category3Id, positionHistoryDTO.category3Id) &&
+        Objects.equals(this.category3Name, positionHistoryDTO.category3Name) &&
+        Objects.equals(this.categoryId, positionHistoryDTO.categoryId) &&
+        Objects.equals(this.categoryName, positionHistoryDTO.categoryName) &&
+        Objects.equals(this.cleanMarketValue, positionHistoryDTO.cleanMarketValue) &&
+        Objects.equals(this.clientCategory, positionHistoryDTO.clientCategory) &&
+        Objects.equals(this.clientSecId, positionHistoryDTO.clientSecId) &&
+        Objects.equals(this.collateralAccountId, positionHistoryDTO.collateralAccountId) &&
+        Objects.equals(this.collateralAccountNo, positionHistoryDTO.collateralAccountNo) &&
+        Objects.equals(this.collateralIndicator, positionHistoryDTO.collateralIndicator) &&
+        Objects.equals(this.collateralType, positionHistoryDTO.collateralType) &&
+        Objects.equals(this.collateralTypeId, positionHistoryDTO.collateralTypeId) &&
+        Objects.equals(this.comments, positionHistoryDTO.comments) &&
+        Objects.equals(this.cost, positionHistoryDTO.cost) &&
+        Objects.equals(this.counterpartyGroupAccountNo, positionHistoryDTO.counterpartyGroupAccountNo) &&
+        Objects.equals(this.counterpartyGroupAccountNo2, positionHistoryDTO.counterpartyGroupAccountNo2) &&
+        Objects.equals(this.counterpartyGroupName, positionHistoryDTO.counterpartyGroupName) &&
+        Objects.equals(this.counterpartyGroupdtcNo, positionHistoryDTO.counterpartyGroupdtcNo) &&
+        Objects.equals(this.counterpartyId, positionHistoryDTO.counterpartyId) &&
+        Objects.equals(this.counterpartyLegalName, positionHistoryDTO.counterpartyLegalName) &&
+        Objects.equals(this.counterpartyShortName, positionHistoryDTO.counterpartyShortName) &&
+        Objects.equals(this.countryId, positionHistoryDTO.countryId) &&
+        Objects.equals(this.currencyId, positionHistoryDTO.currencyId) &&
+        Objects.equals(this.currencyKy, positionHistoryDTO.currencyKy) &&
+        Objects.equals(this.currentAmount, positionHistoryDTO.currentAmount) &&
+        Objects.equals(this.currentPrice, positionHistoryDTO.currentPrice) &&
+        Objects.equals(this.cusip, positionHistoryDTO.cusip) &&
+        Objects.equals(this.custodianBankShortName, positionHistoryDTO.custodianBankShortName) &&
+        Objects.equals(this.dailyAccrual, positionHistoryDTO.dailyAccrual) &&
+        Objects.equals(this.dailyDp, positionHistoryDTO.dailyDp) &&
+        Objects.equals(this.depoGroup, positionHistoryDTO.depoGroup) &&
+        Objects.equals(this.depoId, positionHistoryDTO.depoId) &&
+        Objects.equals(this.depoKy, positionHistoryDTO.depoKy) &&
+        Objects.equals(this.description, positionHistoryDTO.description) &&
+        Objects.equals(this.dtc, positionHistoryDTO.dtc) &&
+        Objects.equals(this.encumberedQuantity, positionHistoryDTO.encumberedQuantity) &&
+        Objects.equals(this.endDate, positionHistoryDTO.endDate) &&
+        Objects.equals(this.expMaturity, positionHistoryDTO.expMaturity) &&
+        Objects.equals(this.exposureIndicator, positionHistoryDTO.exposureIndicator) &&
+        Objects.equals(this.factor, positionHistoryDTO.factor) &&
+        Objects.equals(this.fxRate, positionHistoryDTO.fxRate) &&
+        Objects.equals(this.haircutPrice, positionHistoryDTO.haircutPrice) &&
+        Objects.equals(this.histType, positionHistoryDTO.histType) &&
+        Objects.equals(this.id, positionHistoryDTO.id) &&
+        Objects.equals(this.impairmentLossReserve, positionHistoryDTO.impairmentLossReserve) &&
+        Objects.equals(this.impairmentLossReserveNew, positionHistoryDTO.impairmentLossReserveNew) &&
+        Objects.equals(this.indexId, positionHistoryDTO.indexId) &&
+        Objects.equals(this.indexName, positionHistoryDTO.indexName) &&
+        Objects.equals(this.interest, positionHistoryDTO.interest) &&
+        Objects.equals(this.interestExpenseNew, positionHistoryDTO.interestExpenseNew) &&
+        Objects.equals(this.interestNew, positionHistoryDTO.interestNew) &&
+        Objects.equals(this.isAccounting, positionHistoryDTO.isAccounting) &&
+        Objects.equals(this.isBorrow, positionHistoryDTO.isBorrow) &&
+        Objects.equals(this.isCollateralPledged, positionHistoryDTO.isCollateralPledged) &&
+        Objects.equals(this.isCollateralReceived, positionHistoryDTO.isCollateralReceived) &&
+        Objects.equals(this.isInvestment, positionHistoryDTO.isInvestment) &&
+        Objects.equals(this.isLoan, positionHistoryDTO.isLoan) &&
+        Objects.equals(this.isPooled, positionHistoryDTO.isPooled) &&
+        Objects.equals(this.isRepo, positionHistoryDTO.isRepo) &&
+        Objects.equals(this.isReverseRepo, positionHistoryDTO.isReverseRepo) &&
+        Objects.equals(this.isSubAccount, positionHistoryDTO.isSubAccount) &&
+        Objects.equals(this.isin, positionHistoryDTO.isin) &&
+        Objects.equals(this.issuerId, positionHistoryDTO.issuerId) &&
+        Objects.equals(this.loanPremium, positionHistoryDTO.loanPremium) &&
+        Objects.equals(this.loanPremiumNew, positionHistoryDTO.loanPremiumNew) &&
+        Objects.equals(this.lookBack, positionHistoryDTO.lookBack) &&
+        Objects.equals(this.marketPrice, positionHistoryDTO.marketPrice) &&
+        Objects.equals(this.marketValue, positionHistoryDTO.marketValue) &&
+        Objects.equals(this.navPrice, positionHistoryDTO.navPrice) &&
+        Objects.equals(this.newAccruedInt, positionHistoryDTO.newAccruedInt) &&
+        Objects.equals(this.newAmortizedDp, positionHistoryDTO.newAmortizedDp) &&
+        Objects.equals(this.newAmount, positionHistoryDTO.newAmount) &&
+        Objects.equals(this.newBasisId, positionHistoryDTO.newBasisId) &&
+        Objects.equals(this.newBasisName, positionHistoryDTO.newBasisName) &&
+        Objects.equals(this.newBookValue, positionHistoryDTO.newBookValue) &&
+        Objects.equals(this.newCleanMarketValue, positionHistoryDTO.newCleanMarketValue) &&
+        Objects.equals(this.newCollateralIndicator, positionHistoryDTO.newCollateralIndicator) &&
+        Objects.equals(this.newCollateralTypeId, positionHistoryDTO.newCollateralTypeId) &&
+        Objects.equals(this.newCost, positionHistoryDTO.newCost) &&
+        Objects.equals(this.newDailyAccrual, positionHistoryDTO.newDailyAccrual) &&
+        Objects.equals(this.newDailyDp, positionHistoryDTO.newDailyDp) &&
+        Objects.equals(this.newEndDate, positionHistoryDTO.newEndDate) &&
+        Objects.equals(this.newExposureIndicator, positionHistoryDTO.newExposureIndicator) &&
+        Objects.equals(this.newFactor, positionHistoryDTO.newFactor) &&
+        Objects.equals(this.newHaircutPrice, positionHistoryDTO.newHaircutPrice) &&
+        Objects.equals(this.newIndexId, positionHistoryDTO.newIndexId) &&
+        Objects.equals(this.newIndexName, positionHistoryDTO.newIndexName) &&
+        Objects.equals(this.newIsAccounting, positionHistoryDTO.newIsAccounting) &&
+        Objects.equals(this.newIsBorrow, positionHistoryDTO.newIsBorrow) &&
+        Objects.equals(this.newIsCollateralPledged, positionHistoryDTO.newIsCollateralPledged) &&
+        Objects.equals(this.newIsCollateralReceived, positionHistoryDTO.newIsCollateralReceived) &&
+        Objects.equals(this.newIsInvestment, positionHistoryDTO.newIsInvestment) &&
+        Objects.equals(this.newIsLoan, positionHistoryDTO.newIsLoan) &&
+        Objects.equals(this.newIsRepo, positionHistoryDTO.newIsRepo) &&
+        Objects.equals(this.newIsReverseRepo, positionHistoryDTO.newIsReverseRepo) &&
+        Objects.equals(this.newLookBack, positionHistoryDTO.newLookBack) &&
+        Objects.equals(this.newMarketPrice, positionHistoryDTO.newMarketPrice) &&
+        Objects.equals(this.newMarketValue, positionHistoryDTO.newMarketValue) &&
+        Objects.equals(this.newParentPositionTypeId, positionHistoryDTO.newParentPositionTypeId) &&
+        Objects.equals(this.newPledgedMarketValue, positionHistoryDTO.newPledgedMarketValue) &&
+        Objects.equals(this.newPledgedValue, positionHistoryDTO.newPledgedValue) &&
+        Objects.equals(this.newPositionType, positionHistoryDTO.newPositionType) &&
+        Objects.equals(this.newPositionTypeId, positionHistoryDTO.newPositionTypeId) &&
+        Objects.equals(this.newPrice, positionHistoryDTO.newPrice) &&
+        Objects.equals(this.newQuantity, positionHistoryDTO.newQuantity) &&
+        Objects.equals(this.newRate, positionHistoryDTO.newRate) &&
+        Objects.equals(this.newReceivedMarketValue, positionHistoryDTO.newReceivedMarketValue) &&
+        Objects.equals(this.newReceivedValue, positionHistoryDTO.newReceivedValue) &&
+        Objects.equals(this.newResetDate, positionHistoryDTO.newResetDate) &&
+        Objects.equals(this.newSettledQuantity, positionHistoryDTO.newSettledQuantity) &&
+        Objects.equals(this.newSpread, positionHistoryDTO.newSpread) &&
+        Objects.equals(this.newStatus, positionHistoryDTO.newStatus) &&
+        Objects.equals(this.newStatusId, positionHistoryDTO.newStatusId) &&
+        Objects.equals(this.newTargetPrice, positionHistoryDTO.newTargetPrice) &&
+        Objects.equals(this.newTerm, positionHistoryDTO.newTerm) &&
+        Objects.equals(this.newTermId, positionHistoryDTO.newTermId) &&
+        Objects.equals(this.newTotalValue, positionHistoryDTO.newTotalValue) &&
+        Objects.equals(this.newUnamortizedDp, positionHistoryDTO.newUnamortizedDp) &&
+        Objects.equals(this.newYield, positionHistoryDTO.newYield) &&
+        Objects.equals(this.outstandingPremium, positionHistoryDTO.outstandingPremium) &&
+        Objects.equals(this.outstandingRebate, positionHistoryDTO.outstandingRebate) &&
+        Objects.equals(this.parentPositionTypeId, positionHistoryDTO.parentPositionTypeId) &&
+        Objects.equals(this.pledgedMarketValue, positionHistoryDTO.pledgedMarketValue) &&
+        Objects.equals(this.pledgedValue, positionHistoryDTO.pledgedValue) &&
+        Objects.equals(this.poolPositionId, positionHistoryDTO.poolPositionId) &&
+        Objects.equals(this.positionRef, positionHistoryDTO.positionRef) &&
+        Objects.equals(this.positionType, positionHistoryDTO.positionType) &&
+        Objects.equals(this.positionTypeId, positionHistoryDTO.positionTypeId) &&
+        Objects.equals(this.price, positionHistoryDTO.price) &&
+        Objects.equals(this.priceFactor, positionHistoryDTO.priceFactor) &&
+        Objects.equals(this.primaryId, positionHistoryDTO.primaryId) &&
+        Objects.equals(this.primaryIdType, positionHistoryDTO.primaryIdType) &&
+        Objects.equals(this.principalOrInterest, positionHistoryDTO.principalOrInterest) &&
+        Objects.equals(this.purchasedInterest, positionHistoryDTO.purchasedInterest) &&
+        Objects.equals(this.purchasedInterestNew, positionHistoryDTO.purchasedInterestNew) &&
+        Objects.equals(this.quantity, positionHistoryDTO.quantity) &&
+        Objects.equals(this.quickCode, positionHistoryDTO.quickCode) &&
+        Objects.equals(this.rate, positionHistoryDTO.rate) &&
+        Objects.equals(this.rebate, positionHistoryDTO.rebate) &&
+        Objects.equals(this.rebateNew, positionHistoryDTO.rebateNew) &&
+        Objects.equals(this.receivedMarketValue, positionHistoryDTO.receivedMarketValue) &&
+        Objects.equals(this.receivedValue, positionHistoryDTO.receivedValue) &&
+        Objects.equals(this.repoPremium, positionHistoryDTO.repoPremium) &&
+        Objects.equals(this.repoPremiumNew, positionHistoryDTO.repoPremiumNew) &&
+        Objects.equals(this.repoRebate, positionHistoryDTO.repoRebate) &&
+        Objects.equals(this.repoRebateNew, positionHistoryDTO.repoRebateNew) &&
+        Objects.equals(this.resetDate, positionHistoryDTO.resetDate) &&
+        Objects.equals(this.revRepoInterestExpense, positionHistoryDTO.revRepoInterestExpense) &&
+        Objects.equals(this.revRepoInterestExpenseNew, positionHistoryDTO.revRepoInterestExpenseNew) &&
+        Objects.equals(this.revRepoInterestReceive, positionHistoryDTO.revRepoInterestReceive) &&
+        Objects.equals(this.revRepoInterestReceiveNew, positionHistoryDTO.revRepoInterestReceiveNew) &&
+        Objects.equals(this.securityId, positionHistoryDTO.securityId) &&
+        Objects.equals(this.securityNextResetDate, positionHistoryDTO.securityNextResetDate) &&
+        Objects.equals(this.sedol, positionHistoryDTO.sedol) &&
+        Objects.equals(this.settleDate, positionHistoryDTO.settleDate) &&
+        Objects.equals(this.settledAccountingAmount, positionHistoryDTO.settledAccountingAmount) &&
+        Objects.equals(this.settledAccountingAmountNew, positionHistoryDTO.settledAccountingAmountNew) &&
+        Objects.equals(this.settledBorrowPremium, positionHistoryDTO.settledBorrowPremium) &&
+        Objects.equals(this.settledBorrowPremiumNew, positionHistoryDTO.settledBorrowPremiumNew) &&
+        Objects.equals(this.settledBorrowRebate, positionHistoryDTO.settledBorrowRebate) &&
+        Objects.equals(this.settledBorrowRebateNew, positionHistoryDTO.settledBorrowRebateNew) &&
+        Objects.equals(this.settledInterest, positionHistoryDTO.settledInterest) &&
+        Objects.equals(this.settledInterestExpenseNew, positionHistoryDTO.settledInterestExpenseNew) &&
+        Objects.equals(this.settledInterestNew, positionHistoryDTO.settledInterestNew) &&
+        Objects.equals(this.settledLoanPremium, positionHistoryDTO.settledLoanPremium) &&
+        Objects.equals(this.settledLoanPremiumNew, positionHistoryDTO.settledLoanPremiumNew) &&
+        Objects.equals(this.settledPurchasedInterest, positionHistoryDTO.settledPurchasedInterest) &&
+        Objects.equals(this.settledPurchasedInterestNew, positionHistoryDTO.settledPurchasedInterestNew) &&
+        Objects.equals(this.settledQuantity, positionHistoryDTO.settledQuantity) &&
+        Objects.equals(this.settledRebate, positionHistoryDTO.settledRebate) &&
+        Objects.equals(this.settledRebateNew, positionHistoryDTO.settledRebateNew) &&
+        Objects.equals(this.settledRepoPremium, positionHistoryDTO.settledRepoPremium) &&
+        Objects.equals(this.settledRepoPremiumNew, positionHistoryDTO.settledRepoPremiumNew) &&
+        Objects.equals(this.settledRepoRebate, positionHistoryDTO.settledRepoRebate) &&
+        Objects.equals(this.settledRepoRebateNew, positionHistoryDTO.settledRepoRebateNew) &&
+        Objects.equals(this.settledRevRepoInterestExpense, positionHistoryDTO.settledRevRepoInterestExpense) &&
+        Objects.equals(this.settledRevRepoInterestExpenseNew, positionHistoryDTO.settledRevRepoInterestExpenseNew) &&
+        Objects.equals(this.settledRevRepoInterestReceive, positionHistoryDTO.settledRevRepoInterestReceive) &&
+        Objects.equals(this.settledRevRepoInterestReceiveNew, positionHistoryDTO.settledRevRepoInterestReceiveNew) &&
+        Objects.equals(this.shortName, positionHistoryDTO.shortName) &&
+        Objects.equals(this.spread, positionHistoryDTO.spread) &&
+        Objects.equals(this.status, positionHistoryDTO.status) &&
+        Objects.equals(this.statusId, positionHistoryDTO.statusId) &&
+        Objects.equals(this.targetPrice, positionHistoryDTO.targetPrice) &&
+        Objects.equals(this.taxWhRate, positionHistoryDTO.taxWhRate) &&
+        Objects.equals(this.term, positionHistoryDTO.term) &&
+        Objects.equals(this.termId, positionHistoryDTO.termId) &&
+        Objects.equals(this.ticker, positionHistoryDTO.ticker) &&
+        Objects.equals(this.totalValue, positionHistoryDTO.totalValue) &&
+        Objects.equals(this.tradeDate, positionHistoryDTO.tradeDate) &&
+        Objects.equals(this.tradingDeskId, positionHistoryDTO.tradingDeskId) &&
+        Objects.equals(this.unamortizedDiscount, positionHistoryDTO.unamortizedDiscount) &&
+        Objects.equals(this.unamortizedDiscountNew, positionHistoryDTO.unamortizedDiscountNew) &&
+        Objects.equals(this.unamortizedDp, positionHistoryDTO.unamortizedDp) &&
+        Objects.equals(this.unamortizedPremium, positionHistoryDTO.unamortizedPremium) &&
+        Objects.equals(this.unamortizedPremiumNew, positionHistoryDTO.unamortizedPremiumNew) &&
+        Objects.equals(this.userId, positionHistoryDTO.userId) &&
+        Objects.equals(this.wal, positionHistoryDTO.wal) &&
+        Objects.equals(this.yield, positionHistoryDTO.yield);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(accountGroupDTO, accountId, accountId2, accountNo, accountNo2, accountingAmount, accountingAmountNew, accruedInt, amortizedDp, amount, basisId, basisName, bookValue, borrowPremium, borrowPremiumNew, borrowRebate, borrowRebateNew, calendarId, cashBalanced, category0Id, category0Name, category1Id, category1Name, category2Id, category2Name, category3Id, category3Name, categoryId, categoryName, cleanMarketValue, clientCategory, clientSecId, collateralAccountId, collateralAccountNo, collateralIndicator, collateralType, collateralTypeId, comments, cost, counterpartyGroupAccountNo, counterpartyGroupAccountNo2, counterpartyGroupName, counterpartyGroupdtcNo, counterpartyId, counterpartyLegalName, counterpartyShortName, countryId, currencyId, currencyKy, currentAmount, currentPrice, cusip, custodianBankShortName, dailyAccrual, dailyDp, depoGroup, depoId, depoKy, description, dtc, encumberedQuantity, endDate, expMaturity, exposureIndicator, factor, fxRate, haircutPrice, histType, id, impairmentLossReserve, impairmentLossReserveNew, indexId, indexName, interest, interestExpenseNew, interestNew, isAccounting, isBorrow, isCollateralPledged, isCollateralReceived, isInvestment, isLoan, isPooled, isRepo, isReverseRepo, isSubAccount, isin, issuerId, loanPremium, loanPremiumNew, lookBack, marketPrice, marketValue, navPrice, newAccruedInt, newAmortizedDp, newAmount, newBasisId, newBasisName, newBookValue, newCleanMarketValue, newCollateralIndicator, newCollateralTypeId, newCost, newDailyAccrual, newDailyDp, newEndDate, newExposureIndicator, newFactor, newHaircutPrice, newIndexId, newIndexName, newIsAccounting, newIsBorrow, newIsCollateralPledged, newIsCollateralReceived, newIsInvestment, newIsLoan, newIsRepo, newIsReverseRepo, newLookBack, newMarketPrice, newMarketValue, newParentPositionTypeId, newPledgedMarketValue, newPledgedValue, newPositionType, newPositionTypeId, newPrice, newQuantity, newRate, newReceivedMarketValue, newReceivedValue, newResetDate, newSettledQuantity, newSpread, newStatus, newStatusId, newTargetPrice, newTerm, newTermId, newTotalValue, newUnamortizedDp, newYield, outstandingPremium, outstandingRebate, parentPositionTypeId, pledgedMarketValue, pledgedValue, poolPositionId, positionRef, positionType, positionTypeId, price, priceFactor, primaryId, primaryIdType, principalOrInterest, purchasedInterest, purchasedInterestNew, quantity, quickCode, rate, rebate, rebateNew, receivedMarketValue, receivedValue, repoPremium, repoPremiumNew, repoRebate, repoRebateNew, resetDate, revRepoInterestExpense, revRepoInterestExpenseNew, revRepoInterestReceive, revRepoInterestReceiveNew, securityId, securityNextResetDate, sedol, settleDate, settledAccountingAmount, settledAccountingAmountNew, settledBorrowPremium, settledBorrowPremiumNew, settledBorrowRebate, settledBorrowRebateNew, settledInterest, settledInterestExpenseNew, settledInterestNew, settledLoanPremium, settledLoanPremiumNew, settledPurchasedInterest, settledPurchasedInterestNew, settledQuantity, settledRebate, settledRebateNew, settledRepoPremium, settledRepoPremiumNew, settledRepoRebate, settledRepoRebateNew, settledRevRepoInterestExpense, settledRevRepoInterestExpenseNew, settledRevRepoInterestReceive, settledRevRepoInterestReceiveNew, shortName, spread, status, statusId, targetPrice, taxWhRate, term, termId, ticker, totalValue, tradeDate, tradingDeskId, unamortizedDiscount, unamortizedDiscountNew, unamortizedDp, unamortizedPremium, unamortizedPremiumNew, userId, wal, yield);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class PositionHistoryDTO {\n");
+    
+    sb.append("    accountGroupDTO: ").append(toIndentedString(accountGroupDTO)).append("\n");
+    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+    sb.append("    accountId2: ").append(toIndentedString(accountId2)).append("\n");
+    sb.append("    accountNo: ").append(toIndentedString(accountNo)).append("\n");
+    sb.append("    accountNo2: ").append(toIndentedString(accountNo2)).append("\n");
+    sb.append("    accountingAmount: ").append(toIndentedString(accountingAmount)).append("\n");
+    sb.append("    accountingAmountNew: ").append(toIndentedString(accountingAmountNew)).append("\n");
+    sb.append("    accruedInt: ").append(toIndentedString(accruedInt)).append("\n");
+    sb.append("    amortizedDp: ").append(toIndentedString(amortizedDp)).append("\n");
+    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
+    sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
+    sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
+    sb.append("    bookValue: ").append(toIndentedString(bookValue)).append("\n");
+    sb.append("    borrowPremium: ").append(toIndentedString(borrowPremium)).append("\n");
+    sb.append("    borrowPremiumNew: ").append(toIndentedString(borrowPremiumNew)).append("\n");
+    sb.append("    borrowRebate: ").append(toIndentedString(borrowRebate)).append("\n");
+    sb.append("    borrowRebateNew: ").append(toIndentedString(borrowRebateNew)).append("\n");
+    sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
+    sb.append("    cashBalanced: ").append(toIndentedString(cashBalanced)).append("\n");
+    sb.append("    category0Id: ").append(toIndentedString(category0Id)).append("\n");
+    sb.append("    category0Name: ").append(toIndentedString(category0Name)).append("\n");
+    sb.append("    category1Id: ").append(toIndentedString(category1Id)).append("\n");
+    sb.append("    category1Name: ").append(toIndentedString(category1Name)).append("\n");
+    sb.append("    category2Id: ").append(toIndentedString(category2Id)).append("\n");
+    sb.append("    category2Name: ").append(toIndentedString(category2Name)).append("\n");
+    sb.append("    category3Id: ").append(toIndentedString(category3Id)).append("\n");
+    sb.append("    category3Name: ").append(toIndentedString(category3Name)).append("\n");
+    sb.append("    categoryId: ").append(toIndentedString(categoryId)).append("\n");
+    sb.append("    categoryName: ").append(toIndentedString(categoryName)).append("\n");
+    sb.append("    cleanMarketValue: ").append(toIndentedString(cleanMarketValue)).append("\n");
+    sb.append("    clientCategory: ").append(toIndentedString(clientCategory)).append("\n");
+    sb.append("    clientSecId: ").append(toIndentedString(clientSecId)).append("\n");
+    sb.append("    collateralAccountId: ").append(toIndentedString(collateralAccountId)).append("\n");
+    sb.append("    collateralAccountNo: ").append(toIndentedString(collateralAccountNo)).append("\n");
+    sb.append("    collateralIndicator: ").append(toIndentedString(collateralIndicator)).append("\n");
+    sb.append("    collateralType: ").append(toIndentedString(collateralType)).append("\n");
+    sb.append("    collateralTypeId: ").append(toIndentedString(collateralTypeId)).append("\n");
+    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+    sb.append("    cost: ").append(toIndentedString(cost)).append("\n");
+    sb.append("    counterpartyGroupAccountNo: ").append(toIndentedString(counterpartyGroupAccountNo)).append("\n");
+    sb.append("    counterpartyGroupAccountNo2: ").append(toIndentedString(counterpartyGroupAccountNo2)).append("\n");
+    sb.append("    counterpartyGroupName: ").append(toIndentedString(counterpartyGroupName)).append("\n");
+    sb.append("    counterpartyGroupdtcNo: ").append(toIndentedString(counterpartyGroupdtcNo)).append("\n");
+    sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
+    sb.append("    counterpartyLegalName: ").append(toIndentedString(counterpartyLegalName)).append("\n");
+    sb.append("    counterpartyShortName: ").append(toIndentedString(counterpartyShortName)).append("\n");
+    sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
+    sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
+    sb.append("    currencyKy: ").append(toIndentedString(currencyKy)).append("\n");
+    sb.append("    currentAmount: ").append(toIndentedString(currentAmount)).append("\n");
+    sb.append("    currentPrice: ").append(toIndentedString(currentPrice)).append("\n");
+    sb.append("    cusip: ").append(toIndentedString(cusip)).append("\n");
+    sb.append("    custodianBankShortName: ").append(toIndentedString(custodianBankShortName)).append("\n");
+    sb.append("    dailyAccrual: ").append(toIndentedString(dailyAccrual)).append("\n");
+    sb.append("    dailyDp: ").append(toIndentedString(dailyDp)).append("\n");
+    sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
+    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+    sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
+    sb.append("    dtc: ").append(toIndentedString(dtc)).append("\n");
+    sb.append("    encumberedQuantity: ").append(toIndentedString(encumberedQuantity)).append("\n");
+    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
+    sb.append("    expMaturity: ").append(toIndentedString(expMaturity)).append("\n");
+    sb.append("    exposureIndicator: ").append(toIndentedString(exposureIndicator)).append("\n");
+    sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
+    sb.append("    fxRate: ").append(toIndentedString(fxRate)).append("\n");
+    sb.append("    haircutPrice: ").append(toIndentedString(haircutPrice)).append("\n");
+    sb.append("    histType: ").append(toIndentedString(histType)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    impairmentLossReserve: ").append(toIndentedString(impairmentLossReserve)).append("\n");
+    sb.append("    impairmentLossReserveNew: ").append(toIndentedString(impairmentLossReserveNew)).append("\n");
+    sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
+    sb.append("    indexName: ").append(toIndentedString(indexName)).append("\n");
+    sb.append("    interest: ").append(toIndentedString(interest)).append("\n");
+    sb.append("    interestExpenseNew: ").append(toIndentedString(interestExpenseNew)).append("\n");
+    sb.append("    interestNew: ").append(toIndentedString(interestNew)).append("\n");
+    sb.append("    isAccounting: ").append(toIndentedString(isAccounting)).append("\n");
+    sb.append("    isBorrow: ").append(toIndentedString(isBorrow)).append("\n");
+    sb.append("    isCollateralPledged: ").append(toIndentedString(isCollateralPledged)).append("\n");
+    sb.append("    isCollateralReceived: ").append(toIndentedString(isCollateralReceived)).append("\n");
+    sb.append("    isInvestment: ").append(toIndentedString(isInvestment)).append("\n");
+    sb.append("    isLoan: ").append(toIndentedString(isLoan)).append("\n");
+    sb.append("    isPooled: ").append(toIndentedString(isPooled)).append("\n");
+    sb.append("    isRepo: ").append(toIndentedString(isRepo)).append("\n");
+    sb.append("    isReverseRepo: ").append(toIndentedString(isReverseRepo)).append("\n");
+    sb.append("    isSubAccount: ").append(toIndentedString(isSubAccount)).append("\n");
+    sb.append("    isin: ").append(toIndentedString(isin)).append("\n");
+    sb.append("    issuerId: ").append(toIndentedString(issuerId)).append("\n");
+    sb.append("    loanPremium: ").append(toIndentedString(loanPremium)).append("\n");
+    sb.append("    loanPremiumNew: ").append(toIndentedString(loanPremiumNew)).append("\n");
+    sb.append("    lookBack: ").append(toIndentedString(lookBack)).append("\n");
+    sb.append("    marketPrice: ").append(toIndentedString(marketPrice)).append("\n");
+    sb.append("    marketValue: ").append(toIndentedString(marketValue)).append("\n");
+    sb.append("    navPrice: ").append(toIndentedString(navPrice)).append("\n");
+    sb.append("    newAccruedInt: ").append(toIndentedString(newAccruedInt)).append("\n");
+    sb.append("    newAmortizedDp: ").append(toIndentedString(newAmortizedDp)).append("\n");
+    sb.append("    newAmount: ").append(toIndentedString(newAmount)).append("\n");
+    sb.append("    newBasisId: ").append(toIndentedString(newBasisId)).append("\n");
+    sb.append("    newBasisName: ").append(toIndentedString(newBasisName)).append("\n");
+    sb.append("    newBookValue: ").append(toIndentedString(newBookValue)).append("\n");
+    sb.append("    newCleanMarketValue: ").append(toIndentedString(newCleanMarketValue)).append("\n");
+    sb.append("    newCollateralIndicator: ").append(toIndentedString(newCollateralIndicator)).append("\n");
+    sb.append("    newCollateralTypeId: ").append(toIndentedString(newCollateralTypeId)).append("\n");
+    sb.append("    newCost: ").append(toIndentedString(newCost)).append("\n");
+    sb.append("    newDailyAccrual: ").append(toIndentedString(newDailyAccrual)).append("\n");
+    sb.append("    newDailyDp: ").append(toIndentedString(newDailyDp)).append("\n");
+    sb.append("    newEndDate: ").append(toIndentedString(newEndDate)).append("\n");
+    sb.append("    newExposureIndicator: ").append(toIndentedString(newExposureIndicator)).append("\n");
+    sb.append("    newFactor: ").append(toIndentedString(newFactor)).append("\n");
+    sb.append("    newHaircutPrice: ").append(toIndentedString(newHaircutPrice)).append("\n");
+    sb.append("    newIndexId: ").append(toIndentedString(newIndexId)).append("\n");
+    sb.append("    newIndexName: ").append(toIndentedString(newIndexName)).append("\n");
+    sb.append("    newIsAccounting: ").append(toIndentedString(newIsAccounting)).append("\n");
+    sb.append("    newIsBorrow: ").append(toIndentedString(newIsBorrow)).append("\n");
+    sb.append("    newIsCollateralPledged: ").append(toIndentedString(newIsCollateralPledged)).append("\n");
+    sb.append("    newIsCollateralReceived: ").append(toIndentedString(newIsCollateralReceived)).append("\n");
+    sb.append("    newIsInvestment: ").append(toIndentedString(newIsInvestment)).append("\n");
+    sb.append("    newIsLoan: ").append(toIndentedString(newIsLoan)).append("\n");
+    sb.append("    newIsRepo: ").append(toIndentedString(newIsRepo)).append("\n");
+    sb.append("    newIsReverseRepo: ").append(toIndentedString(newIsReverseRepo)).append("\n");
+    sb.append("    newLookBack: ").append(toIndentedString(newLookBack)).append("\n");
+    sb.append("    newMarketPrice: ").append(toIndentedString(newMarketPrice)).append("\n");
+    sb.append("    newMarketValue: ").append(toIndentedString(newMarketValue)).append("\n");
+    sb.append("    newParentPositionTypeId: ").append(toIndentedString(newParentPositionTypeId)).append("\n");
+    sb.append("    newPledgedMarketValue: ").append(toIndentedString(newPledgedMarketValue)).append("\n");
+    sb.append("    newPledgedValue: ").append(toIndentedString(newPledgedValue)).append("\n");
+    sb.append("    newPositionType: ").append(toIndentedString(newPositionType)).append("\n");
+    sb.append("    newPositionTypeId: ").append(toIndentedString(newPositionTypeId)).append("\n");
+    sb.append("    newPrice: ").append(toIndentedString(newPrice)).append("\n");
+    sb.append("    newQuantity: ").append(toIndentedString(newQuantity)).append("\n");
+    sb.append("    newRate: ").append(toIndentedString(newRate)).append("\n");
+    sb.append("    newReceivedMarketValue: ").append(toIndentedString(newReceivedMarketValue)).append("\n");
+    sb.append("    newReceivedValue: ").append(toIndentedString(newReceivedValue)).append("\n");
+    sb.append("    newResetDate: ").append(toIndentedString(newResetDate)).append("\n");
+    sb.append("    newSettledQuantity: ").append(toIndentedString(newSettledQuantity)).append("\n");
+    sb.append("    newSpread: ").append(toIndentedString(newSpread)).append("\n");
+    sb.append("    newStatus: ").append(toIndentedString(newStatus)).append("\n");
+    sb.append("    newStatusId: ").append(toIndentedString(newStatusId)).append("\n");
+    sb.append("    newTargetPrice: ").append(toIndentedString(newTargetPrice)).append("\n");
+    sb.append("    newTerm: ").append(toIndentedString(newTerm)).append("\n");
+    sb.append("    newTermId: ").append(toIndentedString(newTermId)).append("\n");
+    sb.append("    newTotalValue: ").append(toIndentedString(newTotalValue)).append("\n");
+    sb.append("    newUnamortizedDp: ").append(toIndentedString(newUnamortizedDp)).append("\n");
+    sb.append("    newYield: ").append(toIndentedString(newYield)).append("\n");
+    sb.append("    outstandingPremium: ").append(toIndentedString(outstandingPremium)).append("\n");
+    sb.append("    outstandingRebate: ").append(toIndentedString(outstandingRebate)).append("\n");
+    sb.append("    parentPositionTypeId: ").append(toIndentedString(parentPositionTypeId)).append("\n");
+    sb.append("    pledgedMarketValue: ").append(toIndentedString(pledgedMarketValue)).append("\n");
+    sb.append("    pledgedValue: ").append(toIndentedString(pledgedValue)).append("\n");
+    sb.append("    poolPositionId: ").append(toIndentedString(poolPositionId)).append("\n");
+    sb.append("    positionRef: ").append(toIndentedString(positionRef)).append("\n");
+    sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
+    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
+    sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
+    sb.append("    primaryId: ").append(toIndentedString(primaryId)).append("\n");
+    sb.append("    primaryIdType: ").append(toIndentedString(primaryIdType)).append("\n");
+    sb.append("    principalOrInterest: ").append(toIndentedString(principalOrInterest)).append("\n");
+    sb.append("    purchasedInterest: ").append(toIndentedString(purchasedInterest)).append("\n");
+    sb.append("    purchasedInterestNew: ").append(toIndentedString(purchasedInterestNew)).append("\n");
+    sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+    sb.append("    quickCode: ").append(toIndentedString(quickCode)).append("\n");
+    sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
+    sb.append("    rebate: ").append(toIndentedString(rebate)).append("\n");
+    sb.append("    rebateNew: ").append(toIndentedString(rebateNew)).append("\n");
+    sb.append("    receivedMarketValue: ").append(toIndentedString(receivedMarketValue)).append("\n");
+    sb.append("    receivedValue: ").append(toIndentedString(receivedValue)).append("\n");
+    sb.append("    repoPremium: ").append(toIndentedString(repoPremium)).append("\n");
+    sb.append("    repoPremiumNew: ").append(toIndentedString(repoPremiumNew)).append("\n");
+    sb.append("    repoRebate: ").append(toIndentedString(repoRebate)).append("\n");
+    sb.append("    repoRebateNew: ").append(toIndentedString(repoRebateNew)).append("\n");
+    sb.append("    resetDate: ").append(toIndentedString(resetDate)).append("\n");
+    sb.append("    revRepoInterestExpense: ").append(toIndentedString(revRepoInterestExpense)).append("\n");
+    sb.append("    revRepoInterestExpenseNew: ").append(toIndentedString(revRepoInterestExpenseNew)).append("\n");
+    sb.append("    revRepoInterestReceive: ").append(toIndentedString(revRepoInterestReceive)).append("\n");
+    sb.append("    revRepoInterestReceiveNew: ").append(toIndentedString(revRepoInterestReceiveNew)).append("\n");
+    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+    sb.append("    securityNextResetDate: ").append(toIndentedString(securityNextResetDate)).append("\n");
+    sb.append("    sedol: ").append(toIndentedString(sedol)).append("\n");
+    sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
+    sb.append("    settledAccountingAmount: ").append(toIndentedString(settledAccountingAmount)).append("\n");
+    sb.append("    settledAccountingAmountNew: ").append(toIndentedString(settledAccountingAmountNew)).append("\n");
+    sb.append("    settledBorrowPremium: ").append(toIndentedString(settledBorrowPremium)).append("\n");
+    sb.append("    settledBorrowPremiumNew: ").append(toIndentedString(settledBorrowPremiumNew)).append("\n");
+    sb.append("    settledBorrowRebate: ").append(toIndentedString(settledBorrowRebate)).append("\n");
+    sb.append("    settledBorrowRebateNew: ").append(toIndentedString(settledBorrowRebateNew)).append("\n");
+    sb.append("    settledInterest: ").append(toIndentedString(settledInterest)).append("\n");
+    sb.append("    settledInterestExpenseNew: ").append(toIndentedString(settledInterestExpenseNew)).append("\n");
+    sb.append("    settledInterestNew: ").append(toIndentedString(settledInterestNew)).append("\n");
+    sb.append("    settledLoanPremium: ").append(toIndentedString(settledLoanPremium)).append("\n");
+    sb.append("    settledLoanPremiumNew: ").append(toIndentedString(settledLoanPremiumNew)).append("\n");
+    sb.append("    settledPurchasedInterest: ").append(toIndentedString(settledPurchasedInterest)).append("\n");
+    sb.append("    settledPurchasedInterestNew: ").append(toIndentedString(settledPurchasedInterestNew)).append("\n");
+    sb.append("    settledQuantity: ").append(toIndentedString(settledQuantity)).append("\n");
+    sb.append("    settledRebate: ").append(toIndentedString(settledRebate)).append("\n");
+    sb.append("    settledRebateNew: ").append(toIndentedString(settledRebateNew)).append("\n");
+    sb.append("    settledRepoPremium: ").append(toIndentedString(settledRepoPremium)).append("\n");
+    sb.append("    settledRepoPremiumNew: ").append(toIndentedString(settledRepoPremiumNew)).append("\n");
+    sb.append("    settledRepoRebate: ").append(toIndentedString(settledRepoRebate)).append("\n");
+    sb.append("    settledRepoRebateNew: ").append(toIndentedString(settledRepoRebateNew)).append("\n");
+    sb.append("    settledRevRepoInterestExpense: ").append(toIndentedString(settledRevRepoInterestExpense)).append("\n");
+    sb.append("    settledRevRepoInterestExpenseNew: ").append(toIndentedString(settledRevRepoInterestExpenseNew)).append("\n");
+    sb.append("    settledRevRepoInterestReceive: ").append(toIndentedString(settledRevRepoInterestReceive)).append("\n");
+    sb.append("    settledRevRepoInterestReceiveNew: ").append(toIndentedString(settledRevRepoInterestReceiveNew)).append("\n");
+    sb.append("    shortName: ").append(toIndentedString(shortName)).append("\n");
+    sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
+    sb.append("    targetPrice: ").append(toIndentedString(targetPrice)).append("\n");
+    sb.append("    taxWhRate: ").append(toIndentedString(taxWhRate)).append("\n");
+    sb.append("    term: ").append(toIndentedString(term)).append("\n");
+    sb.append("    termId: ").append(toIndentedString(termId)).append("\n");
+    sb.append("    ticker: ").append(toIndentedString(ticker)).append("\n");
+    sb.append("    totalValue: ").append(toIndentedString(totalValue)).append("\n");
+    sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
+    sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
+    sb.append("    unamortizedDiscount: ").append(toIndentedString(unamortizedDiscount)).append("\n");
+    sb.append("    unamortizedDiscountNew: ").append(toIndentedString(unamortizedDiscountNew)).append("\n");
+    sb.append("    unamortizedDp: ").append(toIndentedString(unamortizedDp)).append("\n");
+    sb.append("    unamortizedPremium: ").append(toIndentedString(unamortizedPremium)).append("\n");
+    sb.append("    unamortizedPremiumNew: ").append(toIndentedString(unamortizedPremiumNew)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    wal: ").append(toIndentedString(wal)).append("\n");
+    sb.append("    yield: ").append(toIndentedString(yield)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

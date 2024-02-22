@@ -13,4122 +13,4056 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountAllocationDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.CompetingBidDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.CouponPayment;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SecurityDtlDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * RepoDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class RepoDTO {
+  @JsonProperty("accountAllocations")
+  private List<AccountAllocationDTO> accountAllocations = new ArrayList<>();
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("accountGroup")
+  private String accountGroup = null;
 
-    @JsonProperty("accountAllocations")
-    private List<AccountAllocationDTO> accountAllocations = new ArrayList<>();
+  @JsonProperty("accountGroupAccountNo2")
+  private String accountGroupAccountNo2 = null;
 
-    @JsonProperty("accountGroup")
-    private String accountGroup = null;
+  @JsonProperty("accountGroupId")
+  private Integer accountGroupId = null;
 
-    @JsonProperty("accountGroupAccountNo2")
-    private String accountGroupAccountNo2 = null;
+  @JsonProperty("accountId")
+  private Integer accountId = null;
 
-    @JsonProperty("accountGroupId")
-    private Integer accountGroupId = null;
+  @JsonProperty("accountName")
+  private String accountName = null;
 
-    @JsonProperty("accountId")
-    private Integer accountId = null;
+  @JsonProperty("accountNo")
+  private String accountNo = null;
 
-    @JsonProperty("accountName")
-    private String accountName = null;
+  @JsonProperty("accountNo2")
+  private String accountNo2 = null;
 
-    @JsonProperty("accountNo")
-    private String accountNo = null;
+  @JsonProperty("accrualAdjustment")
+  private Double accrualAdjustment = null;
 
-    @JsonProperty("accountNo2")
-    private String accountNo2 = null;
+  @JsonProperty("accrualDate")
+  private LocalDateTime accrualDate = null;
 
-    @JsonProperty("accrualAdjustment")
-    private Double accrualAdjustment = null;
+  @JsonProperty("accrualSettlement")
+  private Double accrualSettlement = null;
 
-    @JsonProperty("accrualDate")
-    private LocalDateTime accrualDate = null;
+  @JsonProperty("accrualTypeId")
+  private Integer accrualTypeId = null;
 
-    @JsonProperty("accrualSettlement")
-    private Double accrualSettlement = null;
+  @JsonProperty("agentReference")
+  private String agentReference = null;
 
-    @JsonProperty("accrualTypeId")
-    private Integer accrualTypeId = null;
+  @JsonProperty("allInRate")
+  private Double allInRate = null;
 
-    @JsonProperty("agentReference")
-    private String agentReference = null;
+  @JsonProperty("allocationId")
+  private Long allocationId = null;
 
-    @JsonProperty("allInRate")
-    private Double allInRate = null;
+  @JsonProperty("allocationOverrideComment")
+  private String allocationOverrideComment = null;
 
-    @JsonProperty("allocationId")
-    private Long allocationId = null;
+  @JsonProperty("allocationPremiumAmts")
+  private List<AccountAllocationDTO> allocationPremiumAmts = null;
 
-    @JsonProperty("allocationOverrideComment")
-    private String allocationOverrideComment = null;
+  @JsonProperty("allocationReason")
+  private String allocationReason = null;
 
-    @JsonProperty("allocationPremiumAmts")
-    private List<AccountAllocationDTO> allocationPremiumAmts = null;
+  @JsonProperty("allocationReasonId")
+  private Integer allocationReasonId = null;
 
-    @JsonProperty("allocationReason")
-    private String allocationReason = null;
+  @JsonProperty("allocationRebateAmts")
+  private List<AccountAllocationDTO> allocationRebateAmts = null;
 
-    @JsonProperty("allocationReasonId")
-    private Integer allocationReasonId = null;
+  @JsonProperty("amount")
+  private Double amount = null;
 
-    @JsonProperty("allocationRebateAmts")
-    private List<AccountAllocationDTO> allocationRebateAmts = null;
+  @JsonProperty("basis")
+  private Integer basis = null;
 
-    @JsonProperty("amount")
-    private Double amount = null;
+  @JsonProperty("basisName")
+  private String basisName = null;
 
-    @JsonProperty("basis")
-    private Integer basis = null;
+  @JsonProperty("calendar")
+  private String calendar = null;
 
-    @JsonProperty("basisName")
-    private String basisName = null;
+  @JsonProperty("calendarId")
+  private Integer calendarId = null;
 
-    @JsonProperty("calendar")
-    private String calendar = null;
+  @JsonProperty("cleanPrice")
+  private Double cleanPrice = null;
 
-    @JsonProperty("calendarId")
-    private Integer calendarId = null;
+  @JsonProperty("cleanPriceCurrencyId")
+  private Integer cleanPriceCurrencyId = null;
 
-    @JsonProperty("collateralAccountId")
-    private Integer collateralAccountId = null;
+  @JsonProperty("collateralAccountId")
+  private Integer collateralAccountId = null;
 
-    @JsonProperty("collateralAccountName")
-    private String collateralAccountName = null;
+  @JsonProperty("collateralAccountName")
+  private String collateralAccountName = null;
 
-    @JsonProperty("collateralAccountNo")
-    private String collateralAccountNo = null;
+  @JsonProperty("collateralAccountNo")
+  private String collateralAccountNo = null;
 
-    @JsonProperty("collateralAccountNo2")
-    private String collateralAccountNo2 = null;
+  @JsonProperty("collateralAccountNo2")
+  private String collateralAccountNo2 = null;
 
-    @JsonProperty("collateralBasis")
-    private Integer collateralBasis = null;
+  @JsonProperty("collateralBasis")
+  private Integer collateralBasis = null;
 
-    @JsonProperty("collateralBasisName")
-    private String collateralBasisName = null;
+  @JsonProperty("collateralBasisName")
+  private String collateralBasisName = null;
 
-    @JsonProperty("collateralCalendar")
-    private Integer collateralCalendar = null;
+  @JsonProperty("collateralCalendar")
+  private Integer collateralCalendar = null;
 
-    @JsonProperty("collateralCalendarName")
-    private String collateralCalendarName = null;
+  @JsonProperty("collateralCalendarName")
+  private String collateralCalendarName = null;
 
-    @JsonProperty("collateralCustodianBankAccountName")
-    private String collateralCustodianBankAccountName = null;
+  @JsonProperty("collateralCustodianBankAccountName")
+  private String collateralCustodianBankAccountName = null;
 
-    @JsonProperty("collateralCustodianBankAccountNo")
-    private String collateralCustodianBankAccountNo = null;
+  @JsonProperty("collateralCustodianBankAccountNo")
+  private String collateralCustodianBankAccountNo = null;
 
-    @JsonProperty("collateralCustodianBankAccountNo2")
-    private String collateralCustodianBankAccountNo2 = null;
+  @JsonProperty("collateralCustodianBankAccountNo2")
+  private String collateralCustodianBankAccountNo2 = null;
 
-    @JsonProperty("collateralCustodianBankId")
-    private Integer collateralCustodianBankId = null;
+  @JsonProperty("collateralCustodianBankId")
+  private Integer collateralCustodianBankId = null;
 
-    @JsonProperty("collateralIndex")
-    private Integer collateralIndex = null;
+  @JsonProperty("collateralIndex")
+  private Integer collateralIndex = null;
 
-    @JsonProperty("collateralIndexName")
-    private String collateralIndexName = null;
+  @JsonProperty("collateralIndexName")
+  private String collateralIndexName = null;
 
-    @JsonProperty("collateralRate")
-    private Double collateralRate = null;
+  @JsonProperty("collateralRate")
+  private Double collateralRate = null;
 
-    @JsonProperty("collateralSpread")
-    private Double collateralSpread = null;
+  @JsonProperty("collateralSpread")
+  private Double collateralSpread = null;
 
-    @JsonProperty("collateralType")
-    private String collateralType = null;
+  @JsonProperty("collateralType")
+  private String collateralType = null;
 
-    @JsonProperty("collateralTypeId")
-    private Integer collateralTypeId = null;
+  @JsonProperty("collateralTypeId")
+  private Integer collateralTypeId = null;
 
-    @JsonProperty("comments")
-    private String comments = null;
+  @JsonProperty("comments")
+  private String comments = null;
 
-    @JsonProperty("competingBids")
-    private List<CompetingBidDTO> competingBids = null;
+  @JsonProperty("competingBids")
+  private List<CompetingBidDTO> competingBids = null;
 
-    @JsonProperty("complianceTestMessage")
-    private String complianceTestMessage = null;
+  @JsonProperty("complianceTestMessage")
+  private String complianceTestMessage = null;
 
-    @JsonProperty("counterpartyAccountNumber")
-    private String counterpartyAccountNumber = null;
+  @JsonProperty("contractCompareId")
+  private Integer contractCompareId = null;
 
-    @JsonProperty("counterpartyId")
-    private Integer counterpartyId = null;
+  @JsonProperty("counterpartyAccountNumber")
+  private String counterpartyAccountNumber = null;
 
-    @JsonProperty("counterpartyName")
-    private String counterpartyName = null;
+  @JsonProperty("counterpartyId")
+  private Integer counterpartyId = null;
 
-    @JsonProperty("country")
-    private String country = null;
+  @JsonProperty("counterpartyName")
+  private String counterpartyName = null;
 
-    @JsonProperty("countryId")
-    private Integer countryId = null;
+  @JsonProperty("country")
+  private String country = null;
 
-    @JsonProperty("couponPaymentSchedule")
-    private List<CouponPayment> couponPaymentSchedule = null;
+  @JsonProperty("countryId")
+  private Integer countryId = null;
 
-    @JsonProperty("currencyId")
-    private Integer currencyId = null;
+  @JsonProperty("couponPaymentSchedule")
+  private List<CouponPayment> couponPaymentSchedule = null;
 
-    @JsonProperty("currencyKy")
-    private String currencyKy = null;
+  @JsonProperty("currencyId")
+  private Integer currencyId = null;
 
-    @JsonProperty("currentAllocationId")
-    private Long currentAllocationId = null;
+  @JsonProperty("currencyKy")
+  private String currencyKy = null;
 
-    @JsonProperty("customValue1")
-    private String customValue1 = null;
+  @JsonProperty("currentAllocationId")
+  private Long currentAllocationId = null;
 
-    @JsonProperty("deliverFree")
-    private Boolean deliverFree = null;
+  @JsonProperty("customValue1")
+  private String customValue1 = null;
 
-    @JsonProperty("depoGroup")
-    private String depoGroup = null;
+  @JsonProperty("deliverFree")
+  private Boolean deliverFree = null;
 
-    @JsonProperty("depoId")
-    private Integer depoId = null;
+  @JsonProperty("depoGroup")
+  private String depoGroup = null;
 
-    @JsonProperty("depoKy")
-    private String depoKy = null;
+  @JsonProperty("depoId")
+  private Integer depoId = null;
 
-    @JsonProperty("dirtyPrice")
-    private Double dirtyPrice = null;
+  @JsonProperty("depoKy")
+  private String depoKy = null;
 
-    @JsonProperty("divCurrency")
-    private String divCurrency = null;
+  @JsonProperty("dirtyPrice")
+  private Double dirtyPrice = null;
 
-    @JsonProperty("divCurrencyId")
-    private Integer divCurrencyId = null;
+  @JsonProperty("divCurrency")
+  private String divCurrency = null;
 
-    @JsonProperty("divPerShare")
-    private Double divPerShare = null;
+  @JsonProperty("divCurrencyId")
+  private Integer divCurrencyId = null;
 
-    @JsonProperty("divWithholdRate")
-    private Double divWithholdRate = null;
+  @JsonProperty("divPerShare")
+  private Double divPerShare = null;
 
-    @JsonProperty("doNotInstruct")
-    private Boolean doNotInstruct = null;
+  @JsonProperty("divWithholdRate")
+  private Double divWithholdRate = null;
 
-    @JsonProperty("doNotInstructCxlFail")
-    private Boolean doNotInstructCxlFail = null;
+  @JsonProperty("doNotInstruct")
+  private Boolean doNotInstruct = null;
 
-    @JsonProperty("doNotPost")
-    private Boolean doNotPost = null;
+  @JsonProperty("doNotInstructCxlFail")
+  private Boolean doNotInstructCxlFail = null;
 
-    @JsonProperty("doNotRecall")
-    private Boolean doNotRecall = null;
+  @JsonProperty("doNotPost")
+  private Boolean doNotPost = null;
 
-    @JsonProperty("dtcNo")
-    private String dtcNo = null;
+  @JsonProperty("doNotRecall")
+  private Boolean doNotRecall = null;
 
-    @JsonProperty("encumberedQuantity")
-    private Double encumberedQuantity = null;
+  @JsonProperty("dtcNo")
+  private String dtcNo = null;
 
-    @JsonProperty("endDate")
-    private LocalDateTime endDate = null;
+  @JsonProperty("encumberedQuantity")
+  private Double encumberedQuantity = null;
 
-    @JsonProperty("errorMessage")
-    private String errorMessage = null;
+  @JsonProperty("endDate")
+  private LocalDateTime endDate = null;
 
-    @JsonProperty("evergreen")
-    private Boolean evergreen = null;
+  @JsonProperty("errorMessage")
+  private String errorMessage = null;
 
-    @JsonProperty("evergreenTerm")
-    private Integer evergreenTerm = null;
+  @JsonProperty("evergreen")
+  private Boolean evergreen = null;
 
-    @JsonProperty("excludeFromAutoMark")
-    private Boolean excludeFromAutoMark = null;
+  @JsonProperty("evergreenTerm")
+  private Integer evergreenTerm = null;
 
-    @JsonProperty("explodedPosition")
-    private Boolean explodedPosition = null;
+  @JsonProperty("excludeFromAutoMark")
+  private Boolean excludeFromAutoMark = null;
 
-    @JsonProperty("exposureId")
-    private Integer exposureId = null;
+  @JsonProperty("explodedPosition")
+  private Boolean explodedPosition = null;
 
-    @JsonProperty("extendableMaxDate")
-    private LocalDateTime extendableMaxDate = null;
+  @JsonProperty("exposureId")
+  private Integer exposureId = null;
 
-    @JsonProperty("factor")
-    private Double factor = null;
+  @JsonProperty("extendableMaxDate")
+  private LocalDateTime extendableMaxDate = null;
 
-    @JsonProperty("futureSettleDate")
-    private Boolean futureSettleDate = null;
+  @JsonProperty("factor")
+  private Double factor = null;
 
-    @JsonProperty("index")
-    private Integer index = null;
+  @JsonProperty("futureSettleDate")
+  private Boolean futureSettleDate = null;
 
-    @JsonProperty("indexName")
-    private String indexName = null;
+  @JsonProperty("index")
+  private Integer index = null;
 
-    @JsonProperty("instructions")
-    private String instructions = null;
+  @JsonProperty("indexName")
+  private String indexName = null;
 
-    @JsonProperty("interestAtMaturity")
-    private Double interestAtMaturity = null;
+  @JsonProperty("instructions")
+  private String instructions = null;
 
-    @JsonProperty("isBlock")
-    private Boolean isBlock = null;
+  @JsonProperty("interestAtMaturity")
+  private Double interestAtMaturity = null;
 
-    @JsonProperty("isEvergreen")
-    private Boolean isEvergreen = null;
+  @JsonProperty("isBlock")
+  private Boolean isBlock = null;
 
-    @JsonProperty("isExplodedPosition")
-    private Boolean isExplodedPosition = null;
+  @JsonProperty("isEvergreen")
+  private Boolean isEvergreen = null;
 
-    @JsonProperty("isExtendable")
-    private Boolean isExtendable = null;
+  @JsonProperty("isExplodedPosition")
+  private Boolean isExplodedPosition = null;
 
-    @JsonProperty("isPooled")
-    private Boolean isPooled = null;
+  @JsonProperty("isExtendable")
+  private Boolean isExtendable = null;
 
-    @JsonProperty("isThirdParty")
-    private Boolean isThirdParty = null;
+  @JsonProperty("isPooled")
+  private Boolean isPooled = null;
 
-    @JsonProperty("lenderAccountId")
-    private Integer lenderAccountId = null;
+  @JsonProperty("isThirdParty")
+  private Boolean isThirdParty = null;
 
-    @JsonProperty("lenderAccountName")
-    private String lenderAccountName = null;
+  @JsonProperty("ledgerId")
+  private String ledgerId = null;
 
-    @JsonProperty("matchGroup")
-    private String matchGroup = null;
+  @JsonProperty("lenderAccountId")
+  private Integer lenderAccountId = null;
 
-    @JsonProperty("matchGroupId")
-    private Integer matchGroupId = null;
+  @JsonProperty("lenderAccountName")
+  private String lenderAccountName = null;
 
-    @JsonProperty("micId")
-    private Integer micId = null;
+  @JsonProperty("matchGroup")
+  private String matchGroup = null;
 
-    @JsonProperty("nonMarkable")
-    private Boolean nonMarkable = null;
+  @JsonProperty("matchGroupId")
+  private Integer matchGroupId = null;
 
-    @JsonProperty("orderActionTs")
-    private LocalDateTime orderActionTs = null;
+  @JsonProperty("micId")
+  private Integer micId = null;
 
-    @JsonProperty("poolPositionId")
-    private Long poolPositionId = null;
+  @JsonProperty("minimumFee")
+  private Double minimumFee = null;
 
-    @JsonProperty("pooled")
-    private Boolean pooled = null;
+  @JsonProperty("nonMarkable")
+  private Boolean nonMarkable = null;
 
-    @JsonProperty("positionReferenceNumber")
-    private String positionReferenceNumber = null;
+  @JsonProperty("orderActionTs")
+  private LocalDateTime orderActionTs = null;
 
-    @JsonProperty("positionTradeId")
-    private Long positionTradeId = null;
+  @JsonProperty("originalPrincipal")
+  private Double originalPrincipal = null;
 
-    @JsonProperty("positionType")
-    private Integer positionType = null;
+  @JsonProperty("poolPositionId")
+  private Long poolPositionId = null;
 
-    @JsonProperty("positionTypeName")
-    private String positionTypeName = null;
+  @JsonProperty("pooled")
+  private Boolean pooled = null;
 
-    @JsonProperty("postDate")
-    private LocalDateTime postDate = null;
+  @JsonProperty("positionReferenceNumber")
+  private String positionReferenceNumber = null;
 
-    @JsonProperty("postTradeMarkPrice")
-    private Double postTradeMarkPrice = null;
+  @JsonProperty("positionTradeId")
+  private Long positionTradeId = null;
 
-    @JsonProperty("premiumAccrued")
-    private Double premiumAccrued = null;
+  @JsonProperty("positionType")
+  private Integer positionType = null;
 
-    @JsonProperty("premiumAdjustment")
-    private Double premiumAdjustment = null;
+  @JsonProperty("positionTypeName")
+  private String positionTypeName = null;
 
-    @JsonProperty("premiumPaymentAdjustment")
-    private Double premiumPaymentAdjustment = null;
+  @JsonProperty("postDate")
+  private LocalDateTime postDate = null;
 
-    @JsonProperty("premiumReceive")
-    private Double premiumReceive = null;
+  @JsonProperty("postTradeMarkPrice")
+  private Double postTradeMarkPrice = null;
 
-    @JsonProperty("prepaid")
-    private Boolean prepaid = null;
+  @JsonProperty("premiumAccrued")
+  private Double premiumAccrued = null;
 
-    @JsonProperty("prepayBasis")
-    private Integer prepayBasis = null;
+  @JsonProperty("premiumAdjustment")
+  private Double premiumAdjustment = null;
 
-    @JsonProperty("prepayBasisName")
-    private String prepayBasisName = null;
+  @JsonProperty("premiumPaymentAdjustment")
+  private Double premiumPaymentAdjustment = null;
 
-    @JsonProperty("prepayDate")
-    private LocalDateTime prepayDate = null;
+  @JsonProperty("premiumReceive")
+  private Double premiumReceive = null;
 
-    @JsonProperty("prepayIndex")
-    private Integer prepayIndex = null;
+  @JsonProperty("prepaid")
+  private Boolean prepaid = null;
 
-    @JsonProperty("prepayIndexName")
-    private String prepayIndexName = null;
+  @JsonProperty("prepayBasis")
+  private Integer prepayBasis = null;
 
-    @JsonProperty("prepayRate")
-    private Double prepayRate = null;
+  @JsonProperty("prepayBasisName")
+  private String prepayBasisName = null;
 
-    @JsonProperty("prepaySpread")
-    private Double prepaySpread = null;
+  @JsonProperty("prepayDate")
+  private LocalDateTime prepayDate = null;
 
-    @JsonProperty("price")
-    private Double price = null;
+  @JsonProperty("prepayIndex")
+  private Integer prepayIndex = null;
 
-    @JsonProperty("priceFactor")
-    private Integer priceFactor = null;
+  @JsonProperty("prepayIndexName")
+  private String prepayIndexName = null;
 
-    @JsonProperty("priorityAllocation")
-    private String priorityAllocation = null;
+  @JsonProperty("prepayRate")
+  private Double prepayRate = null;
 
-    @JsonProperty("productLine")
-    private String productLine = null;
+  @JsonProperty("prepaySpread")
+  private Double prepaySpread = null;
 
-    @JsonProperty("quantity")
-    private Double quantity = null;
+  @JsonProperty("price")
+  private Double price = null;
 
-    @JsonProperty("rate")
-    private Double rate = null;
+  @JsonProperty("priceFactor")
+  private Integer priceFactor = null;
 
-    @JsonProperty("rebateAccrued")
-    private Double rebateAccrued = null;
+  @JsonProperty("priorityAllocation")
+  private String priorityAllocation = null;
 
-    @JsonProperty("rebateAdjustment")
-    private Double rebateAdjustment = null;
+  @JsonProperty("productLine")
+  private String productLine = null;
 
-    @JsonProperty("rebatePayment")
-    private Double rebatePayment = null;
+  @JsonProperty("quantity")
+  private Double quantity = null;
 
-    @JsonProperty("rebatePaymentAdjustment")
-    private Double rebatePaymentAdjustment = null;
+  @JsonProperty("rate")
+  private Double rate = null;
 
-    @JsonProperty("resetDate")
-    private LocalDateTime resetDate = null;
+  @JsonProperty("rebateAccrued")
+  private Double rebateAccrued = null;
 
-    @JsonProperty("restrictionId")
-    private Integer restrictionId = null;
+  @JsonProperty("rebateAdjustment")
+  private Double rebateAdjustment = null;
 
-    @JsonProperty("securityDetail")
-    private SecurityDtlDTO securityDetail = null;
+  @JsonProperty("rebatePayment")
+  private Double rebatePayment = null;
 
-    @JsonProperty("securityId")
-    private Integer securityId = null;
+  @JsonProperty("rebatePaymentAdjustment")
+  private Double rebatePaymentAdjustment = null;
 
-    @JsonProperty("sendDNIDownstream")
-    private Boolean sendDNIDownstream = null;
+  @JsonProperty("resetDate")
+  private LocalDateTime resetDate = null;
 
-    @JsonProperty("settleDate")
-    private LocalDateTime settleDate = null;
+  @JsonProperty("restrictionId")
+  private Integer restrictionId = null;
 
-    @JsonProperty("signedTerminationPayment")
-    private Double signedTerminationPayment = null;
+  @JsonProperty("securityDetail")
+  private SecurityDtlDTO securityDetail = null;
 
-    @JsonProperty("signedTerminationPrinciple")
-    private Double signedTerminationPrinciple = null;
+  @JsonProperty("securityId")
+  private Integer securityId = null;
 
-    @JsonProperty("spread")
-    private Double spread = null;
+  @JsonProperty("sendDNIDownstream")
+  private Boolean sendDNIDownstream = null;
 
-    @JsonProperty("startDate")
-    private LocalDateTime startDate = null;
+  @JsonProperty("settleDate")
+  private LocalDateTime settleDate = null;
 
-    @JsonProperty("status")
-    private String status = null;
+  @JsonProperty("signedTerminationPayment")
+  private Double signedTerminationPayment = null;
 
-    @JsonProperty("statusId")
-    private Integer statusId = null;
+  @JsonProperty("signedTerminationPrinciple")
+  private Double signedTerminationPrinciple = null;
 
-    @JsonProperty("statusMessage")
-    private String statusMessage = null;
+  @JsonProperty("spread")
+  private Double spread = null;
 
-    @JsonProperty("strategy")
-    private String strategy = null;
+  @JsonProperty("startDate")
+  private LocalDateTime startDate = null;
 
-    @JsonProperty("strategyId")
-    private Integer strategyId = null;
+  @JsonProperty("status")
+  private String status = null;
 
-    @JsonProperty("tartgetPrice")
-    private Double tartgetPrice = null;
+  @JsonProperty("statusId")
+  private Integer statusId = null;
 
-    @JsonProperty("taxWithholdRate")
-    private Double taxWithholdRate = null;
+  @JsonProperty("statusMessage")
+  private String statusMessage = null;
 
-    @JsonProperty("termType")
-    private Integer termType = null;
+  @JsonProperty("strategy")
+  private String strategy = null;
 
-    @JsonProperty("termTypeName")
-    private String termTypeName = null;
+  @JsonProperty("strategyId")
+  private Integer strategyId = null;
 
-    @JsonProperty("terminationPrice")
-    private Double terminationPrice = null;
+  @JsonProperty("tartgetPrice")
+  private Double tartgetPrice = null;
 
-    @JsonProperty("thirdParty")
-    private Boolean thirdParty = null;
+  @JsonProperty("taxWithholdRate")
+  private Double taxWithholdRate = null;
 
-    @JsonProperty("trackingInd")
-    private Boolean trackingInd = null;
+  @JsonProperty("termType")
+  private Integer termType = null;
 
-    @JsonProperty("tradeCategoryId")
-    private Integer tradeCategoryId = null;
+  @JsonProperty("termTypeName")
+  private String termTypeName = null;
 
-    @JsonProperty("tradeDate")
-    private LocalDateTime tradeDate = null;
+  @JsonProperty("terminationPrice")
+  private Double terminationPrice = null;
 
-    @JsonProperty("tradeReason")
-    private String tradeReason = null;
+  @JsonProperty("thirdParty")
+  private Boolean thirdParty = null;
 
-    @JsonProperty("tradeReasonId")
-    private Integer tradeReasonId = null;
+  @JsonProperty("totalCoupon")
+  private Double totalCoupon = null;
 
-    @JsonProperty("tradeRefNo")
-    private String tradeRefNo = null;
+  @JsonProperty("totalCouponInterest")
+  private Double totalCouponInterest = null;
 
-    @JsonProperty("tradingDesk")
-    private String tradingDesk = null;
+  @JsonProperty("trackingInd")
+  private Boolean trackingInd = null;
 
-    @JsonProperty("tradingDeskId")
-    private Integer tradingDeskId = null;
+  @JsonProperty("tradeCategoryId")
+  private Integer tradeCategoryId = null;
 
-    @JsonProperty("tranId")
-    private Long tranId = null;
+  @JsonProperty("tradeDate")
+  private LocalDateTime tradeDate = null;
 
-    @JsonProperty("tripartyCustodianId")
-    private Integer tripartyCustodianId = null;
+  @JsonProperty("tradeReason")
+  private String tradeReason = null;
 
-    @JsonProperty("useDefaultCollateralAccount")
-    private Boolean useDefaultCollateralAccount = null;
+  @JsonProperty("tradeReasonId")
+  private Integer tradeReasonId = null;
 
-    @JsonProperty("useDefaultCollateralCustBank")
-    private Boolean useDefaultCollateralCustBank = null;
+  @JsonProperty("tradeRefNo")
+  private String tradeRefNo = null;
 
-    @JsonProperty("useDefaultExposure")
-    private Boolean useDefaultExposure = null;
+  @JsonProperty("tradingDesk")
+  private String tradingDesk = null;
 
-    @JsonProperty("useTraderDesk")
-    private Boolean useTraderDesk = null;
+  @JsonProperty("tradingDeskId")
+  private Integer tradingDeskId = null;
 
-    @JsonProperty("uti")
-    private String uti = null;
+  @JsonProperty("tranId")
+  private Long tranId = null;
 
-    public RepoDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
-    }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
-    }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-    }
-
-    public RepoDTO accountAllocations(List<AccountAllocationDTO> accountAllocations) {
-        this.accountAllocations = accountAllocations;
-        return this;
-    }
-
-    public RepoDTO addAccountAllocationsItem(AccountAllocationDTO accountAllocationsItem) {
-        this.accountAllocations.add(accountAllocationsItem);
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, increase and partial return qty on Pay To Hold &amp; Required only when
-     * the lending account is pooled
-     *
-     * @return accountAllocations
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled")
-    public List<AccountAllocationDTO> getAccountAllocations() {
-        return accountAllocations;
-    }
-
-    public void setAccountAllocations(List<AccountAllocationDTO> accountAllocations) {
-        this.accountAllocations = accountAllocations;
-    }
-
-    public RepoDTO accountGroup(String accountGroup) {
-        this.accountGroup = accountGroup;
-        return this;
-    }
-
-    /**
-     * Get accountGroup
-     *
-     * @return accountGroup
-     **/
-    @ApiModelProperty(value = "")
-    public String getAccountGroup() {
-        return accountGroup;
-    }
-
-    public void setAccountGroup(String accountGroup) {
-        this.accountGroup = accountGroup;
-    }
-
-    public RepoDTO accountGroupAccountNo2(String accountGroupAccountNo2) {
-        this.accountGroupAccountNo2 = accountGroupAccountNo2;
-        return this;
-    }
-
-    /**
-     * Get accountGroupAccountNo2
-     *
-     * @return accountGroupAccountNo2
-     **/
-    @ApiModelProperty(value = "")
-    public String getAccountGroupAccountNo2() {
-        return accountGroupAccountNo2;
-    }
-
-    public void setAccountGroupAccountNo2(String accountGroupAccountNo2) {
-        this.accountGroupAccountNo2 = accountGroupAccountNo2;
-    }
-
-    public RepoDTO accountGroupId(Integer accountGroupId) {
-        this.accountGroupId = accountGroupId;
-        return this;
-    }
-
-    /**
-     * Get accountGroupId
-     *
-     * @return accountGroupId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getAccountGroupId() {
-        return accountGroupId;
-    }
-
-    public void setAccountGroupId(Integer accountGroupId) {
-        this.accountGroupId = accountGroupId;
-    }
-
-    public RepoDTO accountId(Integer accountId) {
-        this.accountId = accountId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is
-     * required
-     *
-     * @return accountId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
-    public Integer getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Integer accountId) {
-        this.accountId = accountId;
-    }
-
-    public RepoDTO accountName(String accountName) {
-        this.accountName = accountName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is
-     * required
-     *
-     * @return accountName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
-    public String getAccountName() {
-        return accountName;
-    }
-
-    public void setAccountName(String accountName) {
-        this.accountName = accountName;
-    }
-
-    public RepoDTO accountNo(String accountNo) {
-        this.accountNo = accountNo;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is
-     * required
-     *
-     * @return accountNo
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
-    public String getAccountNo() {
-        return accountNo;
-    }
-
-    public void setAccountNo(String accountNo) {
-        this.accountNo = accountNo;
-    }
-
-    public RepoDTO accountNo2(String accountNo2) {
-        this.accountNo2 = accountNo2;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is
-     * required
-     *
-     * @return accountNo2
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
-    public String getAccountNo2() {
-        return accountNo2;
-    }
-
-    public void setAccountNo2(String accountNo2) {
-        this.accountNo2 = accountNo2;
-    }
-
-    public RepoDTO accrualAdjustment(Double accrualAdjustment) {
-        this.accrualAdjustment = accrualAdjustment;
-        return this;
-    }
-
-    /**
-     * Get accrualAdjustment
-     *
-     * @return accrualAdjustment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAccrualAdjustment() {
-        return accrualAdjustment;
-    }
-
-    public void setAccrualAdjustment(Double accrualAdjustment) {
-        this.accrualAdjustment = accrualAdjustment;
-    }
-
-    public RepoDTO accrualDate(LocalDateTime accrualDate) {
-        this.accrualDate = accrualDate;
-        return this;
-    }
-
-    /**
-     * Get accrualDate
-     *
-     * @return accrualDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getAccrualDate() {
-        return accrualDate;
-    }
-
-    public void setAccrualDate(LocalDateTime accrualDate) {
-        this.accrualDate = accrualDate;
-    }
-
-    public RepoDTO accrualSettlement(Double accrualSettlement) {
-        this.accrualSettlement = accrualSettlement;
-        return this;
-    }
-
-    /**
-     * Get accrualSettlement
-     *
-     * @return accrualSettlement
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAccrualSettlement() {
-        return accrualSettlement;
-    }
-
-    public void setAccrualSettlement(Double accrualSettlement) {
-        this.accrualSettlement = accrualSettlement;
-    }
-
-    public RepoDTO accrualTypeId(Integer accrualTypeId) {
-        this.accrualTypeId = accrualTypeId;
-        return this;
-    }
-
-    /**
-     * Get accrualTypeId
-     *
-     * @return accrualTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getAccrualTypeId() {
-        return accrualTypeId;
-    }
-
-    public void setAccrualTypeId(Integer accrualTypeId) {
-        this.accrualTypeId = accrualTypeId;
-    }
-
-    public RepoDTO agentReference(String agentReference) {
-        this.agentReference = agentReference;
-        return this;
-    }
-
-    /**
-     * Get agentReference
-     *
-     * @return agentReference
-     **/
-    @ApiModelProperty(value = "")
-    public String getAgentReference() {
-        return agentReference;
-    }
-
-    public void setAgentReference(String agentReference) {
-        this.agentReference = agentReference;
-    }
-
-    public RepoDTO allInRate(Double allInRate) {
-        this.allInRate = allInRate;
-        return this;
-    }
-
-    /**
-     * Get allInRate
-     *
-     * @return allInRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAllInRate() {
-        return allInRate;
-    }
-
-    public void setAllInRate(Double allInRate) {
-        this.allInRate = allInRate;
-    }
-
-    public RepoDTO allocationId(Long allocationId) {
-        this.allocationId = allocationId;
-        return this;
-    }
-
-    /**
-     * Get allocationId
-     *
-     * @return allocationId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getAllocationId() {
-        return allocationId;
-    }
-
-    public void setAllocationId(Long allocationId) {
-        this.allocationId = allocationId;
-    }
-
-    public RepoDTO allocationOverrideComment(String allocationOverrideComment) {
-        this.allocationOverrideComment = allocationOverrideComment;
-        return this;
-    }
-
-    /**
-     * If passed override comments will be saved for reporting purposes
-     *
-     * @return allocationOverrideComment
-     **/
-    @ApiModelProperty(value = "If passed override comments will be saved for reporting purposes")
-    public String getAllocationOverrideComment() {
-        return allocationOverrideComment;
-    }
-
-    public void setAllocationOverrideComment(String allocationOverrideComment) {
-        this.allocationOverrideComment = allocationOverrideComment;
-    }
-
-    public RepoDTO allocationPremiumAmts(List<AccountAllocationDTO> allocationPremiumAmts) {
-        this.allocationPremiumAmts = allocationPremiumAmts;
-        return this;
-    }
-
-    public RepoDTO addAllocationPremiumAmtsItem(AccountAllocationDTO allocationPremiumAmtsItem) {
-        if (this.allocationPremiumAmts == null) {
-            this.allocationPremiumAmts = new ArrayList<>();
-        }
-        this.allocationPremiumAmts.add(allocationPremiumAmtsItem);
-        return this;
-    }
-
-    /**
-     * Get allocationPremiumAmts
-     *
-     * @return allocationPremiumAmts
-     **/
-    @ApiModelProperty(value = "")
-    public List<AccountAllocationDTO> getAllocationPremiumAmts() {
-        return allocationPremiumAmts;
-    }
-
-    public void setAllocationPremiumAmts(List<AccountAllocationDTO> allocationPremiumAmts) {
-        this.allocationPremiumAmts = allocationPremiumAmts;
-    }
-
-    public RepoDTO allocationReason(String allocationReason) {
-        this.allocationReason = allocationReason;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required when isPooled is true &amp; Either allocationReasonId or
-     * allocationReason is required &amp; required if configuration is set to true to force allocation reason when
-     * allocations is changed
-     *
-     * @return allocationReason
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required when isPooled is true & Either allocationReasonId or allocationReason is required & required if configuration is set to true to force allocation reason when allocations is changed")
-    public String getAllocationReason() {
-        return allocationReason;
-    }
-
-    public void setAllocationReason(String allocationReason) {
-        this.allocationReason = allocationReason;
-    }
-
-    public RepoDTO allocationReasonId(Integer allocationReasonId) {
-        this.allocationReasonId = allocationReasonId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required when isPooled is true &amp; Either allocationReasonId or
-     * allocationReason is required &amp; required if configuration is set to true to force allocation reason when
-     * allocations is changed
-     *
-     * @return allocationReasonId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required when isPooled is true & Either allocationReasonId or allocationReason is required & required if configuration is set to true to force allocation reason when allocations is changed")
-    public Integer getAllocationReasonId() {
-        return allocationReasonId;
-    }
-
-    public void setAllocationReasonId(Integer allocationReasonId) {
-        this.allocationReasonId = allocationReasonId;
-    }
-
-    public RepoDTO allocationRebateAmts(List<AccountAllocationDTO> allocationRebateAmts) {
-        this.allocationRebateAmts = allocationRebateAmts;
-        return this;
-    }
-
-    public RepoDTO addAllocationRebateAmtsItem(AccountAllocationDTO allocationRebateAmtsItem) {
-        if (this.allocationRebateAmts == null) {
-            this.allocationRebateAmts = new ArrayList<>();
-        }
-        this.allocationRebateAmts.add(allocationRebateAmtsItem);
-        return this;
-    }
-
-    /**
-     * Get allocationRebateAmts
-     *
-     * @return allocationRebateAmts
-     **/
-    @ApiModelProperty(value = "")
-    public List<AccountAllocationDTO> getAllocationRebateAmts() {
-        return allocationRebateAmts;
-    }
-
-    public void setAllocationRebateAmts(List<AccountAllocationDTO> allocationRebateAmts) {
-        this.allocationRebateAmts = allocationRebateAmts;
-    }
-
-    public RepoDTO amount(Double amount) {
-        this.amount = amount;
-        return this;
-    }
-
-    /**
-     * Get amount
-     *
-     * @return amount
-     **/
-    @ApiModelProperty(value = "")
-    public Double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(Double amount) {
-        this.amount = amount;
-    }
-
-    public RepoDTO basis(Integer basis) {
-        this.basis = basis;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Either basis or basisName is required
-     *
-     * @return basis
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either basis or basisName is required")
-    public Integer getBasis() {
-        return basis;
-    }
-
-    public void setBasis(Integer basis) {
-        this.basis = basis;
-    }
-
-    public RepoDTO basisName(String basisName) {
-        this.basisName = basisName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Either basis or basisName is required
-     *
-     * @return basisName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either basis or basisName is required")
-    public String getBasisName() {
-        return basisName;
-    }
-
-    public void setBasisName(String basisName) {
-        this.basisName = basisName;
-    }
-
-    public RepoDTO calendar(String calendar) {
-        this.calendar = calendar;
-        return this;
-    }
-
-    /**
-     * Get calendar
-     *
-     * @return calendar
-     **/
-    @ApiModelProperty(value = "")
-    public String getCalendar() {
-        return calendar;
-    }
-
-    public void setCalendar(String calendar) {
-        this.calendar = calendar;
-    }
-
-    public RepoDTO calendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-        return this;
-    }
-
-    /**
-     * Get calendarId
-     *
-     * @return calendarId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCalendarId() {
-        return calendarId;
-    }
-
-    public void setCalendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-    }
-
-    public RepoDTO collateralAccountId(Integer collateralAccountId) {
-        this.collateralAccountId = collateralAccountId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or
-     * collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
-     *
-     * @return collateralAccountId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
-    public Integer getCollateralAccountId() {
-        return collateralAccountId;
-    }
-
-    public void setCollateralAccountId(Integer collateralAccountId) {
-        this.collateralAccountId = collateralAccountId;
-    }
-
-    public RepoDTO collateralAccountName(String collateralAccountName) {
-        this.collateralAccountName = collateralAccountName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or
-     * collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
-     *
-     * @return collateralAccountName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
-    public String getCollateralAccountName() {
-        return collateralAccountName;
-    }
-
-    public void setCollateralAccountName(String collateralAccountName) {
-        this.collateralAccountName = collateralAccountName;
-    }
-
-    public RepoDTO collateralAccountNo(String collateralAccountNo) {
-        this.collateralAccountNo = collateralAccountNo;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or
-     * collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
-     *
-     * @return collateralAccountNo
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
-    public String getCollateralAccountNo() {
-        return collateralAccountNo;
-    }
-
-    public void setCollateralAccountNo(String collateralAccountNo) {
-        this.collateralAccountNo = collateralAccountNo;
-    }
-
-    public RepoDTO collateralAccountNo2(String collateralAccountNo2) {
-        this.collateralAccountNo2 = collateralAccountNo2;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or
-     * collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
-     *
-     * @return collateralAccountNo2
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
-    public String getCollateralAccountNo2() {
-        return collateralAccountNo2;
-    }
-
-    public void setCollateralAccountNo2(String collateralAccountNo2) {
-        this.collateralAccountNo2 = collateralAccountNo2;
-    }
-
-    public RepoDTO collateralBasis(Integer collateralBasis) {
-        this.collateralBasis = collateralBasis;
-        return this;
-    }
-
-    /**
-     * Get collateralBasis
-     *
-     * @return collateralBasis
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCollateralBasis() {
-        return collateralBasis;
-    }
-
-    public void setCollateralBasis(Integer collateralBasis) {
-        this.collateralBasis = collateralBasis;
-    }
-
-    public RepoDTO collateralBasisName(String collateralBasisName) {
-        this.collateralBasisName = collateralBasisName;
-        return this;
-    }
-
-    /**
-     * Get collateralBasisName
-     *
-     * @return collateralBasisName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCollateralBasisName() {
-        return collateralBasisName;
-    }
-
-    public void setCollateralBasisName(String collateralBasisName) {
-        this.collateralBasisName = collateralBasisName;
-    }
-
-    public RepoDTO collateralCalendar(Integer collateralCalendar) {
-        this.collateralCalendar = collateralCalendar;
-        return this;
-    }
-
-    /**
-     * Get collateralCalendar
-     *
-     * @return collateralCalendar
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCollateralCalendar() {
-        return collateralCalendar;
-    }
-
-    public void setCollateralCalendar(Integer collateralCalendar) {
-        this.collateralCalendar = collateralCalendar;
-    }
-
-    public RepoDTO collateralCalendarName(String collateralCalendarName) {
-        this.collateralCalendarName = collateralCalendarName;
-        return this;
-    }
-
-    /**
-     * Get collateralCalendarName
-     *
-     * @return collateralCalendarName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCollateralCalendarName() {
-        return collateralCalendarName;
-    }
-
-    public void setCollateralCalendarName(String collateralCalendarName) {
-        this.collateralCalendarName = collateralCalendarName;
-    }
-
-    public RepoDTO collateralCustodianBankAccountName(String collateralCustodianBankAccountName) {
-        this.collateralCustodianBankAccountName = collateralCustodianBankAccountName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or
-     * collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
-     *
-     * @return collateralCustodianBankAccountName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
-    public String getCollateralCustodianBankAccountName() {
-        return collateralCustodianBankAccountName;
-    }
-
-    public void setCollateralCustodianBankAccountName(String collateralCustodianBankAccountName) {
-        this.collateralCustodianBankAccountName = collateralCustodianBankAccountName;
-    }
-
-    public RepoDTO collateralCustodianBankAccountNo(String collateralCustodianBankAccountNo) {
-        this.collateralCustodianBankAccountNo = collateralCustodianBankAccountNo;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or
-     * collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
-     *
-     * @return collateralCustodianBankAccountNo
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
-    public String getCollateralCustodianBankAccountNo() {
-        return collateralCustodianBankAccountNo;
-    }
-
-    public void setCollateralCustodianBankAccountNo(String collateralCustodianBankAccountNo) {
-        this.collateralCustodianBankAccountNo = collateralCustodianBankAccountNo;
-    }
-
-    public RepoDTO collateralCustodianBankAccountNo2(String collateralCustodianBankAccountNo2) {
-        this.collateralCustodianBankAccountNo2 = collateralCustodianBankAccountNo2;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or
-     * collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
-     *
-     * @return collateralCustodianBankAccountNo2
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
-    public String getCollateralCustodianBankAccountNo2() {
-        return collateralCustodianBankAccountNo2;
-    }
-
-    public void setCollateralCustodianBankAccountNo2(String collateralCustodianBankAccountNo2) {
-        this.collateralCustodianBankAccountNo2 = collateralCustodianBankAccountNo2;
-    }
-
-    public RepoDTO collateralCustodianBankId(Integer collateralCustodianBankId) {
-        this.collateralCustodianBankId = collateralCustodianBankId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or
-     * collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
-     *
-     * @return collateralCustodianBankId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
-    public Integer getCollateralCustodianBankId() {
-        return collateralCustodianBankId;
-    }
-
-    public void setCollateralCustodianBankId(Integer collateralCustodianBankId) {
-        this.collateralCustodianBankId = collateralCustodianBankId;
-    }
-
-    public RepoDTO collateralIndex(Integer collateralIndex) {
-        this.collateralIndex = collateralIndex;
-        return this;
-    }
-
-    /**
-     * Get collateralIndex
-     *
-     * @return collateralIndex
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCollateralIndex() {
-        return collateralIndex;
-    }
-
-    public void setCollateralIndex(Integer collateralIndex) {
-        this.collateralIndex = collateralIndex;
-    }
-
-    public RepoDTO collateralIndexName(String collateralIndexName) {
-        this.collateralIndexName = collateralIndexName;
-        return this;
-    }
-
-    /**
-     * Get collateralIndexName
-     *
-     * @return collateralIndexName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCollateralIndexName() {
-        return collateralIndexName;
-    }
-
-    public void setCollateralIndexName(String collateralIndexName) {
-        this.collateralIndexName = collateralIndexName;
-    }
-
-    public RepoDTO collateralRate(Double collateralRate) {
-        this.collateralRate = collateralRate;
-        return this;
-    }
-
-    /**
-     * Get collateralRate
-     *
-     * @return collateralRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCollateralRate() {
-        return collateralRate;
-    }
-
-    public void setCollateralRate(Double collateralRate) {
-        this.collateralRate = collateralRate;
-    }
-
-    public RepoDTO collateralSpread(Double collateralSpread) {
-        this.collateralSpread = collateralSpread;
-        return this;
-    }
-
-    /**
-     * Get collateralSpread
-     *
-     * @return collateralSpread
-     **/
-    @ApiModelProperty(value = "")
-    public Double getCollateralSpread() {
-        return collateralSpread;
-    }
-
-    public void setCollateralSpread(Double collateralSpread) {
-        this.collateralSpread = collateralSpread;
-    }
-
-    public RepoDTO collateralType(String collateralType) {
-        this.collateralType = collateralType;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralTypeId or collateralType is required
-     *
-     * @return collateralType
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralTypeId or collateralType is required")
-    public String getCollateralType() {
-        return collateralType;
-    }
-
-    public void setCollateralType(String collateralType) {
-        this.collateralType = collateralType;
-    }
-
-    public RepoDTO collateralTypeId(Integer collateralTypeId) {
-        this.collateralTypeId = collateralTypeId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralTypeId or collateralType is required
-     *
-     * @return collateralTypeId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralTypeId or collateralType is required")
-    public Integer getCollateralTypeId() {
-        return collateralTypeId;
-    }
-
-    public void setCollateralTypeId(Integer collateralTypeId) {
-        this.collateralTypeId = collateralTypeId;
-    }
-
-    public RepoDTO comments(String comments) {
-        this.comments = comments;
-        return this;
-    }
-
-    /**
-     * Get comments
-     *
-     * @return comments
-     **/
-    @ApiModelProperty(value = "")
-    public String getComments() {
-        return comments;
-    }
-
-    public void setComments(String comments) {
-        this.comments = comments;
-    }
-
-    public RepoDTO competingBids(List<CompetingBidDTO> competingBids) {
-        this.competingBids = competingBids;
-        return this;
-    }
-
-    public RepoDTO addCompetingBidsItem(CompetingBidDTO competingBidsItem) {
-        if (this.competingBids == null) {
-            this.competingBids = new ArrayList<>();
-        }
-        this.competingBids.add(competingBidsItem);
-        return this;
-    }
-
-    /**
-     * Get competingBids
-     *
-     * @return competingBids
-     **/
-    @ApiModelProperty(value = "")
-    public List<CompetingBidDTO> getCompetingBids() {
-        return competingBids;
-    }
-
-    public void setCompetingBids(List<CompetingBidDTO> competingBids) {
-        this.competingBids = competingBids;
-    }
-
-    public RepoDTO complianceTestMessage(String complianceTestMessage) {
-        this.complianceTestMessage = complianceTestMessage;
-        return this;
-    }
-
-    /**
-     * Get complianceTestMessage
-     *
-     * @return complianceTestMessage
-     **/
-    @ApiModelProperty(value = "")
-    public String getComplianceTestMessage() {
-        return complianceTestMessage;
-    }
-
-    public void setComplianceTestMessage(String complianceTestMessage) {
-        this.complianceTestMessage = complianceTestMessage;
-    }
-
-    public RepoDTO counterpartyAccountNumber(String counterpartyAccountNumber) {
-        this.counterpartyAccountNumber = counterpartyAccountNumber;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either counterpartyId or counterpartyName or
-     * counterpartyAccountNumber or dtcNo is required
-     *
-     * @return counterpartyAccountNumber
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
-    public String getCounterpartyAccountNumber() {
-        return counterpartyAccountNumber;
-    }
-
-    public void setCounterpartyAccountNumber(String counterpartyAccountNumber) {
-        this.counterpartyAccountNumber = counterpartyAccountNumber;
-    }
-
-    public RepoDTO counterpartyId(Integer counterpartyId) {
-        this.counterpartyId = counterpartyId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either counterpartyId or counterpartyName or
-     * counterpartyAccountNumber or dtcNo is required
-     *
-     * @return counterpartyId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
-    public Integer getCounterpartyId() {
-        return counterpartyId;
-    }
-
-    public void setCounterpartyId(Integer counterpartyId) {
-        this.counterpartyId = counterpartyId;
-    }
-
-    public RepoDTO counterpartyName(String counterpartyName) {
-        this.counterpartyName = counterpartyName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either counterpartyId or counterpartyName or
-     * counterpartyAccountNumber or dtcNo is required
-     *
-     * @return counterpartyName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
-    public String getCounterpartyName() {
-        return counterpartyName;
-    }
-
-    public void setCounterpartyName(String counterpartyName) {
-        this.counterpartyName = counterpartyName;
-    }
-
-    public RepoDTO country(String country) {
-        this.country = country;
-        return this;
-    }
-
-    /**
-     * Get country
-     *
-     * @return country
-     **/
-    @ApiModelProperty(value = "")
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
-    }
-
-    public RepoDTO countryId(Integer countryId) {
-        this.countryId = countryId;
-        return this;
-    }
-
-    /**
-     * Get countryId
-     *
-     * @return countryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
-    public RepoDTO couponPaymentSchedule(List<CouponPayment> couponPaymentSchedule) {
-        this.couponPaymentSchedule = couponPaymentSchedule;
-        return this;
-    }
-
-    public RepoDTO addCouponPaymentScheduleItem(CouponPayment couponPaymentScheduleItem) {
-        if (this.couponPaymentSchedule == null) {
-            this.couponPaymentSchedule = new ArrayList<>();
-        }
-        this.couponPaymentSchedule.add(couponPaymentScheduleItem);
-        return this;
-    }
-
-    /**
-     * Get couponPaymentSchedule
-     *
-     * @return couponPaymentSchedule
-     **/
-    @ApiModelProperty(value = "")
-    public List<CouponPayment> getCouponPaymentSchedule() {
-        return couponPaymentSchedule;
-    }
-
-    public void setCouponPaymentSchedule(List<CouponPayment> couponPaymentSchedule) {
-        this.couponPaymentSchedule = couponPaymentSchedule;
-    }
-
-    public RepoDTO currencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either currencyId or currencyKy is required
-     *
-     * @return currencyId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either currencyId or currencyKy is required")
-    public Integer getCurrencyId() {
-        return currencyId;
-    }
-
-    public void setCurrencyId(Integer currencyId) {
-        this.currencyId = currencyId;
-    }
-
-    public RepoDTO currencyKy(String currencyKy) {
-        this.currencyKy = currencyKy;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either currencyId or currencyKy is required
-     *
-     * @return currencyKy
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either currencyId or currencyKy is required")
-    public String getCurrencyKy() {
-        return currencyKy;
-    }
-
-    public void setCurrencyKy(String currencyKy) {
-        this.currencyKy = currencyKy;
-    }
-
-    public RepoDTO currentAllocationId(Long currentAllocationId) {
-        this.currentAllocationId = currentAllocationId;
-        return this;
-    }
-
-    /**
-     * Get currentAllocationId
-     *
-     * @return currentAllocationId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCurrentAllocationId() {
-        return currentAllocationId;
-    }
-
-    public void setCurrentAllocationId(Long currentAllocationId) {
-        this.currentAllocationId = currentAllocationId;
-    }
-
-    public RepoDTO customValue1(String customValue1) {
-        this.customValue1 = customValue1;
-        return this;
-    }
-
-    /**
-     * Get customValue1
-     *
-     * @return customValue1
-     **/
-    @ApiModelProperty(value = "")
-    public String getCustomValue1() {
-        return customValue1;
-    }
-
-    public void setCustomValue1(String customValue1) {
-        this.customValue1 = customValue1;
-    }
-
-    public RepoDTO deliverFree(Boolean deliverFree) {
-        this.deliverFree = deliverFree;
-        return this;
-    }
-
-    /**
-     * Get deliverFree
-     *
-     * @return deliverFree
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDeliverFree() {
-        return deliverFree;
-    }
-
-    public void setDeliverFree(Boolean deliverFree) {
-        this.deliverFree = deliverFree;
-    }
-
-    public RepoDTO depoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-        return this;
-    }
-
-    /**
-     * Get depoGroup
-     *
-     * @return depoGroup
-     **/
-    @ApiModelProperty(value = "")
-    public String getDepoGroup() {
-        return depoGroup;
-    }
-
-    public void setDepoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-    }
-
-    public RepoDTO depoId(Integer depoId) {
-        this.depoId = depoId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either depoId or depoKy is required
-     *
-     * @return depoId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either depoId or depoKy is required")
-    public Integer getDepoId() {
-        return depoId;
-    }
-
-    public void setDepoId(Integer depoId) {
-        this.depoId = depoId;
-    }
-
-    public RepoDTO depoKy(String depoKy) {
-        this.depoKy = depoKy;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either depoId or depoKy is required
-     *
-     * @return depoKy
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either depoId or depoKy is required")
-    public String getDepoKy() {
-        return depoKy;
-    }
-
-    public void setDepoKy(String depoKy) {
-        this.depoKy = depoKy;
-    }
-
-    public RepoDTO dirtyPrice(Double dirtyPrice) {
-        this.dirtyPrice = dirtyPrice;
-        return this;
-    }
-
-    /**
-     * Get dirtyPrice
-     *
-     * @return dirtyPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDirtyPrice() {
-        return dirtyPrice;
-    }
-
-    public void setDirtyPrice(Double dirtyPrice) {
-        this.dirtyPrice = dirtyPrice;
-    }
-
-    public RepoDTO divCurrency(String divCurrency) {
-        this.divCurrency = divCurrency;
-        return this;
-    }
-
-    /**
-     * Get divCurrency
-     *
-     * @return divCurrency
-     **/
-    @ApiModelProperty(value = "")
-    public String getDivCurrency() {
-        return divCurrency;
-    }
-
-    public void setDivCurrency(String divCurrency) {
-        this.divCurrency = divCurrency;
-    }
-
-    public RepoDTO divCurrencyId(Integer divCurrencyId) {
-        this.divCurrencyId = divCurrencyId;
-        return this;
-    }
-
-    /**
-     * Get divCurrencyId
-     *
-     * @return divCurrencyId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getDivCurrencyId() {
-        return divCurrencyId;
-    }
-
-    public void setDivCurrencyId(Integer divCurrencyId) {
-        this.divCurrencyId = divCurrencyId;
-    }
-
-    public RepoDTO divPerShare(Double divPerShare) {
-        this.divPerShare = divPerShare;
-        return this;
-    }
-
-    /**
-     * Get divPerShare
-     *
-     * @return divPerShare
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDivPerShare() {
-        return divPerShare;
-    }
-
-    public void setDivPerShare(Double divPerShare) {
-        this.divPerShare = divPerShare;
-    }
-
-    public RepoDTO divWithholdRate(Double divWithholdRate) {
-        this.divWithholdRate = divWithholdRate;
-        return this;
-    }
-
-    /**
-     * Get divWithholdRate
-     *
-     * @return divWithholdRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getDivWithholdRate() {
-        return divWithholdRate;
-    }
-
-    public void setDivWithholdRate(Double divWithholdRate) {
-        this.divWithholdRate = divWithholdRate;
-    }
-
-    public RepoDTO doNotInstruct(Boolean doNotInstruct) {
-        this.doNotInstruct = doNotInstruct;
-        return this;
-    }
-
-    /**
-     * Get doNotInstruct
-     *
-     * @return doNotInstruct
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotInstruct() {
-        return doNotInstruct;
-    }
-
-    public void setDoNotInstruct(Boolean doNotInstruct) {
-        this.doNotInstruct = doNotInstruct;
-    }
-
-    public RepoDTO doNotInstructCxlFail(Boolean doNotInstructCxlFail) {
-        this.doNotInstructCxlFail = doNotInstructCxlFail;
-        return this;
-    }
-
-    /**
-     * Get doNotInstructCxlFail
-     *
-     * @return doNotInstructCxlFail
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotInstructCxlFail() {
-        return doNotInstructCxlFail;
-    }
-
-    public void setDoNotInstructCxlFail(Boolean doNotInstructCxlFail) {
-        this.doNotInstructCxlFail = doNotInstructCxlFail;
-    }
-
-    public RepoDTO doNotPost(Boolean doNotPost) {
-        this.doNotPost = doNotPost;
-        return this;
-    }
-
-    /**
-     * Get doNotPost
-     *
-     * @return doNotPost
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotPost() {
-        return doNotPost;
-    }
-
-    public void setDoNotPost(Boolean doNotPost) {
-        this.doNotPost = doNotPost;
-    }
-
-    public RepoDTO doNotRecall(Boolean doNotRecall) {
-        this.doNotRecall = doNotRecall;
-        return this;
-    }
-
-    /**
-     * Get doNotRecall
-     *
-     * @return doNotRecall
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotRecall() {
-        return doNotRecall;
-    }
-
-    public void setDoNotRecall(Boolean doNotRecall) {
-        this.doNotRecall = doNotRecall;
-    }
-
-    public RepoDTO dtcNo(String dtcNo) {
-        this.dtcNo = dtcNo;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either counterpartyId or counterpartyName or
-     * counterpartyAccountNumber or dtcNo is required
-     *
-     * @return dtcNo
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
-    public String getDtcNo() {
-        return dtcNo;
-    }
-
-    public void setDtcNo(String dtcNo) {
-        this.dtcNo = dtcNo;
-    }
-
-    public RepoDTO encumberedQuantity(Double encumberedQuantity) {
-        this.encumberedQuantity = encumberedQuantity;
-        return this;
-    }
-
-    /**
-     * Get encumberedQuantity
-     *
-     * @return encumberedQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getEncumberedQuantity() {
-        return encumberedQuantity;
-    }
-
-    public void setEncumberedQuantity(Double encumberedQuantity) {
-        this.encumberedQuantity = encumberedQuantity;
-    }
-
-    public RepoDTO endDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-        return this;
-    }
-
-    /**
-     * Get endDate
-     *
-     * @return endDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDateTime endDate) {
-        this.endDate = endDate;
-    }
-
-    public RepoDTO errorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-        return this;
-    }
-
-    /**
-     * Get errorMessage
-     *
-     * @return errorMessage
-     **/
-    @ApiModelProperty(value = "")
-    public String getErrorMessage() {
-        return errorMessage;
-    }
-
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
-
-    public RepoDTO evergreen(Boolean evergreen) {
-        this.evergreen = evergreen;
-        return this;
-    }
-
-    /**
-     * Get evergreen
-     *
-     * @return evergreen
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isEvergreen() {
-        return evergreen;
-    }
-
-    public void setEvergreen(Boolean evergreen) {
-        this.evergreen = evergreen;
-    }
-
-    public RepoDTO evergreenTerm(Integer evergreenTerm) {
-        this.evergreenTerm = evergreenTerm;
-        return this;
-    }
-
-    /**
-     * Get evergreenTerm
-     *
-     * @return evergreenTerm
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getEvergreenTerm() {
-        return evergreenTerm;
-    }
-
-    public void setEvergreenTerm(Integer evergreenTerm) {
-        this.evergreenTerm = evergreenTerm;
-    }
-
-    public RepoDTO excludeFromAutoMark(Boolean excludeFromAutoMark) {
-        this.excludeFromAutoMark = excludeFromAutoMark;
-        return this;
-    }
-
-    /**
-     * Get excludeFromAutoMark
-     *
-     * @return excludeFromAutoMark
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isExcludeFromAutoMark() {
-        return excludeFromAutoMark;
-    }
-
-    public void setExcludeFromAutoMark(Boolean excludeFromAutoMark) {
-        this.excludeFromAutoMark = excludeFromAutoMark;
-    }
-
-    public RepoDTO explodedPosition(Boolean explodedPosition) {
-        this.explodedPosition = explodedPosition;
-        return this;
-    }
-
-    /**
-     * Get explodedPosition
-     *
-     * @return explodedPosition
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isExplodedPosition() {
-        return explodedPosition;
-    }
-
-    public void setExplodedPosition(Boolean explodedPosition) {
-        this.explodedPosition = explodedPosition;
-    }
-
-    public RepoDTO exposureId(Integer exposureId) {
-        this.exposureId = exposureId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Either exposureId or useDefaultExposure is required
-     *
-     * @return exposureId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either exposureId or useDefaultExposure is required")
-    public Integer getExposureId() {
-        return exposureId;
-    }
-
-    public void setExposureId(Integer exposureId) {
-        this.exposureId = exposureId;
-    }
-
-    public RepoDTO extendableMaxDate(LocalDateTime extendableMaxDate) {
-        this.extendableMaxDate = extendableMaxDate;
-        return this;
-    }
-
-    /**
-     * Get extendableMaxDate
-     *
-     * @return extendableMaxDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getExtendableMaxDate() {
-        return extendableMaxDate;
-    }
-
-    public void setExtendableMaxDate(LocalDateTime extendableMaxDate) {
-        this.extendableMaxDate = extendableMaxDate;
-    }
-
-    public RepoDTO factor(Double factor) {
-        this.factor = factor;
-        return this;
-    }
-
-    /**
-     * Get factor
-     *
-     * @return factor
-     **/
-    @ApiModelProperty(value = "")
-    public Double getFactor() {
-        return factor;
-    }
-
-    public void setFactor(Double factor) {
-        this.factor = factor;
-    }
-
-    public RepoDTO futureSettleDate(Boolean futureSettleDate) {
-        this.futureSettleDate = futureSettleDate;
-        return this;
-    }
-
-    /**
-     * Get futureSettleDate
-     *
-     * @return futureSettleDate
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isFutureSettleDate() {
-        return futureSettleDate;
-    }
-
-    public void setFutureSettleDate(Boolean futureSettleDate) {
-        this.futureSettleDate = futureSettleDate;
-    }
-
-    public RepoDTO index(Integer index) {
-        this.index = index;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Either index or indexName is required
-     *
-     * @return index
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either index or indexName is required")
-    public Integer getIndex() {
-        return index;
-    }
-
-    public void setIndex(Integer index) {
-        this.index = index;
-    }
-
-    public RepoDTO indexName(String indexName) {
-        this.indexName = indexName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Either index or indexName is required
-     *
-     * @return indexName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either index or indexName is required")
-    public String getIndexName() {
-        return indexName;
-    }
-
-    public void setIndexName(String indexName) {
-        this.indexName = indexName;
-    }
-
-    public RepoDTO instructions(String instructions) {
-        this.instructions = instructions;
-        return this;
-    }
-
-    /**
-     * Get instructions
-     *
-     * @return instructions
-     **/
-    @ApiModelProperty(value = "")
-    public String getInstructions() {
-        return instructions;
-    }
-
-    public void setInstructions(String instructions) {
-        this.instructions = instructions;
-    }
-
-    public RepoDTO interestAtMaturity(Double interestAtMaturity) {
-        this.interestAtMaturity = interestAtMaturity;
-        return this;
-    }
-
-    /**
-     * Get interestAtMaturity
-     *
-     * @return interestAtMaturity
-     **/
-    @ApiModelProperty(value = "")
-    public Double getInterestAtMaturity() {
-        return interestAtMaturity;
-    }
-
-    public void setInterestAtMaturity(Double interestAtMaturity) {
-        this.interestAtMaturity = interestAtMaturity;
-    }
-
-    public RepoDTO isBlock(Boolean isBlock) {
-        this.isBlock = isBlock;
-        return this;
-    }
-
-    /**
-     * Get isBlock
-     *
-     * @return isBlock
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsBlock() {
-        return isBlock;
-    }
-
-    public void setIsBlock(Boolean isBlock) {
-        this.isBlock = isBlock;
-    }
-
-    public RepoDTO isEvergreen(Boolean isEvergreen) {
-        this.isEvergreen = isEvergreen;
-        return this;
-    }
-
-    /**
-     * Get isEvergreen
-     *
-     * @return isEvergreen
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsEvergreen() {
-        return isEvergreen;
-    }
-
-    public void setIsEvergreen(Boolean isEvergreen) {
-        this.isEvergreen = isEvergreen;
-    }
-
-    public RepoDTO isExplodedPosition(Boolean isExplodedPosition) {
-        this.isExplodedPosition = isExplodedPosition;
-        return this;
-    }
-
-    /**
-     * Get isExplodedPosition
-     *
-     * @return isExplodedPosition
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsExplodedPosition() {
-        return isExplodedPosition;
-    }
-
-    public void setIsExplodedPosition(Boolean isExplodedPosition) {
-        this.isExplodedPosition = isExplodedPosition;
-    }
-
-    public RepoDTO isExtendable(Boolean isExtendable) {
-        this.isExtendable = isExtendable;
-        return this;
-    }
-
-    /**
-     * Get isExtendable
-     *
-     * @return isExtendable
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsExtendable() {
-        return isExtendable;
-    }
-
-    public void setIsExtendable(Boolean isExtendable) {
-        this.isExtendable = isExtendable;
-    }
-
-    public RepoDTO isPooled(Boolean isPooled) {
-        this.isPooled = isPooled;
-        return this;
-    }
-
-    /**
-     * Tells whether lending account is pooled or not
-     *
-     * @return isPooled
-     **/
-    @ApiModelProperty(required = true, value = "Tells whether lending account is pooled or not")
-    public Boolean isIsPooled() {
-        return isPooled;
-    }
-
-    public void setIsPooled(Boolean isPooled) {
-        this.isPooled = isPooled;
-    }
-
-    public RepoDTO isThirdParty(Boolean isThirdParty) {
-        this.isThirdParty = isThirdParty;
-        return this;
-    }
-
-    /**
-     * Get isThirdParty
-     *
-     * @return isThirdParty
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isIsThirdParty() {
-        return isThirdParty;
-    }
-
-    public void setIsThirdParty(Boolean isThirdParty) {
-        this.isThirdParty = isThirdParty;
-    }
-
-    public RepoDTO lenderAccountId(Integer lenderAccountId) {
-        this.lenderAccountId = lenderAccountId;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position&amp; Either lenderAccountId or lenderAccountNameis required
-     *
-     * @return lenderAccountId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position& Either lenderAccountId or lenderAccountNameis required")
-    public Integer getLenderAccountId() {
-        return lenderAccountId;
-    }
-
-    public void setLenderAccountId(Integer lenderAccountId) {
-        this.lenderAccountId = lenderAccountId;
-    }
-
-    public RepoDTO lenderAccountName(String lenderAccountName) {
-        this.lenderAccountName = lenderAccountName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position&amp; Either lenderAccountId or lenderAccountNameis required
-     *
-     * @return lenderAccountName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position& Either lenderAccountId or lenderAccountNameis required")
-    public String getLenderAccountName() {
-        return lenderAccountName;
-    }
-
-    public void setLenderAccountName(String lenderAccountName) {
-        this.lenderAccountName = lenderAccountName;
-    }
-
-    public RepoDTO matchGroup(String matchGroup) {
-        this.matchGroup = matchGroup;
-        return this;
-    }
-
-    /**
-     * Get matchGroup
-     *
-     * @return matchGroup
-     **/
-    @ApiModelProperty(value = "")
-    public String getMatchGroup() {
-        return matchGroup;
-    }
-
-    public void setMatchGroup(String matchGroup) {
-        this.matchGroup = matchGroup;
-    }
-
-    public RepoDTO matchGroupId(Integer matchGroupId) {
-        this.matchGroupId = matchGroupId;
-        return this;
-    }
-
-    /**
-     * Get matchGroupId
-     *
-     * @return matchGroupId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMatchGroupId() {
-        return matchGroupId;
-    }
-
-    public void setMatchGroupId(Integer matchGroupId) {
-        this.matchGroupId = matchGroupId;
-    }
-
-    public RepoDTO micId(Integer micId) {
-        this.micId = micId;
-        return this;
-    }
-
-    /**
-     * Get micId
-     *
-     * @return micId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMicId() {
-        return micId;
-    }
-
-    public void setMicId(Integer micId) {
-        this.micId = micId;
-    }
-
-    public RepoDTO nonMarkable(Boolean nonMarkable) {
-        this.nonMarkable = nonMarkable;
-        return this;
-    }
-
-    /**
-     * Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold
-     *
-     * @return nonMarkable
-     **/
-    @ApiModelProperty(value = "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold ")
-    public Boolean isNonMarkable() {
-        return nonMarkable;
-    }
-
-    public void setNonMarkable(Boolean nonMarkable) {
-        this.nonMarkable = nonMarkable;
-    }
-
-    public RepoDTO orderActionTs(LocalDateTime orderActionTs) {
-        this.orderActionTs = orderActionTs;
-        return this;
-    }
-
-    /**
-     * Get orderActionTs
-     *
-     * @return orderActionTs
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getOrderActionTs() {
-        return orderActionTs;
-    }
-
-    public void setOrderActionTs(LocalDateTime orderActionTs) {
-        this.orderActionTs = orderActionTs;
-    }
-
-    public RepoDTO poolPositionId(Long poolPositionId) {
-        this.poolPositionId = poolPositionId;
-        return this;
-    }
-
-    /**
-     * Get poolPositionId
-     *
-     * @return poolPositionId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getPoolPositionId() {
-        return poolPositionId;
-    }
-
-    public void setPoolPositionId(Long poolPositionId) {
-        this.poolPositionId = poolPositionId;
-    }
-
-    public RepoDTO pooled(Boolean pooled) {
-        this.pooled = pooled;
-        return this;
-    }
-
-    /**
-     * Get pooled
-     *
-     * @return pooled
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isPooled() {
-        return pooled;
-    }
-
-    public void setPooled(Boolean pooled) {
-        this.pooled = pooled;
-    }
-
-    public RepoDTO positionReferenceNumber(String positionReferenceNumber) {
-        this.positionReferenceNumber = positionReferenceNumber;
-        return this;
-    }
-
-    /**
-     * Get positionReferenceNumber
-     *
-     * @return positionReferenceNumber
-     **/
-    @ApiModelProperty(value = "")
-    public String getPositionReferenceNumber() {
-        return positionReferenceNumber;
-    }
-
-    public void setPositionReferenceNumber(String positionReferenceNumber) {
-        this.positionReferenceNumber = positionReferenceNumber;
-    }
-
-    public RepoDTO positionTradeId(Long positionTradeId) {
-        this.positionTradeId = positionTradeId;
-        return this;
-    }
-
-    /**
-     * Trade Id corresponding to the new Omni/SMA Position Id created
-     *
-     * @return positionTradeId
-     **/
-    @ApiModelProperty(value = "Trade Id corresponding to the new Omni/SMA Position Id created")
-    public Long getPositionTradeId() {
-        return positionTradeId;
-    }
-
-    public void setPositionTradeId(Long positionTradeId) {
-        this.positionTradeId = positionTradeId;
-    }
-
-    public RepoDTO positionType(Integer positionType) {
-        this.positionType = positionType;
-        return this;
-    }
-
-    /**
-     * Get positionType
-     *
-     * @return positionType
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPositionType() {
-        return positionType;
-    }
-
-    public void setPositionType(Integer positionType) {
-        this.positionType = positionType;
-    }
-
-    public RepoDTO positionTypeName(String positionTypeName) {
-        this.positionTypeName = positionTypeName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Valid values for Loan : &#39;CASH LOAN&#39;, &#39;CASH POOL
-     * LOAN&#39;, &#39;NONCASH LOAN&#39;, for Pay To Hold: &#39;Pay to Hold&#39;
-     *
-     * @return positionTypeName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Valid values for Loan : 'CASH LOAN', 'CASH POOL LOAN', 'NONCASH LOAN', for Pay To Hold: 'Pay to Hold'")
-    public String getPositionTypeName() {
-        return positionTypeName;
-    }
-
-    public void setPositionTypeName(String positionTypeName) {
-        this.positionTypeName = positionTypeName;
-    }
-
-    public RepoDTO postDate(LocalDateTime postDate) {
-        this.postDate = postDate;
-        return this;
-    }
-
-    /**
-     * Get postDate
-     *
-     * @return postDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPostDate() {
-        return postDate;
-    }
-
-    public void setPostDate(LocalDateTime postDate) {
-        this.postDate = postDate;
-    }
-
-    public RepoDTO postTradeMarkPrice(Double postTradeMarkPrice) {
-        this.postTradeMarkPrice = postTradeMarkPrice;
-        return this;
-    }
-
-    /**
-     * Get postTradeMarkPrice
-     *
-     * @return postTradeMarkPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPostTradeMarkPrice() {
-        return postTradeMarkPrice;
-    }
-
-    public void setPostTradeMarkPrice(Double postTradeMarkPrice) {
-        this.postTradeMarkPrice = postTradeMarkPrice;
-    }
-
-    public RepoDTO premiumAccrued(Double premiumAccrued) {
-        this.premiumAccrued = premiumAccrued;
-        return this;
-    }
-
-    /**
-     * Get premiumAccrued
-     *
-     * @return premiumAccrued
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPremiumAccrued() {
-        return premiumAccrued;
-    }
-
-    public void setPremiumAccrued(Double premiumAccrued) {
-        this.premiumAccrued = premiumAccrued;
-    }
-
-    public RepoDTO premiumAdjustment(Double premiumAdjustment) {
-        this.premiumAdjustment = premiumAdjustment;
-        return this;
-    }
-
-    /**
-     * Get premiumAdjustment
-     *
-     * @return premiumAdjustment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPremiumAdjustment() {
-        return premiumAdjustment;
-    }
-
-    public void setPremiumAdjustment(Double premiumAdjustment) {
-        this.premiumAdjustment = premiumAdjustment;
-    }
-
-    public RepoDTO premiumPaymentAdjustment(Double premiumPaymentAdjustment) {
-        this.premiumPaymentAdjustment = premiumPaymentAdjustment;
-        return this;
-    }
-
-    /**
-     * Get premiumPaymentAdjustment
-     *
-     * @return premiumPaymentAdjustment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPremiumPaymentAdjustment() {
-        return premiumPaymentAdjustment;
-    }
-
-    public void setPremiumPaymentAdjustment(Double premiumPaymentAdjustment) {
-        this.premiumPaymentAdjustment = premiumPaymentAdjustment;
-    }
-
-    public RepoDTO premiumReceive(Double premiumReceive) {
-        this.premiumReceive = premiumReceive;
-        return this;
-    }
-
-    /**
-     * Get premiumReceive
-     *
-     * @return premiumReceive
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPremiumReceive() {
-        return premiumReceive;
-    }
-
-    public void setPremiumReceive(Double premiumReceive) {
-        this.premiumReceive = premiumReceive;
-    }
-
-    public RepoDTO prepaid(Boolean prepaid) {
-        this.prepaid = prepaid;
-        return this;
-    }
-
-    /**
-     * Get prepaid
-     *
-     * @return prepaid
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isPrepaid() {
-        return prepaid;
-    }
-
-    public void setPrepaid(Boolean prepaid) {
-        this.prepaid = prepaid;
-    }
-
-    public RepoDTO prepayBasis(Integer prepayBasis) {
-        this.prepayBasis = prepayBasis;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayBasis or
-     * prepayBasisName is required
-     *
-     * @return prepayBasis
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayBasis or prepayBasisName is required")
-    public Integer getPrepayBasis() {
-        return prepayBasis;
-    }
-
-    public void setPrepayBasis(Integer prepayBasis) {
-        this.prepayBasis = prepayBasis;
-    }
-
-    public RepoDTO prepayBasisName(String prepayBasisName) {
-        this.prepayBasisName = prepayBasisName;
-        return this;
-    }
+  @JsonProperty("tripartyCustodianId")
+  private Integer tripartyCustodianId = null;
 
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayBasis or
-     * prepayBasisName is required
-     *
-     * @return prepayBasisName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayBasis or prepayBasisName is required")
-    public String getPrepayBasisName() {
-        return prepayBasisName;
-    }
-
-    public void setPrepayBasisName(String prepayBasisName) {
-        this.prepayBasisName = prepayBasisName;
-    }
-
-    public RepoDTO prepayDate(LocalDateTime prepayDate) {
-        this.prepayDate = prepayDate;
-        return this;
-    }
-
-    /**
-     * Get prepayDate
-     *
-     * @return prepayDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getPrepayDate() {
-        return prepayDate;
-    }
-
-    public void setPrepayDate(LocalDateTime prepayDate) {
-        this.prepayDate = prepayDate;
-    }
-
-    public RepoDTO prepayIndex(Integer prepayIndex) {
-        this.prepayIndex = prepayIndex;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayIndex or
-     * prepayIndexName is required
-     *
-     * @return prepayIndex
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayIndex or prepayIndexName is required")
-    public Integer getPrepayIndex() {
-        return prepayIndex;
-    }
-
-    public void setPrepayIndex(Integer prepayIndex) {
-        this.prepayIndex = prepayIndex;
-    }
-
-    public RepoDTO prepayIndexName(String prepayIndexName) {
-        this.prepayIndexName = prepayIndexName;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayIndex or
-     * prepayIndexName is required
-     *
-     * @return prepayIndexName
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayIndex or prepayIndexName is required")
-    public String getPrepayIndexName() {
-        return prepayIndexName;
-    }
-
-    public void setPrepayIndexName(String prepayIndexName) {
-        this.prepayIndexName = prepayIndexName;
-    }
-
-    public RepoDTO prepayRate(Double prepayRate) {
-        this.prepayRate = prepayRate;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Index is &#39;NA&#39; or &#39;Fixed
-     * Rate&#39;
-     *
-     * @return prepayRate
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Index is 'NA' or 'Fixed Rate'")
-    public Double getPrepayRate() {
-        return prepayRate;
-    }
-
-    public void setPrepayRate(Double prepayRate) {
-        this.prepayRate = prepayRate;
-    }
-
-    public RepoDTO prepaySpread(Double prepaySpread) {
-        this.prepaySpread = prepaySpread;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position &amp; Required only when Prepay Index is other than &#39;NA&#39; and
-     * &#39;Fixed Rate&#39;
-     *
-     * @return prepaySpread
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Index is other than 'NA' and 'Fixed Rate'")
-    public Double getPrepaySpread() {
-        return prepaySpread;
-    }
-
-    public void setPrepaySpread(Double prepaySpread) {
-        this.prepaySpread = prepaySpread;
-    }
-
-    public RepoDTO price(Double price) {
-        this.price = price;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position
-     *
-     * @return price
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position")
-    public Double getPrice() {
-        return price;
-    }
-
-    public void setPrice(Double price) {
-        this.price = price;
-    }
-
-    public RepoDTO priceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-        return this;
-    }
-
-    /**
-     * Get priceFactor
-     *
-     * @return priceFactor
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPriceFactor() {
-        return priceFactor;
-    }
-
-    public void setPriceFactor(Integer priceFactor) {
-        this.priceFactor = priceFactor;
-    }
-
-    public RepoDTO priorityAllocation(String priorityAllocation) {
-        this.priorityAllocation = priorityAllocation;
-        return this;
-    }
-
-    /**
-     * Get priorityAllocation
-     *
-     * @return priorityAllocation
-     **/
-    @ApiModelProperty(value = "")
-    public String getPriorityAllocation() {
-        return priorityAllocation;
-    }
-
-    public void setPriorityAllocation(String priorityAllocation) {
-        this.priorityAllocation = priorityAllocation;
-    }
-
-    public RepoDTO productLine(String productLine) {
-        this.productLine = productLine;
-        return this;
-    }
-
-    /**
-     * Get productLine
-     *
-     * @return productLine
-     **/
-    @ApiModelProperty(value = "")
-    public String getProductLine() {
-        return productLine;
-    }
-
-    public void setProductLine(String productLine) {
-        this.productLine = productLine;
-    }
-
-    public RepoDTO quantity(Double quantity) {
-        this.quantity = quantity;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, returning and increasing qty on Pay To Hold
-     *
-     * @return quantity
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, returning and increasing qty on Pay To Hold")
-    public Double getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Double quantity) {
-        this.quantity = quantity;
-    }
-
-    public RepoDTO rate(Double rate) {
-        this.rate = rate;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Required only when Index is &#39;NA&#39; or
-     * &#39;Fixed Rate&#39;
-     *
-     * @return rate
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Required only when Index is 'NA' or 'Fixed Rate'")
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
-
-    public RepoDTO rebateAccrued(Double rebateAccrued) {
-        this.rebateAccrued = rebateAccrued;
-        return this;
-    }
-
-    /**
-     * Get rebateAccrued
-     *
-     * @return rebateAccrued
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebateAccrued() {
-        return rebateAccrued;
-    }
-
-    public void setRebateAccrued(Double rebateAccrued) {
-        this.rebateAccrued = rebateAccrued;
-    }
-
-    public RepoDTO rebateAdjustment(Double rebateAdjustment) {
-        this.rebateAdjustment = rebateAdjustment;
-        return this;
-    }
-
-    /**
-     * Get rebateAdjustment
-     *
-     * @return rebateAdjustment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebateAdjustment() {
-        return rebateAdjustment;
-    }
-
-    public void setRebateAdjustment(Double rebateAdjustment) {
-        this.rebateAdjustment = rebateAdjustment;
-    }
-
-    public RepoDTO rebatePayment(Double rebatePayment) {
-        this.rebatePayment = rebatePayment;
-        return this;
-    }
-
-    /**
-     * Get rebatePayment
-     *
-     * @return rebatePayment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebatePayment() {
-        return rebatePayment;
-    }
-
-    public void setRebatePayment(Double rebatePayment) {
-        this.rebatePayment = rebatePayment;
-    }
-
-    public RepoDTO rebatePaymentAdjustment(Double rebatePaymentAdjustment) {
-        this.rebatePaymentAdjustment = rebatePaymentAdjustment;
-        return this;
-    }
-
-    /**
-     * Get rebatePaymentAdjustment
-     *
-     * @return rebatePaymentAdjustment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRebatePaymentAdjustment() {
-        return rebatePaymentAdjustment;
-    }
-
-    public void setRebatePaymentAdjustment(Double rebatePaymentAdjustment) {
-        this.rebatePaymentAdjustment = rebatePaymentAdjustment;
-    }
-
-    public RepoDTO resetDate(LocalDateTime resetDate) {
-        this.resetDate = resetDate;
-        return this;
-    }
-
-    /**
-     * Get resetDate
-     *
-     * @return resetDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getResetDate() {
-        return resetDate;
-    }
-
-    public void setResetDate(LocalDateTime resetDate) {
-        this.resetDate = resetDate;
-    }
-
-    public RepoDTO restrictionId(Integer restrictionId) {
-        this.restrictionId = restrictionId;
-        return this;
-    }
-
-    /**
-     * Get restrictionId
-     *
-     * @return restrictionId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getRestrictionId() {
-        return restrictionId;
-    }
-
-    public void setRestrictionId(Integer restrictionId) {
-        this.restrictionId = restrictionId;
-    }
-
-    public RepoDTO securityDetail(SecurityDtlDTO securityDetail) {
-        this.securityDetail = securityDetail;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position
-     *
-     * @return securityDetail
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position")
-    public SecurityDtlDTO getSecurityDetail() {
-        return securityDetail;
-    }
-
-    public void setSecurityDetail(SecurityDtlDTO securityDetail) {
-        this.securityDetail = securityDetail;
-    }
-
-    public RepoDTO securityId(Integer securityId) {
-        this.securityId = securityId;
-        return this;
-    }
-
-    /**
-     * Get securityId
-     *
-     * @return securityId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(Integer securityId) {
-        this.securityId = securityId;
-    }
-
-    public RepoDTO sendDNIDownstream(Boolean sendDNIDownstream) {
-        this.sendDNIDownstream = sendDNIDownstream;
-        return this;
-    }
-
-    /**
-     * Get sendDNIDownstream
-     *
-     * @return sendDNIDownstream
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isSendDNIDownstream() {
-        return sendDNIDownstream;
-    }
-
-    public void setSendDNIDownstream(Boolean sendDNIDownstream) {
-        this.sendDNIDownstream = sendDNIDownstream;
-    }
-
-    public RepoDTO settleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, updating Pay To Hold qty
-     *
-     * @return settleDate
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, updating Pay To Hold qty")
-    public LocalDateTime getSettleDate() {
-        return settleDate;
-    }
-
-    public void setSettleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-    }
-
-    public RepoDTO signedTerminationPayment(Double signedTerminationPayment) {
-        this.signedTerminationPayment = signedTerminationPayment;
-        return this;
-    }
-
-    /**
-     * Get signedTerminationPayment
-     *
-     * @return signedTerminationPayment
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSignedTerminationPayment() {
-        return signedTerminationPayment;
-    }
-
-    public void setSignedTerminationPayment(Double signedTerminationPayment) {
-        this.signedTerminationPayment = signedTerminationPayment;
-    }
-
-    public RepoDTO signedTerminationPrinciple(Double signedTerminationPrinciple) {
-        this.signedTerminationPrinciple = signedTerminationPrinciple;
-        return this;
-    }
-
-    /**
-     * Get signedTerminationPrinciple
-     *
-     * @return signedTerminationPrinciple
-     **/
-    @ApiModelProperty(value = "")
-    public Double getSignedTerminationPrinciple() {
-        return signedTerminationPrinciple;
-    }
-
-    public void setSignedTerminationPrinciple(Double signedTerminationPrinciple) {
-        this.signedTerminationPrinciple = signedTerminationPrinciple;
-    }
-
-    public RepoDTO spread(Double spread) {
-        this.spread = spread;
-        return this;
-    }
-
-    /**
-     * Required only when posting a position, adjusting rate &amp; Required only when Index is other than &#39;NA&#39;
-     * and &#39;Fixed Rate&#39;
-     *
-     * @return spread
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Required only when Index is other than 'NA' and 'Fixed Rate'")
-    public Double getSpread() {
-        return spread;
-    }
-
-    public void setSpread(Double spread) {
-        this.spread = spread;
-    }
-
-    public RepoDTO startDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-        return this;
-    }
-
-    /**
-     * Get startDate
-     *
-     * @return startDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getStartDate() {
-        return startDate;
-    }
-
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
-    }
-
-    public RepoDTO status(String status) {
-        this.status = status;
-        return this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return status
-     **/
-    @ApiModelProperty(value = "")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public RepoDTO statusId(Integer statusId) {
-        this.statusId = statusId;
-        return this;
-    }
-
-    /**
-     * Get statusId
-     *
-     * @return statusId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getStatusId() {
-        return statusId;
-    }
-
-    public void setStatusId(Integer statusId) {
-        this.statusId = statusId;
-    }
-
-    public RepoDTO statusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-        return this;
-    }
-
-    /**
-     * Get statusMessage
-     *
-     * @return statusMessage
-     **/
-    @ApiModelProperty(value = "")
-    public String getStatusMessage() {
-        return statusMessage;
-    }
-
-    public void setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
-
-    public RepoDTO strategy(String strategy) {
-        this.strategy = strategy;
-        return this;
-    }
-
-    /**
-     * Get strategy
-     *
-     * @return strategy
-     **/
-    @ApiModelProperty(value = "")
-    public String getStrategy() {
-        return strategy;
-    }
-
-    public void setStrategy(String strategy) {
-        this.strategy = strategy;
-    }
-
-    public RepoDTO strategyId(Integer strategyId) {
-        this.strategyId = strategyId;
-        return this;
-    }
-
-    /**
-     * Get strategyId
-     *
-     * @return strategyId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getStrategyId() {
-        return strategyId;
-    }
-
-    public void setStrategyId(Integer strategyId) {
-        this.strategyId = strategyId;
-    }
-
-    public RepoDTO tartgetPrice(Double tartgetPrice) {
-        this.tartgetPrice = tartgetPrice;
-        return this;
-    }
-
-    /**
-     * Get tartgetPrice
-     *
-     * @return tartgetPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTartgetPrice() {
-        return tartgetPrice;
-    }
-
-    public void setTartgetPrice(Double tartgetPrice) {
-        this.tartgetPrice = tartgetPrice;
-    }
-
-    public RepoDTO taxWithholdRate(Double taxWithholdRate) {
-        this.taxWithholdRate = taxWithholdRate;
-        return this;
-    }
-
-    /**
-     * Get taxWithholdRate
-     *
-     * @return taxWithholdRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTaxWithholdRate() {
-        return taxWithholdRate;
-    }
-
-    public void setTaxWithholdRate(Double taxWithholdRate) {
-        this.taxWithholdRate = taxWithholdRate;
-    }
-
-    public RepoDTO termType(Integer termType) {
-        this.termType = termType;
-        return this;
-    }
-
-    /**
-     * Get termType
-     *
-     * @return termType
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTermType() {
-        return termType;
-    }
+  @JsonProperty("useDefaultCollateralAccount")
+  private Boolean useDefaultCollateralAccount = null;
 
-    public void setTermType(Integer termType) {
-        this.termType = termType;
-    }
+  @JsonProperty("useDefaultCollateralCustBank")
+  private Boolean useDefaultCollateralCustBank = null;
 
-    public RepoDTO termTypeName(String termTypeName) {
-        this.termTypeName = termTypeName;
-        return this;
-    }
+  @JsonProperty("useDefaultExposure")
+  private Boolean useDefaultExposure = null;
 
-    /**
-     * Get termTypeName
-     *
-     * @return termTypeName
-     **/
-    @ApiModelProperty(value = "")
-    public String getTermTypeName() {
-        return termTypeName;
-    }
+  @JsonProperty("useTraderDesk")
+  private Boolean useTraderDesk = null;
 
-    public void setTermTypeName(String termTypeName) {
-        this.termTypeName = termTypeName;
-    }
+  @JsonProperty("uti")
+  private String uti = null;
 
-    public RepoDTO terminationPrice(Double terminationPrice) {
-        this.terminationPrice = terminationPrice;
-        return this;
-    }
+  public RepoDTO accountAllocations(List<AccountAllocationDTO> accountAllocations) {
+    this.accountAllocations = accountAllocations;
+    return this;
+  }
 
-    /**
-     * Get terminationPrice
-     *
-     * @return terminationPrice
-     **/
-    @ApiModelProperty(value = "")
-    public Double getTerminationPrice() {
-        return terminationPrice;
-    }
+  public RepoDTO addAccountAllocationsItem(AccountAllocationDTO accountAllocationsItem) {
+    this.accountAllocations.add(accountAllocationsItem);
+    return this;
+  }
 
-    public void setTerminationPrice(Double terminationPrice) {
-        this.terminationPrice = terminationPrice;
-    }
+   /**
+   * Required only when posting a position,  increase and partial return qty on Pay To Hold  &amp; Required only when the lending account is pooled
+   * @return accountAllocations
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled")
+  public List<AccountAllocationDTO> getAccountAllocations() {
+    return accountAllocations;
+  }
 
-    public RepoDTO thirdParty(Boolean thirdParty) {
-        this.thirdParty = thirdParty;
-        return this;
-    }
+  public void setAccountAllocations(List<AccountAllocationDTO> accountAllocations) {
+    this.accountAllocations = accountAllocations;
+  }
 
-    /**
-     * Get thirdParty
-     *
-     * @return thirdParty
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isThirdParty() {
-        return thirdParty;
-    }
+  public RepoDTO accountGroup(String accountGroup) {
+    this.accountGroup = accountGroup;
+    return this;
+  }
 
-    public void setThirdParty(Boolean thirdParty) {
-        this.thirdParty = thirdParty;
-    }
+   /**
+   * Get accountGroup
+   * @return accountGroup
+  **/
+  @ApiModelProperty(value = "")
+  public String getAccountGroup() {
+    return accountGroup;
+  }
 
-    public RepoDTO trackingInd(Boolean trackingInd) {
-        this.trackingInd = trackingInd;
-        return this;
-    }
+  public void setAccountGroup(String accountGroup) {
+    this.accountGroup = accountGroup;
+  }
 
-    /**
-     * Get trackingInd
-     *
-     * @return trackingInd
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isTrackingInd() {
-        return trackingInd;
-    }
+  public RepoDTO accountGroupAccountNo2(String accountGroupAccountNo2) {
+    this.accountGroupAccountNo2 = accountGroupAccountNo2;
+    return this;
+  }
 
-    public void setTrackingInd(Boolean trackingInd) {
-        this.trackingInd = trackingInd;
-    }
+   /**
+   * Get accountGroupAccountNo2
+   * @return accountGroupAccountNo2
+  **/
+  @ApiModelProperty(value = "")
+  public String getAccountGroupAccountNo2() {
+    return accountGroupAccountNo2;
+  }
 
-    public RepoDTO tradeCategoryId(Integer tradeCategoryId) {
-        this.tradeCategoryId = tradeCategoryId;
-        return this;
-    }
+  public void setAccountGroupAccountNo2(String accountGroupAccountNo2) {
+    this.accountGroupAccountNo2 = accountGroupAccountNo2;
+  }
 
-    /**
-     * Get tradeCategoryId
-     *
-     * @return tradeCategoryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTradeCategoryId() {
-        return tradeCategoryId;
-    }
+  public RepoDTO accountGroupId(Integer accountGroupId) {
+    this.accountGroupId = accountGroupId;
+    return this;
+  }
 
-    public void setTradeCategoryId(Integer tradeCategoryId) {
-        this.tradeCategoryId = tradeCategoryId;
-    }
+   /**
+   * Get accountGroupId
+   * @return accountGroupId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getAccountGroupId() {
+    return accountGroupId;
+  }
 
-    public RepoDTO tradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-        return this;
-    }
+  public void setAccountGroupId(Integer accountGroupId) {
+    this.accountGroupId = accountGroupId;
+  }
 
-    /**
-     * Required only when posting a position, updating Pay To Hold qty
-     *
-     * @return tradeDate
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position, updating Pay To Hold qty")
-    public LocalDateTime getTradeDate() {
-        return tradeDate;
-    }
+  public RepoDTO accountId(Integer accountId) {
+    this.accountId = accountId;
+    return this;
+  }
 
-    public void setTradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-    }
+   /**
+   * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is required
+   * @return accountId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
+  public Integer getAccountId() {
+    return accountId;
+  }
 
-    public RepoDTO tradeReason(String tradeReason) {
-        this.tradeReason = tradeReason;
-        return this;
-    }
+  public void setAccountId(Integer accountId) {
+    this.accountId = accountId;
+  }
 
-    /**
-     * Get tradeReason
-     *
-     * @return tradeReason
-     **/
-    @ApiModelProperty(value = "")
-    public String getTradeReason() {
-        return tradeReason;
-    }
+  public RepoDTO accountName(String accountName) {
+    this.accountName = accountName;
+    return this;
+  }
 
-    public void setTradeReason(String tradeReason) {
-        this.tradeReason = tradeReason;
-    }
+   /**
+   * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is required
+   * @return accountName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
+  public String getAccountName() {
+    return accountName;
+  }
 
-    public RepoDTO tradeReasonId(Integer tradeReasonId) {
-        this.tradeReasonId = tradeReasonId;
-        return this;
-    }
+  public void setAccountName(String accountName) {
+    this.accountName = accountName;
+  }
 
-    /**
-     * Get tradeReasonId
-     *
-     * @return tradeReasonId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTradeReasonId() {
-        return tradeReasonId;
-    }
+  public RepoDTO accountNo(String accountNo) {
+    this.accountNo = accountNo;
+    return this;
+  }
 
-    public void setTradeReasonId(Integer tradeReasonId) {
-        this.tradeReasonId = tradeReasonId;
-    }
+   /**
+   * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is required
+   * @return accountNo
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
+  public String getAccountNo() {
+    return accountNo;
+  }
 
-    public RepoDTO tradeRefNo(String tradeRefNo) {
-        this.tradeRefNo = tradeRefNo;
-        return this;
-    }
+  public void setAccountNo(String accountNo) {
+    this.accountNo = accountNo;
+  }
 
-    /**
-     * Get tradeRefNo
-     *
-     * @return tradeRefNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getTradeRefNo() {
-        return tradeRefNo;
-    }
+  public RepoDTO accountNo2(String accountNo2) {
+    this.accountNo2 = accountNo2;
+    return this;
+  }
 
-    public void setTradeRefNo(String tradeRefNo) {
-        this.tradeRefNo = tradeRefNo;
-    }
+   /**
+   * Required only when posting a position &amp; Either accountId or accountNo or accountNo2 or accountName is required
+   * @return accountNo2
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either accountId or accountNo or accountNo2 or accountName is required")
+  public String getAccountNo2() {
+    return accountNo2;
+  }
 
-    public RepoDTO tradingDesk(String tradingDesk) {
-        this.tradingDesk = tradingDesk;
-        return this;
-    }
+  public void setAccountNo2(String accountNo2) {
+    this.accountNo2 = accountNo2;
+  }
 
-    /**
-     * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
-     *
-     * @return tradingDesk
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
-    public String getTradingDesk() {
-        return tradingDesk;
-    }
+  public RepoDTO accrualAdjustment(Double accrualAdjustment) {
+    this.accrualAdjustment = accrualAdjustment;
+    return this;
+  }
 
-    public void setTradingDesk(String tradingDesk) {
-        this.tradingDesk = tradingDesk;
-    }
+   /**
+   * Get accrualAdjustment
+   * @return accrualAdjustment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAccrualAdjustment() {
+    return accrualAdjustment;
+  }
 
-    public RepoDTO tradingDeskId(Integer tradingDeskId) {
-        this.tradingDeskId = tradingDeskId;
-        return this;
-    }
+  public void setAccrualAdjustment(Double accrualAdjustment) {
+    this.accrualAdjustment = accrualAdjustment;
+  }
 
-    /**
-     * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
-     *
-     * @return tradingDeskId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
-    public Integer getTradingDeskId() {
-        return tradingDeskId;
-    }
+  public RepoDTO accrualDate(LocalDateTime accrualDate) {
+    this.accrualDate = accrualDate;
+    return this;
+  }
 
-    public void setTradingDeskId(Integer tradingDeskId) {
-        this.tradingDeskId = tradingDeskId;
-    }
+   /**
+   * Get accrualDate
+   * @return accrualDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getAccrualDate() {
+    return accrualDate;
+  }
 
-    public RepoDTO tranId(Long tranId) {
-        this.tranId = tranId;
-        return this;
-    }
+  public void setAccrualDate(LocalDateTime accrualDate) {
+    this.accrualDate = accrualDate;
+  }
 
-    /**
-     * Required only when adjusting rate, editing position, updating Pay To Hold qty
-     *
-     * @return tranId
-     **/
-    @ApiModelProperty(required = true, value = "Required only when adjusting rate, editing position, updating Pay To Hold qty")
-    public Long getTranId() {
-        return tranId;
-    }
+  public RepoDTO accrualSettlement(Double accrualSettlement) {
+    this.accrualSettlement = accrualSettlement;
+    return this;
+  }
 
-    public void setTranId(Long tranId) {
-        this.tranId = tranId;
-    }
+   /**
+   * Get accrualSettlement
+   * @return accrualSettlement
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAccrualSettlement() {
+    return accrualSettlement;
+  }
 
-    public RepoDTO tripartyCustodianId(Integer tripartyCustodianId) {
-        this.tripartyCustodianId = tripartyCustodianId;
-        return this;
-    }
+  public void setAccrualSettlement(Double accrualSettlement) {
+    this.accrualSettlement = accrualSettlement;
+  }
 
-    /**
-     * Get tripartyCustodianId
-     *
-     * @return tripartyCustodianId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTripartyCustodianId() {
-        return tripartyCustodianId;
-    }
+  public RepoDTO accrualTypeId(Integer accrualTypeId) {
+    this.accrualTypeId = accrualTypeId;
+    return this;
+  }
 
-    public void setTripartyCustodianId(Integer tripartyCustodianId) {
-        this.tripartyCustodianId = tripartyCustodianId;
-    }
+   /**
+   * Get accrualTypeId
+   * @return accrualTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getAccrualTypeId() {
+    return accrualTypeId;
+  }
 
-    public RepoDTO useDefaultCollateralAccount(Boolean useDefaultCollateralAccount) {
-        this.useDefaultCollateralAccount = useDefaultCollateralAccount;
-        return this;
-    }
+  public void setAccrualTypeId(Integer accrualTypeId) {
+    this.accrualTypeId = accrualTypeId;
+  }
 
-    /**
-     * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or
-     * collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
-     *
-     * @return useDefaultCollateralAccount
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
-    public Boolean isUseDefaultCollateralAccount() {
-        return useDefaultCollateralAccount;
-    }
+  public RepoDTO agentReference(String agentReference) {
+    this.agentReference = agentReference;
+    return this;
+  }
 
-    public void setUseDefaultCollateralAccount(Boolean useDefaultCollateralAccount) {
-        this.useDefaultCollateralAccount = useDefaultCollateralAccount;
-    }
+   /**
+   * Get agentReference
+   * @return agentReference
+  **/
+  @ApiModelProperty(value = "")
+  public String getAgentReference() {
+    return agentReference;
+  }
 
-    public RepoDTO useDefaultCollateralCustBank(Boolean useDefaultCollateralCustBank) {
-        this.useDefaultCollateralCustBank = useDefaultCollateralCustBank;
-        return this;
-    }
+  public void setAgentReference(String agentReference) {
+    this.agentReference = agentReference;
+  }
 
-    /**
-     * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp;
-     * Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or
-     * collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
-     *
-     * @return useDefaultCollateralCustBank
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
-    public Boolean isUseDefaultCollateralCustBank() {
-        return useDefaultCollateralCustBank;
-    }
+  public RepoDTO allInRate(Double allInRate) {
+    this.allInRate = allInRate;
+    return this;
+  }
 
-    public void setUseDefaultCollateralCustBank(Boolean useDefaultCollateralCustBank) {
-        this.useDefaultCollateralCustBank = useDefaultCollateralCustBank;
-    }
+   /**
+   * Get allInRate
+   * @return allInRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAllInRate() {
+    return allInRate;
+  }
 
-    public RepoDTO useDefaultExposure(Boolean useDefaultExposure) {
-        this.useDefaultExposure = useDefaultExposure;
-        return this;
-    }
+  public void setAllInRate(Double allInRate) {
+    this.allInRate = allInRate;
+  }
 
-    /**
-     * Required only when posting a position &amp; Either exposureId or useDefaultExposure is required
-     *
-     * @return useDefaultExposure
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either exposureId or useDefaultExposure is required")
-    public Boolean isUseDefaultExposure() {
-        return useDefaultExposure;
-    }
+  public RepoDTO allocationId(Long allocationId) {
+    this.allocationId = allocationId;
+    return this;
+  }
 
-    public void setUseDefaultExposure(Boolean useDefaultExposure) {
-        this.useDefaultExposure = useDefaultExposure;
-    }
+   /**
+   * Get allocationId
+   * @return allocationId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getAllocationId() {
+    return allocationId;
+  }
 
-    public RepoDTO useTraderDesk(Boolean useTraderDesk) {
-        this.useTraderDesk = useTraderDesk;
-        return this;
-    }
+  public void setAllocationId(Long allocationId) {
+    this.allocationId = allocationId;
+  }
 
-    /**
-     * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
-     *
-     * @return useTraderDesk
-     **/
-    @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
-    public Boolean isUseTraderDesk() {
-        return useTraderDesk;
-    }
+  public RepoDTO allocationOverrideComment(String allocationOverrideComment) {
+    this.allocationOverrideComment = allocationOverrideComment;
+    return this;
+  }
 
-    public void setUseTraderDesk(Boolean useTraderDesk) {
-        this.useTraderDesk = useTraderDesk;
-    }
+   /**
+   * If passed override comments will be saved for reporting purposes
+   * @return allocationOverrideComment
+  **/
+  @ApiModelProperty(value = "If passed override comments will be saved for reporting purposes")
+  public String getAllocationOverrideComment() {
+    return allocationOverrideComment;
+  }
 
-    public RepoDTO uti(String uti) {
-        this.uti = uti;
-        return this;
-    }
+  public void setAllocationOverrideComment(String allocationOverrideComment) {
+    this.allocationOverrideComment = allocationOverrideComment;
+  }
 
-    /**
-     * Get uti
-     *
-     * @return uti
-     **/
-    @ApiModelProperty(value = "")
-    public String getUti() {
-        return uti;
-    }
+  public RepoDTO allocationPremiumAmts(List<AccountAllocationDTO> allocationPremiumAmts) {
+    this.allocationPremiumAmts = allocationPremiumAmts;
+    return this;
+  }
 
-    public void setUti(String uti) {
-        this.uti = uti;
+  public RepoDTO addAllocationPremiumAmtsItem(AccountAllocationDTO allocationPremiumAmtsItem) {
+    if (this.allocationPremiumAmts == null) {
+      this.allocationPremiumAmts = new ArrayList<>();
     }
+    this.allocationPremiumAmts.add(allocationPremiumAmtsItem);
+    return this;
+  }
 
+   /**
+   * Get allocationPremiumAmts
+   * @return allocationPremiumAmts
+  **/
+  @ApiModelProperty(value = "")
+  public List<AccountAllocationDTO> getAllocationPremiumAmts() {
+    return allocationPremiumAmts;
+  }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        RepoDTO repoDTO = (RepoDTO) o;
-        return Objects.equals(this.qualifiedName, repoDTO.qualifiedName) &&
-            Objects.equals(this.accountAllocations, repoDTO.accountAllocations) &&
-            Objects.equals(this.accountGroup, repoDTO.accountGroup) &&
-            Objects.equals(this.accountGroupAccountNo2, repoDTO.accountGroupAccountNo2) &&
-            Objects.equals(this.accountGroupId, repoDTO.accountGroupId) &&
-            Objects.equals(this.accountId, repoDTO.accountId) &&
-            Objects.equals(this.accountName, repoDTO.accountName) &&
-            Objects.equals(this.accountNo, repoDTO.accountNo) &&
-            Objects.equals(this.accountNo2, repoDTO.accountNo2) &&
-            Objects.equals(this.accrualAdjustment, repoDTO.accrualAdjustment) &&
-            Objects.equals(this.accrualDate, repoDTO.accrualDate) &&
-            Objects.equals(this.accrualSettlement, repoDTO.accrualSettlement) &&
-            Objects.equals(this.accrualTypeId, repoDTO.accrualTypeId) &&
-            Objects.equals(this.agentReference, repoDTO.agentReference) &&
-            Objects.equals(this.allInRate, repoDTO.allInRate) &&
-            Objects.equals(this.allocationId, repoDTO.allocationId) &&
-            Objects.equals(this.allocationOverrideComment, repoDTO.allocationOverrideComment) &&
-            Objects.equals(this.allocationPremiumAmts, repoDTO.allocationPremiumAmts) &&
-            Objects.equals(this.allocationReason, repoDTO.allocationReason) &&
-            Objects.equals(this.allocationReasonId, repoDTO.allocationReasonId) &&
-            Objects.equals(this.allocationRebateAmts, repoDTO.allocationRebateAmts) &&
-            Objects.equals(this.amount, repoDTO.amount) &&
-            Objects.equals(this.basis, repoDTO.basis) &&
-            Objects.equals(this.basisName, repoDTO.basisName) &&
-            Objects.equals(this.calendar, repoDTO.calendar) &&
-            Objects.equals(this.calendarId, repoDTO.calendarId) &&
-            Objects.equals(this.collateralAccountId, repoDTO.collateralAccountId) &&
-            Objects.equals(this.collateralAccountName, repoDTO.collateralAccountName) &&
-            Objects.equals(this.collateralAccountNo, repoDTO.collateralAccountNo) &&
-            Objects.equals(this.collateralAccountNo2, repoDTO.collateralAccountNo2) &&
-            Objects.equals(this.collateralBasis, repoDTO.collateralBasis) &&
-            Objects.equals(this.collateralBasisName, repoDTO.collateralBasisName) &&
-            Objects.equals(this.collateralCalendar, repoDTO.collateralCalendar) &&
-            Objects.equals(this.collateralCalendarName, repoDTO.collateralCalendarName) &&
-            Objects.equals(this.collateralCustodianBankAccountName, repoDTO.collateralCustodianBankAccountName) &&
-            Objects.equals(this.collateralCustodianBankAccountNo, repoDTO.collateralCustodianBankAccountNo) &&
-            Objects.equals(this.collateralCustodianBankAccountNo2, repoDTO.collateralCustodianBankAccountNo2) &&
-            Objects.equals(this.collateralCustodianBankId, repoDTO.collateralCustodianBankId) &&
-            Objects.equals(this.collateralIndex, repoDTO.collateralIndex) &&
-            Objects.equals(this.collateralIndexName, repoDTO.collateralIndexName) &&
-            Objects.equals(this.collateralRate, repoDTO.collateralRate) &&
-            Objects.equals(this.collateralSpread, repoDTO.collateralSpread) &&
-            Objects.equals(this.collateralType, repoDTO.collateralType) &&
-            Objects.equals(this.collateralTypeId, repoDTO.collateralTypeId) &&
-            Objects.equals(this.comments, repoDTO.comments) &&
-            Objects.equals(this.competingBids, repoDTO.competingBids) &&
-            Objects.equals(this.complianceTestMessage, repoDTO.complianceTestMessage) &&
-            Objects.equals(this.counterpartyAccountNumber, repoDTO.counterpartyAccountNumber) &&
-            Objects.equals(this.counterpartyId, repoDTO.counterpartyId) &&
-            Objects.equals(this.counterpartyName, repoDTO.counterpartyName) &&
-            Objects.equals(this.country, repoDTO.country) &&
-            Objects.equals(this.countryId, repoDTO.countryId) &&
-            Objects.equals(this.couponPaymentSchedule, repoDTO.couponPaymentSchedule) &&
-            Objects.equals(this.currencyId, repoDTO.currencyId) &&
-            Objects.equals(this.currencyKy, repoDTO.currencyKy) &&
-            Objects.equals(this.currentAllocationId, repoDTO.currentAllocationId) &&
-            Objects.equals(this.customValue1, repoDTO.customValue1) &&
-            Objects.equals(this.deliverFree, repoDTO.deliverFree) &&
-            Objects.equals(this.depoGroup, repoDTO.depoGroup) &&
-            Objects.equals(this.depoId, repoDTO.depoId) &&
-            Objects.equals(this.depoKy, repoDTO.depoKy) &&
-            Objects.equals(this.dirtyPrice, repoDTO.dirtyPrice) &&
-            Objects.equals(this.divCurrency, repoDTO.divCurrency) &&
-            Objects.equals(this.divCurrencyId, repoDTO.divCurrencyId) &&
-            Objects.equals(this.divPerShare, repoDTO.divPerShare) &&
-            Objects.equals(this.divWithholdRate, repoDTO.divWithholdRate) &&
-            Objects.equals(this.doNotInstruct, repoDTO.doNotInstruct) &&
-            Objects.equals(this.doNotInstructCxlFail, repoDTO.doNotInstructCxlFail) &&
-            Objects.equals(this.doNotPost, repoDTO.doNotPost) &&
-            Objects.equals(this.doNotRecall, repoDTO.doNotRecall) &&
-            Objects.equals(this.dtcNo, repoDTO.dtcNo) &&
-            Objects.equals(this.encumberedQuantity, repoDTO.encumberedQuantity) &&
-            Objects.equals(this.endDate, repoDTO.endDate) &&
-            Objects.equals(this.errorMessage, repoDTO.errorMessage) &&
-            Objects.equals(this.evergreen, repoDTO.evergreen) &&
-            Objects.equals(this.evergreenTerm, repoDTO.evergreenTerm) &&
-            Objects.equals(this.excludeFromAutoMark, repoDTO.excludeFromAutoMark) &&
-            Objects.equals(this.explodedPosition, repoDTO.explodedPosition) &&
-            Objects.equals(this.exposureId, repoDTO.exposureId) &&
-            Objects.equals(this.extendableMaxDate, repoDTO.extendableMaxDate) &&
-            Objects.equals(this.factor, repoDTO.factor) &&
-            Objects.equals(this.futureSettleDate, repoDTO.futureSettleDate) &&
-            Objects.equals(this.index, repoDTO.index) &&
-            Objects.equals(this.indexName, repoDTO.indexName) &&
-            Objects.equals(this.instructions, repoDTO.instructions) &&
-            Objects.equals(this.interestAtMaturity, repoDTO.interestAtMaturity) &&
-            Objects.equals(this.isBlock, repoDTO.isBlock) &&
-            Objects.equals(this.isEvergreen, repoDTO.isEvergreen) &&
-            Objects.equals(this.isExplodedPosition, repoDTO.isExplodedPosition) &&
-            Objects.equals(this.isExtendable, repoDTO.isExtendable) &&
-            Objects.equals(this.isPooled, repoDTO.isPooled) &&
-            Objects.equals(this.isThirdParty, repoDTO.isThirdParty) &&
-            Objects.equals(this.lenderAccountId, repoDTO.lenderAccountId) &&
-            Objects.equals(this.lenderAccountName, repoDTO.lenderAccountName) &&
-            Objects.equals(this.matchGroup, repoDTO.matchGroup) &&
-            Objects.equals(this.matchGroupId, repoDTO.matchGroupId) &&
-            Objects.equals(this.micId, repoDTO.micId) &&
-            Objects.equals(this.nonMarkable, repoDTO.nonMarkable) &&
-            Objects.equals(this.orderActionTs, repoDTO.orderActionTs) &&
-            Objects.equals(this.poolPositionId, repoDTO.poolPositionId) &&
-            Objects.equals(this.pooled, repoDTO.pooled) &&
-            Objects.equals(this.positionReferenceNumber, repoDTO.positionReferenceNumber) &&
-            Objects.equals(this.positionTradeId, repoDTO.positionTradeId) &&
-            Objects.equals(this.positionType, repoDTO.positionType) &&
-            Objects.equals(this.positionTypeName, repoDTO.positionTypeName) &&
-            Objects.equals(this.postDate, repoDTO.postDate) &&
-            Objects.equals(this.postTradeMarkPrice, repoDTO.postTradeMarkPrice) &&
-            Objects.equals(this.premiumAccrued, repoDTO.premiumAccrued) &&
-            Objects.equals(this.premiumAdjustment, repoDTO.premiumAdjustment) &&
-            Objects.equals(this.premiumPaymentAdjustment, repoDTO.premiumPaymentAdjustment) &&
-            Objects.equals(this.premiumReceive, repoDTO.premiumReceive) &&
-            Objects.equals(this.prepaid, repoDTO.prepaid) &&
-            Objects.equals(this.prepayBasis, repoDTO.prepayBasis) &&
-            Objects.equals(this.prepayBasisName, repoDTO.prepayBasisName) &&
-            Objects.equals(this.prepayDate, repoDTO.prepayDate) &&
-            Objects.equals(this.prepayIndex, repoDTO.prepayIndex) &&
-            Objects.equals(this.prepayIndexName, repoDTO.prepayIndexName) &&
-            Objects.equals(this.prepayRate, repoDTO.prepayRate) &&
-            Objects.equals(this.prepaySpread, repoDTO.prepaySpread) &&
-            Objects.equals(this.price, repoDTO.price) &&
-            Objects.equals(this.priceFactor, repoDTO.priceFactor) &&
-            Objects.equals(this.priorityAllocation, repoDTO.priorityAllocation) &&
-            Objects.equals(this.productLine, repoDTO.productLine) &&
-            Objects.equals(this.quantity, repoDTO.quantity) &&
-            Objects.equals(this.rate, repoDTO.rate) &&
-            Objects.equals(this.rebateAccrued, repoDTO.rebateAccrued) &&
-            Objects.equals(this.rebateAdjustment, repoDTO.rebateAdjustment) &&
-            Objects.equals(this.rebatePayment, repoDTO.rebatePayment) &&
-            Objects.equals(this.rebatePaymentAdjustment, repoDTO.rebatePaymentAdjustment) &&
-            Objects.equals(this.resetDate, repoDTO.resetDate) &&
-            Objects.equals(this.restrictionId, repoDTO.restrictionId) &&
-            Objects.equals(this.securityDetail, repoDTO.securityDetail) &&
-            Objects.equals(this.securityId, repoDTO.securityId) &&
-            Objects.equals(this.sendDNIDownstream, repoDTO.sendDNIDownstream) &&
-            Objects.equals(this.settleDate, repoDTO.settleDate) &&
-            Objects.equals(this.signedTerminationPayment, repoDTO.signedTerminationPayment) &&
-            Objects.equals(this.signedTerminationPrinciple, repoDTO.signedTerminationPrinciple) &&
-            Objects.equals(this.spread, repoDTO.spread) &&
-            Objects.equals(this.startDate, repoDTO.startDate) &&
-            Objects.equals(this.status, repoDTO.status) &&
-            Objects.equals(this.statusId, repoDTO.statusId) &&
-            Objects.equals(this.statusMessage, repoDTO.statusMessage) &&
-            Objects.equals(this.strategy, repoDTO.strategy) &&
-            Objects.equals(this.strategyId, repoDTO.strategyId) &&
-            Objects.equals(this.tartgetPrice, repoDTO.tartgetPrice) &&
-            Objects.equals(this.taxWithholdRate, repoDTO.taxWithholdRate) &&
-            Objects.equals(this.termType, repoDTO.termType) &&
-            Objects.equals(this.termTypeName, repoDTO.termTypeName) &&
-            Objects.equals(this.terminationPrice, repoDTO.terminationPrice) &&
-            Objects.equals(this.thirdParty, repoDTO.thirdParty) &&
-            Objects.equals(this.trackingInd, repoDTO.trackingInd) &&
-            Objects.equals(this.tradeCategoryId, repoDTO.tradeCategoryId) &&
-            Objects.equals(this.tradeDate, repoDTO.tradeDate) &&
-            Objects.equals(this.tradeReason, repoDTO.tradeReason) &&
-            Objects.equals(this.tradeReasonId, repoDTO.tradeReasonId) &&
-            Objects.equals(this.tradeRefNo, repoDTO.tradeRefNo) &&
-            Objects.equals(this.tradingDesk, repoDTO.tradingDesk) &&
-            Objects.equals(this.tradingDeskId, repoDTO.tradingDeskId) &&
-            Objects.equals(this.tranId, repoDTO.tranId) &&
-            Objects.equals(this.tripartyCustodianId, repoDTO.tripartyCustodianId) &&
-            Objects.equals(this.useDefaultCollateralAccount, repoDTO.useDefaultCollateralAccount) &&
-            Objects.equals(this.useDefaultCollateralCustBank, repoDTO.useDefaultCollateralCustBank) &&
-            Objects.equals(this.useDefaultExposure, repoDTO.useDefaultExposure) &&
-            Objects.equals(this.useTraderDesk, repoDTO.useTraderDesk) &&
-            Objects.equals(this.uti, repoDTO.uti);
-    }
+  public void setAllocationPremiumAmts(List<AccountAllocationDTO> allocationPremiumAmts) {
+    this.allocationPremiumAmts = allocationPremiumAmts;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, accountAllocations, accountGroup, accountGroupAccountNo2, accountGroupId,
-            accountId, accountName, accountNo, accountNo2, accrualAdjustment, accrualDate, accrualSettlement,
-            accrualTypeId, agentReference, allInRate, allocationId, allocationOverrideComment, allocationPremiumAmts,
-            allocationReason, allocationReasonId, allocationRebateAmts, amount, basis, basisName, calendar, calendarId,
-            collateralAccountId, collateralAccountName, collateralAccountNo, collateralAccountNo2, collateralBasis,
-            collateralBasisName, collateralCalendar, collateralCalendarName, collateralCustodianBankAccountName,
-            collateralCustodianBankAccountNo, collateralCustodianBankAccountNo2, collateralCustodianBankId,
-            collateralIndex, collateralIndexName, collateralRate, collateralSpread, collateralType, collateralTypeId,
-            comments, competingBids, complianceTestMessage, counterpartyAccountNumber, counterpartyId, counterpartyName,
-            country, countryId, couponPaymentSchedule, currencyId, currencyKy, currentAllocationId, customValue1,
-            deliverFree, depoGroup, depoId, depoKy, dirtyPrice, divCurrency, divCurrencyId, divPerShare,
-            divWithholdRate, doNotInstruct, doNotInstructCxlFail, doNotPost, doNotRecall, dtcNo, encumberedQuantity,
-            endDate, errorMessage, evergreen, evergreenTerm, excludeFromAutoMark, explodedPosition, exposureId,
-            extendableMaxDate, factor, futureSettleDate, index, indexName, instructions, interestAtMaturity, isBlock,
-            isEvergreen, isExplodedPosition, isExtendable, isPooled, isThirdParty, lenderAccountId, lenderAccountName,
-            matchGroup, matchGroupId, micId, nonMarkable, orderActionTs, poolPositionId, pooled,
-            positionReferenceNumber, positionTradeId, positionType, positionTypeName, postDate, postTradeMarkPrice,
-            premiumAccrued, premiumAdjustment, premiumPaymentAdjustment, premiumReceive, prepaid, prepayBasis,
-            prepayBasisName, prepayDate, prepayIndex, prepayIndexName, prepayRate, prepaySpread, price, priceFactor,
-            priorityAllocation, productLine, quantity, rate, rebateAccrued, rebateAdjustment, rebatePayment,
-            rebatePaymentAdjustment, resetDate, restrictionId, securityDetail, securityId, sendDNIDownstream,
-            settleDate, signedTerminationPayment, signedTerminationPrinciple, spread, startDate, status, statusId,
-            statusMessage, strategy, strategyId, tartgetPrice, taxWithholdRate, termType, termTypeName,
-            terminationPrice, thirdParty, trackingInd, tradeCategoryId, tradeDate, tradeReason, tradeReasonId,
-            tradeRefNo, tradingDesk, tradingDeskId, tranId, tripartyCustodianId, useDefaultCollateralAccount,
-            useDefaultCollateralCustBank, useDefaultExposure, useTraderDesk, uti);
-    }
+  public RepoDTO allocationReason(String allocationReason) {
+    this.allocationReason = allocationReason;
+    return this;
+  }
 
+   /**
+   * Required only when posting a position &amp; Required when isPooled is true &amp; Either allocationReasonId or allocationReason is required &amp; required if configuration is set to true to force allocation reason when allocations is changed
+   * @return allocationReason
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required when isPooled is true & Either allocationReasonId or allocationReason is required & required if configuration is set to true to force allocation reason when allocations is changed")
+  public String getAllocationReason() {
+    return allocationReason;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class RepoDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    accountAllocations: ").append(toIndentedString(accountAllocations)).append("\n");
-        sb.append("    accountGroup: ").append(toIndentedString(accountGroup)).append("\n");
-        sb.append("    accountGroupAccountNo2: ").append(toIndentedString(accountGroupAccountNo2)).append("\n");
-        sb.append("    accountGroupId: ").append(toIndentedString(accountGroupId)).append("\n");
-        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-        sb.append("    accountName: ").append(toIndentedString(accountName)).append("\n");
-        sb.append("    accountNo: ").append(toIndentedString(accountNo)).append("\n");
-        sb.append("    accountNo2: ").append(toIndentedString(accountNo2)).append("\n");
-        sb.append("    accrualAdjustment: ").append(toIndentedString(accrualAdjustment)).append("\n");
-        sb.append("    accrualDate: ").append(toIndentedString(accrualDate)).append("\n");
-        sb.append("    accrualSettlement: ").append(toIndentedString(accrualSettlement)).append("\n");
-        sb.append("    accrualTypeId: ").append(toIndentedString(accrualTypeId)).append("\n");
-        sb.append("    agentReference: ").append(toIndentedString(agentReference)).append("\n");
-        sb.append("    allInRate: ").append(toIndentedString(allInRate)).append("\n");
-        sb.append("    allocationId: ").append(toIndentedString(allocationId)).append("\n");
-        sb.append("    allocationOverrideComment: ").append(toIndentedString(allocationOverrideComment)).append("\n");
-        sb.append("    allocationPremiumAmts: ").append(toIndentedString(allocationPremiumAmts)).append("\n");
-        sb.append("    allocationReason: ").append(toIndentedString(allocationReason)).append("\n");
-        sb.append("    allocationReasonId: ").append(toIndentedString(allocationReasonId)).append("\n");
-        sb.append("    allocationRebateAmts: ").append(toIndentedString(allocationRebateAmts)).append("\n");
-        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-        sb.append("    basis: ").append(toIndentedString(basis)).append("\n");
-        sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
-        sb.append("    calendar: ").append(toIndentedString(calendar)).append("\n");
-        sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
-        sb.append("    collateralAccountId: ").append(toIndentedString(collateralAccountId)).append("\n");
-        sb.append("    collateralAccountName: ").append(toIndentedString(collateralAccountName)).append("\n");
-        sb.append("    collateralAccountNo: ").append(toIndentedString(collateralAccountNo)).append("\n");
-        sb.append("    collateralAccountNo2: ").append(toIndentedString(collateralAccountNo2)).append("\n");
-        sb.append("    collateralBasis: ").append(toIndentedString(collateralBasis)).append("\n");
-        sb.append("    collateralBasisName: ").append(toIndentedString(collateralBasisName)).append("\n");
-        sb.append("    collateralCalendar: ").append(toIndentedString(collateralCalendar)).append("\n");
-        sb.append("    collateralCalendarName: ").append(toIndentedString(collateralCalendarName)).append("\n");
-        sb.append("    collateralCustodianBankAccountName: ")
-            .append(toIndentedString(collateralCustodianBankAccountName)).append("\n");
-        sb.append("    collateralCustodianBankAccountNo: ").append(toIndentedString(collateralCustodianBankAccountNo))
-            .append("\n");
-        sb.append("    collateralCustodianBankAccountNo2: ").append(toIndentedString(collateralCustodianBankAccountNo2))
-            .append("\n");
-        sb.append("    collateralCustodianBankId: ").append(toIndentedString(collateralCustodianBankId)).append("\n");
-        sb.append("    collateralIndex: ").append(toIndentedString(collateralIndex)).append("\n");
-        sb.append("    collateralIndexName: ").append(toIndentedString(collateralIndexName)).append("\n");
-        sb.append("    collateralRate: ").append(toIndentedString(collateralRate)).append("\n");
-        sb.append("    collateralSpread: ").append(toIndentedString(collateralSpread)).append("\n");
-        sb.append("    collateralType: ").append(toIndentedString(collateralType)).append("\n");
-        sb.append("    collateralTypeId: ").append(toIndentedString(collateralTypeId)).append("\n");
-        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-        sb.append("    competingBids: ").append(toIndentedString(competingBids)).append("\n");
-        sb.append("    complianceTestMessage: ").append(toIndentedString(complianceTestMessage)).append("\n");
-        sb.append("    counterpartyAccountNumber: ").append(toIndentedString(counterpartyAccountNumber)).append("\n");
-        sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
-        sb.append("    counterpartyName: ").append(toIndentedString(counterpartyName)).append("\n");
-        sb.append("    country: ").append(toIndentedString(country)).append("\n");
-        sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
-        sb.append("    couponPaymentSchedule: ").append(toIndentedString(couponPaymentSchedule)).append("\n");
-        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-        sb.append("    currencyKy: ").append(toIndentedString(currencyKy)).append("\n");
-        sb.append("    currentAllocationId: ").append(toIndentedString(currentAllocationId)).append("\n");
-        sb.append("    customValue1: ").append(toIndentedString(customValue1)).append("\n");
-        sb.append("    deliverFree: ").append(toIndentedString(deliverFree)).append("\n");
-        sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
-        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-        sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
-        sb.append("    dirtyPrice: ").append(toIndentedString(dirtyPrice)).append("\n");
-        sb.append("    divCurrency: ").append(toIndentedString(divCurrency)).append("\n");
-        sb.append("    divCurrencyId: ").append(toIndentedString(divCurrencyId)).append("\n");
-        sb.append("    divPerShare: ").append(toIndentedString(divPerShare)).append("\n");
-        sb.append("    divWithholdRate: ").append(toIndentedString(divWithholdRate)).append("\n");
-        sb.append("    doNotInstruct: ").append(toIndentedString(doNotInstruct)).append("\n");
-        sb.append("    doNotInstructCxlFail: ").append(toIndentedString(doNotInstructCxlFail)).append("\n");
-        sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
-        sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
-        sb.append("    dtcNo: ").append(toIndentedString(dtcNo)).append("\n");
-        sb.append("    encumberedQuantity: ").append(toIndentedString(encumberedQuantity)).append("\n");
-        sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
-        sb.append("    errorMessage: ").append(toIndentedString(errorMessage)).append("\n");
-        sb.append("    evergreen: ").append(toIndentedString(evergreen)).append("\n");
-        sb.append("    evergreenTerm: ").append(toIndentedString(evergreenTerm)).append("\n");
-        sb.append("    excludeFromAutoMark: ").append(toIndentedString(excludeFromAutoMark)).append("\n");
-        sb.append("    explodedPosition: ").append(toIndentedString(explodedPosition)).append("\n");
-        sb.append("    exposureId: ").append(toIndentedString(exposureId)).append("\n");
-        sb.append("    extendableMaxDate: ").append(toIndentedString(extendableMaxDate)).append("\n");
-        sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
-        sb.append("    futureSettleDate: ").append(toIndentedString(futureSettleDate)).append("\n");
-        sb.append("    index: ").append(toIndentedString(index)).append("\n");
-        sb.append("    indexName: ").append(toIndentedString(indexName)).append("\n");
-        sb.append("    instructions: ").append(toIndentedString(instructions)).append("\n");
-        sb.append("    interestAtMaturity: ").append(toIndentedString(interestAtMaturity)).append("\n");
-        sb.append("    isBlock: ").append(toIndentedString(isBlock)).append("\n");
-        sb.append("    isEvergreen: ").append(toIndentedString(isEvergreen)).append("\n");
-        sb.append("    isExplodedPosition: ").append(toIndentedString(isExplodedPosition)).append("\n");
-        sb.append("    isExtendable: ").append(toIndentedString(isExtendable)).append("\n");
-        sb.append("    isPooled: ").append(toIndentedString(isPooled)).append("\n");
-        sb.append("    isThirdParty: ").append(toIndentedString(isThirdParty)).append("\n");
-        sb.append("    lenderAccountId: ").append(toIndentedString(lenderAccountId)).append("\n");
-        sb.append("    lenderAccountName: ").append(toIndentedString(lenderAccountName)).append("\n");
-        sb.append("    matchGroup: ").append(toIndentedString(matchGroup)).append("\n");
-        sb.append("    matchGroupId: ").append(toIndentedString(matchGroupId)).append("\n");
-        sb.append("    micId: ").append(toIndentedString(micId)).append("\n");
-        sb.append("    nonMarkable: ").append(toIndentedString(nonMarkable)).append("\n");
-        sb.append("    orderActionTs: ").append(toIndentedString(orderActionTs)).append("\n");
-        sb.append("    poolPositionId: ").append(toIndentedString(poolPositionId)).append("\n");
-        sb.append("    pooled: ").append(toIndentedString(pooled)).append("\n");
-        sb.append("    positionReferenceNumber: ").append(toIndentedString(positionReferenceNumber)).append("\n");
-        sb.append("    positionTradeId: ").append(toIndentedString(positionTradeId)).append("\n");
-        sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
-        sb.append("    positionTypeName: ").append(toIndentedString(positionTypeName)).append("\n");
-        sb.append("    postDate: ").append(toIndentedString(postDate)).append("\n");
-        sb.append("    postTradeMarkPrice: ").append(toIndentedString(postTradeMarkPrice)).append("\n");
-        sb.append("    premiumAccrued: ").append(toIndentedString(premiumAccrued)).append("\n");
-        sb.append("    premiumAdjustment: ").append(toIndentedString(premiumAdjustment)).append("\n");
-        sb.append("    premiumPaymentAdjustment: ").append(toIndentedString(premiumPaymentAdjustment)).append("\n");
-        sb.append("    premiumReceive: ").append(toIndentedString(premiumReceive)).append("\n");
-        sb.append("    prepaid: ").append(toIndentedString(prepaid)).append("\n");
-        sb.append("    prepayBasis: ").append(toIndentedString(prepayBasis)).append("\n");
-        sb.append("    prepayBasisName: ").append(toIndentedString(prepayBasisName)).append("\n");
-        sb.append("    prepayDate: ").append(toIndentedString(prepayDate)).append("\n");
-        sb.append("    prepayIndex: ").append(toIndentedString(prepayIndex)).append("\n");
-        sb.append("    prepayIndexName: ").append(toIndentedString(prepayIndexName)).append("\n");
-        sb.append("    prepayRate: ").append(toIndentedString(prepayRate)).append("\n");
-        sb.append("    prepaySpread: ").append(toIndentedString(prepaySpread)).append("\n");
-        sb.append("    price: ").append(toIndentedString(price)).append("\n");
-        sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
-        sb.append("    priorityAllocation: ").append(toIndentedString(priorityAllocation)).append("\n");
-        sb.append("    productLine: ").append(toIndentedString(productLine)).append("\n");
-        sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-        sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-        sb.append("    rebateAccrued: ").append(toIndentedString(rebateAccrued)).append("\n");
-        sb.append("    rebateAdjustment: ").append(toIndentedString(rebateAdjustment)).append("\n");
-        sb.append("    rebatePayment: ").append(toIndentedString(rebatePayment)).append("\n");
-        sb.append("    rebatePaymentAdjustment: ").append(toIndentedString(rebatePaymentAdjustment)).append("\n");
-        sb.append("    resetDate: ").append(toIndentedString(resetDate)).append("\n");
-        sb.append("    restrictionId: ").append(toIndentedString(restrictionId)).append("\n");
-        sb.append("    securityDetail: ").append(toIndentedString(securityDetail)).append("\n");
-        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-        sb.append("    sendDNIDownstream: ").append(toIndentedString(sendDNIDownstream)).append("\n");
-        sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
-        sb.append("    signedTerminationPayment: ").append(toIndentedString(signedTerminationPayment)).append("\n");
-        sb.append("    signedTerminationPrinciple: ").append(toIndentedString(signedTerminationPrinciple)).append("\n");
-        sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
-        sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
-        sb.append("    statusMessage: ").append(toIndentedString(statusMessage)).append("\n");
-        sb.append("    strategy: ").append(toIndentedString(strategy)).append("\n");
-        sb.append("    strategyId: ").append(toIndentedString(strategyId)).append("\n");
-        sb.append("    tartgetPrice: ").append(toIndentedString(tartgetPrice)).append("\n");
-        sb.append("    taxWithholdRate: ").append(toIndentedString(taxWithholdRate)).append("\n");
-        sb.append("    termType: ").append(toIndentedString(termType)).append("\n");
-        sb.append("    termTypeName: ").append(toIndentedString(termTypeName)).append("\n");
-        sb.append("    terminationPrice: ").append(toIndentedString(terminationPrice)).append("\n");
-        sb.append("    thirdParty: ").append(toIndentedString(thirdParty)).append("\n");
-        sb.append("    trackingInd: ").append(toIndentedString(trackingInd)).append("\n");
-        sb.append("    tradeCategoryId: ").append(toIndentedString(tradeCategoryId)).append("\n");
-        sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
-        sb.append("    tradeReason: ").append(toIndentedString(tradeReason)).append("\n");
-        sb.append("    tradeReasonId: ").append(toIndentedString(tradeReasonId)).append("\n");
-        sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
-        sb.append("    tradingDesk: ").append(toIndentedString(tradingDesk)).append("\n");
-        sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
-        sb.append("    tranId: ").append(toIndentedString(tranId)).append("\n");
-        sb.append("    tripartyCustodianId: ").append(toIndentedString(tripartyCustodianId)).append("\n");
-        sb.append("    useDefaultCollateralAccount: ").append(toIndentedString(useDefaultCollateralAccount))
-            .append("\n");
-        sb.append("    useDefaultCollateralCustBank: ").append(toIndentedString(useDefaultCollateralCustBank))
-            .append("\n");
-        sb.append("    useDefaultExposure: ").append(toIndentedString(useDefaultExposure)).append("\n");
-        sb.append("    useTraderDesk: ").append(toIndentedString(useTraderDesk)).append("\n");
-        sb.append("    uti: ").append(toIndentedString(uti)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
+  public void setAllocationReason(String allocationReason) {
+    this.allocationReason = allocationReason;
+  }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+  public RepoDTO allocationReasonId(Integer allocationReasonId) {
+    this.allocationReasonId = allocationReasonId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required when isPooled is true &amp; Either allocationReasonId or allocationReason is required &amp; required if configuration is set to true to force allocation reason when allocations is changed
+   * @return allocationReasonId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required when isPooled is true & Either allocationReasonId or allocationReason is required & required if configuration is set to true to force allocation reason when allocations is changed")
+  public Integer getAllocationReasonId() {
+    return allocationReasonId;
+  }
+
+  public void setAllocationReasonId(Integer allocationReasonId) {
+    this.allocationReasonId = allocationReasonId;
+  }
+
+  public RepoDTO allocationRebateAmts(List<AccountAllocationDTO> allocationRebateAmts) {
+    this.allocationRebateAmts = allocationRebateAmts;
+    return this;
+  }
+
+  public RepoDTO addAllocationRebateAmtsItem(AccountAllocationDTO allocationRebateAmtsItem) {
+    if (this.allocationRebateAmts == null) {
+      this.allocationRebateAmts = new ArrayList<>();
+    }
+    this.allocationRebateAmts.add(allocationRebateAmtsItem);
+    return this;
+  }
+
+   /**
+   * Get allocationRebateAmts
+   * @return allocationRebateAmts
+  **/
+  @ApiModelProperty(value = "")
+  public List<AccountAllocationDTO> getAllocationRebateAmts() {
+    return allocationRebateAmts;
+  }
+
+  public void setAllocationRebateAmts(List<AccountAllocationDTO> allocationRebateAmts) {
+    this.allocationRebateAmts = allocationRebateAmts;
+  }
+
+  public RepoDTO amount(Double amount) {
+    this.amount = amount;
+    return this;
+  }
+
+   /**
+   * Get amount
+   * @return amount
+  **/
+  @ApiModelProperty(value = "")
+  public Double getAmount() {
+    return amount;
+  }
+
+  public void setAmount(Double amount) {
+    this.amount = amount;
+  }
+
+  public RepoDTO basis(Integer basis) {
+    this.basis = basis;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Either basis or basisName is required
+   * @return basis
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either basis or basisName is required")
+  public Integer getBasis() {
+    return basis;
+  }
+
+  public void setBasis(Integer basis) {
+    this.basis = basis;
+  }
+
+  public RepoDTO basisName(String basisName) {
+    this.basisName = basisName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Either basis or basisName is required
+   * @return basisName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either basis or basisName is required")
+  public String getBasisName() {
+    return basisName;
+  }
+
+  public void setBasisName(String basisName) {
+    this.basisName = basisName;
+  }
+
+  public RepoDTO calendar(String calendar) {
+    this.calendar = calendar;
+    return this;
+  }
+
+   /**
+   * Get calendar
+   * @return calendar
+  **/
+  @ApiModelProperty(value = "")
+  public String getCalendar() {
+    return calendar;
+  }
+
+  public void setCalendar(String calendar) {
+    this.calendar = calendar;
+  }
+
+  public RepoDTO calendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+    return this;
+  }
+
+   /**
+   * Get calendarId
+   * @return calendarId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCalendarId() {
+    return calendarId;
+  }
+
+  public void setCalendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+  }
+
+  public RepoDTO cleanPrice(Double cleanPrice) {
+    this.cleanPrice = cleanPrice;
+    return this;
+  }
+
+   /**
+   * Get cleanPrice
+   * @return cleanPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCleanPrice() {
+    return cleanPrice;
+  }
+
+  public void setCleanPrice(Double cleanPrice) {
+    this.cleanPrice = cleanPrice;
+  }
+
+  public RepoDTO cleanPriceCurrencyId(Integer cleanPriceCurrencyId) {
+    this.cleanPriceCurrencyId = cleanPriceCurrencyId;
+    return this;
+  }
+
+   /**
+   * Get cleanPriceCurrencyId
+   * @return cleanPriceCurrencyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCleanPriceCurrencyId() {
+    return cleanPriceCurrencyId;
+  }
+
+  public void setCleanPriceCurrencyId(Integer cleanPriceCurrencyId) {
+    this.cleanPriceCurrencyId = cleanPriceCurrencyId;
+  }
+
+  public RepoDTO collateralAccountId(Integer collateralAccountId) {
+    this.collateralAccountId = collateralAccountId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
+   * @return collateralAccountId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
+  public Integer getCollateralAccountId() {
+    return collateralAccountId;
+  }
+
+  public void setCollateralAccountId(Integer collateralAccountId) {
+    this.collateralAccountId = collateralAccountId;
+  }
+
+  public RepoDTO collateralAccountName(String collateralAccountName) {
+    this.collateralAccountName = collateralAccountName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
+   * @return collateralAccountName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
+  public String getCollateralAccountName() {
+    return collateralAccountName;
+  }
+
+  public void setCollateralAccountName(String collateralAccountName) {
+    this.collateralAccountName = collateralAccountName;
+  }
+
+  public RepoDTO collateralAccountNo(String collateralAccountNo) {
+    this.collateralAccountNo = collateralAccountNo;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
+   * @return collateralAccountNo
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
+  public String getCollateralAccountNo() {
+    return collateralAccountNo;
+  }
+
+  public void setCollateralAccountNo(String collateralAccountNo) {
+    this.collateralAccountNo = collateralAccountNo;
+  }
+
+  public RepoDTO collateralAccountNo2(String collateralAccountNo2) {
+    this.collateralAccountNo2 = collateralAccountNo2;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
+   * @return collateralAccountNo2
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
+  public String getCollateralAccountNo2() {
+    return collateralAccountNo2;
+  }
+
+  public void setCollateralAccountNo2(String collateralAccountNo2) {
+    this.collateralAccountNo2 = collateralAccountNo2;
+  }
+
+  public RepoDTO collateralBasis(Integer collateralBasis) {
+    this.collateralBasis = collateralBasis;
+    return this;
+  }
+
+   /**
+   * Get collateralBasis
+   * @return collateralBasis
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCollateralBasis() {
+    return collateralBasis;
+  }
+
+  public void setCollateralBasis(Integer collateralBasis) {
+    this.collateralBasis = collateralBasis;
+  }
+
+  public RepoDTO collateralBasisName(String collateralBasisName) {
+    this.collateralBasisName = collateralBasisName;
+    return this;
+  }
+
+   /**
+   * Get collateralBasisName
+   * @return collateralBasisName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCollateralBasisName() {
+    return collateralBasisName;
+  }
+
+  public void setCollateralBasisName(String collateralBasisName) {
+    this.collateralBasisName = collateralBasisName;
+  }
+
+  public RepoDTO collateralCalendar(Integer collateralCalendar) {
+    this.collateralCalendar = collateralCalendar;
+    return this;
+  }
+
+   /**
+   * Get collateralCalendar
+   * @return collateralCalendar
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCollateralCalendar() {
+    return collateralCalendar;
+  }
+
+  public void setCollateralCalendar(Integer collateralCalendar) {
+    this.collateralCalendar = collateralCalendar;
+  }
+
+  public RepoDTO collateralCalendarName(String collateralCalendarName) {
+    this.collateralCalendarName = collateralCalendarName;
+    return this;
+  }
+
+   /**
+   * Get collateralCalendarName
+   * @return collateralCalendarName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCollateralCalendarName() {
+    return collateralCalendarName;
+  }
+
+  public void setCollateralCalendarName(String collateralCalendarName) {
+    this.collateralCalendarName = collateralCalendarName;
+  }
+
+  public RepoDTO collateralCustodianBankAccountName(String collateralCustodianBankAccountName) {
+    this.collateralCustodianBankAccountName = collateralCustodianBankAccountName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
+   * @return collateralCustodianBankAccountName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
+  public String getCollateralCustodianBankAccountName() {
+    return collateralCustodianBankAccountName;
+  }
+
+  public void setCollateralCustodianBankAccountName(String collateralCustodianBankAccountName) {
+    this.collateralCustodianBankAccountName = collateralCustodianBankAccountName;
+  }
+
+  public RepoDTO collateralCustodianBankAccountNo(String collateralCustodianBankAccountNo) {
+    this.collateralCustodianBankAccountNo = collateralCustodianBankAccountNo;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
+   * @return collateralCustodianBankAccountNo
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
+  public String getCollateralCustodianBankAccountNo() {
+    return collateralCustodianBankAccountNo;
+  }
+
+  public void setCollateralCustodianBankAccountNo(String collateralCustodianBankAccountNo) {
+    this.collateralCustodianBankAccountNo = collateralCustodianBankAccountNo;
+  }
+
+  public RepoDTO collateralCustodianBankAccountNo2(String collateralCustodianBankAccountNo2) {
+    this.collateralCustodianBankAccountNo2 = collateralCustodianBankAccountNo2;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
+   * @return collateralCustodianBankAccountNo2
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
+  public String getCollateralCustodianBankAccountNo2() {
+    return collateralCustodianBankAccountNo2;
+  }
+
+  public void setCollateralCustodianBankAccountNo2(String collateralCustodianBankAccountNo2) {
+    this.collateralCustodianBankAccountNo2 = collateralCustodianBankAccountNo2;
+  }
+
+  public RepoDTO collateralCustodianBankId(Integer collateralCustodianBankId) {
+    this.collateralCustodianBankId = collateralCustodianBankId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
+   * @return collateralCustodianBankId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
+  public Integer getCollateralCustodianBankId() {
+    return collateralCustodianBankId;
+  }
+
+  public void setCollateralCustodianBankId(Integer collateralCustodianBankId) {
+    this.collateralCustodianBankId = collateralCustodianBankId;
+  }
+
+  public RepoDTO collateralIndex(Integer collateralIndex) {
+    this.collateralIndex = collateralIndex;
+    return this;
+  }
+
+   /**
+   * Get collateralIndex
+   * @return collateralIndex
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCollateralIndex() {
+    return collateralIndex;
+  }
+
+  public void setCollateralIndex(Integer collateralIndex) {
+    this.collateralIndex = collateralIndex;
+  }
+
+  public RepoDTO collateralIndexName(String collateralIndexName) {
+    this.collateralIndexName = collateralIndexName;
+    return this;
+  }
+
+   /**
+   * Get collateralIndexName
+   * @return collateralIndexName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCollateralIndexName() {
+    return collateralIndexName;
+  }
+
+  public void setCollateralIndexName(String collateralIndexName) {
+    this.collateralIndexName = collateralIndexName;
+  }
+
+  public RepoDTO collateralRate(Double collateralRate) {
+    this.collateralRate = collateralRate;
+    return this;
+  }
+
+   /**
+   * Get collateralRate
+   * @return collateralRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCollateralRate() {
+    return collateralRate;
+  }
+
+  public void setCollateralRate(Double collateralRate) {
+    this.collateralRate = collateralRate;
+  }
+
+  public RepoDTO collateralSpread(Double collateralSpread) {
+    this.collateralSpread = collateralSpread;
+    return this;
+  }
+
+   /**
+   * Get collateralSpread
+   * @return collateralSpread
+  **/
+  @ApiModelProperty(value = "")
+  public Double getCollateralSpread() {
+    return collateralSpread;
+  }
+
+  public void setCollateralSpread(Double collateralSpread) {
+    this.collateralSpread = collateralSpread;
+  }
+
+  public RepoDTO collateralType(String collateralType) {
+    this.collateralType = collateralType;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralTypeId or collateralType is required
+   * @return collateralType
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralTypeId or collateralType is required")
+  public String getCollateralType() {
+    return collateralType;
+  }
+
+  public void setCollateralType(String collateralType) {
+    this.collateralType = collateralType;
+  }
+
+  public RepoDTO collateralTypeId(Integer collateralTypeId) {
+    this.collateralTypeId = collateralTypeId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralTypeId or collateralType is required
+   * @return collateralTypeId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralTypeId or collateralType is required")
+  public Integer getCollateralTypeId() {
+    return collateralTypeId;
+  }
+
+  public void setCollateralTypeId(Integer collateralTypeId) {
+    this.collateralTypeId = collateralTypeId;
+  }
+
+  public RepoDTO comments(String comments) {
+    this.comments = comments;
+    return this;
+  }
+
+   /**
+   * Get comments
+   * @return comments
+  **/
+  @ApiModelProperty(value = "")
+  public String getComments() {
+    return comments;
+  }
+
+  public void setComments(String comments) {
+    this.comments = comments;
+  }
+
+  public RepoDTO competingBids(List<CompetingBidDTO> competingBids) {
+    this.competingBids = competingBids;
+    return this;
+  }
+
+  public RepoDTO addCompetingBidsItem(CompetingBidDTO competingBidsItem) {
+    if (this.competingBids == null) {
+      this.competingBids = new ArrayList<>();
+    }
+    this.competingBids.add(competingBidsItem);
+    return this;
+  }
+
+   /**
+   * Get competingBids
+   * @return competingBids
+  **/
+  @ApiModelProperty(value = "")
+  public List<CompetingBidDTO> getCompetingBids() {
+    return competingBids;
+  }
+
+  public void setCompetingBids(List<CompetingBidDTO> competingBids) {
+    this.competingBids = competingBids;
+  }
+
+  public RepoDTO complianceTestMessage(String complianceTestMessage) {
+    this.complianceTestMessage = complianceTestMessage;
+    return this;
+  }
+
+   /**
+   * Get complianceTestMessage
+   * @return complianceTestMessage
+  **/
+  @ApiModelProperty(value = "")
+  public String getComplianceTestMessage() {
+    return complianceTestMessage;
+  }
+
+  public void setComplianceTestMessage(String complianceTestMessage) {
+    this.complianceTestMessage = complianceTestMessage;
+  }
+
+  public RepoDTO contractCompareId(Integer contractCompareId) {
+    this.contractCompareId = contractCompareId;
+    return this;
+  }
+
+   /**
+   * Get contractCompareId
+   * @return contractCompareId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getContractCompareId() {
+    return contractCompareId;
+  }
+
+  public void setContractCompareId(Integer contractCompareId) {
+    this.contractCompareId = contractCompareId;
+  }
+
+  public RepoDTO counterpartyAccountNumber(String counterpartyAccountNumber) {
+    this.counterpartyAccountNumber = counterpartyAccountNumber;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required
+   * @return counterpartyAccountNumber
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
+  public String getCounterpartyAccountNumber() {
+    return counterpartyAccountNumber;
+  }
+
+  public void setCounterpartyAccountNumber(String counterpartyAccountNumber) {
+    this.counterpartyAccountNumber = counterpartyAccountNumber;
+  }
+
+  public RepoDTO counterpartyId(Integer counterpartyId) {
+    this.counterpartyId = counterpartyId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required
+   * @return counterpartyId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
+  public Integer getCounterpartyId() {
+    return counterpartyId;
+  }
+
+  public void setCounterpartyId(Integer counterpartyId) {
+    this.counterpartyId = counterpartyId;
+  }
+
+  public RepoDTO counterpartyName(String counterpartyName) {
+    this.counterpartyName = counterpartyName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required
+   * @return counterpartyName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
+  public String getCounterpartyName() {
+    return counterpartyName;
+  }
+
+  public void setCounterpartyName(String counterpartyName) {
+    this.counterpartyName = counterpartyName;
+  }
+
+  public RepoDTO country(String country) {
+    this.country = country;
+    return this;
+  }
+
+   /**
+   * Get country
+   * @return country
+  **/
+  @ApiModelProperty(value = "")
+  public String getCountry() {
+    return country;
+  }
+
+  public void setCountry(String country) {
+    this.country = country;
+  }
+
+  public RepoDTO countryId(Integer countryId) {
+    this.countryId = countryId;
+    return this;
+  }
+
+   /**
+   * Get countryId
+   * @return countryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Integer countryId) {
+    this.countryId = countryId;
+  }
+
+  public RepoDTO couponPaymentSchedule(List<CouponPayment> couponPaymentSchedule) {
+    this.couponPaymentSchedule = couponPaymentSchedule;
+    return this;
+  }
+
+  public RepoDTO addCouponPaymentScheduleItem(CouponPayment couponPaymentScheduleItem) {
+    if (this.couponPaymentSchedule == null) {
+      this.couponPaymentSchedule = new ArrayList<>();
+    }
+    this.couponPaymentSchedule.add(couponPaymentScheduleItem);
+    return this;
+  }
+
+   /**
+   * Get couponPaymentSchedule
+   * @return couponPaymentSchedule
+  **/
+  @ApiModelProperty(value = "")
+  public List<CouponPayment> getCouponPaymentSchedule() {
+    return couponPaymentSchedule;
+  }
+
+  public void setCouponPaymentSchedule(List<CouponPayment> couponPaymentSchedule) {
+    this.couponPaymentSchedule = couponPaymentSchedule;
+  }
+
+  public RepoDTO currencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either currencyId or currencyKy is required
+   * @return currencyId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either currencyId or currencyKy is required")
+  public Integer getCurrencyId() {
+    return currencyId;
+  }
+
+  public void setCurrencyId(Integer currencyId) {
+    this.currencyId = currencyId;
+  }
+
+  public RepoDTO currencyKy(String currencyKy) {
+    this.currencyKy = currencyKy;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either currencyId or currencyKy is required
+   * @return currencyKy
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either currencyId or currencyKy is required")
+  public String getCurrencyKy() {
+    return currencyKy;
+  }
+
+  public void setCurrencyKy(String currencyKy) {
+    this.currencyKy = currencyKy;
+  }
+
+  public RepoDTO currentAllocationId(Long currentAllocationId) {
+    this.currentAllocationId = currentAllocationId;
+    return this;
+  }
+
+   /**
+   * Get currentAllocationId
+   * @return currentAllocationId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCurrentAllocationId() {
+    return currentAllocationId;
+  }
+
+  public void setCurrentAllocationId(Long currentAllocationId) {
+    this.currentAllocationId = currentAllocationId;
+  }
+
+  public RepoDTO customValue1(String customValue1) {
+    this.customValue1 = customValue1;
+    return this;
+  }
+
+   /**
+   * Get customValue1
+   * @return customValue1
+  **/
+  @ApiModelProperty(value = "")
+  public String getCustomValue1() {
+    return customValue1;
+  }
+
+  public void setCustomValue1(String customValue1) {
+    this.customValue1 = customValue1;
+  }
+
+  public RepoDTO deliverFree(Boolean deliverFree) {
+    this.deliverFree = deliverFree;
+    return this;
+  }
+
+   /**
+   * Get deliverFree
+   * @return deliverFree
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDeliverFree() {
+    return deliverFree;
+  }
+
+  public void setDeliverFree(Boolean deliverFree) {
+    this.deliverFree = deliverFree;
+  }
+
+  public RepoDTO depoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+    return this;
+  }
+
+   /**
+   * Get depoGroup
+   * @return depoGroup
+  **/
+  @ApiModelProperty(value = "")
+  public String getDepoGroup() {
+    return depoGroup;
+  }
+
+  public void setDepoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+  }
+
+  public RepoDTO depoId(Integer depoId) {
+    this.depoId = depoId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either depoId or depoKy is required
+   * @return depoId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either depoId or depoKy is required")
+  public Integer getDepoId() {
+    return depoId;
+  }
+
+  public void setDepoId(Integer depoId) {
+    this.depoId = depoId;
+  }
+
+  public RepoDTO depoKy(String depoKy) {
+    this.depoKy = depoKy;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either depoId or depoKy is required
+   * @return depoKy
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either depoId or depoKy is required")
+  public String getDepoKy() {
+    return depoKy;
+  }
+
+  public void setDepoKy(String depoKy) {
+    this.depoKy = depoKy;
+  }
+
+  public RepoDTO dirtyPrice(Double dirtyPrice) {
+    this.dirtyPrice = dirtyPrice;
+    return this;
+  }
+
+   /**
+   * Get dirtyPrice
+   * @return dirtyPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDirtyPrice() {
+    return dirtyPrice;
+  }
+
+  public void setDirtyPrice(Double dirtyPrice) {
+    this.dirtyPrice = dirtyPrice;
+  }
+
+  public RepoDTO divCurrency(String divCurrency) {
+    this.divCurrency = divCurrency;
+    return this;
+  }
+
+   /**
+   * Get divCurrency
+   * @return divCurrency
+  **/
+  @ApiModelProperty(value = "")
+  public String getDivCurrency() {
+    return divCurrency;
+  }
+
+  public void setDivCurrency(String divCurrency) {
+    this.divCurrency = divCurrency;
+  }
+
+  public RepoDTO divCurrencyId(Integer divCurrencyId) {
+    this.divCurrencyId = divCurrencyId;
+    return this;
+  }
+
+   /**
+   * Get divCurrencyId
+   * @return divCurrencyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getDivCurrencyId() {
+    return divCurrencyId;
+  }
+
+  public void setDivCurrencyId(Integer divCurrencyId) {
+    this.divCurrencyId = divCurrencyId;
+  }
+
+  public RepoDTO divPerShare(Double divPerShare) {
+    this.divPerShare = divPerShare;
+    return this;
+  }
+
+   /**
+   * Get divPerShare
+   * @return divPerShare
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDivPerShare() {
+    return divPerShare;
+  }
+
+  public void setDivPerShare(Double divPerShare) {
+    this.divPerShare = divPerShare;
+  }
+
+  public RepoDTO divWithholdRate(Double divWithholdRate) {
+    this.divWithholdRate = divWithholdRate;
+    return this;
+  }
+
+   /**
+   * Get divWithholdRate
+   * @return divWithholdRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getDivWithholdRate() {
+    return divWithholdRate;
+  }
+
+  public void setDivWithholdRate(Double divWithholdRate) {
+    this.divWithholdRate = divWithholdRate;
+  }
+
+  public RepoDTO doNotInstruct(Boolean doNotInstruct) {
+    this.doNotInstruct = doNotInstruct;
+    return this;
+  }
+
+   /**
+   * Get doNotInstruct
+   * @return doNotInstruct
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotInstruct() {
+    return doNotInstruct;
+  }
+
+  public void setDoNotInstruct(Boolean doNotInstruct) {
+    this.doNotInstruct = doNotInstruct;
+  }
+
+  public RepoDTO doNotInstructCxlFail(Boolean doNotInstructCxlFail) {
+    this.doNotInstructCxlFail = doNotInstructCxlFail;
+    return this;
+  }
+
+   /**
+   * Get doNotInstructCxlFail
+   * @return doNotInstructCxlFail
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotInstructCxlFail() {
+    return doNotInstructCxlFail;
+  }
+
+  public void setDoNotInstructCxlFail(Boolean doNotInstructCxlFail) {
+    this.doNotInstructCxlFail = doNotInstructCxlFail;
+  }
+
+  public RepoDTO doNotPost(Boolean doNotPost) {
+    this.doNotPost = doNotPost;
+    return this;
+  }
+
+   /**
+   * Get doNotPost
+   * @return doNotPost
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotPost() {
+    return doNotPost;
+  }
+
+  public void setDoNotPost(Boolean doNotPost) {
+    this.doNotPost = doNotPost;
+  }
+
+  public RepoDTO doNotRecall(Boolean doNotRecall) {
+    this.doNotRecall = doNotRecall;
+    return this;
+  }
+
+   /**
+   * Get doNotRecall
+   * @return doNotRecall
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotRecall() {
+    return doNotRecall;
+  }
+
+  public void setDoNotRecall(Boolean doNotRecall) {
+    this.doNotRecall = doNotRecall;
+  }
+
+  public RepoDTO dtcNo(String dtcNo) {
+    this.dtcNo = dtcNo;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required
+   * @return dtcNo
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either counterpartyId or counterpartyName or counterpartyAccountNumber or dtcNo is required")
+  public String getDtcNo() {
+    return dtcNo;
+  }
+
+  public void setDtcNo(String dtcNo) {
+    this.dtcNo = dtcNo;
+  }
+
+  public RepoDTO encumberedQuantity(Double encumberedQuantity) {
+    this.encumberedQuantity = encumberedQuantity;
+    return this;
+  }
+
+   /**
+   * Get encumberedQuantity
+   * @return encumberedQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getEncumberedQuantity() {
+    return encumberedQuantity;
+  }
+
+  public void setEncumberedQuantity(Double encumberedQuantity) {
+    this.encumberedQuantity = encumberedQuantity;
+  }
+
+  public RepoDTO endDate(LocalDateTime endDate) {
+    this.endDate = endDate;
+    return this;
+  }
+
+   /**
+   * Get endDate
+   * @return endDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(LocalDateTime endDate) {
+    this.endDate = endDate;
+  }
+
+  public RepoDTO errorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+    return this;
+  }
+
+   /**
+   * Get errorMessage
+   * @return errorMessage
+  **/
+  @ApiModelProperty(value = "")
+  public String getErrorMessage() {
+    return errorMessage;
+  }
+
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
+
+  public RepoDTO evergreen(Boolean evergreen) {
+    this.evergreen = evergreen;
+    return this;
+  }
+
+   /**
+   * Get evergreen
+   * @return evergreen
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isEvergreen() {
+    return evergreen;
+  }
+
+  public void setEvergreen(Boolean evergreen) {
+    this.evergreen = evergreen;
+  }
+
+  public RepoDTO evergreenTerm(Integer evergreenTerm) {
+    this.evergreenTerm = evergreenTerm;
+    return this;
+  }
+
+   /**
+   * Get evergreenTerm
+   * @return evergreenTerm
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getEvergreenTerm() {
+    return evergreenTerm;
+  }
+
+  public void setEvergreenTerm(Integer evergreenTerm) {
+    this.evergreenTerm = evergreenTerm;
+  }
+
+  public RepoDTO excludeFromAutoMark(Boolean excludeFromAutoMark) {
+    this.excludeFromAutoMark = excludeFromAutoMark;
+    return this;
+  }
+
+   /**
+   * Get excludeFromAutoMark
+   * @return excludeFromAutoMark
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isExcludeFromAutoMark() {
+    return excludeFromAutoMark;
+  }
+
+  public void setExcludeFromAutoMark(Boolean excludeFromAutoMark) {
+    this.excludeFromAutoMark = excludeFromAutoMark;
+  }
+
+  public RepoDTO explodedPosition(Boolean explodedPosition) {
+    this.explodedPosition = explodedPosition;
+    return this;
+  }
+
+   /**
+   * Get explodedPosition
+   * @return explodedPosition
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isExplodedPosition() {
+    return explodedPosition;
+  }
+
+  public void setExplodedPosition(Boolean explodedPosition) {
+    this.explodedPosition = explodedPosition;
+  }
+
+  public RepoDTO exposureId(Integer exposureId) {
+    this.exposureId = exposureId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either exposureId or useDefaultExposure is required
+   * @return exposureId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either exposureId or useDefaultExposure is required")
+  public Integer getExposureId() {
+    return exposureId;
+  }
+
+  public void setExposureId(Integer exposureId) {
+    this.exposureId = exposureId;
+  }
+
+  public RepoDTO extendableMaxDate(LocalDateTime extendableMaxDate) {
+    this.extendableMaxDate = extendableMaxDate;
+    return this;
+  }
+
+   /**
+   * Get extendableMaxDate
+   * @return extendableMaxDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getExtendableMaxDate() {
+    return extendableMaxDate;
+  }
+
+  public void setExtendableMaxDate(LocalDateTime extendableMaxDate) {
+    this.extendableMaxDate = extendableMaxDate;
+  }
+
+  public RepoDTO factor(Double factor) {
+    this.factor = factor;
+    return this;
+  }
+
+   /**
+   * Get factor
+   * @return factor
+  **/
+  @ApiModelProperty(value = "")
+  public Double getFactor() {
+    return factor;
+  }
+
+  public void setFactor(Double factor) {
+    this.factor = factor;
+  }
+
+  public RepoDTO futureSettleDate(Boolean futureSettleDate) {
+    this.futureSettleDate = futureSettleDate;
+    return this;
+  }
+
+   /**
+   * Get futureSettleDate
+   * @return futureSettleDate
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isFutureSettleDate() {
+    return futureSettleDate;
+  }
+
+  public void setFutureSettleDate(Boolean futureSettleDate) {
+    this.futureSettleDate = futureSettleDate;
+  }
+
+  public RepoDTO index(Integer index) {
+    this.index = index;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Either index or indexName is required
+   * @return index
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either index or indexName is required")
+  public Integer getIndex() {
+    return index;
+  }
+
+  public void setIndex(Integer index) {
+    this.index = index;
+  }
+
+  public RepoDTO indexName(String indexName) {
+    this.indexName = indexName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Either index or indexName is required
+   * @return indexName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Either index or indexName is required")
+  public String getIndexName() {
+    return indexName;
+  }
+
+  public void setIndexName(String indexName) {
+    this.indexName = indexName;
+  }
+
+  public RepoDTO instructions(String instructions) {
+    this.instructions = instructions;
+    return this;
+  }
+
+   /**
+   * Get instructions
+   * @return instructions
+  **/
+  @ApiModelProperty(value = "")
+  public String getInstructions() {
+    return instructions;
+  }
+
+  public void setInstructions(String instructions) {
+    this.instructions = instructions;
+  }
+
+  public RepoDTO interestAtMaturity(Double interestAtMaturity) {
+    this.interestAtMaturity = interestAtMaturity;
+    return this;
+  }
+
+   /**
+   * Get interestAtMaturity
+   * @return interestAtMaturity
+  **/
+  @ApiModelProperty(value = "")
+  public Double getInterestAtMaturity() {
+    return interestAtMaturity;
+  }
+
+  public void setInterestAtMaturity(Double interestAtMaturity) {
+    this.interestAtMaturity = interestAtMaturity;
+  }
+
+  public RepoDTO isBlock(Boolean isBlock) {
+    this.isBlock = isBlock;
+    return this;
+  }
+
+   /**
+   * Get isBlock
+   * @return isBlock
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsBlock() {
+    return isBlock;
+  }
+
+  public void setIsBlock(Boolean isBlock) {
+    this.isBlock = isBlock;
+  }
+
+  public RepoDTO isEvergreen(Boolean isEvergreen) {
+    this.isEvergreen = isEvergreen;
+    return this;
+  }
+
+   /**
+   * Get isEvergreen
+   * @return isEvergreen
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsEvergreen() {
+    return isEvergreen;
+  }
+
+  public void setIsEvergreen(Boolean isEvergreen) {
+    this.isEvergreen = isEvergreen;
+  }
+
+  public RepoDTO isExplodedPosition(Boolean isExplodedPosition) {
+    this.isExplodedPosition = isExplodedPosition;
+    return this;
+  }
+
+   /**
+   * Get isExplodedPosition
+   * @return isExplodedPosition
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsExplodedPosition() {
+    return isExplodedPosition;
+  }
+
+  public void setIsExplodedPosition(Boolean isExplodedPosition) {
+    this.isExplodedPosition = isExplodedPosition;
+  }
+
+  public RepoDTO isExtendable(Boolean isExtendable) {
+    this.isExtendable = isExtendable;
+    return this;
+  }
+
+   /**
+   * Get isExtendable
+   * @return isExtendable
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsExtendable() {
+    return isExtendable;
+  }
+
+  public void setIsExtendable(Boolean isExtendable) {
+    this.isExtendable = isExtendable;
+  }
+
+  public RepoDTO isPooled(Boolean isPooled) {
+    this.isPooled = isPooled;
+    return this;
+  }
+
+   /**
+   * Tells whether lending account is pooled or not
+   * @return isPooled
+  **/
+  @ApiModelProperty(required = true, value = "Tells whether lending account is pooled or not")
+  public Boolean isIsPooled() {
+    return isPooled;
+  }
+
+  public void setIsPooled(Boolean isPooled) {
+    this.isPooled = isPooled;
+  }
+
+  public RepoDTO isThirdParty(Boolean isThirdParty) {
+    this.isThirdParty = isThirdParty;
+    return this;
+  }
+
+   /**
+   * Get isThirdParty
+   * @return isThirdParty
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isIsThirdParty() {
+    return isThirdParty;
+  }
+
+  public void setIsThirdParty(Boolean isThirdParty) {
+    this.isThirdParty = isThirdParty;
+  }
+
+  public RepoDTO ledgerId(String ledgerId) {
+    this.ledgerId = ledgerId;
+    return this;
+  }
+
+   /**
+   * Get ledgerId
+   * @return ledgerId
+  **/
+  @ApiModelProperty(value = "")
+  public String getLedgerId() {
+    return ledgerId;
+  }
+
+  public void setLedgerId(String ledgerId) {
+    this.ledgerId = ledgerId;
+  }
+
+  public RepoDTO lenderAccountId(Integer lenderAccountId) {
+    this.lenderAccountId = lenderAccountId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position&amp; Either lenderAccountId or lenderAccountNameis required
+   * @return lenderAccountId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position& Either lenderAccountId or lenderAccountNameis required")
+  public Integer getLenderAccountId() {
+    return lenderAccountId;
+  }
+
+  public void setLenderAccountId(Integer lenderAccountId) {
+    this.lenderAccountId = lenderAccountId;
+  }
+
+  public RepoDTO lenderAccountName(String lenderAccountName) {
+    this.lenderAccountName = lenderAccountName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position&amp; Either lenderAccountId or lenderAccountNameis required
+   * @return lenderAccountName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position& Either lenderAccountId or lenderAccountNameis required")
+  public String getLenderAccountName() {
+    return lenderAccountName;
+  }
+
+  public void setLenderAccountName(String lenderAccountName) {
+    this.lenderAccountName = lenderAccountName;
+  }
+
+  public RepoDTO matchGroup(String matchGroup) {
+    this.matchGroup = matchGroup;
+    return this;
+  }
+
+   /**
+   * Get matchGroup
+   * @return matchGroup
+  **/
+  @ApiModelProperty(value = "")
+  public String getMatchGroup() {
+    return matchGroup;
+  }
+
+  public void setMatchGroup(String matchGroup) {
+    this.matchGroup = matchGroup;
+  }
+
+  public RepoDTO matchGroupId(Integer matchGroupId) {
+    this.matchGroupId = matchGroupId;
+    return this;
+  }
+
+   /**
+   * Get matchGroupId
+   * @return matchGroupId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMatchGroupId() {
+    return matchGroupId;
+  }
+
+  public void setMatchGroupId(Integer matchGroupId) {
+    this.matchGroupId = matchGroupId;
+  }
+
+  public RepoDTO micId(Integer micId) {
+    this.micId = micId;
+    return this;
+  }
+
+   /**
+   * Get micId
+   * @return micId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMicId() {
+    return micId;
+  }
+
+  public void setMicId(Integer micId) {
+    this.micId = micId;
+  }
+
+  public RepoDTO minimumFee(Double minimumFee) {
+    this.minimumFee = minimumFee;
+    return this;
+  }
+
+   /**
+   * Get minimumFee
+   * @return minimumFee
+  **/
+  @ApiModelProperty(value = "")
+  public Double getMinimumFee() {
+    return minimumFee;
+  }
+
+  public void setMinimumFee(Double minimumFee) {
+    this.minimumFee = minimumFee;
+  }
+
+  public RepoDTO nonMarkable(Boolean nonMarkable) {
+    this.nonMarkable = nonMarkable;
+    return this;
+  }
+
+   /**
+   * Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold 
+   * @return nonMarkable
+  **/
+  @ApiModelProperty(value = "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold ")
+  public Boolean isNonMarkable() {
+    return nonMarkable;
+  }
+
+  public void setNonMarkable(Boolean nonMarkable) {
+    this.nonMarkable = nonMarkable;
+  }
+
+  public RepoDTO orderActionTs(LocalDateTime orderActionTs) {
+    this.orderActionTs = orderActionTs;
+    return this;
+  }
+
+   /**
+   * Get orderActionTs
+   * @return orderActionTs
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getOrderActionTs() {
+    return orderActionTs;
+  }
+
+  public void setOrderActionTs(LocalDateTime orderActionTs) {
+    this.orderActionTs = orderActionTs;
+  }
+
+  public RepoDTO originalPrincipal(Double originalPrincipal) {
+    this.originalPrincipal = originalPrincipal;
+    return this;
+  }
+
+   /**
+   * Get originalPrincipal
+   * @return originalPrincipal
+  **/
+  @ApiModelProperty(value = "")
+  public Double getOriginalPrincipal() {
+    return originalPrincipal;
+  }
+
+  public void setOriginalPrincipal(Double originalPrincipal) {
+    this.originalPrincipal = originalPrincipal;
+  }
+
+  public RepoDTO poolPositionId(Long poolPositionId) {
+    this.poolPositionId = poolPositionId;
+    return this;
+  }
+
+   /**
+   * Get poolPositionId
+   * @return poolPositionId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getPoolPositionId() {
+    return poolPositionId;
+  }
+
+  public void setPoolPositionId(Long poolPositionId) {
+    this.poolPositionId = poolPositionId;
+  }
+
+  public RepoDTO pooled(Boolean pooled) {
+    this.pooled = pooled;
+    return this;
+  }
+
+   /**
+   * Get pooled
+   * @return pooled
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isPooled() {
+    return pooled;
+  }
+
+  public void setPooled(Boolean pooled) {
+    this.pooled = pooled;
+  }
+
+  public RepoDTO positionReferenceNumber(String positionReferenceNumber) {
+    this.positionReferenceNumber = positionReferenceNumber;
+    return this;
+  }
+
+   /**
+   * Get positionReferenceNumber
+   * @return positionReferenceNumber
+  **/
+  @ApiModelProperty(value = "")
+  public String getPositionReferenceNumber() {
+    return positionReferenceNumber;
+  }
+
+  public void setPositionReferenceNumber(String positionReferenceNumber) {
+    this.positionReferenceNumber = positionReferenceNumber;
+  }
+
+  public RepoDTO positionTradeId(Long positionTradeId) {
+    this.positionTradeId = positionTradeId;
+    return this;
+  }
+
+   /**
+   * Trade Id corresponding to the new Omni/SMA Position Id created
+   * @return positionTradeId
+  **/
+  @ApiModelProperty(value = "Trade Id corresponding to the new Omni/SMA Position Id created")
+  public Long getPositionTradeId() {
+    return positionTradeId;
+  }
+
+  public void setPositionTradeId(Long positionTradeId) {
+    this.positionTradeId = positionTradeId;
+  }
+
+  public RepoDTO positionType(Integer positionType) {
+    this.positionType = positionType;
+    return this;
+  }
+
+   /**
+   * Get positionType
+   * @return positionType
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPositionType() {
+    return positionType;
+  }
+
+  public void setPositionType(Integer positionType) {
+    this.positionType = positionType;
+  }
+
+  public RepoDTO positionTypeName(String positionTypeName) {
+    this.positionTypeName = positionTypeName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Valid values for Loan : &#39;CASH LOAN&#39;, &#39;CASH POOL LOAN&#39;, &#39;NONCASH LOAN&#39;, for Pay To Hold: &#39;Pay to Hold&#39;
+   * @return positionTypeName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Valid values for Loan : 'CASH LOAN', 'CASH POOL LOAN', 'NONCASH LOAN', for Pay To Hold: 'Pay to Hold'")
+  public String getPositionTypeName() {
+    return positionTypeName;
+  }
+
+  public void setPositionTypeName(String positionTypeName) {
+    this.positionTypeName = positionTypeName;
+  }
+
+  public RepoDTO postDate(LocalDateTime postDate) {
+    this.postDate = postDate;
+    return this;
+  }
+
+   /**
+   * Get postDate
+   * @return postDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPostDate() {
+    return postDate;
+  }
+
+  public void setPostDate(LocalDateTime postDate) {
+    this.postDate = postDate;
+  }
+
+  public RepoDTO postTradeMarkPrice(Double postTradeMarkPrice) {
+    this.postTradeMarkPrice = postTradeMarkPrice;
+    return this;
+  }
+
+   /**
+   * Get postTradeMarkPrice
+   * @return postTradeMarkPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPostTradeMarkPrice() {
+    return postTradeMarkPrice;
+  }
+
+  public void setPostTradeMarkPrice(Double postTradeMarkPrice) {
+    this.postTradeMarkPrice = postTradeMarkPrice;
+  }
+
+  public RepoDTO premiumAccrued(Double premiumAccrued) {
+    this.premiumAccrued = premiumAccrued;
+    return this;
+  }
+
+   /**
+   * Get premiumAccrued
+   * @return premiumAccrued
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPremiumAccrued() {
+    return premiumAccrued;
+  }
+
+  public void setPremiumAccrued(Double premiumAccrued) {
+    this.premiumAccrued = premiumAccrued;
+  }
+
+  public RepoDTO premiumAdjustment(Double premiumAdjustment) {
+    this.premiumAdjustment = premiumAdjustment;
+    return this;
+  }
+
+   /**
+   * Get premiumAdjustment
+   * @return premiumAdjustment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPremiumAdjustment() {
+    return premiumAdjustment;
+  }
+
+  public void setPremiumAdjustment(Double premiumAdjustment) {
+    this.premiumAdjustment = premiumAdjustment;
+  }
+
+  public RepoDTO premiumPaymentAdjustment(Double premiumPaymentAdjustment) {
+    this.premiumPaymentAdjustment = premiumPaymentAdjustment;
+    return this;
+  }
+
+   /**
+   * Get premiumPaymentAdjustment
+   * @return premiumPaymentAdjustment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPremiumPaymentAdjustment() {
+    return premiumPaymentAdjustment;
+  }
+
+  public void setPremiumPaymentAdjustment(Double premiumPaymentAdjustment) {
+    this.premiumPaymentAdjustment = premiumPaymentAdjustment;
+  }
+
+  public RepoDTO premiumReceive(Double premiumReceive) {
+    this.premiumReceive = premiumReceive;
+    return this;
+  }
+
+   /**
+   * Get premiumReceive
+   * @return premiumReceive
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPremiumReceive() {
+    return premiumReceive;
+  }
+
+  public void setPremiumReceive(Double premiumReceive) {
+    this.premiumReceive = premiumReceive;
+  }
+
+  public RepoDTO prepaid(Boolean prepaid) {
+    this.prepaid = prepaid;
+    return this;
+  }
+
+   /**
+   * Get prepaid
+   * @return prepaid
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isPrepaid() {
+    return prepaid;
+  }
+
+  public void setPrepaid(Boolean prepaid) {
+    this.prepaid = prepaid;
+  }
+
+  public RepoDTO prepayBasis(Integer prepayBasis) {
+    this.prepayBasis = prepayBasis;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayBasis or prepayBasisName is required
+   * @return prepayBasis
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayBasis or prepayBasisName is required")
+  public Integer getPrepayBasis() {
+    return prepayBasis;
+  }
+
+  public void setPrepayBasis(Integer prepayBasis) {
+    this.prepayBasis = prepayBasis;
+  }
+
+  public RepoDTO prepayBasisName(String prepayBasisName) {
+    this.prepayBasisName = prepayBasisName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayBasis or prepayBasisName is required
+   * @return prepayBasisName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayBasis or prepayBasisName is required")
+  public String getPrepayBasisName() {
+    return prepayBasisName;
+  }
+
+  public void setPrepayBasisName(String prepayBasisName) {
+    this.prepayBasisName = prepayBasisName;
+  }
+
+  public RepoDTO prepayDate(LocalDateTime prepayDate) {
+    this.prepayDate = prepayDate;
+    return this;
+  }
+
+   /**
+   * Get prepayDate
+   * @return prepayDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getPrepayDate() {
+    return prepayDate;
+  }
+
+  public void setPrepayDate(LocalDateTime prepayDate) {
+    this.prepayDate = prepayDate;
+  }
+
+  public RepoDTO prepayIndex(Integer prepayIndex) {
+    this.prepayIndex = prepayIndex;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayIndex or prepayIndexName is required
+   * @return prepayIndex
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayIndex or prepayIndexName is required")
+  public Integer getPrepayIndex() {
+    return prepayIndex;
+  }
+
+  public void setPrepayIndex(Integer prepayIndex) {
+    this.prepayIndex = prepayIndex;
+  }
+
+  public RepoDTO prepayIndexName(String prepayIndexName) {
+    this.prepayIndexName = prepayIndexName;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Date is provided&amp; Either prepayIndex or prepayIndexName is required
+   * @return prepayIndexName
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Date is provided& Either prepayIndex or prepayIndexName is required")
+  public String getPrepayIndexName() {
+    return prepayIndexName;
+  }
+
+  public void setPrepayIndexName(String prepayIndexName) {
+    this.prepayIndexName = prepayIndexName;
+  }
+
+  public RepoDTO prepayRate(Double prepayRate) {
+    this.prepayRate = prepayRate;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Index is &#39;NA&#39; or &#39;Fixed Rate&#39;
+   * @return prepayRate
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Index is 'NA' or 'Fixed Rate'")
+  public Double getPrepayRate() {
+    return prepayRate;
+  }
+
+  public void setPrepayRate(Double prepayRate) {
+    this.prepayRate = prepayRate;
+  }
+
+  public RepoDTO prepaySpread(Double prepaySpread) {
+    this.prepaySpread = prepaySpread;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when Prepay Index is other than &#39;NA&#39; and &#39;Fixed Rate&#39;
+   * @return prepaySpread
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when Prepay Index is other than 'NA' and 'Fixed Rate'")
+  public Double getPrepaySpread() {
+    return prepaySpread;
+  }
+
+  public void setPrepaySpread(Double prepaySpread) {
+    this.prepaySpread = prepaySpread;
+  }
+
+  public RepoDTO price(Double price) {
+    this.price = price;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position
+   * @return price
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position")
+  public Double getPrice() {
+    return price;
+  }
+
+  public void setPrice(Double price) {
+    this.price = price;
+  }
+
+  public RepoDTO priceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+    return this;
+  }
+
+   /**
+   * Get priceFactor
+   * @return priceFactor
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPriceFactor() {
+    return priceFactor;
+  }
+
+  public void setPriceFactor(Integer priceFactor) {
+    this.priceFactor = priceFactor;
+  }
+
+  public RepoDTO priorityAllocation(String priorityAllocation) {
+    this.priorityAllocation = priorityAllocation;
+    return this;
+  }
+
+   /**
+   * Get priorityAllocation
+   * @return priorityAllocation
+  **/
+  @ApiModelProperty(value = "")
+  public String getPriorityAllocation() {
+    return priorityAllocation;
+  }
+
+  public void setPriorityAllocation(String priorityAllocation) {
+    this.priorityAllocation = priorityAllocation;
+  }
+
+  public RepoDTO productLine(String productLine) {
+    this.productLine = productLine;
+    return this;
+  }
+
+   /**
+   * Get productLine
+   * @return productLine
+  **/
+  @ApiModelProperty(value = "")
+  public String getProductLine() {
+    return productLine;
+  }
+
+  public void setProductLine(String productLine) {
+    this.productLine = productLine;
+  }
+
+  public RepoDTO quantity(Double quantity) {
+    this.quantity = quantity;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position,  returning and increasing qty on Pay To Hold
+   * @return quantity
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position,  returning and increasing qty on Pay To Hold")
+  public Double getQuantity() {
+    return quantity;
+  }
+
+  public void setQuantity(Double quantity) {
+    this.quantity = quantity;
+  }
+
+  public RepoDTO rate(Double rate) {
+    this.rate = rate;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Required only when Index is &#39;NA&#39; or &#39;Fixed Rate&#39;
+   * @return rate
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Required only when Index is 'NA' or 'Fixed Rate'")
+  public Double getRate() {
+    return rate;
+  }
+
+  public void setRate(Double rate) {
+    this.rate = rate;
+  }
+
+  public RepoDTO rebateAccrued(Double rebateAccrued) {
+    this.rebateAccrued = rebateAccrued;
+    return this;
+  }
+
+   /**
+   * Get rebateAccrued
+   * @return rebateAccrued
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebateAccrued() {
+    return rebateAccrued;
+  }
+
+  public void setRebateAccrued(Double rebateAccrued) {
+    this.rebateAccrued = rebateAccrued;
+  }
+
+  public RepoDTO rebateAdjustment(Double rebateAdjustment) {
+    this.rebateAdjustment = rebateAdjustment;
+    return this;
+  }
+
+   /**
+   * Get rebateAdjustment
+   * @return rebateAdjustment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebateAdjustment() {
+    return rebateAdjustment;
+  }
+
+  public void setRebateAdjustment(Double rebateAdjustment) {
+    this.rebateAdjustment = rebateAdjustment;
+  }
+
+  public RepoDTO rebatePayment(Double rebatePayment) {
+    this.rebatePayment = rebatePayment;
+    return this;
+  }
+
+   /**
+   * Get rebatePayment
+   * @return rebatePayment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebatePayment() {
+    return rebatePayment;
+  }
+
+  public void setRebatePayment(Double rebatePayment) {
+    this.rebatePayment = rebatePayment;
+  }
+
+  public RepoDTO rebatePaymentAdjustment(Double rebatePaymentAdjustment) {
+    this.rebatePaymentAdjustment = rebatePaymentAdjustment;
+    return this;
+  }
+
+   /**
+   * Get rebatePaymentAdjustment
+   * @return rebatePaymentAdjustment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRebatePaymentAdjustment() {
+    return rebatePaymentAdjustment;
+  }
+
+  public void setRebatePaymentAdjustment(Double rebatePaymentAdjustment) {
+    this.rebatePaymentAdjustment = rebatePaymentAdjustment;
+  }
+
+  public RepoDTO resetDate(LocalDateTime resetDate) {
+    this.resetDate = resetDate;
+    return this;
+  }
+
+   /**
+   * Get resetDate
+   * @return resetDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getResetDate() {
+    return resetDate;
+  }
+
+  public void setResetDate(LocalDateTime resetDate) {
+    this.resetDate = resetDate;
+  }
+
+  public RepoDTO restrictionId(Integer restrictionId) {
+    this.restrictionId = restrictionId;
+    return this;
+  }
+
+   /**
+   * Get restrictionId
+   * @return restrictionId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getRestrictionId() {
+    return restrictionId;
+  }
+
+  public void setRestrictionId(Integer restrictionId) {
+    this.restrictionId = restrictionId;
+  }
+
+  public RepoDTO securityDetail(SecurityDtlDTO securityDetail) {
+    this.securityDetail = securityDetail;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position
+   * @return securityDetail
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position")
+  public SecurityDtlDTO getSecurityDetail() {
+    return securityDetail;
+  }
+
+  public void setSecurityDetail(SecurityDtlDTO securityDetail) {
+    this.securityDetail = securityDetail;
+  }
+
+  public RepoDTO securityId(Integer securityId) {
+    this.securityId = securityId;
+    return this;
+  }
+
+   /**
+   * Get securityId
+   * @return securityId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityId() {
+    return securityId;
+  }
+
+  public void setSecurityId(Integer securityId) {
+    this.securityId = securityId;
+  }
+
+  public RepoDTO sendDNIDownstream(Boolean sendDNIDownstream) {
+    this.sendDNIDownstream = sendDNIDownstream;
+    return this;
+  }
+
+   /**
+   * Get sendDNIDownstream
+   * @return sendDNIDownstream
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSendDNIDownstream() {
+    return sendDNIDownstream;
+  }
+
+  public void setSendDNIDownstream(Boolean sendDNIDownstream) {
+    this.sendDNIDownstream = sendDNIDownstream;
+  }
+
+  public RepoDTO settleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, updating Pay To Hold qty
+   * @return settleDate
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, updating Pay To Hold qty")
+  public LocalDateTime getSettleDate() {
+    return settleDate;
+  }
+
+  public void setSettleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+  }
+
+  public RepoDTO signedTerminationPayment(Double signedTerminationPayment) {
+    this.signedTerminationPayment = signedTerminationPayment;
+    return this;
+  }
+
+   /**
+   * Get signedTerminationPayment
+   * @return signedTerminationPayment
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSignedTerminationPayment() {
+    return signedTerminationPayment;
+  }
+
+  public void setSignedTerminationPayment(Double signedTerminationPayment) {
+    this.signedTerminationPayment = signedTerminationPayment;
+  }
+
+  public RepoDTO signedTerminationPrinciple(Double signedTerminationPrinciple) {
+    this.signedTerminationPrinciple = signedTerminationPrinciple;
+    return this;
+  }
+
+   /**
+   * Get signedTerminationPrinciple
+   * @return signedTerminationPrinciple
+  **/
+  @ApiModelProperty(value = "")
+  public Double getSignedTerminationPrinciple() {
+    return signedTerminationPrinciple;
+  }
+
+  public void setSignedTerminationPrinciple(Double signedTerminationPrinciple) {
+    this.signedTerminationPrinciple = signedTerminationPrinciple;
+  }
+
+  public RepoDTO spread(Double spread) {
+    this.spread = spread;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, adjusting rate &amp; Required only when Index is other than &#39;NA&#39; and &#39;Fixed Rate&#39;
+   * @return spread
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, adjusting rate & Required only when Index is other than 'NA' and 'Fixed Rate'")
+  public Double getSpread() {
+    return spread;
+  }
+
+  public void setSpread(Double spread) {
+    this.spread = spread;
+  }
+
+  public RepoDTO startDate(LocalDateTime startDate) {
+    this.startDate = startDate;
+    return this;
+  }
+
+   /**
+   * Get startDate
+   * @return startDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(LocalDateTime startDate) {
+    this.startDate = startDate;
+  }
+
+  public RepoDTO status(String status) {
+    this.status = status;
+    return this;
+  }
+
+   /**
+   * Get status
+   * @return status
+  **/
+  @ApiModelProperty(value = "")
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+  public RepoDTO statusId(Integer statusId) {
+    this.statusId = statusId;
+    return this;
+  }
+
+   /**
+   * Get statusId
+   * @return statusId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getStatusId() {
+    return statusId;
+  }
+
+  public void setStatusId(Integer statusId) {
+    this.statusId = statusId;
+  }
+
+  public RepoDTO statusMessage(String statusMessage) {
+    this.statusMessage = statusMessage;
+    return this;
+  }
+
+   /**
+   * Get statusMessage
+   * @return statusMessage
+  **/
+  @ApiModelProperty(value = "")
+  public String getStatusMessage() {
+    return statusMessage;
+  }
+
+  public void setStatusMessage(String statusMessage) {
+    this.statusMessage = statusMessage;
+  }
+
+  public RepoDTO strategy(String strategy) {
+    this.strategy = strategy;
+    return this;
+  }
+
+   /**
+   * Get strategy
+   * @return strategy
+  **/
+  @ApiModelProperty(value = "")
+  public String getStrategy() {
+    return strategy;
+  }
+
+  public void setStrategy(String strategy) {
+    this.strategy = strategy;
+  }
+
+  public RepoDTO strategyId(Integer strategyId) {
+    this.strategyId = strategyId;
+    return this;
+  }
+
+   /**
+   * Get strategyId
+   * @return strategyId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getStrategyId() {
+    return strategyId;
+  }
+
+  public void setStrategyId(Integer strategyId) {
+    this.strategyId = strategyId;
+  }
+
+  public RepoDTO tartgetPrice(Double tartgetPrice) {
+    this.tartgetPrice = tartgetPrice;
+    return this;
+  }
+
+   /**
+   * Get tartgetPrice
+   * @return tartgetPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTartgetPrice() {
+    return tartgetPrice;
+  }
+
+  public void setTartgetPrice(Double tartgetPrice) {
+    this.tartgetPrice = tartgetPrice;
+  }
+
+  public RepoDTO taxWithholdRate(Double taxWithholdRate) {
+    this.taxWithholdRate = taxWithholdRate;
+    return this;
+  }
+
+   /**
+   * Get taxWithholdRate
+   * @return taxWithholdRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTaxWithholdRate() {
+    return taxWithholdRate;
+  }
+
+  public void setTaxWithholdRate(Double taxWithholdRate) {
+    this.taxWithholdRate = taxWithholdRate;
+  }
+
+  public RepoDTO termType(Integer termType) {
+    this.termType = termType;
+    return this;
+  }
+
+   /**
+   * Get termType
+   * @return termType
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTermType() {
+    return termType;
+  }
+
+  public void setTermType(Integer termType) {
+    this.termType = termType;
+  }
+
+  public RepoDTO termTypeName(String termTypeName) {
+    this.termTypeName = termTypeName;
+    return this;
+  }
+
+   /**
+   * Get termTypeName
+   * @return termTypeName
+  **/
+  @ApiModelProperty(value = "")
+  public String getTermTypeName() {
+    return termTypeName;
+  }
+
+  public void setTermTypeName(String termTypeName) {
+    this.termTypeName = termTypeName;
+  }
+
+  public RepoDTO terminationPrice(Double terminationPrice) {
+    this.terminationPrice = terminationPrice;
+    return this;
+  }
+
+   /**
+   * Get terminationPrice
+   * @return terminationPrice
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTerminationPrice() {
+    return terminationPrice;
+  }
+
+  public void setTerminationPrice(Double terminationPrice) {
+    this.terminationPrice = terminationPrice;
+  }
+
+  public RepoDTO thirdParty(Boolean thirdParty) {
+    this.thirdParty = thirdParty;
+    return this;
+  }
+
+   /**
+   * Get thirdParty
+   * @return thirdParty
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isThirdParty() {
+    return thirdParty;
+  }
+
+  public void setThirdParty(Boolean thirdParty) {
+    this.thirdParty = thirdParty;
+  }
+
+  public RepoDTO totalCoupon(Double totalCoupon) {
+    this.totalCoupon = totalCoupon;
+    return this;
+  }
+
+   /**
+   * Get totalCoupon
+   * @return totalCoupon
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTotalCoupon() {
+    return totalCoupon;
+  }
+
+  public void setTotalCoupon(Double totalCoupon) {
+    this.totalCoupon = totalCoupon;
+  }
+
+  public RepoDTO totalCouponInterest(Double totalCouponInterest) {
+    this.totalCouponInterest = totalCouponInterest;
+    return this;
+  }
+
+   /**
+   * Get totalCouponInterest
+   * @return totalCouponInterest
+  **/
+  @ApiModelProperty(value = "")
+  public Double getTotalCouponInterest() {
+    return totalCouponInterest;
+  }
+
+  public void setTotalCouponInterest(Double totalCouponInterest) {
+    this.totalCouponInterest = totalCouponInterest;
+  }
+
+  public RepoDTO trackingInd(Boolean trackingInd) {
+    this.trackingInd = trackingInd;
+    return this;
+  }
+
+   /**
+   * Get trackingInd
+   * @return trackingInd
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isTrackingInd() {
+    return trackingInd;
+  }
+
+  public void setTrackingInd(Boolean trackingInd) {
+    this.trackingInd = trackingInd;
+  }
+
+  public RepoDTO tradeCategoryId(Integer tradeCategoryId) {
+    this.tradeCategoryId = tradeCategoryId;
+    return this;
+  }
+
+   /**
+   * Get tradeCategoryId
+   * @return tradeCategoryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTradeCategoryId() {
+    return tradeCategoryId;
+  }
+
+  public void setTradeCategoryId(Integer tradeCategoryId) {
+    this.tradeCategoryId = tradeCategoryId;
+  }
+
+  public RepoDTO tradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position, updating Pay To Hold qty
+   * @return tradeDate
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position, updating Pay To Hold qty")
+  public LocalDateTime getTradeDate() {
+    return tradeDate;
+  }
+
+  public void setTradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+  }
+
+  public RepoDTO tradeReason(String tradeReason) {
+    this.tradeReason = tradeReason;
+    return this;
+  }
+
+   /**
+   * Get tradeReason
+   * @return tradeReason
+  **/
+  @ApiModelProperty(value = "")
+  public String getTradeReason() {
+    return tradeReason;
+  }
+
+  public void setTradeReason(String tradeReason) {
+    this.tradeReason = tradeReason;
+  }
+
+  public RepoDTO tradeReasonId(Integer tradeReasonId) {
+    this.tradeReasonId = tradeReasonId;
+    return this;
+  }
+
+   /**
+   * Get tradeReasonId
+   * @return tradeReasonId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTradeReasonId() {
+    return tradeReasonId;
+  }
+
+  public void setTradeReasonId(Integer tradeReasonId) {
+    this.tradeReasonId = tradeReasonId;
+  }
+
+  public RepoDTO tradeRefNo(String tradeRefNo) {
+    this.tradeRefNo = tradeRefNo;
+    return this;
+  }
+
+   /**
+   * Get tradeRefNo
+   * @return tradeRefNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getTradeRefNo() {
+    return tradeRefNo;
+  }
+
+  public void setTradeRefNo(String tradeRefNo) {
+    this.tradeRefNo = tradeRefNo;
+  }
+
+  public RepoDTO tradingDesk(String tradingDesk) {
+    this.tradingDesk = tradingDesk;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
+   * @return tradingDesk
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
+  public String getTradingDesk() {
+    return tradingDesk;
+  }
+
+  public void setTradingDesk(String tradingDesk) {
+    this.tradingDesk = tradingDesk;
+  }
+
+  public RepoDTO tradingDeskId(Integer tradingDeskId) {
+    this.tradingDeskId = tradingDeskId;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
+   * @return tradingDeskId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
+  public Integer getTradingDeskId() {
+    return tradingDeskId;
+  }
+
+  public void setTradingDeskId(Integer tradingDeskId) {
+    this.tradingDeskId = tradingDeskId;
+  }
+
+  public RepoDTO tranId(Long tranId) {
+    this.tranId = tranId;
+    return this;
+  }
+
+   /**
+   * Required only when adjusting rate, editing position, updating Pay To Hold qty
+   * @return tranId
+  **/
+  @ApiModelProperty(required = true, value = "Required only when adjusting rate, editing position, updating Pay To Hold qty")
+  public Long getTranId() {
+    return tranId;
+  }
+
+  public void setTranId(Long tranId) {
+    this.tranId = tranId;
+  }
+
+  public RepoDTO tripartyCustodianId(Integer tripartyCustodianId) {
+    this.tripartyCustodianId = tripartyCustodianId;
+    return this;
+  }
+
+   /**
+   * Get tripartyCustodianId
+   * @return tripartyCustodianId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTripartyCustodianId() {
+    return tripartyCustodianId;
+  }
+
+  public void setTripartyCustodianId(Integer tripartyCustodianId) {
+    this.tripartyCustodianId = tripartyCustodianId;
+  }
+
+  public RepoDTO useDefaultCollateralAccount(Boolean useDefaultCollateralAccount) {
+    this.useDefaultCollateralAccount = useDefaultCollateralAccount;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required
+   * @return useDefaultCollateralAccount
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either collateralAccountId or collateralAccountNo or collateralAccountNo2 or collateralAccountName or useDefaultCollateralAccount is required")
+  public Boolean isUseDefaultCollateralAccount() {
+    return useDefaultCollateralAccount;
+  }
+
+  public void setUseDefaultCollateralAccount(Boolean useDefaultCollateralAccount) {
+    this.useDefaultCollateralAccount = useDefaultCollateralAccount;
+  }
+
+  public RepoDTO useDefaultCollateralCustBank(Boolean useDefaultCollateralCustBank) {
+    this.useDefaultCollateralCustBank = useDefaultCollateralCustBank;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Required only when positionType is &#39;NONCASH LOAN&#39; &amp; Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required
+   * @return useDefaultCollateralCustBank
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Required only when positionType is 'NONCASH LOAN' & Either collateralCustodianBankId or collateralCustodianBankAccountNo or collateralCustodianBankAccountNo2 or collateralCustodianBankAccountName or useDefaultCollateralCustBank is required")
+  public Boolean isUseDefaultCollateralCustBank() {
+    return useDefaultCollateralCustBank;
+  }
+
+  public void setUseDefaultCollateralCustBank(Boolean useDefaultCollateralCustBank) {
+    this.useDefaultCollateralCustBank = useDefaultCollateralCustBank;
+  }
+
+  public RepoDTO useDefaultExposure(Boolean useDefaultExposure) {
+    this.useDefaultExposure = useDefaultExposure;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either exposureId or useDefaultExposure is required
+   * @return useDefaultExposure
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either exposureId or useDefaultExposure is required")
+  public Boolean isUseDefaultExposure() {
+    return useDefaultExposure;
+  }
+
+  public void setUseDefaultExposure(Boolean useDefaultExposure) {
+    this.useDefaultExposure = useDefaultExposure;
+  }
+
+  public RepoDTO useTraderDesk(Boolean useTraderDesk) {
+    this.useTraderDesk = useTraderDesk;
+    return this;
+  }
+
+   /**
+   * Required only when posting a position &amp; Either tradingDeskId or tradingDesk or useTraderDesk is required
+   * @return useTraderDesk
+  **/
+  @ApiModelProperty(required = true, value = "Required only when posting a position & Either tradingDeskId or tradingDesk or useTraderDesk is required")
+  public Boolean isUseTraderDesk() {
+    return useTraderDesk;
+  }
+
+  public void setUseTraderDesk(Boolean useTraderDesk) {
+    this.useTraderDesk = useTraderDesk;
+  }
+
+  public RepoDTO uti(String uti) {
+    this.uti = uti;
+    return this;
+  }
+
+   /**
+   * Get uti
+   * @return uti
+  **/
+  @ApiModelProperty(value = "")
+  public String getUti() {
+    return uti;
+  }
+
+  public void setUti(String uti) {
+    this.uti = uti;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    RepoDTO repoDTO = (RepoDTO) o;
+    return Objects.equals(this.accountAllocations, repoDTO.accountAllocations) &&
+        Objects.equals(this.accountGroup, repoDTO.accountGroup) &&
+        Objects.equals(this.accountGroupAccountNo2, repoDTO.accountGroupAccountNo2) &&
+        Objects.equals(this.accountGroupId, repoDTO.accountGroupId) &&
+        Objects.equals(this.accountId, repoDTO.accountId) &&
+        Objects.equals(this.accountName, repoDTO.accountName) &&
+        Objects.equals(this.accountNo, repoDTO.accountNo) &&
+        Objects.equals(this.accountNo2, repoDTO.accountNo2) &&
+        Objects.equals(this.accrualAdjustment, repoDTO.accrualAdjustment) &&
+        Objects.equals(this.accrualDate, repoDTO.accrualDate) &&
+        Objects.equals(this.accrualSettlement, repoDTO.accrualSettlement) &&
+        Objects.equals(this.accrualTypeId, repoDTO.accrualTypeId) &&
+        Objects.equals(this.agentReference, repoDTO.agentReference) &&
+        Objects.equals(this.allInRate, repoDTO.allInRate) &&
+        Objects.equals(this.allocationId, repoDTO.allocationId) &&
+        Objects.equals(this.allocationOverrideComment, repoDTO.allocationOverrideComment) &&
+        Objects.equals(this.allocationPremiumAmts, repoDTO.allocationPremiumAmts) &&
+        Objects.equals(this.allocationReason, repoDTO.allocationReason) &&
+        Objects.equals(this.allocationReasonId, repoDTO.allocationReasonId) &&
+        Objects.equals(this.allocationRebateAmts, repoDTO.allocationRebateAmts) &&
+        Objects.equals(this.amount, repoDTO.amount) &&
+        Objects.equals(this.basis, repoDTO.basis) &&
+        Objects.equals(this.basisName, repoDTO.basisName) &&
+        Objects.equals(this.calendar, repoDTO.calendar) &&
+        Objects.equals(this.calendarId, repoDTO.calendarId) &&
+        Objects.equals(this.cleanPrice, repoDTO.cleanPrice) &&
+        Objects.equals(this.cleanPriceCurrencyId, repoDTO.cleanPriceCurrencyId) &&
+        Objects.equals(this.collateralAccountId, repoDTO.collateralAccountId) &&
+        Objects.equals(this.collateralAccountName, repoDTO.collateralAccountName) &&
+        Objects.equals(this.collateralAccountNo, repoDTO.collateralAccountNo) &&
+        Objects.equals(this.collateralAccountNo2, repoDTO.collateralAccountNo2) &&
+        Objects.equals(this.collateralBasis, repoDTO.collateralBasis) &&
+        Objects.equals(this.collateralBasisName, repoDTO.collateralBasisName) &&
+        Objects.equals(this.collateralCalendar, repoDTO.collateralCalendar) &&
+        Objects.equals(this.collateralCalendarName, repoDTO.collateralCalendarName) &&
+        Objects.equals(this.collateralCustodianBankAccountName, repoDTO.collateralCustodianBankAccountName) &&
+        Objects.equals(this.collateralCustodianBankAccountNo, repoDTO.collateralCustodianBankAccountNo) &&
+        Objects.equals(this.collateralCustodianBankAccountNo2, repoDTO.collateralCustodianBankAccountNo2) &&
+        Objects.equals(this.collateralCustodianBankId, repoDTO.collateralCustodianBankId) &&
+        Objects.equals(this.collateralIndex, repoDTO.collateralIndex) &&
+        Objects.equals(this.collateralIndexName, repoDTO.collateralIndexName) &&
+        Objects.equals(this.collateralRate, repoDTO.collateralRate) &&
+        Objects.equals(this.collateralSpread, repoDTO.collateralSpread) &&
+        Objects.equals(this.collateralType, repoDTO.collateralType) &&
+        Objects.equals(this.collateralTypeId, repoDTO.collateralTypeId) &&
+        Objects.equals(this.comments, repoDTO.comments) &&
+        Objects.equals(this.competingBids, repoDTO.competingBids) &&
+        Objects.equals(this.complianceTestMessage, repoDTO.complianceTestMessage) &&
+        Objects.equals(this.contractCompareId, repoDTO.contractCompareId) &&
+        Objects.equals(this.counterpartyAccountNumber, repoDTO.counterpartyAccountNumber) &&
+        Objects.equals(this.counterpartyId, repoDTO.counterpartyId) &&
+        Objects.equals(this.counterpartyName, repoDTO.counterpartyName) &&
+        Objects.equals(this.country, repoDTO.country) &&
+        Objects.equals(this.countryId, repoDTO.countryId) &&
+        Objects.equals(this.couponPaymentSchedule, repoDTO.couponPaymentSchedule) &&
+        Objects.equals(this.currencyId, repoDTO.currencyId) &&
+        Objects.equals(this.currencyKy, repoDTO.currencyKy) &&
+        Objects.equals(this.currentAllocationId, repoDTO.currentAllocationId) &&
+        Objects.equals(this.customValue1, repoDTO.customValue1) &&
+        Objects.equals(this.deliverFree, repoDTO.deliverFree) &&
+        Objects.equals(this.depoGroup, repoDTO.depoGroup) &&
+        Objects.equals(this.depoId, repoDTO.depoId) &&
+        Objects.equals(this.depoKy, repoDTO.depoKy) &&
+        Objects.equals(this.dirtyPrice, repoDTO.dirtyPrice) &&
+        Objects.equals(this.divCurrency, repoDTO.divCurrency) &&
+        Objects.equals(this.divCurrencyId, repoDTO.divCurrencyId) &&
+        Objects.equals(this.divPerShare, repoDTO.divPerShare) &&
+        Objects.equals(this.divWithholdRate, repoDTO.divWithholdRate) &&
+        Objects.equals(this.doNotInstruct, repoDTO.doNotInstruct) &&
+        Objects.equals(this.doNotInstructCxlFail, repoDTO.doNotInstructCxlFail) &&
+        Objects.equals(this.doNotPost, repoDTO.doNotPost) &&
+        Objects.equals(this.doNotRecall, repoDTO.doNotRecall) &&
+        Objects.equals(this.dtcNo, repoDTO.dtcNo) &&
+        Objects.equals(this.encumberedQuantity, repoDTO.encumberedQuantity) &&
+        Objects.equals(this.endDate, repoDTO.endDate) &&
+        Objects.equals(this.errorMessage, repoDTO.errorMessage) &&
+        Objects.equals(this.evergreen, repoDTO.evergreen) &&
+        Objects.equals(this.evergreenTerm, repoDTO.evergreenTerm) &&
+        Objects.equals(this.excludeFromAutoMark, repoDTO.excludeFromAutoMark) &&
+        Objects.equals(this.explodedPosition, repoDTO.explodedPosition) &&
+        Objects.equals(this.exposureId, repoDTO.exposureId) &&
+        Objects.equals(this.extendableMaxDate, repoDTO.extendableMaxDate) &&
+        Objects.equals(this.factor, repoDTO.factor) &&
+        Objects.equals(this.futureSettleDate, repoDTO.futureSettleDate) &&
+        Objects.equals(this.index, repoDTO.index) &&
+        Objects.equals(this.indexName, repoDTO.indexName) &&
+        Objects.equals(this.instructions, repoDTO.instructions) &&
+        Objects.equals(this.interestAtMaturity, repoDTO.interestAtMaturity) &&
+        Objects.equals(this.isBlock, repoDTO.isBlock) &&
+        Objects.equals(this.isEvergreen, repoDTO.isEvergreen) &&
+        Objects.equals(this.isExplodedPosition, repoDTO.isExplodedPosition) &&
+        Objects.equals(this.isExtendable, repoDTO.isExtendable) &&
+        Objects.equals(this.isPooled, repoDTO.isPooled) &&
+        Objects.equals(this.isThirdParty, repoDTO.isThirdParty) &&
+        Objects.equals(this.ledgerId, repoDTO.ledgerId) &&
+        Objects.equals(this.lenderAccountId, repoDTO.lenderAccountId) &&
+        Objects.equals(this.lenderAccountName, repoDTO.lenderAccountName) &&
+        Objects.equals(this.matchGroup, repoDTO.matchGroup) &&
+        Objects.equals(this.matchGroupId, repoDTO.matchGroupId) &&
+        Objects.equals(this.micId, repoDTO.micId) &&
+        Objects.equals(this.minimumFee, repoDTO.minimumFee) &&
+        Objects.equals(this.nonMarkable, repoDTO.nonMarkable) &&
+        Objects.equals(this.orderActionTs, repoDTO.orderActionTs) &&
+        Objects.equals(this.originalPrincipal, repoDTO.originalPrincipal) &&
+        Objects.equals(this.poolPositionId, repoDTO.poolPositionId) &&
+        Objects.equals(this.pooled, repoDTO.pooled) &&
+        Objects.equals(this.positionReferenceNumber, repoDTO.positionReferenceNumber) &&
+        Objects.equals(this.positionTradeId, repoDTO.positionTradeId) &&
+        Objects.equals(this.positionType, repoDTO.positionType) &&
+        Objects.equals(this.positionTypeName, repoDTO.positionTypeName) &&
+        Objects.equals(this.postDate, repoDTO.postDate) &&
+        Objects.equals(this.postTradeMarkPrice, repoDTO.postTradeMarkPrice) &&
+        Objects.equals(this.premiumAccrued, repoDTO.premiumAccrued) &&
+        Objects.equals(this.premiumAdjustment, repoDTO.premiumAdjustment) &&
+        Objects.equals(this.premiumPaymentAdjustment, repoDTO.premiumPaymentAdjustment) &&
+        Objects.equals(this.premiumReceive, repoDTO.premiumReceive) &&
+        Objects.equals(this.prepaid, repoDTO.prepaid) &&
+        Objects.equals(this.prepayBasis, repoDTO.prepayBasis) &&
+        Objects.equals(this.prepayBasisName, repoDTO.prepayBasisName) &&
+        Objects.equals(this.prepayDate, repoDTO.prepayDate) &&
+        Objects.equals(this.prepayIndex, repoDTO.prepayIndex) &&
+        Objects.equals(this.prepayIndexName, repoDTO.prepayIndexName) &&
+        Objects.equals(this.prepayRate, repoDTO.prepayRate) &&
+        Objects.equals(this.prepaySpread, repoDTO.prepaySpread) &&
+        Objects.equals(this.price, repoDTO.price) &&
+        Objects.equals(this.priceFactor, repoDTO.priceFactor) &&
+        Objects.equals(this.priorityAllocation, repoDTO.priorityAllocation) &&
+        Objects.equals(this.productLine, repoDTO.productLine) &&
+        Objects.equals(this.quantity, repoDTO.quantity) &&
+        Objects.equals(this.rate, repoDTO.rate) &&
+        Objects.equals(this.rebateAccrued, repoDTO.rebateAccrued) &&
+        Objects.equals(this.rebateAdjustment, repoDTO.rebateAdjustment) &&
+        Objects.equals(this.rebatePayment, repoDTO.rebatePayment) &&
+        Objects.equals(this.rebatePaymentAdjustment, repoDTO.rebatePaymentAdjustment) &&
+        Objects.equals(this.resetDate, repoDTO.resetDate) &&
+        Objects.equals(this.restrictionId, repoDTO.restrictionId) &&
+        Objects.equals(this.securityDetail, repoDTO.securityDetail) &&
+        Objects.equals(this.securityId, repoDTO.securityId) &&
+        Objects.equals(this.sendDNIDownstream, repoDTO.sendDNIDownstream) &&
+        Objects.equals(this.settleDate, repoDTO.settleDate) &&
+        Objects.equals(this.signedTerminationPayment, repoDTO.signedTerminationPayment) &&
+        Objects.equals(this.signedTerminationPrinciple, repoDTO.signedTerminationPrinciple) &&
+        Objects.equals(this.spread, repoDTO.spread) &&
+        Objects.equals(this.startDate, repoDTO.startDate) &&
+        Objects.equals(this.status, repoDTO.status) &&
+        Objects.equals(this.statusId, repoDTO.statusId) &&
+        Objects.equals(this.statusMessage, repoDTO.statusMessage) &&
+        Objects.equals(this.strategy, repoDTO.strategy) &&
+        Objects.equals(this.strategyId, repoDTO.strategyId) &&
+        Objects.equals(this.tartgetPrice, repoDTO.tartgetPrice) &&
+        Objects.equals(this.taxWithholdRate, repoDTO.taxWithholdRate) &&
+        Objects.equals(this.termType, repoDTO.termType) &&
+        Objects.equals(this.termTypeName, repoDTO.termTypeName) &&
+        Objects.equals(this.terminationPrice, repoDTO.terminationPrice) &&
+        Objects.equals(this.thirdParty, repoDTO.thirdParty) &&
+        Objects.equals(this.totalCoupon, repoDTO.totalCoupon) &&
+        Objects.equals(this.totalCouponInterest, repoDTO.totalCouponInterest) &&
+        Objects.equals(this.trackingInd, repoDTO.trackingInd) &&
+        Objects.equals(this.tradeCategoryId, repoDTO.tradeCategoryId) &&
+        Objects.equals(this.tradeDate, repoDTO.tradeDate) &&
+        Objects.equals(this.tradeReason, repoDTO.tradeReason) &&
+        Objects.equals(this.tradeReasonId, repoDTO.tradeReasonId) &&
+        Objects.equals(this.tradeRefNo, repoDTO.tradeRefNo) &&
+        Objects.equals(this.tradingDesk, repoDTO.tradingDesk) &&
+        Objects.equals(this.tradingDeskId, repoDTO.tradingDeskId) &&
+        Objects.equals(this.tranId, repoDTO.tranId) &&
+        Objects.equals(this.tripartyCustodianId, repoDTO.tripartyCustodianId) &&
+        Objects.equals(this.useDefaultCollateralAccount, repoDTO.useDefaultCollateralAccount) &&
+        Objects.equals(this.useDefaultCollateralCustBank, repoDTO.useDefaultCollateralCustBank) &&
+        Objects.equals(this.useDefaultExposure, repoDTO.useDefaultExposure) &&
+        Objects.equals(this.useTraderDesk, repoDTO.useTraderDesk) &&
+        Objects.equals(this.uti, repoDTO.uti);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(accountAllocations, accountGroup, accountGroupAccountNo2, accountGroupId, accountId, accountName, accountNo, accountNo2, accrualAdjustment, accrualDate, accrualSettlement, accrualTypeId, agentReference, allInRate, allocationId, allocationOverrideComment, allocationPremiumAmts, allocationReason, allocationReasonId, allocationRebateAmts, amount, basis, basisName, calendar, calendarId, cleanPrice, cleanPriceCurrencyId, collateralAccountId, collateralAccountName, collateralAccountNo, collateralAccountNo2, collateralBasis, collateralBasisName, collateralCalendar, collateralCalendarName, collateralCustodianBankAccountName, collateralCustodianBankAccountNo, collateralCustodianBankAccountNo2, collateralCustodianBankId, collateralIndex, collateralIndexName, collateralRate, collateralSpread, collateralType, collateralTypeId, comments, competingBids, complianceTestMessage, contractCompareId, counterpartyAccountNumber, counterpartyId, counterpartyName, country, countryId, couponPaymentSchedule, currencyId, currencyKy, currentAllocationId, customValue1, deliverFree, depoGroup, depoId, depoKy, dirtyPrice, divCurrency, divCurrencyId, divPerShare, divWithholdRate, doNotInstruct, doNotInstructCxlFail, doNotPost, doNotRecall, dtcNo, encumberedQuantity, endDate, errorMessage, evergreen, evergreenTerm, excludeFromAutoMark, explodedPosition, exposureId, extendableMaxDate, factor, futureSettleDate, index, indexName, instructions, interestAtMaturity, isBlock, isEvergreen, isExplodedPosition, isExtendable, isPooled, isThirdParty, ledgerId, lenderAccountId, lenderAccountName, matchGroup, matchGroupId, micId, minimumFee, nonMarkable, orderActionTs, originalPrincipal, poolPositionId, pooled, positionReferenceNumber, positionTradeId, positionType, positionTypeName, postDate, postTradeMarkPrice, premiumAccrued, premiumAdjustment, premiumPaymentAdjustment, premiumReceive, prepaid, prepayBasis, prepayBasisName, prepayDate, prepayIndex, prepayIndexName, prepayRate, prepaySpread, price, priceFactor, priorityAllocation, productLine, quantity, rate, rebateAccrued, rebateAdjustment, rebatePayment, rebatePaymentAdjustment, resetDate, restrictionId, securityDetail, securityId, sendDNIDownstream, settleDate, signedTerminationPayment, signedTerminationPrinciple, spread, startDate, status, statusId, statusMessage, strategy, strategyId, tartgetPrice, taxWithholdRate, termType, termTypeName, terminationPrice, thirdParty, totalCoupon, totalCouponInterest, trackingInd, tradeCategoryId, tradeDate, tradeReason, tradeReasonId, tradeRefNo, tradingDesk, tradingDeskId, tranId, tripartyCustodianId, useDefaultCollateralAccount, useDefaultCollateralCustBank, useDefaultExposure, useTraderDesk, uti);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class RepoDTO {\n");
+    
+    sb.append("    accountAllocations: ").append(toIndentedString(accountAllocations)).append("\n");
+    sb.append("    accountGroup: ").append(toIndentedString(accountGroup)).append("\n");
+    sb.append("    accountGroupAccountNo2: ").append(toIndentedString(accountGroupAccountNo2)).append("\n");
+    sb.append("    accountGroupId: ").append(toIndentedString(accountGroupId)).append("\n");
+    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+    sb.append("    accountName: ").append(toIndentedString(accountName)).append("\n");
+    sb.append("    accountNo: ").append(toIndentedString(accountNo)).append("\n");
+    sb.append("    accountNo2: ").append(toIndentedString(accountNo2)).append("\n");
+    sb.append("    accrualAdjustment: ").append(toIndentedString(accrualAdjustment)).append("\n");
+    sb.append("    accrualDate: ").append(toIndentedString(accrualDate)).append("\n");
+    sb.append("    accrualSettlement: ").append(toIndentedString(accrualSettlement)).append("\n");
+    sb.append("    accrualTypeId: ").append(toIndentedString(accrualTypeId)).append("\n");
+    sb.append("    agentReference: ").append(toIndentedString(agentReference)).append("\n");
+    sb.append("    allInRate: ").append(toIndentedString(allInRate)).append("\n");
+    sb.append("    allocationId: ").append(toIndentedString(allocationId)).append("\n");
+    sb.append("    allocationOverrideComment: ").append(toIndentedString(allocationOverrideComment)).append("\n");
+    sb.append("    allocationPremiumAmts: ").append(toIndentedString(allocationPremiumAmts)).append("\n");
+    sb.append("    allocationReason: ").append(toIndentedString(allocationReason)).append("\n");
+    sb.append("    allocationReasonId: ").append(toIndentedString(allocationReasonId)).append("\n");
+    sb.append("    allocationRebateAmts: ").append(toIndentedString(allocationRebateAmts)).append("\n");
+    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
+    sb.append("    basis: ").append(toIndentedString(basis)).append("\n");
+    sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
+    sb.append("    calendar: ").append(toIndentedString(calendar)).append("\n");
+    sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
+    sb.append("    cleanPrice: ").append(toIndentedString(cleanPrice)).append("\n");
+    sb.append("    cleanPriceCurrencyId: ").append(toIndentedString(cleanPriceCurrencyId)).append("\n");
+    sb.append("    collateralAccountId: ").append(toIndentedString(collateralAccountId)).append("\n");
+    sb.append("    collateralAccountName: ").append(toIndentedString(collateralAccountName)).append("\n");
+    sb.append("    collateralAccountNo: ").append(toIndentedString(collateralAccountNo)).append("\n");
+    sb.append("    collateralAccountNo2: ").append(toIndentedString(collateralAccountNo2)).append("\n");
+    sb.append("    collateralBasis: ").append(toIndentedString(collateralBasis)).append("\n");
+    sb.append("    collateralBasisName: ").append(toIndentedString(collateralBasisName)).append("\n");
+    sb.append("    collateralCalendar: ").append(toIndentedString(collateralCalendar)).append("\n");
+    sb.append("    collateralCalendarName: ").append(toIndentedString(collateralCalendarName)).append("\n");
+    sb.append("    collateralCustodianBankAccountName: ").append(toIndentedString(collateralCustodianBankAccountName)).append("\n");
+    sb.append("    collateralCustodianBankAccountNo: ").append(toIndentedString(collateralCustodianBankAccountNo)).append("\n");
+    sb.append("    collateralCustodianBankAccountNo2: ").append(toIndentedString(collateralCustodianBankAccountNo2)).append("\n");
+    sb.append("    collateralCustodianBankId: ").append(toIndentedString(collateralCustodianBankId)).append("\n");
+    sb.append("    collateralIndex: ").append(toIndentedString(collateralIndex)).append("\n");
+    sb.append("    collateralIndexName: ").append(toIndentedString(collateralIndexName)).append("\n");
+    sb.append("    collateralRate: ").append(toIndentedString(collateralRate)).append("\n");
+    sb.append("    collateralSpread: ").append(toIndentedString(collateralSpread)).append("\n");
+    sb.append("    collateralType: ").append(toIndentedString(collateralType)).append("\n");
+    sb.append("    collateralTypeId: ").append(toIndentedString(collateralTypeId)).append("\n");
+    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+    sb.append("    competingBids: ").append(toIndentedString(competingBids)).append("\n");
+    sb.append("    complianceTestMessage: ").append(toIndentedString(complianceTestMessage)).append("\n");
+    sb.append("    contractCompareId: ").append(toIndentedString(contractCompareId)).append("\n");
+    sb.append("    counterpartyAccountNumber: ").append(toIndentedString(counterpartyAccountNumber)).append("\n");
+    sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
+    sb.append("    counterpartyName: ").append(toIndentedString(counterpartyName)).append("\n");
+    sb.append("    country: ").append(toIndentedString(country)).append("\n");
+    sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
+    sb.append("    couponPaymentSchedule: ").append(toIndentedString(couponPaymentSchedule)).append("\n");
+    sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
+    sb.append("    currencyKy: ").append(toIndentedString(currencyKy)).append("\n");
+    sb.append("    currentAllocationId: ").append(toIndentedString(currentAllocationId)).append("\n");
+    sb.append("    customValue1: ").append(toIndentedString(customValue1)).append("\n");
+    sb.append("    deliverFree: ").append(toIndentedString(deliverFree)).append("\n");
+    sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
+    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+    sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
+    sb.append("    dirtyPrice: ").append(toIndentedString(dirtyPrice)).append("\n");
+    sb.append("    divCurrency: ").append(toIndentedString(divCurrency)).append("\n");
+    sb.append("    divCurrencyId: ").append(toIndentedString(divCurrencyId)).append("\n");
+    sb.append("    divPerShare: ").append(toIndentedString(divPerShare)).append("\n");
+    sb.append("    divWithholdRate: ").append(toIndentedString(divWithholdRate)).append("\n");
+    sb.append("    doNotInstruct: ").append(toIndentedString(doNotInstruct)).append("\n");
+    sb.append("    doNotInstructCxlFail: ").append(toIndentedString(doNotInstructCxlFail)).append("\n");
+    sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
+    sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
+    sb.append("    dtcNo: ").append(toIndentedString(dtcNo)).append("\n");
+    sb.append("    encumberedQuantity: ").append(toIndentedString(encumberedQuantity)).append("\n");
+    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
+    sb.append("    errorMessage: ").append(toIndentedString(errorMessage)).append("\n");
+    sb.append("    evergreen: ").append(toIndentedString(evergreen)).append("\n");
+    sb.append("    evergreenTerm: ").append(toIndentedString(evergreenTerm)).append("\n");
+    sb.append("    excludeFromAutoMark: ").append(toIndentedString(excludeFromAutoMark)).append("\n");
+    sb.append("    explodedPosition: ").append(toIndentedString(explodedPosition)).append("\n");
+    sb.append("    exposureId: ").append(toIndentedString(exposureId)).append("\n");
+    sb.append("    extendableMaxDate: ").append(toIndentedString(extendableMaxDate)).append("\n");
+    sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
+    sb.append("    futureSettleDate: ").append(toIndentedString(futureSettleDate)).append("\n");
+    sb.append("    index: ").append(toIndentedString(index)).append("\n");
+    sb.append("    indexName: ").append(toIndentedString(indexName)).append("\n");
+    sb.append("    instructions: ").append(toIndentedString(instructions)).append("\n");
+    sb.append("    interestAtMaturity: ").append(toIndentedString(interestAtMaturity)).append("\n");
+    sb.append("    isBlock: ").append(toIndentedString(isBlock)).append("\n");
+    sb.append("    isEvergreen: ").append(toIndentedString(isEvergreen)).append("\n");
+    sb.append("    isExplodedPosition: ").append(toIndentedString(isExplodedPosition)).append("\n");
+    sb.append("    isExtendable: ").append(toIndentedString(isExtendable)).append("\n");
+    sb.append("    isPooled: ").append(toIndentedString(isPooled)).append("\n");
+    sb.append("    isThirdParty: ").append(toIndentedString(isThirdParty)).append("\n");
+    sb.append("    ledgerId: ").append(toIndentedString(ledgerId)).append("\n");
+    sb.append("    lenderAccountId: ").append(toIndentedString(lenderAccountId)).append("\n");
+    sb.append("    lenderAccountName: ").append(toIndentedString(lenderAccountName)).append("\n");
+    sb.append("    matchGroup: ").append(toIndentedString(matchGroup)).append("\n");
+    sb.append("    matchGroupId: ").append(toIndentedString(matchGroupId)).append("\n");
+    sb.append("    micId: ").append(toIndentedString(micId)).append("\n");
+    sb.append("    minimumFee: ").append(toIndentedString(minimumFee)).append("\n");
+    sb.append("    nonMarkable: ").append(toIndentedString(nonMarkable)).append("\n");
+    sb.append("    orderActionTs: ").append(toIndentedString(orderActionTs)).append("\n");
+    sb.append("    originalPrincipal: ").append(toIndentedString(originalPrincipal)).append("\n");
+    sb.append("    poolPositionId: ").append(toIndentedString(poolPositionId)).append("\n");
+    sb.append("    pooled: ").append(toIndentedString(pooled)).append("\n");
+    sb.append("    positionReferenceNumber: ").append(toIndentedString(positionReferenceNumber)).append("\n");
+    sb.append("    positionTradeId: ").append(toIndentedString(positionTradeId)).append("\n");
+    sb.append("    positionType: ").append(toIndentedString(positionType)).append("\n");
+    sb.append("    positionTypeName: ").append(toIndentedString(positionTypeName)).append("\n");
+    sb.append("    postDate: ").append(toIndentedString(postDate)).append("\n");
+    sb.append("    postTradeMarkPrice: ").append(toIndentedString(postTradeMarkPrice)).append("\n");
+    sb.append("    premiumAccrued: ").append(toIndentedString(premiumAccrued)).append("\n");
+    sb.append("    premiumAdjustment: ").append(toIndentedString(premiumAdjustment)).append("\n");
+    sb.append("    premiumPaymentAdjustment: ").append(toIndentedString(premiumPaymentAdjustment)).append("\n");
+    sb.append("    premiumReceive: ").append(toIndentedString(premiumReceive)).append("\n");
+    sb.append("    prepaid: ").append(toIndentedString(prepaid)).append("\n");
+    sb.append("    prepayBasis: ").append(toIndentedString(prepayBasis)).append("\n");
+    sb.append("    prepayBasisName: ").append(toIndentedString(prepayBasisName)).append("\n");
+    sb.append("    prepayDate: ").append(toIndentedString(prepayDate)).append("\n");
+    sb.append("    prepayIndex: ").append(toIndentedString(prepayIndex)).append("\n");
+    sb.append("    prepayIndexName: ").append(toIndentedString(prepayIndexName)).append("\n");
+    sb.append("    prepayRate: ").append(toIndentedString(prepayRate)).append("\n");
+    sb.append("    prepaySpread: ").append(toIndentedString(prepaySpread)).append("\n");
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
+    sb.append("    priceFactor: ").append(toIndentedString(priceFactor)).append("\n");
+    sb.append("    priorityAllocation: ").append(toIndentedString(priorityAllocation)).append("\n");
+    sb.append("    productLine: ").append(toIndentedString(productLine)).append("\n");
+    sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+    sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
+    sb.append("    rebateAccrued: ").append(toIndentedString(rebateAccrued)).append("\n");
+    sb.append("    rebateAdjustment: ").append(toIndentedString(rebateAdjustment)).append("\n");
+    sb.append("    rebatePayment: ").append(toIndentedString(rebatePayment)).append("\n");
+    sb.append("    rebatePaymentAdjustment: ").append(toIndentedString(rebatePaymentAdjustment)).append("\n");
+    sb.append("    resetDate: ").append(toIndentedString(resetDate)).append("\n");
+    sb.append("    restrictionId: ").append(toIndentedString(restrictionId)).append("\n");
+    sb.append("    securityDetail: ").append(toIndentedString(securityDetail)).append("\n");
+    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+    sb.append("    sendDNIDownstream: ").append(toIndentedString(sendDNIDownstream)).append("\n");
+    sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
+    sb.append("    signedTerminationPayment: ").append(toIndentedString(signedTerminationPayment)).append("\n");
+    sb.append("    signedTerminationPrinciple: ").append(toIndentedString(signedTerminationPrinciple)).append("\n");
+    sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
+    sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
+    sb.append("    statusMessage: ").append(toIndentedString(statusMessage)).append("\n");
+    sb.append("    strategy: ").append(toIndentedString(strategy)).append("\n");
+    sb.append("    strategyId: ").append(toIndentedString(strategyId)).append("\n");
+    sb.append("    tartgetPrice: ").append(toIndentedString(tartgetPrice)).append("\n");
+    sb.append("    taxWithholdRate: ").append(toIndentedString(taxWithholdRate)).append("\n");
+    sb.append("    termType: ").append(toIndentedString(termType)).append("\n");
+    sb.append("    termTypeName: ").append(toIndentedString(termTypeName)).append("\n");
+    sb.append("    terminationPrice: ").append(toIndentedString(terminationPrice)).append("\n");
+    sb.append("    thirdParty: ").append(toIndentedString(thirdParty)).append("\n");
+    sb.append("    totalCoupon: ").append(toIndentedString(totalCoupon)).append("\n");
+    sb.append("    totalCouponInterest: ").append(toIndentedString(totalCouponInterest)).append("\n");
+    sb.append("    trackingInd: ").append(toIndentedString(trackingInd)).append("\n");
+    sb.append("    tradeCategoryId: ").append(toIndentedString(tradeCategoryId)).append("\n");
+    sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
+    sb.append("    tradeReason: ").append(toIndentedString(tradeReason)).append("\n");
+    sb.append("    tradeReasonId: ").append(toIndentedString(tradeReasonId)).append("\n");
+    sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
+    sb.append("    tradingDesk: ").append(toIndentedString(tradingDesk)).append("\n");
+    sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
+    sb.append("    tranId: ").append(toIndentedString(tranId)).append("\n");
+    sb.append("    tripartyCustodianId: ").append(toIndentedString(tripartyCustodianId)).append("\n");
+    sb.append("    useDefaultCollateralAccount: ").append(toIndentedString(useDefaultCollateralAccount)).append("\n");
+    sb.append("    useDefaultCollateralCustBank: ").append(toIndentedString(useDefaultCollateralCustBank)).append("\n");
+    sb.append("    useDefaultExposure: ").append(toIndentedString(useDefaultExposure)).append("\n");
+    sb.append("    useTraderDesk: ").append(toIndentedString(useTraderDesk)).append("\n");
+    sb.append("    uti: ").append(toIndentedString(uti)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 
