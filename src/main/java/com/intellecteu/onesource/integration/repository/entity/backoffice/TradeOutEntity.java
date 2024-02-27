@@ -1,18 +1,17 @@
 package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.backoffice.Index;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,5 +40,6 @@ public class TradeOutEntity {
     private String status;
     private Integer statusId;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "position_id", referencedColumnName = "position_id")
     private PositionEntity position;
 }

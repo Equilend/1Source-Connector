@@ -20,8 +20,8 @@ CREATE TABLE IF NOT EXISTS collateral
     contract_value    DOUBLE PRECISION       NULL,
     collateral_value  DOUBLE PRECISION    NULL,
     currency          VARCHAR(255) NULL,
-    type            VARCHAR(255) NULL,
-    description     VARCHAR(255) NULL,
+    "type"            VARCHAR(255) NULL,
+    "description"     VARCHAR(255) NULL,
     margin            DOUBLE PRECISION NULL,
     rounding_rule     INT NULL,
     rounding_mode     VARCHAR(255) NULL,
@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS contract
     trade_id             BIGINT       NULL,
     processing_status    VARCHAR(255) NULL,
     event_type           VARCHAR(255) NULL,
-    matching_spire_position_id          VARCHAR(255) NULL,
+    matching_spire_position_id          BIGINT NULL,
     flow_status          VARCHAR(255) NULL,
     CONSTRAINT pk_contract PRIMARY KEY (id)
 );
@@ -82,13 +82,14 @@ CREATE TABLE IF NOT EXISTS floating
 CREATE TABLE IF NOT EXISTS instrument
 (
     id     SERIAL NOT NULL,
+    security_id BIGINT NULL,
     ticker VARCHAR(255) NULL,
     cusip  VARCHAR(255) NULL,
     isin   VARCHAR(255) NULL,
     sedol  VARCHAR(255) NULL,
-    quick  VARCHAR(255) NULL,
+    quick_code  VARCHAR(255) NULL,
     figi   VARCHAR(255) NULL,
-    description VARCHAR(255) NULL,
+    "description" VARCHAR(255) NULL,
     price_id BIGINT NULL,
     CONSTRAINT pk_instrument PRIMARY KEY (id)
 );
@@ -96,7 +97,7 @@ CREATE TABLE IF NOT EXISTS instrument
 CREATE TABLE IF NOT EXISTS internal_ref
 (
     id          SERIAL NOT NULL,
-    broker      VARCHAR(255) NULL,
+    "broker"      VARCHAR(255) NULL,
     account_id  VARCHAR(255) NULL,
     internal_id VARCHAR(255) NULL,
     CONSTRAINT pk_internal_ref PRIMARY KEY (id)
@@ -121,66 +122,79 @@ CREATE TABLE IF NOT EXISTS party
     CONSTRAINT pk_party PRIMARY KEY (id)
 );
 
+CREATE TABLE IF NOT EXISTS account
+(
+    id              BIGSERIAL PRIMARY KEY,
+    account_id      BIGINT NOT NULL,
+    short_name      VARCHAR(255) NULL,
+    lei             VARCHAR(255) NULL,
+    one_source_id   BIGINT NULL,
+    dtc             BIGINT NULL
+);
+
 CREATE TABLE IF NOT EXISTS position
 (
-    spire_position_id     VARCHAR(255) NULL,
-    venue_ref_id          VARCHAR(255) NULL,
+    position_id           BIGINT PRIMARY KEY,
+    trade_id              BIGINT NULL,
+    creation_datetime     TIMESTAMP NULL,
+    last_update_datetime  TIMESTAMP NULL,
+    processing_status     VARCHAR(255) NULL,
+    matching_1source_trade_agreement_id     VARCHAR(255) NULL,
+    matching_1source_loan_contract_id     VARCHAR(255) NULL,
+    position_type_id      INT          NULL,
+    position_type         VARCHAR(255) NULL,
+    status_id             INT NULL,
+    "status"              VARCHAR(255) NULL,
     custom_value2         VARCHAR(255) NULL,
+    venue_ref_id          VARCHAR(255) NULL,
     position_ref          VARCHAR(255) NULL,
+    position_security_id  BIGINT NULL,
+    security_id           BIGINT NULL,
     ticker                VARCHAR(255) NULL,
     cusip                 VARCHAR(255) NULL,
     isin                  VARCHAR(255) NULL,
     sedol                 VARCHAR(255) NULL,
     quick_code            VARCHAR(255) NULL,
-    price_factor          INT NULL,
-    base_rebate_rate      DOUBLE PRECISION       NULL,
-    spread                DOUBLE PRECISION       NULL,
     bloomberg_id          VARCHAR(255) NULL,
-    rate                  DOUBLE PRECISION       NULL,
-    quantity              DOUBLE PRECISION       NULL,
-    currency              VARCHAR(255) NULL,
-    tax_with_holding_rate DOUBLE PRECISION       NULL,
-    trade_date            timestamp NULL,
-    term_id               INT          NULL,
-    end_date              timestamp NULL,
-    settle_date           timestamp NULL,
-    deliver_free          BOOLEAN      NULL,
-    amount                DOUBLE PRECISION       NULL,
-    price                 DOUBLE PRECISION       NULL,
-    contract_value        DOUBLE PRECISION NULL,
-    collateral_type       VARCHAR(255) NULL,
-    cp_haircut            DOUBLE PRECISION       NULL,
-    cp_mark_round_to      INT          NULL,
-    depo_id               INT          NULL,
+    "description"         VARCHAR(255) NULL,
+    security_price        DOUBLE PRECISION NULL,
+    price_factor          INT          NULL,
     currency_id           INT          NULL,
-    security_id           BIGINT          NULL,
-    position_type_id      INT          NULL,
-    position_type         VARCHAR(255) NULL,
-    account_id            BIGINT       NULL,
+    currency              VARCHAR(255) NULL,
+    rate                  DOUBLE PRECISION NULL,
+    quantity              DOUBLE PRECISION NULL,
+    trade_date            TIMESTAMP    NULL,
+    settle_date           TIMESTAMP    NULL,
+    accrual_date          TIMESTAMP    NULL,
+    deliver_free          BOOLEAN      NULL,
+    price                 DOUBLE PRECISION NULL,
+    contract_value        DOUBLE PRECISION NULL,
+    amount                DOUBLE PRECISION NULL,
+    term_id               INT          NULL,
+    end_date              TIMESTAMP    NULL,
+    index_id              INT          NULL,
+    index_name            VARCHAR(255) NULL,
+    spread                DOUBLE PRECISION NULL,
+    collateral_type       VARCHAR(255) NULL,
+    tax_with_holding_rate DOUBLE PRECISION NULL,
+    exposure_id           INT          NULL,
+    cp_haircut            DOUBLE PRECISION NULL,
+    cp_mark_round_to      INT          NULL,
     account_lei           VARCHAR(255) NULL,
-    short_name            VARCHAR(255) NULL,
     cp_account_id         BIGINT       NULL,
     cp_lei                VARCHAR(255) NULL,
-    info                VARCHAR(255) NULL,
-    index_id                 INTEGER,
-    index_name                VARCHAR(255) NULL,
-    description                VARCHAR(255) NULL,
-    status                VARCHAR(255) NULL,
-    processing_status     VARCHAR(255) NULL,
-    matching_1source_trade_agreement_id     VARCHAR(255) NULL,
-    matching_1source_loan_contract_id     VARCHAR(255) NULL,
-    applicable_instruction_id      BIGINT          NULL,
-    last_update_datetime   timestamp NULL,
-    CONSTRAINT pk_position PRIMARY KEY (spire_position_id)
+    depo_id               INT          NULL,
+    depo_ky               VARCHAR(255) NULL,
+    account_id            BIGINT NULL,
+    cp_id                 BIGINT NULL
 );
 
 CREATE TABLE IF NOT EXISTS price
 (
-    id       SERIAL NOT NULL,
-    value    DOUBLE PRECISION       NULL,
-    currency VARCHAR(255)       NULL,
-    unit     VARCHAR(255) NULL,
-    CONSTRAINT pk_price PRIMARY KEY (id)
+    id          BIGSERIAL PRIMARY KEY,
+    "value"     DOUBLE PRECISION       NULL,
+    currency    VARCHAR(255)       NULL,
+    unit        VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS rebate
@@ -231,14 +245,14 @@ CREATE TABLE IF NOT EXISTS settlement_instruction
 
 CREATE TABLE IF NOT EXISTS timestamp
 (
-    type        VARCHAR(255) NOT NULL,
-    timestamp timestamp NULL,
+    "type"        VARCHAR(255) NOT NULL,
+    "timestamp"   TIMESTAMP NULL,
     CONSTRAINT pk_timestamp PRIMARY KEY (type)
 );
 
 CREATE TABLE IF NOT EXISTS trade
 (
-    id              SERIAL NOT NULL,
+    id              BIGSERIAL NOT NULL,
     venue_id        BIGINT       NULL,
     instrument_id   BIGINT       NULL,
     rate_id         BIGINT       NULL,
@@ -282,7 +296,7 @@ CREATE TABLE IF NOT EXISTS venue
 (
     id          SERIAL NOT NULL,
     party_id    VARCHAR(255) NULL,
-    type        VARCHAR(255) NULL,
+    "type"        VARCHAR(255) NULL,
     venue_name           VARCHAR(255) NULL,
     venue_ref_key            VARCHAR(255) NULL,
     transaction_datetime timestamp    NULL,
@@ -351,7 +365,7 @@ CREATE TABLE IF NOT EXISTS event_record
 
 CREATE TABLE IF NOT EXISTS trade_out
 (
-    trade_id                 BIGINT NOT NULL,
+    trade_id                 BIGSERIAL NOT NULL,
     post_date                TIMESTAMP,
     settle_date              TIMESTAMP,
     accrual_date             TIMESTAMP,
@@ -362,16 +376,16 @@ CREATE TABLE IF NOT EXISTS trade_out
     index_id                 INTEGER,
     index_name               VARCHAR(255),
     index_spread             DOUBLE PRECISION NULL,
-    status                   VARCHAR(255),
+    "status"                   VARCHAR(255),
     status_id                INTEGER,
-    position_spire_position_id     VARCHAR(255) NULL,
+    position_id              BIGINT NULL,
     CONSTRAINT pk_trade_out PRIMARY KEY (trade_id),
-    CONSTRAINT fk_position_out FOREIGN KEY (position_spire_position_id) REFERENCES position (spire_position_id)
+    CONSTRAINT fk_position_out FOREIGN KEY (position_id) REFERENCES position (position_id)
     );
 
 CREATE TABLE IF NOT EXISTS rerate_trade
 (
-    trade_id             BIGINT NOT NULL,
+    trade_id             BIGSERIAL NOT NULL,
     creation_datetime TIMESTAMP,
     last_update_datetime TIMESTAMP,
     matching_rerate_id   VARCHAR(255),
@@ -392,7 +406,7 @@ CREATE TABLE IF NOT EXISTS rerate
     matching_spire_trade_id   BIGINT,
     processing_status         VARCHAR(255),
     related_spire_position_id BIGINT,
-    status                    VARCHAR(255),
+    "status"                    VARCHAR(255),
     venue_id                  BIGINT,
     rate_rate_id              BIGINT,
     rerate_rate_id            BIGINT,
@@ -476,6 +490,13 @@ ALTER TABLE settlement_temp DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_SETTLEMEN
 ALTER TABLE local_venue_field DROP CONSTRAINT IF EXISTS FK_LOCAL_VENUE_FIELD_ON_VENUE;
 ALTER TABLE local_venue_field
 ADD CONSTRAINT FK_LOCAL_VENUE_FIELD_ON_VENUE FOREIGN KEY (local_venue_field_id) REFERENCES venue (id);
+
+ALTER TABLE position DROP CONSTRAINT IF EXISTS FK_POSITION_ACCOUNT;
+ALTER TABLE position DROP CONSTRAINT IF EXISTS FK_POSITION_CP;
+ALTER TABLE position
+ADD CONSTRAINT FK_POSITION_ACCOUNT FOREIGN KEY (account_id) REFERENCES account (id);
+ALTER TABLE position
+ADD CONSTRAINT FK_POSITION_CP FOREIGN KEY (cp_id) REFERENCES account (id);
 
 ALTER TABLE settlement_temp
     ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT_TEMP FOREIGN KEY (settlement_id) REFERENCES settlement (id);

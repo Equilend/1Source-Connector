@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
@@ -76,10 +76,10 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
                 contract.getContractId(), positionDto.getPositionId());
             reconcileService.reconcile(contract, positionDto);
             log.debug(format(LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG,
-                contract.getContractId(), contract.getMatchingSpirePositionId()));
+                contract.getContractId(), String.valueOf(contract.getMatchingSpirePositionId())));
             saveContract(contract, RECONCILED);
             createContractInitiationEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED,
-                contract.getMatchingSpirePositionId());
+                String.valueOf(contract.getMatchingSpirePositionId()));
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
@@ -92,7 +92,8 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(contract.getContractId(),
-            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, contract.getMatchingSpirePositionId(), e.getErrorList());
+            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES,
+            String.valueOf(contract.getMatchingSpirePositionId()), e.getErrorList());
         cloudEventRecordService.record(recordRequest);
     }
 
@@ -102,23 +103,24 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         contractService.save(contract);
     }
 
-    void processMatchingPosition(@NonNull Contract contractDto, @NonNull PositionDto positionDto) {
+    void processMatchingPosition(@NonNull Contract contract, @NonNull PositionDto positionDto) {
         log.debug("Matching position: {} with a contract: {}.",
-            positionDto.getPositionId(), contractDto.getContractId());
-        contractDto.setLastUpdateDateTime(LocalDateTime.now());
-        contractDto.setMatchingSpirePositionId(positionDto.getPositionId());
+            positionDto.getPositionId(), contract.getContractId());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
+        contract.setMatchingSpirePositionId(Long.parseLong(positionDto.getPositionId()));
 
         positionDto.setLastUpdateDateTime(LocalDateTime.now());
-        positionDto.setMatching1SourceTradeAgreementId(contractDto.getContractId());
+        positionDto.setMatching1SourceTradeAgreementId(contract.getContractId());
 
         if (positionDto.getProcessingStatus() == CANCELED) {
-            contractDto.setProcessingStatus(MATCHED_CANCELED_POSITION);
-            createContractInitiationEvent(contractDto.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION, contractDto.getMatchingSpirePositionId());
+            contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
+            createContractInitiationEvent(contract.getContractId(),
+                LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION,
+                String.valueOf(contract.getMatchingSpirePositionId()));
         } else {
-            contractDto.setProcessingStatus(MATCHED_POSITION);
-            createContractInitiationEvent(contractDto.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, contractDto.getMatchingSpirePositionId());
+            contract.setProcessingStatus(MATCHED_POSITION);
+            createContractInitiationEvent(contract.getContractId(),
+                LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, String.valueOf(contract.getMatchingSpirePositionId()));
         }
 
         positionService.savePosition(spireMapper.toPosition(positionDto));

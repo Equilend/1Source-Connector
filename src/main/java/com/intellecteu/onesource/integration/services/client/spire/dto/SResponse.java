@@ -43,7 +43,7 @@ public class SResponse {
    */
   public enum StatusEnum {
     ERROR("ERROR"),
-    
+
     SUCCESS("SUCCESS");
 
     private String value;
@@ -215,7 +215,7 @@ public class SResponse {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class SResponse {\n");
-    
+
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");

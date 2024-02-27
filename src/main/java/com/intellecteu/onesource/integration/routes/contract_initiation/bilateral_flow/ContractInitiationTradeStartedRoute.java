@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_with_trade;
+package com.intellecteu.onesource.integration.routes.contract_initiation.bilateral_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
@@ -6,8 +6,8 @@ import static com.intellecteu.onesource.integration.model.onesource.ProcessingSt
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.AgreementProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.AgreementProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
@@ -15,10 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+@Deprecated(since = "0.0.5-SNAPSHOT")
 @Component
 @ConditionalOnProperty(
-    value = "integration-toolkit.route.contract-initiation-trade-started.enable",
-    havingValue = "true",
+    value = "route.contract-initiation.bilateral-flow.enable",
+    havingValue = "disabled",
     matchIfMissing = true)
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {
 

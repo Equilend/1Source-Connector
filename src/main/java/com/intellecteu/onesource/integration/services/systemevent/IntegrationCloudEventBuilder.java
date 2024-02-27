@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
@@ -70,11 +71,18 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return null;
     }
 
-    protected SystemEventData createEventData(String message, List<RelatedObject> relatedObjects) {
+    protected SystemEventData createEventData(String eventDataId, List<FieldImpacted> fieldsImpacted,
+        String message, List<RelatedObject> relatedObjects) {
         return SystemEventData.builder()
+            .eventDataId(eventDataId)
             .message(message)
+            .fieldsImpacted(fieldsImpacted)
             .relatedObjects(relatedObjects)
             .build();
+    }
+
+    protected SystemEventData createEventData(String message, List<RelatedObject> relatedObjects) {
+        return createEventData(null, null, message, relatedObjects);
     }
 
     protected CloudEventBuildRequest createRecordRequest(RecordType recordType, String subject,
@@ -122,6 +130,10 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         var relatedContractProposal = new RelatedObject(proposalInfo, ONESOURCE_LOAN_CONTRACT_PROPOSAL);
         var relatedPosition = new RelatedObject(positionInfo, POSITION);
         return List.of(relatedContractProposal, relatedPosition);
+    }
+
+    protected List<RelatedObject> getPositionRelated(String positionId) {
+        return List.of(new RelatedObject(positionId, POSITION));
     }
 
     protected CloudEventMetadata createMetadata(CloudEventBuildRequest buildRequest) {

@@ -7,8 +7,8 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIf
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
@@ -49,7 +49,7 @@ public class ContractDto implements Reconcilable {
     private List<SettlementDto> settlement;
     private ProcessingStatus processingStatus;
     private EventType eventType;
-    private String matchingSpirePositionId;
+    private Long matchingSpirePositionId;
     private FlowStatus flowStatus;
 
     public boolean isProcessedWithoutErrors() {

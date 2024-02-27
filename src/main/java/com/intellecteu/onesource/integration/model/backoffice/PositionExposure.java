@@ -15,6 +15,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionExposure {
 
+    private Integer exposureId;
     private Double cpHaircut;
     private Integer cpMarkRoundTo;
     private Integer depoId;

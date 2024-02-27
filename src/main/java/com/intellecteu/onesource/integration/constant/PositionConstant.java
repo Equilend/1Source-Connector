@@ -8,14 +8,6 @@ public class PositionConstant {
     public final static String LENDER_POSITION_TYPE = "CASH LOAN";
     public final static String BORROWER_POSITION_TYPE = "CASH BORROW";
 
-    public static class PositionStatus {
-
-        public static final String CANCEL = "CANCEL";
-        public static final String FAILED = "FAILED";
-        public static final String FUTURE = "FUTURE";
-        public static final String OPEN = "OPEN";
-    }
-
     public static class Field {
 
         public static final String COMMA_DELIMITER = ", ";
@@ -45,6 +37,16 @@ public class PositionConstant {
         public static final String SETTLE_DATE = "Position.settleDate";
         public static final String POSITION_TRADE_DATE = "Position.tradeDate";
         public static final String POSITION_QUANTITY = "Position.quantity";
+    }
+
+    public static class Request {
+
+        public static final String NEW_BORROW = "NEW BORROW";
+        public static final String NEW_LOAN = "NEW LOAN";
+        public static final String PENDING_ONESOURCE_CONFIRMATION = "PENDING ONESOURCE CONFIRMATION";
+        public static final String TRADE_ID = "tradeId";
+        public static final String TRADE_STATUS = "status";
+        public static final String TRADE_TYPE = "tradetype";
     }
 
 }

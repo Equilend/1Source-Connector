@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.routes.common.processor;
 
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.CANCEL;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FAILED;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FUTURE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FAILED;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FUTURE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
@@ -57,6 +57,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -88,9 +90,10 @@ public class PositionPendingConfirmationProcessor {
 
     private List<PositionDto> requestUpdatedPositions(LocalDateTime lastUpdatedDateTime, List<Position> positions) {
         List<PositionDto> positionDtoList = new ArrayList<>();
-        List<Position> newPositionsForLender = lenderBackOfficeService.getNewSpirePositions(lastUpdatedDateTime,
+        List<Position> newPositionsForLender = lenderBackOfficeService.getNewSpirePositionsObsolete(lastUpdatedDateTime,
             positions);
-        List<Position> newPositionsForBorrower = borrowerBackOfficeService.getNewSpirePositions(lastUpdatedDateTime,
+        List<Position> newPositionsForBorrower = borrowerBackOfficeService.getNewSpirePositionsObsolete(
+            lastUpdatedDateTime,
             positions);
         positionDtoList.addAll(newPositionsForLender.stream().map(spireMapper::toPositionDto).toList());
         positionDtoList.addAll(newPositionsForBorrower.stream().map(spireMapper::toPositionDto).toList());
@@ -169,25 +172,26 @@ public class PositionPendingConfirmationProcessor {
 
     private void processSettlement(Position position) {
         if (Set.of(CREATED, UPDATED).contains(position.getProcessingStatus())) {
-            PartyRole partyRole = IntegrationUtils.extractPartyRole(position).get();
             try {
+                PartyRole partyRole = IntegrationUtils.extractPartyRole(position).orElse(null);
                 Optional<Settlement> settlementOptional = lenderBackOfficeService.retrieveSettlementInstruction(
                     position, partyRole,
                     position.getPositionAccount().getAccountId());
                 settlementOptional.ifPresent(s -> {
-                    position.setApplicableInstructionId(s.getInstructionId());
                     position.setProcessingStatus(SI_FETCHED);
                     positionService.savePosition(position);
                     settlementService.persistSettlement(s);
                 });
             } catch (InstructionRetrievementException e) {
                 if (e.getCause() instanceof HttpStatusCodeException exception) {
-                    log.warn("SPIRE error response for request Instruction: " + exception.getStatusCode());
-                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                    final HttpStatusCode statusCode = exception.getStatusCode();
+                    log.warn("SPIRE error response for request Instruction: " + statusCode);
+                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(HttpStatus.valueOf(statusCode.value()))) {
                         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                         var recordRequest = eventBuilder.buildExceptionRequest(
                             position.getMatching1SourceTradeAgreementId(), exception,
-                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, position.getPositionId());
+                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS,
+                            String.valueOf(position.getPositionId()));
                         cloudEventRecordService.record(recordRequest);
                     }
                 }
@@ -198,12 +202,12 @@ public class PositionPendingConfirmationProcessor {
     private void updatePositionByProcessingStatus(PositionDto positionDto) {
         if (positionDto != null && positionDto.unwrapPositionStatus() != null) {
             String status = positionDto.unwrapPositionStatus();
-            if (FUTURE.equals(status)) {
+            if (FUTURE.getValue().equals(status)) {
                 positionDto.setProcessingStatus(UPDATED);
-            } else if (Set.of(CANCEL, FAILED).contains(status)) {
+            } else if (Set.of(CANCELLED.getValue(), FAILED.getValue()).contains(status)) {
                 positionDto.setProcessingStatus(CANCELED);
                 matchingCanceledPosition(positionDto.getCustomValue2());
-            } else if (OPEN.equals(status)) {
+            } else if (OPEN.getValue().equals(status)) {
                 positionDto.setProcessingStatus(SETTLED);
                 processSettledStatusForContract(positionDto);
             } else if (positionDto.getProcessingStatus() == null) {
@@ -219,7 +223,7 @@ public class PositionPendingConfirmationProcessor {
                 executeSettledContractUpdate(contract);
                 contractService.save(contract);
                 recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_SETTLED,
-                    contract.getMatchingSpirePositionId(), CONTRACT_SETTLEMENT);
+                    String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_SETTLEMENT);
             });
     }
 
@@ -252,7 +256,7 @@ public class PositionPendingConfirmationProcessor {
         contract.setProcessingStatus(MATCHED_CANCELED_POSITION);
         contractService.save(contract);
         recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION,
-            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
+            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
 
     private void recordCloudEvent(String recordData, RecordType recordType, String relatedData,

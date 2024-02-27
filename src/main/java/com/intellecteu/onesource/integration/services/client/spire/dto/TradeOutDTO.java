@@ -1621,7 +1621,7 @@ public class TradeOutDTO {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class TradeOutDTO {\n");
-    
+
     sb.append("    account2DTO: ").append(toIndentedString(account2DTO)).append("\n");
     sb.append("    accountDTO: ").append(toIndentedString(accountDTO)).append("\n");
     sb.append("    accountGroupDTO: ").append(toIndentedString(accountGroupDTO)).append("\n");

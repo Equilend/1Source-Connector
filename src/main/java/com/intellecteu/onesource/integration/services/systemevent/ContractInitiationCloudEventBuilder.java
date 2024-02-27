@@ -20,6 +20,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_CANCELED_POSITION_TRADE_AGREEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_TRADE_AGREEMENT_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_UNMATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_POSITION_UPDATE_EXCEPTION_MSG;
@@ -46,6 +47,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_UNMATCHED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_POSITION_UPDATE_EXCEPTION_SPIRE;
@@ -95,7 +97,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     public ContractInitiationCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit.uri}") String integrationUri) {
+        @Value("${integration-toolkit-uri}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 
@@ -151,6 +153,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION -> loanContractProposalMatchingEvent(recorded,
                 recordType, related);
             case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
+            case POSITION_UNMATCHED -> positionUnmatched(recorded, recordType);
             case TRADE_AGREEMENT_CREATED -> tradeAgreementCreationEvent(recorded, recordType);
             case TRADE_AGREEMENT_MATCHED_CANCELED_POSITION -> tradeAgreementMatchingCanceledPosition(recorded,
                 recordType, related);
@@ -274,6 +277,17 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             CONTRACT_INITIATION,
             VALIDATE_LOAN_CONTRACT_PROPOSAL,
             createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+        );
+    }
+
+    private CloudEventBuildRequest positionUnmatched(String recorded, RecordType recordType) {
+        String dataMessage = format(POSITION_UNMATCHED_MSG, recorded);
+        return createRecordRequest(
+            recordType,
+            format(POSITION_UNMATCHED_SUBJECT, recorded),
+            CONTRACT_INITIATION,
+            GET_NEW_POSITIONS_PENDING_CONFIRMATION,
+            createEventData(dataMessage, getPositionRelated(recorded))
         );
     }
 

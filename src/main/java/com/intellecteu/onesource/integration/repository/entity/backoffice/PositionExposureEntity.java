@@ -15,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PositionExposureEntity {
 
+    private Integer exposureId;
     private Double cpHaircut;
     private Integer cpMarkRoundTo;
     private Integer depoId;

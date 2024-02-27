@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_UPDATED;
@@ -145,7 +145,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(SETTLED);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_SETTLED,
-            contract.getMatchingSpirePositionId(), CONTRACT_SETTLEMENT);
+            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_SETTLEMENT);
     }
 
     private void persistPartyRoleIssue(Contract contract, String positionType) {
@@ -160,7 +160,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(DECLINED);
         savePositionStatus(position, PROPOSAL_DECLINED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED,
-            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
+            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
 
     private void processCanceledContract(Contract contract, PositionDto position) {
@@ -171,7 +171,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(CANCELED);
         savePositionStatus(position, PROPOSAL_CANCELED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED,
-            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
+            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
 
     private void processApprovedContract(Contract contract, PositionDto position) {
@@ -183,7 +183,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         contract.setProcessingStatus(ProcessingStatus.APPROVED);
         savePositionStatus(position, PROPOSAL_APPROVED);
         recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
-            contract.getMatchingSpirePositionId(), CONTRACT_INITIATION);
+            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
 
     private void processPositionAfterContractApproved(Contract contract, PositionDto position, PartyRole partyRole) {
@@ -212,7 +212,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         }
     }
 
-    private void updateSettlementInstructionAndRecordOnFail(Settlement instructionToUpdate, Contract Contract,
+    private void updateSettlementInstructionAndRecordOnFail(Settlement instructionToUpdate, Contract contract,
         Settlement contractInstruction) {
         try {
             // todo: refine and rework update flow. We need to execute PUT request with an updated instruction.
@@ -223,8 +223,8 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             if (e instanceof HttpStatusCodeException exception) {
                 final HttpStatusCode statusCode = exception.getStatusCode();
                 if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(HttpStatus.valueOf(statusCode.value()))) {
-                    recordExceptionEvent(Contract.getContractId(), exception,
-                        POST_SETTLEMENT_INSTRUCTION_UPDATE, Contract.getMatchingSpirePositionId());
+                    recordExceptionEvent(contract.getContractId(), exception,
+                        POST_SETTLEMENT_INSTRUCTION_UPDATE, String.valueOf(contract.getMatchingSpirePositionId()));
                 }
             }
             log.warn("Unexpected exception during updating SI: {}", e.getMessage());
@@ -240,12 +240,12 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             swiftBic.setBic(contractInstruction.getInstruction().getSettlementBic());
             swiftBic.setBranch(contractInstruction.getInstruction().getLocalAgentBic());
 
-            return InstructionDTO.builder()
-                .agentName(contractInstruction.getInstruction().getLocalAgentName())
-                .agentSafe(contractInstruction.getInstruction().getLocalAgentAcct())
-                .accountDTO(accountDTO)
-                .agentBicDTO(swiftBic)
-                .build();
+            InstructionDTO instruction = new InstructionDTO();
+            instruction.setAgentName(contractInstruction.getInstruction().getLocalAgentName());
+            instruction.setAgentSafe(contractInstruction.getInstruction().getLocalAgentAcct());
+            instruction.setAccountDTO(accountDTO);
+            instruction.setAgentBicDTO(swiftBic);
+            return instruction;
         } catch (NumberFormatException e) {
             log.warn("Parse data exception. Check the data correctness");
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
@@ -260,7 +260,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         } catch (InstructionRetrievementException e) {
             if (e.getCause() instanceof HttpStatusCodeException exception) {
                 recordExceptionEvent(contract.getContractId(), exception,
-                    GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION, contract.getMatchingSpirePositionId());
+                    GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION, String.valueOf(contract.getMatchingSpirePositionId()));
             }
             log.warn("Unexpected exception: {}", e.getMessage());
             return Optional.empty();
@@ -345,7 +345,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             log.debug("Contract {} is validated.", contract.getContractId());
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(contract.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_VALIDATED, contract.getMatchingSpirePositionId());
+                LOAN_CONTRACT_PROPOSAL_VALIDATED, String.valueOf(contract.getMatchingSpirePositionId()));
             cloudEventRecordService.record(recordRequest);
         }
         return position;

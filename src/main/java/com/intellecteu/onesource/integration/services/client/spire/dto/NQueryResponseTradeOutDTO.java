@@ -134,7 +134,7 @@ public class NQueryResponseTradeOutDTO {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class NQueryResponseTradeOutDTO {\n");
-    
+
     sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
     sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
     sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");

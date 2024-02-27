@@ -1,10 +1,10 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor;
 
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.agreement.AgreementProcessFlowStrategy;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.agreement.AgreementProcessFlowStrategy;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

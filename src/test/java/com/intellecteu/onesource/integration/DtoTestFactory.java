@@ -269,7 +269,7 @@ public class DtoTestFactory {
             .cusip(tradeAgreement.getInstrument().getCusip())
             .isin(tradeAgreement.getInstrument().getIsin())
             .sedol(tradeAgreement.getInstrument().getSedol())
-            .quickCode(tradeAgreement.getInstrument().getQuick())
+            .quickCode(tradeAgreement.getInstrument().getQuickCode())
             .bloombergId(tradeAgreement.getInstrument().getFigi())
             .build();
     }
@@ -370,7 +370,7 @@ public class DtoTestFactory {
 
     public static InstrumentDto buildInstrumentDto() {
         return InstrumentDto.builder()
-            .id(9999L)
+            .id(9999)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")

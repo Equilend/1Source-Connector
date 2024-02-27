@@ -557,7 +557,7 @@ class AgreementReconcileServiceTest {
         agreement.getTrade().getInstrument().setCusip(null);
         agreement.getTrade().getInstrument().setIsin(null);
         agreement.getTrade().getInstrument().setSedol(null);
-        agreement.getTrade().getInstrument().setQuick(null);
+        agreement.getTrade().getInstrument().setQuickCode(null);
 
         verifyReconciliationFailure();
     }

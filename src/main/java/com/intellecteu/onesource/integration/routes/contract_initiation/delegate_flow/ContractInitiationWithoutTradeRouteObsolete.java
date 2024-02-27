@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
@@ -12,9 +12,9 @@ import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.ContractProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.PositionProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.ContractProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -23,12 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
+@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 @Component
 @ConditionalOnProperty(
-    value = "integration-toolkit.route.contract-initiation-without-trade-route.enable",
-    havingValue = "true",
+    value = "route.contract-initiation.delegate-flow.enable",
+    havingValue = "disabled",
     matchIfMissing = true)
-public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
+public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity?"
@@ -52,7 +53,8 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
     private final OneSourceMapper oneSourceMapper;
 
     @Autowired
-    public ContractInitiationWithoutTradeRoute(PositionProcessor positionProcessor, EventProcessor eventProcessor,
+    public ContractInitiationWithoutTradeRouteObsolete(PositionProcessor positionProcessor,
+        EventProcessor eventProcessor,
         ContractProcessor contractProcessor, BackOfficeMapper backOfficeMapper, OneSourceMapper oneSourceMapper) {
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
@@ -71,7 +73,7 @@ public class ContractInitiationWithoutTradeRoute extends RouteBuilder {
                 .bean(positionProcessor, "matchTradeAgreement")
                 .choice()
                     .when(method(IntegrationUtils.class, "isBorrower"))
-                        .bean(positionProcessor, "matchContractProposal")
+                        .bean(positionProcessor, "matchContractProposalObsolete")
                     .endChoice()
                 .end()
                 .log("Finished step 2 for position with id ${body.positionId}")

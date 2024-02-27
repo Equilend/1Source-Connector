@@ -19,6 +19,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
@@ -41,7 +42,9 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Position implements Reconcilable {
 
-    private String positionId;
+    private Long positionId;
+    private Long tradeId;
+    private LocalDateTime creationDatetime;
     private String venueRefId;
     private String customValue2;
     private String positionRef;
@@ -51,17 +54,17 @@ public class Position implements Reconcilable {
     private Integer termId;
     private LocalDateTime endDate;
     private LocalDateTime settleDate;
+    private LocalDateTime accrualDate;
     private Boolean deliverFree;
     private Double amount;
     private Double price;
     private Double contractValue;
     private Integer currencyId;
-    private Long securityId;
+    private Long positionSecurityId;
     private ProcessingStatus processingStatus;
     private LocalDateTime lastUpdateDateTime;
     private String matching1SourceTradeAgreementId;
     private String matching1SourceLoanContractId;
-    private Long applicableInstructionId;
     @JsonProperty("securityDetailDTO")
     private PositionSecurityDetail positionSecurityDetail;
     @JsonProperty("currencyDTO")
@@ -72,7 +75,7 @@ public class Position implements Reconcilable {
     private PositionCollateralType positionCollateralType;
     @JsonProperty("exposureDTO")
     private PositionExposure exposure;
-    @JsonProperty("positiontypeDTO")
+    @JsonAlias({"positiontypeDTO", "positionTypeDTO"})
     private PositionType positionType;
     @JsonProperty("indexDTO")
     private Index index;

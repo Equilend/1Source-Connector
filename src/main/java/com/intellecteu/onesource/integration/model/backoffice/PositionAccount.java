@@ -16,9 +16,11 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionAccount {
 
+    private Long id;
     private Long accountId;
-    private String lei;
     private String shortName;
-    private String info;
+    private String lei;
+    private Long oneSourceId;
+    private Long dtc;
 
 }

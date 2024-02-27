@@ -136,7 +136,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
-                    position.getPositionId());
+                    String.valueOf(position.getPositionId()));
                 cloudEventRecordService.record(recordRequest);
             }
         }
@@ -224,7 +224,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
                 var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
                     POST_LOAN_CONTRACT_UPDATE,
-                    contract.getMatchingSpirePositionId());
+                    String.valueOf(contract.getMatchingSpirePositionId()));
                 cloudEventRecordService.record(recordRequest);
             }
         }
@@ -241,7 +241,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
                 request, JsonNode.class, contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            var positionId = contract.getMatchingSpirePositionId();
+            var positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
@@ -266,7 +266,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 request, JsonNode.class, contract.getContractId());
             log.debug("Contract id: {} approval was sent.", contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            var positionId = contract.getMatchingSpirePositionId();
+            var positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
@@ -287,7 +287,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 null, JsonNode.class, contract.getContractId());
             log.debug("The contract: {} was declined!", contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            String positionId = contract.getMatchingSpirePositionId();
+            String positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusText()));
             contract.setProcessingStatus(SPIRE_ISSUE);

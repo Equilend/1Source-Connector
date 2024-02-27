@@ -22,7 +22,7 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
 
     public ContractSettlementCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit.uri}") String integrationUri) {
+        @Value("${integration-toolkit-uri}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 

@@ -36,6 +36,7 @@ import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +45,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Deprecated(since = "0.0.5-SNAPSHOT")
 public class SpireMapper {
 
     private final ObjectMapper objectMapper;
@@ -60,6 +62,13 @@ public class SpireMapper {
             return null;
         }
         return objectMapper.convertValue(positionDto, Position.class);
+    }
+
+    public Position toPosition(TradeOutDTO tradeOutDto) {
+        if (tradeOutDto == null) {
+            return null;
+        }
+        return objectMapper.convertValue(tradeOutDto, Position.class);
     }
 
     public Position toPosition(PositionOutDTO positionOutDTO) {
@@ -147,7 +156,7 @@ public class SpireMapper {
     private static InternalReference createInternalRef(Position position) {
         return InternalReference.builder()
             .accountId(String.valueOf(position.getPositionAccount().getAccountId()))
-            .internalRefId(position.getPositionId())
+            .internalRefId(String.valueOf(position.getPositionId()))
             .build();
     }
 
@@ -192,7 +201,7 @@ public class SpireMapper {
         var spread = position.getIndex() == null ? null : position.getIndex().getSpread();
         return FloatingRate.builder()
             .effectiveRate(position.getRate())
-            .baseRate(position.getPositionSecurityDetail().getBaseRebateRate())
+            .baseRate(null) // todo: find how to retrieve baseRate
             .spread(spread)
             .build();
     }
@@ -207,13 +216,15 @@ public class SpireMapper {
 
     public Instrument buildInstrument(Position position) {
         return Instrument.builder()
+            .securityId(position.getPositionSecurityId())
             .ticker(position.getPositionSecurityDetail().getTicker())
             .cusip(position.getPositionSecurityDetail().getCusip())
             .isin(position.getPositionSecurityDetail().getIsin())
             .sedol(position.getPositionSecurityDetail().getSedol())
-            .quick(position.getPositionSecurityDetail().getQuickCode())
+            .quickCode(position.getPositionSecurityDetail().getQuickCode())
             .description(position.getPositionSecurityDetail().getDescription())
             .price(buildPrice(position))
+            .priceFactor(position.getPositionSecurityDetail().getPriceFactor())
             .build();
     }
 
@@ -241,7 +252,7 @@ public class SpireMapper {
     public VenueParty buildLenderVenueParty(Position position) {
         return VenueParty.builder()
             .partyRole(LENDER)
-            .venueId(position.getPositionId())
+            .venueId(String.valueOf(position.getPositionId()))
             .build();
     }
 

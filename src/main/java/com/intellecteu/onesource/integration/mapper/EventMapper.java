@@ -719,7 +719,7 @@ public class EventMapper {
             .id(instrument.getId())
             .cusip(instrument.getCusip())
             .figi(instrument.getFigi())
-            .quick(instrument.getQuick())
+            .quick(instrument.getQuickCode())
             .sedol(instrument.getSedol())
             .isin(instrument.getIsin())
             .description(instrument.getDescription())
