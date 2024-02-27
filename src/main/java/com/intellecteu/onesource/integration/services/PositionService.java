@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.CANCEL;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FAILED;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FAILED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class PositionService {
 
-    public final static Set<String> CANCEL_POSITION_STATUSES = Set.of(CANCEL, FAILED);
+    public final static Set<String> CANCEL_POSITION_STATUSES = Set.of(CANCELLED.getValue(), FAILED.getValue());
 
     private final PositionRepository positionRepository;
     private final BackOfficeMapper backOfficeMapper;
@@ -35,6 +35,7 @@ public class PositionService {
     public Position savePosition(Position position) {
         position.setLastUpdateDateTime(LocalDateTime.now());
         PositionEntity positionEntity = positionRepository.save(backOfficeMapper.toEntity(position));
+        log.debug("Position with id={} was saved.", positionEntity.getPositionId());
         return backOfficeMapper.toModel(positionEntity);
     }
 
@@ -49,16 +50,21 @@ public class PositionService {
     }
 
     public Position getById(Long positionId) {
-        PositionEntity positionEntity = positionRepository.getById(String.valueOf(positionId));
+        PositionEntity positionEntity = positionRepository.getById(positionId);
         return backOfficeMapper.toModel(positionEntity);
     }
 
     public List<Position> savePositions(List<Position> positions) {
         positions.forEach(position -> position.setLastUpdateDateTime(LocalDateTime.now()));
-        List<PositionEntity> positionEntities = positions.stream().map(backOfficeMapper::toEntity)
-            .collect(Collectors.toList());
+        List<PositionEntity> positionEntities = positions.stream().map(backOfficeMapper::toEntity).toList();
         positionEntities = positionRepository.saveAll(positionEntities);
-        return positionEntities.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
+        if (!positionEntities.isEmpty()) {
+            String idList = positionEntities.stream()
+                .map(p -> String.valueOf(p.getPositionId()))
+                .collect(Collectors.joining(", "));
+            log.debug("Saved {} positions. Ids: {}", positionEntities.size(), idList);
+        }
+        return positionEntities.stream().map(backOfficeMapper::toModel).toList();
     }
 
     public List<Position> findAllNotCanceledAndSettled() {
@@ -68,9 +74,11 @@ public class PositionService {
 
     public Optional<String> getMaxPositionId() {
         List<PositionEntity> storedPositions = positionRepository.findAll();
-        log.debug("Found {} positions. Creating loan contracts.", storedPositions.size());
-        return storedPositions.stream().map(PositionEntity::getPositionId)
-            .max(Comparator.comparingInt(Integer::parseInt));
+        log.debug("Found {} positions. Getting the latest id recorded.", storedPositions.size());
+        return storedPositions.stream()
+            .map(PositionEntity::getPositionId)
+            .max(Comparator.naturalOrder())
+            .map(String::valueOf);
     }
 
 }

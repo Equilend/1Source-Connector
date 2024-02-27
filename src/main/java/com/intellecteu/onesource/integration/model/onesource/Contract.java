@@ -36,7 +36,7 @@ public class Contract implements Reconcilable {
     private List<Settlement> settlement;
     private ProcessingStatus processingStatus;
     private EventType eventType;
-    private String matchingSpirePositionId;
+    private Long matchingSpirePositionId;
     @JsonIgnore
     private FlowStatus flowStatus;
 

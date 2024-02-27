@@ -28,6 +28,7 @@ public class RecordMessageConstant {
             public static final String DECLINE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String GET_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Loan contract proposal - %s";
             public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED = "Loan contract proposal - %s";
+            public static final String POSITION_UNMATCHED_SUBJECT = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
@@ -140,6 +141,10 @@ public class RecordMessageConstant {
                 The loan contract proposal %s has been matched \
                 with a SPIRE position %s""";
 
+            public static final String POSITION_UNMATCHED_MSG = """
+                A new position %s has been created \
+                but not yet matched with a loan contract proposal.""";
+
             public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
                 A new trade agreement %s has been captured""";
 
@@ -176,14 +181,18 @@ public class RecordMessageConstant {
         }
     }
 
-    public static class Rerate{
+    public static class Rerate {
+
         public static class Subject {
+
             public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source Rerate - %s";
             public static final String MATCHED_RERATE = "Trade - %s";
             public static final String CREATED_RERATE = "Trade - %s";
             public static final String UNMATCHED_RERATE = "1Source rerate id -  %s";
         }
+
         public static class DataMsg {
+
             public static final String GET_RERATE_EXCEPTION_1SOURCE_MSG = "The details of rerate proposal %s have not been retrieved from 1Source for the following reason: %s";
             public static final String MATCHED_RERATE_MSG = "The rerate proposal %s has been matched with a SPIRE rerate trade: %s and needs now to be validated.";
             public static final String CREATED_RERATE_MSG = "A new rerate trade %s has been captured but yet matched with a rerate proposal.";

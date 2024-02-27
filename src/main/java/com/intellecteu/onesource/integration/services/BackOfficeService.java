@@ -3,13 +3,23 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.PENDING_ONESOURCE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_ID;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.EQUALS;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.GREATER_THAN;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.IN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.formattedDateTime;
+import static java.lang.String.join;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -40,6 +50,7 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTup
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SGroupTradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponsePositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
@@ -57,6 +68,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.web.client.HttpClientErrorException;
@@ -68,7 +80,7 @@ import org.springframework.web.client.RestClientException;
 public class BackOfficeService {
 
     private static final String STARTING_POSITION_ID = "0";
-    private static final Long STARTING_TRADE_ID = 0l;
+    private static final Long STARTING_TRADE_ID = 0L;
     private static final List<String> positionTypes = List.of(LENDER_POSITION_TYPE, BORROWER_POSITION_TYPE);
 
     private final PositionSpireApiClient positionSpireApiClient;
@@ -78,7 +90,8 @@ public class BackOfficeService {
     private final BackOfficeMapper backOfficeMapper;
     private final CloudEventRecordService cloudEventRecordService;
 
-    public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
+    @Deprecated(since = "0.0.5-SNAPSHOT")
+    public List<Position> getNewSpirePositionsObsolete(Optional<String> lastPositionId) {
         String maxPositionId = lastPositionId.orElse(STARTING_POSITION_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createTuplesGetNewPositions(maxPositionId));
@@ -103,9 +116,43 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public List<Position> getNewSpirePositions(LocalDateTime lastUpdate, List<Position> positionList) {
+    public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
+        String lastTradeIdRecorded = lastPositionId.orElse(String.valueOf(STARTING_TRADE_ID));
+        NQuery nQuery = new NQuery()
+            .andOr(NQuery.AndOrEnum.AND)
+            .tuples(createTuplesGetNewTradePositions(lastTradeIdRecorded));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
+        try {
+            log.debug("Sending request with SPIRE API Client");
+            final ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(
+                nQueryRequest);
+            if (responseTradeHasData(response)) {
+                List<SGroupTradeOutDTO> responseGroups = response.getBody().getData().getGroups();
+                return responseGroups.stream()
+                    .map(SGroupTradeOutDTO::getAvg)
+                    .map(backOfficeMapper::toPositionModel)
+                    .toList();
+            }
+        } catch (RestClientException e) {
+            log.warn("Rest client exception: {}", e.getMessage());
+            if (e instanceof HttpStatusCodeException exception) {
+                final HttpStatusCode statusCode = exception.getStatusCode();
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
+                    log.warn("SPIRE error response for {} subprocess. Details: {}",
+                        GET_NEW_POSITIONS_PENDING_CONFIRMATION, statusCode);
+                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
+                        GET_NEW_POSITIONS_PENDING_CONFIRMATION);
+                }
+            }
+        }
+        return List.of();
+    }
+
+    @Deprecated(since = "0.0.5-SNAPSHOT")
+    public List<Position> getNewSpirePositionsObsolete(LocalDateTime lastUpdate, List<Position> positionList) {
         String commaSeparatedIdList = positionList.stream()
             .map(Position::getPositionId)
+            .map(String::valueOf)
             .collect(Collectors.joining(COMMA_DELIMITER));
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(
             createTuplesGetNewPositionsByIdList(formattedDateTime(lastUpdate), commaSeparatedIdList));
@@ -132,9 +179,14 @@ public class BackOfficeService {
 
     private List<NQueryTuple> createTuplesGetNewPositionsByIdList(String lastUpdate, String commaSeparatedIdList) {
         List<NQueryTuple> tuples = new ArrayList<>();
-        tuples.add(new NQueryTuple().lValue("positionId").operator(OperatorEnum.IN).rValue1(commaSeparatedIdList));
+        tuples.add(new NQueryTuple().lValue("positionId").operator(IN).rValue1(commaSeparatedIdList));
         tuples.add(new NQueryTuple().lValue("lastModTs").operator(OperatorEnum.GREATER_THAN).rValue1(lastUpdate));
         return tuples;
+    }
+
+    private boolean responseTradeHasData(ResponseEntity<SResponseNQueryResponseTradeOutDTO> response) {
+        return response != null && response.getBody() != null && response.getBody().getData() != null
+            && !response.getBody().getData().getGroups().isEmpty();
     }
 
     private boolean responseHasData(ResponseEntity<SResponseNQueryResponsePositionOutDTO> response) {
@@ -180,9 +232,10 @@ public class BackOfficeService {
             }
         } catch (RestClientException e) {
             if (e instanceof HttpStatusCodeException exception) {
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
+                final HttpStatusCode statusCode = exception.getStatusCode();
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
                     log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_TRADE_EVENTS_PENDING_CONFIRMATION, exception.getStatusCode());
+                        GET_TRADE_EVENTS_PENDING_CONFIRMATION, statusCode);
                     recordTradeEventExceptionEvent(exception);
                 }
             }
@@ -194,7 +247,7 @@ public class BackOfficeService {
         PartyRole partyRole, Long accountId) throws InstructionRetrievementException {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createListOfTuplesGetInstruction(String.valueOf(position.getExposure().getDepoId()),
-                String.valueOf(position.getSecurityId()),
+                String.valueOf(position.getPositionSecurityId()),
                 String.valueOf(position.getPositionType().getPositionTypeId()),
                 String.valueOf(position.getCurrencyId()), String.valueOf(accountId)));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
@@ -226,16 +279,21 @@ public class BackOfficeService {
             swiftBic.setBic(settlement.getInstruction().getSettlementBic());
             swiftBic.setBranch(settlement.getInstruction().getLocalAgentBic());
 
-            return InstructionDTO.builder()
-                .agentName(settlement.getInstruction().getLocalAgentName())
-                .agentSafe(settlement.getInstruction().getLocalAgentAcct())
-                .accountDTO(accountDTO)
-                .agentBicDTO(swiftBic)
-                .build();
+            return createInstruction(settlement, accountDTO, swiftBic);
         } catch (NumberFormatException e) {
             log.warn("Parse data exception. Check the data correctness");
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST);
         }
+    }
+
+    private static InstructionDTO createInstruction(Settlement settlement, AccountDTO accountDTO,
+        SwiftbicDTO swiftBic) {
+        InstructionDTO instruction = new InstructionDTO();
+        instruction.setAgentName(settlement.getInstruction().getLocalAgentName());
+        instruction.setAgentSafe(settlement.getInstruction().getLocalAgentAcct());
+        instruction.setAccountDTO(accountDTO);
+        instruction.setAgentBicDTO(swiftBic);
+        return instruction;
     }
 
     public Optional<Position> getPositionForTrade(String venueRefId) {
@@ -264,17 +322,18 @@ public class BackOfficeService {
     public Boolean update1SourceLoanContractIdentifier(Position position) {
         PositionDTO positionDTO = new PositionDTO().positionReferenceNumber(
             position.getMatching1SourceLoanContractId());
-        TradeDTO originalTrade = new TradeDTO().positionId(Long.parseLong(position.getPositionId()))
-            .positionDTO(positionDTO);
+        TradeDTO originalTrade = new TradeDTO().positionId(position.getPositionId()).positionDTO(positionDTO);
         LoanTradeInputDTO loanTradeInputDTO = new LoanTradeInputDTO().originalTrade(originalTrade);
         try {
             ResponseEntity<SResponsePositionDTO> response = positionSpireApiClient.editPosition(loanTradeInputDTO);
             return response.getBody() != null && response.getBody().isSuccess();
         } catch (RestClientException e) {
             if (e instanceof HttpStatusCodeException exception) {
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                final HttpStatusCode statusCode = exception.getStatusCode();
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND)
+                    .contains(HttpStatus.valueOf(statusCode.value()))) {
                     log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        POST_POSITION_UPDATE, exception.getStatusCode());
+                        POST_POSITION_UPDATE, statusCode);
                     recordPositionContractIdentifierUpdateExceptionEvent(position, exception);
                 }
             }
@@ -283,32 +342,48 @@ public class BackOfficeService {
     }
 
     private List<NQueryTuple> createTuplesGetPositionByTradeLink(String tradeLink) {
-        return List.of(new NQueryTuple().lValue("customValue2").operator(OperatorEnum.EQUALS).rValue1(tradeLink));
+        return List.of(new NQueryTuple().lValue("customValue2").operator(EQUALS).rValue1(tradeLink));
+    }
+
+    private List<NQueryTuple> createTuplesGetNewTradePositions(String lastTradeId) {
+        return List.of(
+            buildTuple(TRADE_TYPE, IN, join(COMMA_DELIMITER, List.of(NEW_LOAN, NEW_BORROW))),
+            buildTuple(TRADE_STATUS, EQUALS, PENDING_ONESOURCE_CONFIRMATION),
+            buildTuple(TRADE_ID, GREATER_THAN, lastTradeId)
+        );
+    }
+
+    private static NQueryTuple buildTuple(String lValue, OperatorEnum operator,
+        String rValue1) {
+        return new NQueryTuple()
+            .lValue(lValue)
+            .operator(operator)
+            .rValue1(rValue1);
     }
 
     private List<NQueryTuple> createTuplesGetNewPositions(String positionId) {
         List<NQueryTuple> tuples = new ArrayList<>();
         tuples.add(
             new NQueryTuple().lValue("positionId").operator(NQueryTuple.OperatorEnum.GREATER_THAN).rValue1(positionId));
-        tuples.add(new NQueryTuple().lValue("status").operator(NQueryTuple.OperatorEnum.IN).rValue1("FUTURE"));
-        tuples.add(new NQueryTuple().lValue("positionType").operator(NQueryTuple.OperatorEnum.IN)
-            .rValue1(String.join(",", positionTypes)));
-        tuples.add(new NQueryTuple().lValue("depoKy").operator(NQueryTuple.OperatorEnum.IN).rValue1("DTC"));
+        tuples.add(new NQueryTuple().lValue("status").operator(IN).rValue1("FUTURE"));
+        tuples.add(new NQueryTuple().lValue("positionType").operator(IN)
+            .rValue1(join(",", positionTypes)));
+        tuples.add(new NQueryTuple().lValue("depoKy").operator(IN).rValue1("DTC"));
         return tuples;
     }
 
     private List<NQueryTuple> createListOfTuplesGetInstruction(String depoId, String securityId, String positionTypeId,
         String currencyId, String accountId) {
         List<NQueryTuple> tuples = new ArrayList<>();
-        tuples.add(new NQueryTuple().lValue("accountId").operator(OperatorEnum.EQUALS).rValue1(accountId));
+        tuples.add(new NQueryTuple().lValue("accountId").operator(EQUALS).rValue1(accountId));
         tuples.add(new NQueryTuple().lValue("depoId")
-            .operator(OperatorEnum.EQUALS).rValue1(depoId));
+            .operator(EQUALS).rValue1(depoId));
         tuples.add(new NQueryTuple().lValue("securityId")
-            .operator(OperatorEnum.EQUALS).rValue1(securityId));
+            .operator(EQUALS).rValue1(securityId));
         tuples.add(new NQueryTuple().lValue("positionTypeId")
-            .operator(OperatorEnum.EQUALS).rValue1(positionTypeId));
+            .operator(EQUALS).rValue1(positionTypeId));
         tuples.add(new NQueryTuple().lValue("currencyId")
-            .operator(OperatorEnum.EQUALS).rValue1(currencyId));
+            .operator(EQUALS).rValue1(currencyId));
         return tuples;
     }
 
@@ -352,7 +427,7 @@ public class BackOfficeService {
 
     private List<NQueryTuple> createTuplesGetPositionsByCustomeValue2(String venueRefId) {
         List<NQueryTuple> tuples = new ArrayList<>();
-        tuples.add(new NQueryTuple().lValue("customValue2").operator(OperatorEnum.EQUALS).rValue1(venueRefId));
+        tuples.add(new NQueryTuple().lValue("customValue2").operator(EQUALS).rValue1(venueRefId));
         return tuples;
     }
 
@@ -388,7 +463,7 @@ public class BackOfficeService {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(
             position.getMatching1SourceLoanContractId(), exception, IntegrationSubProcess.POST_POSITION_UPDATE,
-            position.getPositionId());
+            String.valueOf(position.getPositionId()));
         cloudEventRecordService.record(recordRequest);
     }
 

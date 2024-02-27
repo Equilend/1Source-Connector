@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.intellecteu</groupId>
     <artifactId>onesource</artifactId>
-    <version>0.0.4-SNAPSHOT</version>
+    <version>0.0.5-SNAPSHOT</version>
     <name>1source-integration</name>
     <description>1source-integration</description>
     <properties>
@@ -409,7 +409,7 @@
                 <configuration>
                     <language>java</language>
                     <library>resttemplate</library>
-                    <inputSpec>mockApi/spire-swagger/spire-trade-swagger.json</inputSpec>
+                    <inputSpec>mockApi/spire-swagger/spire-trade-swagger_0_0_5.json</inputSpec>
                     <output>${project.build.directory}/generated-sources/swagger</output>
                     <modelPackage>${project.groupId}.onesource.integration.services.client.spire.dto</modelPackage>
                     <apiPackage>${project.groupId}.onesource.integration.services.client.spire.api</apiPackage>

@@ -73,7 +73,7 @@ public class PositionDto implements Reconcilable {
     private PositionCollateralTypeDto collateralTypeDto;
     @JsonProperty("exposureDTO")
     private PositionExposureDto exposureDto;
-    @JsonProperty("positiontypeDTO")
+    @JsonProperty("positionTypeDTO")
     private PositionTypeDto positionTypeDto;
     @JsonProperty("accountDTO")
     private AccountDTO accountDto;

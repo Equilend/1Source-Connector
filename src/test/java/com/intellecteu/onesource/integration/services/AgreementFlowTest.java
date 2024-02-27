@@ -34,7 +34,7 @@ import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.agreement.AgreementDataReceived;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.agreement.AgreementDataReceived;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;

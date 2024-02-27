@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
@@ -69,11 +69,9 @@ public class EventProcessor {
         String eventUri = event.getResourceUri();
         Optional<Agreement> agreementOptional = oneSourceService.retrieveTradeAgreement(eventUri, event.getEventType());
         agreementOptional
-            .ifPresent(agreement -> {
-                agreement = enrichAgreement(agreement, event);
-                agreementService.saveAgreement(agreement);
-                recordCloudEvent(eventUri);
-            });
+            .map(a -> enrichAgreement(a, event))
+            .map(agreementService::saveAgreement)
+            .ifPresent(agreement -> recordCloudEvent(eventUri));
     }
 
     @Transactional
@@ -152,7 +150,7 @@ public class EventProcessor {
                     && PositionService.CANCEL_POSITION_STATUSES.contains(position.getPositionStatus().getStatus())) {
                     log.debug("Executing cancellation for contract with id {} and position with id {}",
                         contract.getContractId(), position.getPositionId());
-                    oneSourceService.cancelContract(contract, position.getPositionId());
+                    oneSourceService.cancelContract(contract, String.valueOf(position.getPositionId()));
                 }
             }
         }
@@ -188,7 +186,7 @@ public class EventProcessor {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(id,
-            recordType, position.getPositionId());
+            recordType, String.valueOf(position.getPositionId()));
         cloudEventRecordService.record(recordRequest);
     }
 }

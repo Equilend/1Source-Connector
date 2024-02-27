@@ -25,7 +25,7 @@ public class GenericRecordCloudEventBuilder extends IntegrationCloudEventBuilder
 
     public GenericRecordCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit.uri}") String integrationUri) {
+        @Value("${integration-toolkit-uri}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 

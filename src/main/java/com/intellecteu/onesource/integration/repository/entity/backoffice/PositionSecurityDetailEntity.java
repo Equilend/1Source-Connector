@@ -16,6 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PositionSecurityDetailEntity {
 
+    private Integer securityId;
     private String ticker;
     private String cusip;
     private String isin;
@@ -23,7 +24,7 @@ public class PositionSecurityDetailEntity {
     private String quickCode;
     private String bloombergId;
     private String description;
+    private Double securityPrice;
     private Integer priceFactor;
-    private Double baseRebateRate;
 
 }

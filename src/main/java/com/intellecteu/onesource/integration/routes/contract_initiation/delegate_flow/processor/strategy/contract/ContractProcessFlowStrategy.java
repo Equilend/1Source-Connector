@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract;
 
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;

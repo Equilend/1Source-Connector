@@ -487,7 +487,7 @@ class ContractReconcileServiceTest {
         contract.getTrade().getInstrument().setCusip(null);
         contract.getTrade().getInstrument().setIsin(null);
         contract.getTrade().getInstrument().setSedol(null);
-        contract.getTrade().getInstrument().setQuick(null);
+        contract.getTrade().getInstrument().setQuickCode(null);
         contract.getTrade().getInstrument().setFigi(null);
 
         verifyReconciliationFailure();

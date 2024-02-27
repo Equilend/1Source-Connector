@@ -2,7 +2,6 @@ package com.intellecteu.onesource.integration.model.backoffice;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +16,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionStatus {
 
+    private Integer statusId;
     private String status;
 
 }

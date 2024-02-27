@@ -22,7 +22,7 @@ public class MaintainParticipantsCloudEventBuilder extends IntegrationCloudEvent
 
     public MaintainParticipantsCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit.uri}") String integrationUri) {
+        @Value("${integration-toolkit-uri}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 

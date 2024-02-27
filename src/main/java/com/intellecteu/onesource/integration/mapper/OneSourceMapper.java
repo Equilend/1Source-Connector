@@ -1,35 +1,21 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
-import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.FeeRate;
-import com.intellecteu.onesource.integration.model.onesource.FixedRate;
-import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
-import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.FeeRateEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.FixedRateEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.FloatingRateEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.RateEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.RebateRateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
@@ -39,8 +25,9 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class OneSourceMapper {
 
     public abstract Agreement toModel(AgreementEntity agreementEntity);

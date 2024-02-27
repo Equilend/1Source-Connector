@@ -244,7 +244,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
                     .ifPresent(failsLog::add);
             }
             if (securityDetailDto.getQuickCode() != null) {
-                checkEquality(instrument.getQuick(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK)
+                checkEquality(instrument.getQuickCode(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK)
                     .ifPresent(failsLog::add);
             }
         }

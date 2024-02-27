@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.agreement;
+package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
@@ -53,6 +53,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -133,12 +135,14 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
                 });
             } catch (InstructionRetrievementException e) {
                 if (e.getCause() instanceof HttpStatusCodeException exception) {
-                    log.warn("SPIRE error response for request Instruction: " + exception.getStatusCode());
-                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(exception.getStatusCode())) {
+                    final HttpStatusCode statusCode = exception.getStatusCode();
+                    log.warn("SPIRE error response for request Instruction: " + statusCode);
+                    if (Set.of(UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(HttpStatus.valueOf(statusCode.value()))) {
                         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                         var recordRequest = eventBuilder.buildExceptionRequest(
                             position.getMatching1SourceTradeAgreementId(), exception,
-                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS, position.getPositionId());
+                            IntegrationSubProcess.GET_SETTLEMENT_INSTRUCTIONS,
+                            String.valueOf(position.getPositionId()));
                         cloudEventRecordService.record(recordRequest);
                     }
                 }

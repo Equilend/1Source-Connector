@@ -48,8 +48,8 @@ import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
@@ -179,9 +179,9 @@ public class ContractFlowTest {
         PositionExposure exposure = new PositionExposure();
         exposure.setCpMarkRoundTo(2);
         position = new Position();
-        position.setPositionId("testId");
+        position.setPositionId(100L);
         position.setExposure(exposure);
-        position.setPositionAccount(new PositionAccount(1l, "borrower-lei", "test", "testAccountId"));
+        position.setPositionAccount(new PositionAccount(1L, 1L, "borrower-lei", "test", 11L, 11L));
     }
 
     @Test
@@ -245,7 +245,7 @@ public class ContractFlowTest {
     void test_contractFlow_shouldUpdateInstructionsAndPosition_success() throws JsonProcessingException {
         contract.setEventType(EventType.CONTRACT_PENDING);
         contract.setContractStatus(APPROVED);
-        position.setPositionId("2");
+        position.setPositionId(2L);
 
         SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
             .instructionId(2L)

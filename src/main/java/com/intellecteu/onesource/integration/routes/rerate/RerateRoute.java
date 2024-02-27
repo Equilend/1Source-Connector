@@ -8,7 +8,7 @@ import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value="integration-toolkit.route.rerate.enable",
+    value = "route.rerate.enable",
     havingValue = "true",
     matchIfMissing = true)
 public class RerateRoute extends RouteBuilder {

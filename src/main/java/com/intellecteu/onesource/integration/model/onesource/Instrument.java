@@ -25,15 +25,17 @@ import lombok.extern.slf4j.Slf4j;
 public class Instrument implements Reconcilable {
 
     @JsonIgnore
-    private Long id;
+    private Integer id;
+    private Long securityId;
     private String ticker;
     private String cusip;
     private String isin;
     private String sedol;
-    private String quick;
+    private String quickCode;
     private String figi;
     private String description;
     private Price price;
+    private Integer priceFactor;
 
     @Override
     public void validateForReconciliation() throws ValidationException {
@@ -44,7 +46,7 @@ public class Instrument implements Reconcilable {
     }
 
     private String getFailedValidationFields() {
-        var isAtLeastOneInstrumentPresent = Stream.of(cusip, isin, sedol, quick)
+        var isAtLeastOneInstrumentPresent = Stream.of(cusip, isin, sedol, quickCode)
             .anyMatch(Objects::nonNull);
         if (!isAtLeastOneInstrumentPresent) {
             return String.join(", ", CUSIP, ISIN, SEDOL, QUICK);

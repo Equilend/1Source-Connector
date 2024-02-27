@@ -28,7 +28,7 @@ public class TradeEventService {
 
     @Autowired
     public TradeEventService(TradeEventRepository tradeEventRepository, TimestampRepository timestampRepository,
-        @Value("${integration-toolkit.starting-trade-event-datetime}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX") LocalDateTime startingTradeEventDatetime,
+        @Value("${starting-trade-event-datetime}") @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX") LocalDateTime startingTradeEventDatetime,
         OneSourceMapper oneSourceMapper) {
         this.tradeEventRepository = tradeEventRepository;
         this.timestampRepository = timestampRepository;
