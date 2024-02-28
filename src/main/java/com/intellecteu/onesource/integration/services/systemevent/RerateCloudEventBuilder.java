@@ -3,10 +3,12 @@ package com.intellecteu.onesource.integration.services.systemevent;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.UNMATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.GET_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.MATCHED_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
@@ -46,9 +48,21 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException exception,
         IntegrationSubProcess subProcess, String recorded) {
         return switch (subProcess) {
+            case POST_RERATE_PROPOSAL -> createPostRerateExceptionCloudRequest(exception, subProcess, recorded);
             case GET_RERATE_PROPOSAL -> createGetRerateExceptionCloudRequest(exception, subProcess, recorded);
             default -> null;
         };
+    }
+
+    private CloudEventBuildRequest createPostRerateExceptionCloudRequest(HttpStatusCodeException exception, IntegrationSubProcess subProcess, String recorded) {
+        String dataMessage = format(POST_RERATE_EXCEPTION_1SOURCE_MSG, recorded, exception.getStatusText());
+        return createRecordRequest(
+            TECHNICAL_EXCEPTION_1SOURCE,
+            format(POST_RERATE_EXCEPTION_1SOURCE, recorded),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
     }
 
     private CloudEventBuildRequest createGetRerateExceptionCloudRequest(HttpStatusCodeException exception,

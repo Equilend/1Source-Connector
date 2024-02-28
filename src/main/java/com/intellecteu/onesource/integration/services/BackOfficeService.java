@@ -373,6 +373,7 @@ public class BackOfficeService {
         rerateTrade.setTradeOut(tradeOut);
         rerateTrade.setTradeId(tradeOut.getTradeId());
         rerateTrade.setRelatedPositionId(Long.valueOf(tradeOut.getPosition().getPositionId()));
+        rerateTrade.setRelatedContractId(tradeOutDTO.getPositionOutDTO().getLedgerId());
         return rerateTrade;
     }
 

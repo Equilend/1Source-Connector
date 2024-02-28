@@ -233,7 +233,7 @@ public class EntityTestFactory {
             .positionStatus(positionStatus)
             .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(0.05d, 10, 12))
-            .positionType(new PositionType("CASH BORROW"))
+            .positionType(new PositionType(1, "CASH BORROW"))
             .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
             .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
             .endDate(LocalDateTime.now())
