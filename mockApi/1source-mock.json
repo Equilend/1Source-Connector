@@ -1609,6 +1609,62 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "8f945cb4-13e8-44ae-8a3d-7ebfa0f24a5f",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "contracts/:contractId/rerates",
+      "responses": [
+        {
+          "uuid": "1c14525c-6e2c-4c6e-bf1b-33c7665cba7c",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [
+            {
+              "target": "params",
+              "modifier": "contractId",
+              "value": "7777",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "f58c9205-7331-424b-b789-43d8a64b9ae4",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 400,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1683,6 +1739,10 @@
     {
       "type": "route",
       "uuid": "f6694c60-3538-4c21-a4ce-8361178b4c41"
+    },
+    {
+      "type": "route",
+      "uuid": "8f945cb4-13e8-44ae-8a3d-7ebfa0f24a5f"
     }
   ],
   "proxyMode": false,

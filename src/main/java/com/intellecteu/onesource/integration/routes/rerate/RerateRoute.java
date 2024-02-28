@@ -16,6 +16,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 @ConditionalOnProperty(
@@ -71,15 +72,22 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateProcessor, "updateRerateTradeCreationDatetime")
             .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CREATED)")
             .bean(rerateProcessor, "saveRerateTrade")
-            .to("direct:processRerateTrade")
+            .to("direct:matchRerate")
             .log(">>>>> Finished recording BackOffice Rerate Trades with tradeId ${body.tradeId}");
 
-        from("direct:processRerateTrade")
-            .log(">>>>> Started processing BackOffice Rerate Trade with tradeId ${body.tradeId}")
-            .bean(rerateProcessor, "matchRerate")
+        from("direct:matchRerate")
+            .log(">>>>> Started matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate")
+            .bean(rerateProcessor, "matchWithRerate")
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<<<< Finished processing BackOffice Rerate Trade with tradeId ${body.tradeId}");
+            .log("<<<<< Finished matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate");
 
+        from(createUnmatchedRerateTradeSQLEndpoint(CREATED))
+            .log(">>>>> Started instruction BackOffice Rerate Trade with tradeId ${body.tradeId}")
+            .bean(backOfficeMapper, "toModel")
+            .bean(rerateProcessor, "instructRerateTrade")
+            //Success instruction changes status to SUBMITTED
+            .bean(rerateProcessor, "saveRerateTrade")
+            .log(">>>>> Finished instruction BackOffice Rerate Trade with tradeId ${body.tradeId}");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
             .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
@@ -110,6 +118,13 @@ public class RerateRoute extends RouteBuilder {
     private String createTradeEventSQLEndpoint(ProcessingStatus status, EventType... eventTypes) {
         return String.format(TRADE_EVENT_SQL_ENDPOINT, status,
             Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
+    }
+
+    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status){
+        var unmatchedRerateTradeSQLEndpoint = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
+        return String.format(unmatchedRerateTradeSQLEndpoint, status);
     }
 
     private String createRerateTradeSQLEndpoint(ProcessingStatus status) {

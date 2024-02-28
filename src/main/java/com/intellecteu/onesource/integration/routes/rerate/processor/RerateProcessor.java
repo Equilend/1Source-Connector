@@ -1,20 +1,21 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
 
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import jakarta.transaction.TransactionManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,12 +23,14 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 public class RerateProcessor {
 
     private final BackOfficeService lenderBackOfficeService;
     private final BackOfficeService borrowerBackOfficeService;
+    private final OneSourceService oneSourceService;
     private final ContractService contractService;
     private final RerateTradeService rerateTradeService;
     private final RerateService rerateService;
@@ -35,10 +38,12 @@ public class RerateProcessor {
 
     @Autowired
     public RerateProcessor(BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService,
-        ContractService contractService, RerateTradeService rerateTradeService, RerateService rerateService,
+        OneSourceService oneSourceService, ContractService contractService, RerateTradeService rerateTradeService,
+        RerateService rerateService,
         CloudEventRecordService cloudEventRecordService) {
         this.lenderBackOfficeService = lenderBackOfficeService;
         this.borrowerBackOfficeService = borrowerBackOfficeService;
+        this.oneSourceService = oneSourceService;
         this.contractService = contractService;
         this.rerateTradeService = rerateTradeService;
         this.rerateService = rerateService;
@@ -79,17 +84,30 @@ public class RerateProcessor {
         return rerateTradeList;
     }
 
-    public RerateTrade matchRerate(RerateTrade rerateTrade) {
+    public RerateTrade matchWithRerate(RerateTrade rerateTrade) {
         LocalDate accrualDate = rerateTrade.getTradeOut().getAccrualDate().toLocalDate();
         Optional<Rerate> rerateOptional = rerateService.findRerate(rerateTrade.getRelatedPositionId(),
             accrualDate, ProcessingStatus.UNMATCHED);
-        if(rerateOptional.isPresent()){
-            Rerate rerate = rerateOptional.get();
+        Rerate rerate = rerateOptional.orElse(null);
+        if (rerate != null) {
             rerateTrade.setMatchingRerateId(rerate.getRerateId());
-            rerateService.markRerateAsMatchedWithRerateTradeIdAndPositionId(rerate, rerateTrade.getTradeId(), rerateTrade.getRelatedPositionId());
+            rerateService.markRerateAsMatchedWithRerateTradeIdAndPositionId(rerate, rerateTrade.getTradeId(),
+                rerateTrade.getRelatedPositionId());
             recordRerateTradeSuccessMatched1SourceRerateCloudEvent(rerate);
-        }else{
+        } else {
             recordCreatedRerateTradeCloudEvent(rerateTrade);
+        }
+        return rerateTrade;
+    }
+
+    public RerateTrade instructRerateTrade(RerateTrade rerateTrade) {
+        try {
+            oneSourceService.instructRerate(rerateTrade);
+            rerateTrade.setProcessingStatus(ProcessingStatus.SUBMITTED);
+        } catch (HttpClientErrorException httpClientErrorException) {
+            if (httpClientErrorException.getStatusCode().value() != 400) {
+                recordTechnicalException1source(httpClientErrorException, rerateTrade.getTradeId());
+            }
         }
         return rerateTrade;
     }
@@ -117,6 +135,15 @@ public class RerateProcessor {
             return Optional.of(rerate.getRerate().getRebate().getFloating().getEffectiveDate());
         }
         return Optional.empty();
+    }
+
+    private void recordTechnicalException1source(HttpClientErrorException httpClientErrorException,
+        Long spireRerateTradeId) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildExceptionRequest(httpClientErrorException,
+            POST_RERATE_PROPOSAL, String.valueOf(spireRerateTradeId));
+        cloudEventRecordService.record(recordRequest);
     }
 
     private void recordRerateTradeSuccessMatched1SourceRerateCloudEvent(Rerate rerate) {
