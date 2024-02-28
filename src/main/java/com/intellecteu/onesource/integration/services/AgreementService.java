@@ -1,23 +1,23 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
 
-import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.enums.RecordType;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
+import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -28,35 +28,36 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class AgreementService {
 
-    private AgreementRepository agreementRepository;
-    private CloudEventRecordService cloudEventRecordService;
-    private EventMapper eventMapper;
-    private SpireMapper spireMapper;
-    private ReconcileService<AgreementDto, PositionDto> reconcileService;
+    private final AgreementRepository agreementRepository;
+    private final CloudEventRecordService cloudEventRecordService;
+    private final SpireMapper spireMapper;
+    private final ReconcileService<Agreement, PositionDto> reconcileService;
+    private final OneSourceMapper oneSourceMapper;
 
     @Autowired
     public AgreementService(AgreementRepository agreementRepository, CloudEventRecordService cloudEventRecordService,
-        EventMapper eventMapper, SpireMapper spireMapper,
-        ReconcileService<AgreementDto, PositionDto> reconcileService) {
+        SpireMapper spireMapper, ReconcileService<Agreement, PositionDto> reconcileService,
+        OneSourceMapper oneSourceMapper) {
         this.agreementRepository = agreementRepository;
         this.cloudEventRecordService = cloudEventRecordService;
-        this.eventMapper = eventMapper;
         this.spireMapper = spireMapper;
         this.reconcileService = reconcileService;
+        this.oneSourceMapper = oneSourceMapper;
     }
 
     public Agreement saveAgreement(Agreement agreement) {
-        agreement.setLastUpdateDatetime(LocalDateTime.now());
-        return agreementRepository.save(agreement);
+        agreement.setLastUpdateDateTime(LocalDateTime.now());
+        AgreementEntity agreementEntity = agreementRepository.save(oneSourceMapper.toEntity(agreement));
+        return oneSourceMapper.toModel(agreementEntity);
     }
 
     public Optional<Agreement> findByVenueRefId(String venueRefId) {
         return agreementRepository.findByVenueRefId(venueRefId).stream()
-            .findFirst();
+            .findFirst().map(oneSourceMapper::toModel);
     }
 
     public Optional<Agreement> findByAgreementId(String agreementId) {
-        return agreementRepository.findByAgreementId(agreementId).stream().findFirst();
+        return agreementRepository.findByAgreementId(agreementId).stream().findFirst().map(oneSourceMapper::toModel);
     }
 
     public Agreement markAgreementAsMatched(Agreement agreement, String positionId) {
@@ -71,7 +72,7 @@ public class AgreementService {
         try {
             log.debug("Starting reconciliation for agreement {} and position {}",
                 agreement.getAgreementId(), position.getPositionId());
-            reconcileService.reconcile(eventMapper.toAgreementDto(agreement), spireMapper.toPositionDto(position));
+            reconcileService.reconcile(agreement, spireMapper.toPositionDto(position));
             log.debug("Agreement {} is reconciled with position {}", agreement.getAgreementId(),
                 position.getPositionId());
             agreement.setProcessingStatus(RECONCILED);

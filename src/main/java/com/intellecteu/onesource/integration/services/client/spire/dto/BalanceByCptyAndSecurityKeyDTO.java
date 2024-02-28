@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * BalanceByCptyAndSecurityKeyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class BalanceByCptyAndSecurityKeyDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("cptyGroupId")
-  private Long cptyGroupId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("securityId")
-  private Long securityId = null;
+    @JsonProperty("cptyGroupId")
+    private Long cptyGroupId = null;
 
-  public BalanceByCptyAndSecurityKeyDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("securityId")
+    private Long securityId = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public BalanceByCptyAndSecurityKeyDTO cptyGroupId(Long cptyGroupId) {
-    this.cptyGroupId = cptyGroupId;
-    return this;
-  }
-
-   /**
-   * Get cptyGroupId
-   * @return cptyGroupId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getCptyGroupId() {
-    return cptyGroupId;
-  }
-
-  public void setCptyGroupId(Long cptyGroupId) {
-    this.cptyGroupId = cptyGroupId;
-  }
-
-  public BalanceByCptyAndSecurityKeyDTO securityId(Long securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Long securityId) {
-    this.securityId = securityId;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BalanceByCptyAndSecurityKeyDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    BalanceByCptyAndSecurityKeyDTO balanceByCptyAndSecurityKeyDTO = (BalanceByCptyAndSecurityKeyDTO) o;
-    return Objects.equals(this.qualifiedName, balanceByCptyAndSecurityKeyDTO.qualifiedName) &&
-        Objects.equals(this.cptyGroupId, balanceByCptyAndSecurityKeyDTO.cptyGroupId) &&
-        Objects.equals(this.securityId, balanceByCptyAndSecurityKeyDTO.securityId);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, cptyGroupId, securityId);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class BalanceByCptyAndSecurityKeyDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    cptyGroupId: ").append(toIndentedString(cptyGroupId)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public BalanceByCptyAndSecurityKeyDTO cptyGroupId(Long cptyGroupId) {
+        this.cptyGroupId = cptyGroupId;
+        return this;
+    }
+
+    /**
+     * Get cptyGroupId
+     *
+     * @return cptyGroupId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getCptyGroupId() {
+        return cptyGroupId;
+    }
+
+    public void setCptyGroupId(Long cptyGroupId) {
+        this.cptyGroupId = cptyGroupId;
+    }
+
+    public BalanceByCptyAndSecurityKeyDTO securityId(Long securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BalanceByCptyAndSecurityKeyDTO balanceByCptyAndSecurityKeyDTO = (BalanceByCptyAndSecurityKeyDTO) o;
+        return Objects.equals(this.qualifiedName, balanceByCptyAndSecurityKeyDTO.qualifiedName) &&
+            Objects.equals(this.cptyGroupId, balanceByCptyAndSecurityKeyDTO.cptyGroupId) &&
+            Objects.equals(this.securityId, balanceByCptyAndSecurityKeyDTO.securityId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, cptyGroupId, securityId);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class BalanceByCptyAndSecurityKeyDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    cptyGroupId: ").append(toIndentedString(cptyGroupId)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

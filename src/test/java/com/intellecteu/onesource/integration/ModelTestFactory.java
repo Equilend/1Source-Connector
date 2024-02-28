@@ -1,28 +1,53 @@
 package com.intellecteu.onesource.integration;
 
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
-import static com.intellecteu.onesource.integration.model.CollateralDescription.DEBT;
-import static com.intellecteu.onesource.integration.model.CollateralType.CASH;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
-import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
+import static com.intellecteu.onesource.integration.model.onesource.CollateralDescription.DEBT;
+import static com.intellecteu.onesource.integration.model.onesource.CollateralType.CASH;
+import static com.intellecteu.onesource.integration.model.onesource.CurrencyCd.USD;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
+import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
-import com.intellecteu.onesource.integration.model.Agreement;
-import com.intellecteu.onesource.integration.model.CloudEventEntity;
-import com.intellecteu.onesource.integration.model.Collateral;
-import com.intellecteu.onesource.integration.model.Instrument;
-import com.intellecteu.onesource.integration.model.InternalReference;
-import com.intellecteu.onesource.integration.model.Price;
-import com.intellecteu.onesource.integration.model.VenueParty;
-import com.intellecteu.onesource.integration.model.spire.Currency;
-import com.intellecteu.onesource.integration.model.spire.LoanBorrow;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.model.spire.PositionAccount;
-import com.intellecteu.onesource.integration.model.spire.PositionCollateralType;
-import com.intellecteu.onesource.integration.model.spire.PositionExposure;
-import com.intellecteu.onesource.integration.model.spire.PositionSecurityDetail;
-import com.intellecteu.onesource.integration.model.spire.PositionType;
+import com.intellecteu.onesource.integration.model.backoffice.Currency;
+import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
+import com.intellecteu.onesource.integration.model.backoffice.PositionCollateralType;
+import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
+import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
+import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.onesource.Agreement;
+import com.intellecteu.onesource.integration.model.onesource.Collateral;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.FeeRate;
+import com.intellecteu.onesource.integration.model.onesource.FixedRate;
+import com.intellecteu.onesource.integration.model.onesource.Instrument;
+import com.intellecteu.onesource.integration.model.onesource.InternalReference;
+import com.intellecteu.onesource.integration.model.onesource.LocalVenueField;
+import com.intellecteu.onesource.integration.model.onesource.Party;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
+import com.intellecteu.onesource.integration.model.onesource.Price;
+import com.intellecteu.onesource.integration.model.onesource.Rate;
+import com.intellecteu.onesource.integration.model.onesource.RebateRate;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.TermType;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
+import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
+import com.intellecteu.onesource.integration.model.onesource.Venue;
+import com.intellecteu.onesource.integration.model.onesource.VenueParty;
+import com.intellecteu.onesource.integration.repository.entity.onesource.CloudEventEntity;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import lombok.experimental.UtilityClass;
 
@@ -46,6 +71,126 @@ public class ModelTestFactory {
             .build();
     }
 
+    public static Contract buildContract() {
+        return Contract.builder()
+            .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
+            .lastEvent(buildTradeEvent())
+            .lastUpdatePartyId("test")
+            .eventType(EventType.CONTRACT_PROPOSED)
+            .lastUpdateDateTime(LocalDateTime.now())
+            .settlement(List.of(buildSettlement()))
+            .trade(buildTradeAgreement())
+            .build();
+    }
+
+    public static TradeAgreement buildTradeAgreement() {
+        return TradeAgreement.builder()
+            .id(1L)
+            .venue(buildVenue())
+            .instrument(buildInstrument())
+            .rate(buildRate())
+            .quantity(2)
+            .billingCurrency(USD)
+            .dividendRatePct(2)
+            .tradeDate(LocalDate.now())
+            .termType(TermType.OPEN)
+            .termDate(LocalDate.now())
+            .settlementDate(LocalDate.now())
+            .settlementType(DVP)
+            .collateral(buildCollateral())
+            .transactingParties(createTransactionParties())
+            .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
+            .build();
+    }
+
+    public static List<TransactingParty> createTransactionParties() {
+        return List.of(
+            createTransactionParty(LENDER, "lender-lei"),
+            createTransactionParty(BORROWER, "borrower-lei"));
+    }
+
+    public static TransactingParty createTransactionParty(PartyRole role, String gleifLei) {
+        return TransactingParty.builder()
+            .partyRole(role)
+            .party(createParty(gleifLei))
+            .build();
+    }
+
+    public static Party createParty(String gleifLei) {
+        return Party.builder()
+            .partyId("testPartyId")
+            .partyName("testPartyName")
+            .gleifLei(gleifLei)
+            .internalPartyId("testInternalPartyId")
+            .build();
+    }
+
+    public static Rate buildRate() {
+        return Rate.builder()
+            .fee(buildFeeRate())
+            .rebate(buildRebateRate())
+            .build();
+    }
+
+    public static RebateRate buildRebateRate() {
+        return RebateRate.builder()
+            .fixed(new FixedRate(10.2d))
+            .build();
+    }
+
+    public static FeeRate buildFeeRate() {
+        return FeeRate.builder()
+            .baseRate(10.2d)
+            .effectiveRate(4.0d)
+            .effectiveDate(null)
+            .cutoffTime(null)
+            .build();
+    }
+
+    public static Venue buildVenue() {
+        return Venue.builder()
+            .id(99999L)
+            .partyId("testPartyId")
+            .type(ONPLATFORM)
+            .venueName("testVenueName")
+            .venueRefKey("testVenueRefId")
+            .transactionDateTime(LocalDateTime.now())
+            .venueParties(Set.of(buildVenueParty()))
+            .localVenueFields(Set.of(buildVenueFields()))
+            .build();
+
+    }
+
+    public static LocalVenueField buildVenueFields() {
+        return LocalVenueField.builder()
+            .localFieldName("testName")
+            .localFieldValue("testValue")
+            .build();
+    }
+
+    public static Settlement buildSettlement() {
+        return Settlement.builder()
+            .partyRole(BORROWER)
+            .instruction(buildInstruction())
+            .build();
+    }
+
+    public static SettlementInstruction buildInstruction() {
+        return SettlementInstruction.builder()
+            .localAgentAcct("testacc")
+            .localAgentBic("RHBBMYKL")
+            .localAgentName("nestname")
+            .settlementBic("RHBBMYKL")
+            .dtcParticipantNumber("123")
+            .build();
+    }
+
+    public static TradeEvent buildTradeEvent() {
+        return TradeEvent.builder()
+            .eventId(1L)
+            .build();
+    }
+
     public static Agreement buildAgreement() {
         var agreementDto = DtoTestFactory.buildAgreementDto();
         var om = createTestObjectMapper();
@@ -53,6 +198,13 @@ public class ModelTestFactory {
     }
 
     public static Position buildPosition() {
+        return buildPosition(null);
+    }
+
+    public static Position buildPosition(PositionStatus positionStatus) {
+        if (positionStatus == null) {
+            positionStatus = new PositionStatus(OPEN);
+        }
         return Position.builder()
             .venueRefId("testVenueRefId")
             .positionId("testSpirePositionId")
@@ -69,11 +221,12 @@ public class ModelTestFactory {
             .amount(1.0d)
             .price(100.0d)
             .contractValue(123.0d)
+            .positionStatus(positionStatus)
             .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(0.05d, 10, 12))
             .positionType(new PositionType("CASH BORROW"))
-            .positionAccount(new PositionAccount("testLei", "testLeiName", "testAccountId"))
-            .positionCpAccount(new PositionAccount("testCpLei", "testCpLeiName", "testAccountId"))
+            .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
+            .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();

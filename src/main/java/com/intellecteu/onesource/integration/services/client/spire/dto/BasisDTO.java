@@ -21,114 +21,117 @@ import java.util.Objects;
 /**
  * BasisDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class BasisDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("basisId")
-  private Integer basisId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("basisName")
-  private String basisName = null;
+    @JsonProperty("basisId")
+    private Integer basisId = null;
 
-  public BasisDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
+    @JsonProperty("basisName")
+    private String basisName = null;
 
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public BasisDTO basisId(Integer basisId) {
-    this.basisId = basisId;
-    return this;
-  }
-
-   /**
-   * Get basisId
-   * @return basisId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getBasisId() {
-    return basisId;
-  }
-
-  public void setBasisId(Integer basisId) {
-    this.basisId = basisId;
-  }
-
-  public BasisDTO basisName(String basisName) {
-    this.basisName = basisName;
-    return this;
-  }
-
-   /**
-   * Get basisName
-   * @return basisName
-  **/
-  @ApiModelProperty(value = "")
-  public String getBasisName() {
-    return basisName;
-  }
-
-  public void setBasisName(String basisName) {
-    this.basisName = basisName;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    public BasisDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    BasisDTO basisDTO = (BasisDTO) o;
-    return Objects.equals(this.qualifiedName, basisDTO.qualifiedName) &&
-        Objects.equals(this.basisId, basisDTO.basisId) &&
-        Objects.equals(this.basisName, basisDTO.basisName);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, basisId, basisName);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class BasisDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
-    sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public BasisDTO basisId(Integer basisId) {
+        this.basisId = basisId;
+        return this;
+    }
+
+    /**
+     * Get basisId
+     *
+     * @return basisId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getBasisId() {
+        return basisId;
+    }
+
+    public void setBasisId(Integer basisId) {
+        this.basisId = basisId;
+    }
+
+    public BasisDTO basisName(String basisName) {
+        this.basisName = basisName;
+        return this;
+    }
+
+    /**
+     * Get basisName
+     *
+     * @return basisName
+     **/
+    @ApiModelProperty(value = "")
+    public String getBasisName() {
+        return basisName;
+    }
+
+    public void setBasisName(String basisName) {
+        this.basisName = basisName;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        BasisDTO basisDTO = (BasisDTO) o;
+        return Objects.equals(this.qualifiedName, basisDTO.qualifiedName) &&
+            Objects.equals(this.basisId, basisDTO.basisId) &&
+            Objects.equals(this.basisName, basisDTO.basisName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, basisId, basisName);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class BasisDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
+        sb.append("    basisName: ").append(toIndentedString(basisName)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

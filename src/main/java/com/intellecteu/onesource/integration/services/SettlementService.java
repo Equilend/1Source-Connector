@@ -1,43 +1,31 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.intellecteu.onesource.integration.dto.SettlementDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.PartyRole;
-import com.intellecteu.onesource.integration.model.Settlement;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.repository.SettlementRepository;
+import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementEntity;
 import java.util.List;
-import java.util.Optional;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
+import java.util.stream.Collectors;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
-public interface SettlementService {
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class SettlementService {
 
-    List<SettlementDto> getSettlementInstructions(PositionDto positionDto);
+    private final SettlementRepository settlementRepository;
+    private final OneSourceMapper oneSourceMapper;
 
-    List<SettlementDto> getSettlementInstructions(String positionId, Integer accountId, Long securityId,
-        Integer positionTypeId, String positionType, Integer currencyId, String venueRefId);
+    public List<Settlement> getSettlementByInstructionId(Long instructionId) {
+        return settlementRepository.findByInstructionId(instructionId).stream().map(oneSourceMapper::toModel).collect(
+            Collectors.toList());
+    }
 
-    Optional<Settlement> getSettlementInstruction(String positionId, Integer accountId, Long securityId,
-        Integer positionTypeId, String positionType, Integer currencyId, String venueRefId);
+    public Settlement persistSettlement(Settlement settlement) {
+        SettlementEntity settlementEntity = settlementRepository.save(oneSourceMapper.toEntity(settlement));
+        return oneSourceMapper.toModel(settlementEntity);
+    }
 
-    /**
-     * Request settlement details by party and account id. The purpose of accountId parameter is to retrieve
-     * counterpart's settlement instruction by providing account id for the counterparty. Return ResponseEntity to get
-     * opportunity to record and handle response by its code.
-     *
-     * @param positionDto PositionDto position
-     * @param partyRole PartyRole the role for the current position
-     * @param accountId String the id for the current account or the counterpart's account
-     * @return ResponseEntity of SettlementDto or empty list
-     */
-    ResponseEntity<SettlementDto> retrieveSettlementDetails(PositionDto positionDto,
-        PartyRole partyRole, String accountId);
-
-    SettlementDto persistSettlement(SettlementDto settlement);
-
-    List<Settlement> getSettlementByInstructionId(Integer instructionId);
-
-    Settlement persistSettlement(Settlement settlement);
-
-    void updateSpireInstruction(@NonNull SettlementDto spireCpSettlement,
-        @NonNull SettlementDto contractCpSettlement, @NonNull PartyRole partyRole);
 }

@@ -3,8 +3,9 @@ package com.intellecteu.onesource.integration.services.client.spire.invoker.auth
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.MultiValueMap;
 
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T18:39:54.052Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T18:39:54.052Z")
 public class OAuth implements Authentication {
+
     private String accessToken;
 
     public String getAccessToken() {

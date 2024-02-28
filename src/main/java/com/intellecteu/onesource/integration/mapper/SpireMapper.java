@@ -1,29 +1,46 @@
 package com.intellecteu.onesource.integration.mapper;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.FIXED_RATE;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.LOT;
+import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.SHARE;
+import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
+import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
+import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
+import static com.intellecteu.onesource.integration.model.onesource.TermType.TERM;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellecteu.onesource.integration.dto.*;
+import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.model.*;
-import com.intellecteu.onesource.integration.model.spire.Position;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.onesource.Collateral;
+import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
+import com.intellecteu.onesource.integration.model.onesource.FixedRate;
+import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
+import com.intellecteu.onesource.integration.model.onesource.Instrument;
+import com.intellecteu.onesource.integration.model.onesource.InternalReference;
+import com.intellecteu.onesource.integration.model.onesource.Party;
+import com.intellecteu.onesource.integration.model.onesource.Price;
+import com.intellecteu.onesource.integration.model.onesource.PriceUnit;
+import com.intellecteu.onesource.integration.model.onesource.Rate;
+import com.intellecteu.onesource.integration.model.onesource.RebateRate;
+import com.intellecteu.onesource.integration.model.onesource.SettlementType;
+import com.intellecteu.onesource.integration.model.onesource.TermType;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
+import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
+import com.intellecteu.onesource.integration.model.onesource.Venue;
+import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
+import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.FIXED_RATE;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.PriceUnit.LOT;
-import static com.intellecteu.onesource.integration.model.PriceUnit.SHARE;
-import static com.intellecteu.onesource.integration.model.RoundingMode.ALWAYSUP;
-import static com.intellecteu.onesource.integration.model.SettlementType.DVP;
-import static com.intellecteu.onesource.integration.model.SettlementType.FOP;
-import static com.intellecteu.onesource.integration.model.TermType.OPEN;
-import static com.intellecteu.onesource.integration.model.TermType.TERM;
 
 @Component
 @RequiredArgsConstructor
@@ -66,31 +83,31 @@ public class SpireMapper {
         return objectMapper.readValue(json.toString(), PositionDto.class);
     }
 
-    public TradeAgreementDto buildTradeAgreementDto(PositionDto positionDto) {
-        return TradeAgreementDto.builder()
-                .executionVenue(buildVenueDto(positionDto))
-                .instrument(buildInstrumentDto(positionDto))
-                .rate(buildRateDto(positionDto))
-                .quantity(positionDto.getQuantity().intValue())
-                .billingCurrency(CurrencyCd.valueOf(positionDto.getCurrency().getCurrencyKy()))
-                .dividendRatePct(positionDto.getLoanBorrowDto().getTaxWithholdingRate().intValue())
-                .tradeDate(positionDto.getTradeDate().toLocalDate())
-                .termType(checkTermType(positionDto.getTermId()))
-                .termDate(positionDto.getEndDate().toLocalDate())
-                .settlementDate(positionDto.getSettleDate().toLocalDate())
-                .settlementType(checkSettlementType(positionDto.getDeliverFree()))
-                .collateral(buildCollateralDto(positionDto))
-                .transactingParties(
-                        List.of(createLenderTransactionParty(positionDto), createBorrowerTransactionParty(positionDto)))
-                .build();
+    public TradeAgreement buildTradeAgreement(Position position) {
+        return TradeAgreement.builder()
+            .venue(buildVenue(position))
+            .instrument(buildInstrument(position))
+            .rate(buildRate(position))
+            .quantity(position.getQuantity().intValue())
+            .billingCurrency(CurrencyCd.valueOf(position.getCurrency().getCurrencyKy()))
+            .dividendRatePct(position.getLoanBorrow().getTaxWithholdingRate().intValue())
+            .tradeDate(position.getTradeDate().toLocalDate())
+            .termType(checkTermType(position.getTermId()))
+            .termDate(position.getEndDate().toLocalDate())
+            .settlementDate(position.getSettleDate().toLocalDate())
+            .settlementType(checkSettlementType(position.getDeliverFree()))
+            .collateral(buildCollateral(position))
+            .transactingParties(
+                List.of(createLenderTransactionParty(position), createBorrowerTransactionParty(position)))
+            .build();
     }
 
-    private TransactingPartyDto createLenderTransactionParty(PositionDto positionDto) {
-        return TransactingPartyDto.builder()
-                .partyRole(LENDER)
-                .party(createLenderPartyDto(positionDto))
-                .internalRef(createInternalRefDto(positionDto))
-                .build();
+    private TransactingParty createLenderTransactionParty(Position position) {
+        return TransactingParty.builder()
+            .partyRole(LENDER)
+            .party(createLenderParty(position))
+            .internalRef(createInternalRef(position))
+            .build();
     }
 
     private SettlementType checkSettlementType(Boolean deliverFree) {
@@ -107,131 +124,131 @@ public class SpireMapper {
         return null;
     }
 
-    private TransactingPartyDto createBorrowerTransactionParty(PositionDto positionDto) {
-        return TransactingPartyDto.builder()
-                .partyRole(BORROWER)
-                .party(createBorrowerPartyDto(positionDto))
-                .build();
+    private TransactingParty createBorrowerTransactionParty(Position position) {
+        return TransactingParty.builder()
+            .partyRole(BORROWER)
+            .party(createBorrowerParty(position))
+            .build();
     }
 
-    private static PartyDto createLenderPartyDto(PositionDto positionDto) {
-        return PartyDto.builder()
-                .partyName(positionDto.getShortName())
-                .gleifLei(positionDto.getAccountLei())
-                .build();
+    private static Party createLenderParty(Position position) {
+        return Party.builder()
+            .partyName(position.getShortName())
+            .gleifLei(position.getAccountLei())
+            .build();
     }
 
-    private static PartyDto createBorrowerPartyDto(PositionDto positionDto) {
-        return PartyDto.builder()
-                .gleifLei(positionDto.getCpLei())
-                .build();
+    private static Party createBorrowerParty(Position position) {
+        return Party.builder()
+            .gleifLei(position.getCpLei())
+            .build();
     }
 
-    private static InternalReferenceDto createInternalRefDto(PositionDto positionDto) {
-        return InternalReferenceDto.builder()
-                .accountId(positionDto.getAccountDto().getInfo())
-                .internalRefId(positionDto.getPositionId())
-                .build();
+    private static InternalReference createInternalRef(Position position) {
+        return InternalReference.builder()
+            .accountId(String.valueOf(position.getPositionAccount().getAccountId()))
+            .internalRefId(position.getPositionId())
+            .build();
     }
 
-    public CollateralDto buildCollateralDto(PositionDto positionDto) {
-        return CollateralDto.builder()
-                .contractPrice(positionDto.getPrice())
-                .contractValue(positionDto.getContractValue())
-                .collateralValue(positionDto.getAmount())
-                .currency(positionDto.getCurrency().getCurrencyKy())
-                .type(CollateralType.valueOf(positionDto.getCollateralType()))
-                .margin(positionDto.getCpHaircut())
-                .roundingRule(positionDto.getCpMarkRoundTo())
-                .roundingMode(ALWAYSUP)
-                .build();
+    public Collateral buildCollateral(Position position) {
+        return Collateral.builder()
+            .contractPrice(position.getPrice())
+            .contractValue(position.getContractValue())
+            .collateralValue(position.getAmount())
+            .currency(position.getCurrency().getCurrencyKy())
+            .type(CollateralType.valueOf(position.getCollateralType()))
+            .margin(position.getCpHaircut())
+            .roundingRule(position.getCpMarkRoundTo())
+            .roundingMode(ALWAYSUP)
+            .build();
     }
 
-    private RateDto buildRateDto(PositionDto positionDto) {
-        return RateDto.builder()
-                .rebate(buildRebateRateDto(positionDto))
-                .build();
+    private Rate buildRate(Position position) {
+        return Rate.builder()
+            .rebate(buildRebateRate(position))
+            .build();
     }
 
-    private RebateRateDto buildRebateRateDto(PositionDto positionDto) {
-        FloatingRateDto floatingRateDto = null;
-        FixedRateDto fixedRateDto = null;
-        String indexName = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getIndexName();
+    private RebateRate buildRebateRate(Position position) {
+        FloatingRate floatingRate = null;
+        FixedRate fixedRate = null;
+        String indexName = position.getIndex() == null ? null : position.getIndex().getIndexName();
         if (FIXED_RATE.equals(indexName)) {
-            fixedRateDto = buildFixedRateDto(positionDto);
+            fixedRate = buildFixedRate(position);
         } else {
-            floatingRateDto = buildFloatingRateDto(positionDto);
+            floatingRate = buildFloatingRate(position);
         }
-        return RebateRateDto.builder()
-                .floating(floatingRateDto)
-                .fixed(fixedRateDto)
-                .build();
+        return RebateRate.builder()
+            .floating(floatingRate)
+            .fixed(fixedRate)
+            .build();
     }
 
-    private FloatingRateDto buildFloatingRateDto(PositionDto positionDto) {
-        if (positionDto == null) {
+    private FloatingRate buildFloatingRate(Position position) {
+        if (position == null) {
             return null;
         }
-        var spread = positionDto.getIndexDto() == null ? null : positionDto.getIndexDto().getSpread();
-        return FloatingRateDto.builder()
-                .effectiveRate(positionDto.getRate())
-                .baseRate(positionDto.getSecurityDetailDto().getBaseRebateRate())
-                .spread(spread)
-                .build();
+        var spread = position.getIndex() == null ? null : position.getIndex().getSpread();
+        return FloatingRate.builder()
+            .effectiveRate(position.getRate())
+            .baseRate(position.getPositionSecurityDetail().getBaseRebateRate())
+            .spread(spread)
+            .build();
     }
 
-    private FixedRateDto buildFixedRateDto(PositionDto positionDto) {
-        return FixedRateDto.builder()
-                .baseRate(positionDto.getRate())
-                .effectiveRate(positionDto.getRate())
-                .effectiveDate(positionDto.getSettleDate().toLocalDate())
-                .build();
+    private FixedRate buildFixedRate(Position position) {
+        return FixedRate.builder()
+            .baseRate(position.getRate())
+            .effectiveRate(position.getRate())
+            .effectiveDate(position.getSettleDate().toLocalDate())
+            .build();
     }
 
-    public InstrumentDto buildInstrumentDto(PositionDto positionDto) {
-        return InstrumentDto.builder()
-                .ticker(positionDto.getSecurityDetailDto().getTicker())
-                .cusip(positionDto.getSecurityDetailDto().getCusip())
-                .isin(positionDto.getSecurityDetailDto().getIsin())
-                .sedol(positionDto.getSecurityDetailDto().getSedol())
-                .quick(positionDto.getSecurityDetailDto().getQuickCode())
-                .description(positionDto.getSecurityDetailDto().getDescription())
-                .price(buildPriceDto(positionDto))
-                .build();
+    public Instrument buildInstrument(Position position) {
+        return Instrument.builder()
+            .ticker(position.getPositionSecurityDetail().getTicker())
+            .cusip(position.getPositionSecurityDetail().getCusip())
+            .isin(position.getPositionSecurityDetail().getIsin())
+            .sedol(position.getPositionSecurityDetail().getSedol())
+            .quick(position.getPositionSecurityDetail().getQuickCode())
+            .description(position.getPositionSecurityDetail().getDescription())
+            .price(buildPrice(position))
+            .build();
     }
 
-    private VenueDto buildVenueDto(PositionDto positionDto) {
-        return VenueDto.builder()
-                .venueRefKey(positionDto.getCustomValue2())
-                .venueParties(List.of(buildLenderVenuePartyDto(positionDto), buildBorrowerVenuePartyDto()))
-                .build();
-
-    }
-
-    private PriceDto buildPriceDto(PositionDto positionDto) {
-        return PriceDto.builder()
-                .unit(checkPriceUnit(positionDto))
-                .value(positionDto.getPrice())
-                .currency(positionDto.getCurrency().getCurrencyKy())
-                .build();
+    private Venue buildVenue(Position position) {
+        return Venue.builder()
+            .venueRefKey(position.getCustomValue2())
+            .venueParties(Set.of(buildLenderVenueParty(position), buildBorrowerVenueParty()))
+            .build();
 
     }
 
-    private PriceUnit checkPriceUnit(PositionDto positionDto) {
-        return positionDto.getSecurityDetailDto().getPriceFactor() == 1 ? SHARE : LOT;
+    private Price buildPrice(Position position) {
+        return Price.builder()
+            .unit(buildPriceUnit(position))
+            .value(position.getPrice())
+            .currency(position.getCurrency().getCurrencyKy())
+            .build();
+
     }
 
-    public VenuePartyDto buildLenderVenuePartyDto(PositionDto positionDto) {
-        return VenuePartyDto.builder()
-                .partyRole(LENDER)
-                .venuePartyRefKey(positionDto.getPositionId())
-                .build();
+    private PriceUnit buildPriceUnit(Position position) {
+        return position.getPositionSecurityDetail().getPriceFactor() == 1 ? SHARE : LOT;
     }
 
-    public VenuePartyDto buildBorrowerVenuePartyDto() {
-        return VenuePartyDto.builder()
-                .partyRole(BORROWER)
-                .build();
+    public VenueParty buildLenderVenueParty(Position position) {
+        return VenueParty.builder()
+            .partyRole(LENDER)
+            .venueId(position.getPositionId())
+            .build();
+    }
+
+    public VenueParty buildBorrowerVenueParty() {
+        return VenueParty.builder()
+            .partyRole(BORROWER)
+            .build();
     }
 
     public List<SettlementDto> toSettlementList(ResponseEntity<JsonNode> response) {

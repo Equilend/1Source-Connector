@@ -176,6 +176,19 @@ public class RecordMessageConstant {
         }
     }
 
+    public static class Rerate{
+        public static class Subject {
+            public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source rerate id - %s";
+            public static final String MATCHED_RERATE = "SPIRE trade event id - %s";
+            public static final String UNMATCHED_RERATE = "1Source rerate id -  %s";
+        }
+        public static class DataMsg {
+            public static final String GET_RERATE_EXCEPTION_1SOURCE_MSG = "The details of rerate proposal %s have not been retrieved from 1Source for the following reason: %s";
+            public static final String MATCHED_RERATE_MSG = "The 1Source rerate proposal: %s has been matched with the SPIRE trade event: %s";
+            public static final String UNMATCHED_RERATE_MSG = "The rerate proposal %s has been captured but not yet matched with a SPIRE trade event";
+        }
+    }
+
     public static class Generic {
 
         public static class Subject {
@@ -185,12 +198,14 @@ public class RecordMessageConstant {
                 + "or Position - %s";
             public static final String GET_EVENTS_TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s, or Position - %s";
             public static final String GET_EVENTS_TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s, or Position - %s";
+            public static final String GET_TRADE_EVENTS_PENDING_CONFIRMATION = "SPIRE trade event capture - %s";
         }
 
         public static class DataMsg {
 
             public static final String GET_EVENTS_EXCEPTION_1SOURCE_MSG = "Events cannot be retrieved from 1Source "
                 + "for the following reason: %s";
+            public static final String GET_TRADE_EVENTS_PENDING_CONFIRMATION_MSG = "SPIRE TRADE Events cannot be retrieved from SPIRE for the following reason: %s";
         }
     }
 

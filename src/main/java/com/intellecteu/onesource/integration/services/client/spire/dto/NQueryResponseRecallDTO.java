@@ -23,130 +23,133 @@ import java.util.Objects;
 /**
  * NQueryResponseRecallDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class NQueryResponseRecallDTO {
-  @JsonProperty("beans")
-  private List<RecallDTO> beans = null;
 
-  @JsonProperty("groups")
-  private List<SGroupRecallDTO> groups = null;
+    @JsonProperty("beans")
+    private List<RecallDTO> beans = null;
 
-  @JsonProperty("totalRows")
-  private Integer totalRows = null;
+    @JsonProperty("groups")
+    private List<SGroupRecallDTO> groups = null;
 
-  public NQueryResponseRecallDTO beans(List<RecallDTO> beans) {
-    this.beans = beans;
-    return this;
-  }
+    @JsonProperty("totalRows")
+    private Integer totalRows = null;
 
-  public NQueryResponseRecallDTO addBeansItem(RecallDTO beansItem) {
-    if (this.beans == null) {
-      this.beans = new ArrayList<>();
+    public NQueryResponseRecallDTO beans(List<RecallDTO> beans) {
+        this.beans = beans;
+        return this;
     }
-    this.beans.add(beansItem);
-    return this;
-  }
 
-   /**
-   * Get beans
-   * @return beans
-  **/
-  @ApiModelProperty(value = "")
-  public List<RecallDTO> getBeans() {
-    return beans;
-  }
-
-  public void setBeans(List<RecallDTO> beans) {
-    this.beans = beans;
-  }
-
-  public NQueryResponseRecallDTO groups(List<SGroupRecallDTO> groups) {
-    this.groups = groups;
-    return this;
-  }
-
-  public NQueryResponseRecallDTO addGroupsItem(SGroupRecallDTO groupsItem) {
-    if (this.groups == null) {
-      this.groups = new ArrayList<>();
+    public NQueryResponseRecallDTO addBeansItem(RecallDTO beansItem) {
+        if (this.beans == null) {
+            this.beans = new ArrayList<>();
+        }
+        this.beans.add(beansItem);
+        return this;
     }
-    this.groups.add(groupsItem);
-    return this;
-  }
 
-   /**
-   * Get groups
-   * @return groups
-  **/
-  @ApiModelProperty(value = "")
-  public List<SGroupRecallDTO> getGroups() {
-    return groups;
-  }
-
-  public void setGroups(List<SGroupRecallDTO> groups) {
-    this.groups = groups;
-  }
-
-  public NQueryResponseRecallDTO totalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-    return this;
-  }
-
-   /**
-   * Get totalRows
-   * @return totalRows
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTotalRows() {
-    return totalRows;
-  }
-
-  public void setTotalRows(Integer totalRows) {
-    this.totalRows = totalRows;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get beans
+     *
+     * @return beans
+     **/
+    @ApiModelProperty(value = "")
+    public List<RecallDTO> getBeans() {
+        return beans;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setBeans(List<RecallDTO> beans) {
+        this.beans = beans;
     }
-    NQueryResponseRecallDTO nqueryResponseRecallDTO = (NQueryResponseRecallDTO) o;
-    return Objects.equals(this.beans, nqueryResponseRecallDTO.beans) &&
-        Objects.equals(this.groups, nqueryResponseRecallDTO.groups) &&
-        Objects.equals(this.totalRows, nqueryResponseRecallDTO.totalRows);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(beans, groups, totalRows);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class NQueryResponseRecallDTO {\n");
-    
-    sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
-    sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
-    sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public NQueryResponseRecallDTO groups(List<SGroupRecallDTO> groups) {
+        this.groups = groups;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    public NQueryResponseRecallDTO addGroupsItem(SGroupRecallDTO groupsItem) {
+        if (this.groups == null) {
+            this.groups = new ArrayList<>();
+        }
+        this.groups.add(groupsItem);
+        return this;
+    }
+
+    /**
+     * Get groups
+     *
+     * @return groups
+     **/
+    @ApiModelProperty(value = "")
+    public List<SGroupRecallDTO> getGroups() {
+        return groups;
+    }
+
+    public void setGroups(List<SGroupRecallDTO> groups) {
+        this.groups = groups;
+    }
+
+    public NQueryResponseRecallDTO totalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+        return this;
+    }
+
+    /**
+     * Get totalRows
+     *
+     * @return totalRows
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTotalRows() {
+        return totalRows;
+    }
+
+    public void setTotalRows(Integer totalRows) {
+        this.totalRows = totalRows;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        NQueryResponseRecallDTO nqueryResponseRecallDTO = (NQueryResponseRecallDTO) o;
+        return Objects.equals(this.beans, nqueryResponseRecallDTO.beans) &&
+            Objects.equals(this.groups, nqueryResponseRecallDTO.groups) &&
+            Objects.equals(this.totalRows, nqueryResponseRecallDTO.totalRows);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(beans, groups, totalRows);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class NQueryResponseRecallDTO {\n");
+
+        sb.append("    beans: ").append(toIndentedString(beans)).append("\n");
+        sb.append("    groups: ").append(toIndentedString(groups)).append("\n");
+        sb.append("    totalRows: ").append(toIndentedString(totalRows)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

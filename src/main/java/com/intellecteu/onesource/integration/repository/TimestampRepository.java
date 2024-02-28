@@ -1,10 +1,8 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.Timestamp;
-import java.util.Optional;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TimestampEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface TimestampRepository extends JpaRepository<Timestamp, Long> {
+public interface TimestampRepository extends JpaRepository<TimestampEntity, String> {
 
-    Optional<Timestamp> findFirstByOrderByTimestampDesc();
 }

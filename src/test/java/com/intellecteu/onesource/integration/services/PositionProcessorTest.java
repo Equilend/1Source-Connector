@@ -4,7 +4,7 @@
 //import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 //import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 //import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
-//import static com.intellecteu.onesource.integration.model.ProcessingStatus.*;
+//import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.*;
 //import static org.mockito.ArgumentMatchers.any;
 //import static org.mockito.Mockito.doNothing;
 //import static org.mockito.Mockito.never;
@@ -27,7 +27,7 @@
 //import com.intellecteu.onesource.integration.repository.AgreementRepository;
 //import com.intellecteu.onesource.integration.repository.ContractRepository;
 //import com.intellecteu.onesource.integration.repository.PositionRepository;
-//import com.intellecteu.onesource.integration.routes.processor.PositionProcessor;
+//import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.PositionProcessor;
 //import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
 //import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
 //import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
@@ -54,8 +54,6 @@
 //    private EventMapper eventMapper;
 //    @Mock
 //    private PositionRepository positionRepository;
-//    @Mock
-//    private SpireService spireService;
 //    @Mock
 //    private OneSourceService oneSourceService;
 //    @Mock

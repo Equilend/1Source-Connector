@@ -9,9 +9,9 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIf
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.CollateralDescription;
-import com.intellecteu.onesource.integration.model.CollateralType;
-import com.intellecteu.onesource.integration.model.RoundingMode;
+import com.intellecteu.onesource.integration.model.onesource.CollateralDescription;
+import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.RoundingMode;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

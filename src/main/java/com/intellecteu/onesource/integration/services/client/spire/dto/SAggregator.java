@@ -23,130 +23,132 @@ import java.util.Objects;
 /**
  * SAggregator
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SAggregator {
-  @JsonProperty("prop")
-  private String prop = null;
 
-  /**
-   * Gets or Sets type
-   */
-  public enum TypeEnum {
-    AVERAGE("AVERAGE"),
-    
-    MAX("MAX"),
-    
-    MIN("MIN"),
-    
-    SUM("SUM");
+    @JsonProperty("prop")
+    private String prop = null;
 
-    private String value;
+    /**
+     * Gets or Sets type
+     */
+    public enum TypeEnum {
+        AVERAGE("AVERAGE"),
 
-    TypeEnum(String value) {
-      this.value = value;
+        MAX("MAX"),
+
+        MIN("MIN"),
+
+        SUM("SUM");
+
+        private String value;
+
+        TypeEnum(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static TypeEnum fromValue(String value) {
+            for (TypeEnum b : TypeEnum.values()) {
+                if (b.value.equals(value)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 
-    @JsonValue
-    public String getValue() {
-      return value;
+    @JsonProperty("type")
+    private TypeEnum type = null;
+
+    public SAggregator prop(String prop) {
+        this.prop = prop;
+        return this;
+    }
+
+    /**
+     * Get prop
+     *
+     * @return prop
+     **/
+    @ApiModelProperty(value = "")
+    public String getProp() {
+        return prop;
+    }
+
+    public void setProp(String prop) {
+        this.prop = prop;
+    }
+
+    public SAggregator type(TypeEnum type) {
+        this.type = type;
+        return this;
+    }
+
+    /**
+     * Get type
+     *
+     * @return type
+     **/
+    @ApiModelProperty(value = "")
+    public TypeEnum getType() {
+        return type;
+    }
+
+    public void setType(TypeEnum type) {
+        this.type = type;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SAggregator saggregator = (SAggregator) o;
+        return Objects.equals(this.prop, saggregator.prop) &&
+            Objects.equals(this.type, saggregator.type);
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(prop, type);
+    }
+
+
+    @Override
     public String toString() {
-      return String.valueOf(value);
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SAggregator {\n");
+
+        sb.append("    prop: ").append(toIndentedString(prop)).append("\n");
+        sb.append("    type: ").append(toIndentedString(type)).append("\n");
+        sb.append("}");
+        return sb.toString();
     }
 
-    @JsonCreator
-    public static TypeEnum fromValue(String value) {
-      for (TypeEnum b : TypeEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
         }
-      }
-      return null;
+        return o.toString().replace("\n", "\n    ");
     }
-  }
-
-  @JsonProperty("type")
-  private TypeEnum type = null;
-
-  public SAggregator prop(String prop) {
-    this.prop = prop;
-    return this;
-  }
-
-   /**
-   * Get prop
-   * @return prop
-  **/
-  @ApiModelProperty(value = "")
-  public String getProp() {
-    return prop;
-  }
-
-  public void setProp(String prop) {
-    this.prop = prop;
-  }
-
-  public SAggregator type(TypeEnum type) {
-    this.type = type;
-    return this;
-  }
-
-   /**
-   * Get type
-   * @return type
-  **/
-  @ApiModelProperty(value = "")
-  public TypeEnum getType() {
-    return type;
-  }
-
-  public void setType(TypeEnum type) {
-    this.type = type;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SAggregator saggregator = (SAggregator) o;
-    return Objects.equals(this.prop, saggregator.prop) &&
-        Objects.equals(this.type, saggregator.type);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(prop, type);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SAggregator {\n");
-    
-    sb.append("    prop: ").append(toIndentedString(prop)).append("\n");
-    sb.append("    type: ").append(toIndentedString(type)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
 
 }
 

@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.PriceUnit;
+import com.intellecteu.onesource.integration.model.onesource.PriceUnit;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

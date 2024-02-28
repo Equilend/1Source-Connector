@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.VenueType;
+import com.intellecteu.onesource.integration.model.onesource.VenueType;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;

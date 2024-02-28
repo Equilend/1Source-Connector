@@ -1,14 +1,14 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildAgreementDto;
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildContractDto;
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstruction;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
-import static com.intellecteu.onesource.integration.model.ContractStatus.APPROVED;
-import static com.intellecteu.onesource.integration.model.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstructionEntity;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.MAINTAIN_1SOURCE_PARTICIPANTS_LIST;
+import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
@@ -23,43 +23,52 @@ import static org.springframework.http.HttpMethod.PUT;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
-import com.intellecteu.onesource.integration.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.Contract;
-import com.intellecteu.onesource.integration.model.EventType;
-import com.intellecteu.onesource.integration.model.SettlementInstructionUpdate;
-import com.intellecteu.onesource.integration.model.spire.Position;
-import com.intellecteu.onesource.integration.model.spire.PositionAccount;
-import com.intellecteu.onesource.integration.model.spire.PositionExposure;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
+import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.routes.processor.EventProcessor;
-import com.intellecteu.onesource.integration.routes.processor.strategy.contract.ContractDataReceived;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactory;
-import com.intellecteu.onesource.integration.services.record.CloudEventFactoryImpl;
-import com.intellecteu.onesource.integration.services.record.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.record.ContractInitiationCloudEventBuilder;
-import com.intellecteu.onesource.integration.services.record.ContractSettlementCloudEventBuilder;
-import com.intellecteu.onesource.integration.services.record.GenericRecordCloudEventBuilder;
-import com.intellecteu.onesource.integration.services.record.IntegrationCloudEventBuilder;
-import com.intellecteu.onesource.integration.services.record.MaintainParticipantsCloudEventBuilder;
+import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
+import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
+import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.ContractSettlementCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.GenericRecordCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.MaintainParticipantsCloudEventBuilder;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -123,8 +132,7 @@ public class ContractFlowTest {
     private SpireMapper spireMapper;
 
     private ObjectMapper objectMapper;
-    private OneSourceApiService oneSourceService;
-    private SpireApiService spireService;
+    private OneSourceApiClientImpl oneSourceService;
     private ContractDataReceived contractDataReceived;
     private EventProcessor eventService;
     @Mock
@@ -134,13 +142,15 @@ public class ContractFlowTest {
     @Mock
     private ContractReconcileService reconcileService;
     private CloudEventFactory<IntegrationCloudEvent> recordFactory;
+    private OneSourceMapper oneSourceMapper = new OneSourceMapperImpl();
+    private ContractMapper contractMapper;
 
-    ContractDto contract;
-    Contract contractEntity;
+    Contract contract;
     Position position;
 
     @BeforeEach
     void setUp() {
+        contractMapper = Mappers.getMapper(ContractMapper.class);
         objectMapper = TestConfig.createTestObjectMapper();
         eventMapper = new EventMapper(objectMapper);
         spireMapper = new SpireMapper(objectMapper);
@@ -150,29 +160,25 @@ public class ContractFlowTest {
         builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new MaintainParticipantsCloudEventBuilder());
         builderMap.put(CONTRACT_SETTLEMENT, new ContractSettlementCloudEventBuilder());
         recordFactory = new CloudEventFactoryImpl(builderMap);
-        oneSourceService = new OneSourceApiService(contractRepository, cloudEventRecordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository);
-        spireService = new SpireApiService(restTemplate, positionRepository, eventMapper, settlementUpdateRepository,
-            spireMapper, cloudEventRecordService);
+        oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
+            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
+
         contractDataReceived = new ContractDataReceived(contractService, positionService,
-            settlementTempRepository, settlementService, spireService, borrowerBackOfficeService,
+            settlementTempRepository, settlementService, borrowerBackOfficeService,
             lenderBackOfficeService, cloudEventRecordService, reconcileService,
-            eventMapper, spireMapper, agreementRepository, oneSourceService);
-        ReflectionTestUtils.setField(spireService, LENDER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
-        ReflectionTestUtils.setField(spireService, BORROWER_ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
+            eventMapper, spireMapper, agreementRepository, oneSourceService, contractMapper);
         ReflectionTestUtils.setField(oneSourceService, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(oneSourceService, VERSION_FIELD_INJECT, TEST_API_VERSION);
 //        eventService = new EventProcessor(eventRepository, agreementRepository, contractRepository,
 //            positionRepository, timestampRepository, participantHolderRepository, eventMapper, spireMapper,
 //            spireService, oneSourceService, cloudEventRecordService, settlementService);
-        contract = buildContractDto();
-        contractEntity = eventMapper.toContractEntity(contract);
+        contract = ModelTestFactory.buildContract();
         PositionExposure exposure = new PositionExposure();
         exposure.setCpMarkRoundTo(2);
         position = new Position();
         position.setPositionId("testId");
         position.setExposure(exposure);
-        position.setPositionAccount(new PositionAccount("borrower-lei", "test", "testAccountId"));
+        position.setPositionAccount(new PositionAccount(1l, "borrower-lei", "test", "testAccountId"));
     }
 
     @Test
@@ -180,11 +186,11 @@ public class ContractFlowTest {
     void test_contractFlow_shouldApproveContract_success() {
         var agreement = buildAgreementDto();
 
-        SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
-            .instructionId(2)
+        SettlementInstructionUpdateEntity settlementInstructionUpdateEntity = SettlementInstructionUpdateEntity.builder()
+            .instructionId(2L)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
-            .instruction(buildInstruction())
+            .instruction(buildInstructionEntity())
             .build();
 
         var approveContractUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_CONTRACT_APPROVE_ENDPOINT;
@@ -196,8 +202,9 @@ public class ContractFlowTest {
         when(restTemplate.exchange(eq(contractUrl), eq(PATCH), any(), eq(JsonNode.class), eq("testId"))).thenReturn(
             response);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(position));
-        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
-        when(agreementRepository.findByVenueRefId(any())).thenReturn(List.of(eventMapper.toAgreementEntity(agreement)));
+        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdateEntity));
+        List<AgreementEntity> agreementEntity = List.of(eventMapper.toAgreementEntity(agreement));
+        when(agreementRepository.findByVenueRefId(any())).thenReturn(agreementEntity);
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
@@ -238,7 +245,7 @@ public class ContractFlowTest {
         position.setPositionId("2");
 
         SettlementInstructionUpdate settlementInstructionUpdate = SettlementInstructionUpdate.builder()
-            .instructionId(2)
+            .instructionId(2L)
             .venueRefId("testVenueRefId")
             .partyRole(BORROWER)
             .instruction(buildInstruction())
@@ -262,7 +269,10 @@ public class ContractFlowTest {
         when(restTemplate.postForEntity(eq(getInstructionUrl), any(), eq(JsonNode.class))).thenReturn(
             instructionResponse);
         when(positionService.findByVenueRefId(any())).thenReturn(Optional.of(position));
-        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(List.of(settlementInstructionUpdate));
+        List<SettlementInstructionUpdateEntity> settlementInstructionUpdateEntity = List.of(settlementInstructionUpdate)
+            .stream().map(oneSourceMapper::toEntity).collect(
+                Collectors.toList());
+        when(settlementUpdateRepository.findByVenueRefId(any())).thenReturn(settlementInstructionUpdateEntity);
         doNothing().when(cloudEventRecordService).record(any());
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
@@ -300,7 +310,8 @@ public class ContractFlowTest {
         when(
             restTemplate.exchange(eq(cancelContractUrl), eq(POST), any(), eq(JsonNode.class), eq("testId"))).thenReturn(
             response);
-        when(contractRepository.findAllByContractStatus(any())).thenReturn(List.of(contractEntity));
+        List<ContractEntity> contractEntityList = List.of(new ContractEntity());
+        when(contractRepository.findAllByContractStatus(any())).thenReturn(contractEntityList);
 
         eventService.cancelContract();
 

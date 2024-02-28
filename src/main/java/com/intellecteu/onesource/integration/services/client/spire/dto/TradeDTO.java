@@ -24,1180 +24,1235 @@ import java.util.Objects;
 /**
  * TradeDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class TradeDTO {
-  @JsonProperty("__qualifiedName")
-  private String qualifiedName = null;
 
-  @JsonProperty("accountId")
-  private Integer accountId = null;
+    @JsonProperty("__qualifiedName")
+    private String qualifiedName = null;
 
-  @JsonProperty("accountId2")
-  private Integer accountId2 = null;
+    @JsonProperty("accountId")
+    private Integer accountId = null;
 
-  @JsonProperty("accrualDate")
-  private LocalDateTime accrualDate = null;
+    @JsonProperty("accountId2")
+    private Integer accountId2 = null;
 
-  @JsonProperty("amount")
-  private Double amount = null;
+    @JsonProperty("accrualDate")
+    private LocalDateTime accrualDate = null;
 
-  @JsonProperty("basisId")
-  private Integer basisId = null;
+    @JsonProperty("amount")
+    private Double amount = null;
 
-  @JsonProperty("changeQuantity")
-  private Boolean changeQuantity = null;
+    @JsonProperty("basisId")
+    private Integer basisId = null;
 
-  @JsonProperty("childTrades")
-  private List<TradeDTO> childTrades = null;
+    @JsonProperty("changeQuantity")
+    private Boolean changeQuantity = null;
 
-  @JsonProperty("comments")
-  private String comments = null;
+    @JsonProperty("childTrades")
+    private List<TradeDTO> childTrades = null;
 
-  @JsonProperty("counterpartyId")
-  private Integer counterpartyId = null;
+    @JsonProperty("comments")
+    private String comments = null;
 
-  @JsonProperty("cptySubTypeId")
-  private Integer cptySubTypeId = null;
+    @JsonProperty("counterpartyId")
+    private Integer counterpartyId = null;
 
-  @JsonProperty("currencyId")
-  private Integer currencyId = null;
+    @JsonProperty("cptySubTypeId")
+    private Integer cptySubTypeId = null;
 
-  @JsonProperty("currentDaySettleDate")
-  private Boolean currentDaySettleDate = null;
+    @JsonProperty("currencyId")
+    private Integer currencyId = null;
 
-  @JsonProperty("depoId")
-  private Integer depoId = null;
+    @JsonProperty("currentDaySettleDate")
+    private Boolean currentDaySettleDate = null;
 
-  @JsonProperty("doNotRecall")
-  private Boolean doNotRecall = null;
+    @JsonProperty("depoId")
+    private Integer depoId = null;
 
-  @JsonProperty("endAllocationId")
-  private Long endAllocationId = null;
+    @JsonProperty("doNotRecall")
+    private Boolean doNotRecall = null;
 
-  @JsonProperty("endDate")
-  private LocalDateTime endDate = null;
+    @JsonProperty("endAllocationId")
+    private Long endAllocationId = null;
 
-  @JsonProperty("factor")
-  private Double factor = null;
+    @JsonProperty("endDate")
+    private LocalDateTime endDate = null;
 
-  @JsonProperty("futureSettleDate")
-  private Boolean futureSettleDate = null;
+    @JsonProperty("factor")
+    private Double factor = null;
 
-  @JsonProperty("indexId")
-  private Long indexId = null;
+    @JsonProperty("futureSettleDate")
+    private Boolean futureSettleDate = null;
 
-  @JsonProperty("instStatusId")
-  private Integer instStatusId = null;
+    @JsonProperty("indexId")
+    private Long indexId = null;
 
-  @JsonProperty("micId")
-  private Long micId = null;
+    @JsonProperty("instStatusId")
+    private Integer instStatusId = null;
 
-  @JsonProperty("offsetId")
-  private Integer offsetId = null;
+    @JsonProperty("micId")
+    private Long micId = null;
 
-  @JsonProperty("oldSettleStatusId")
-  private Integer oldSettleStatusId = null;
+    @JsonProperty("offsetId")
+    private Integer offsetId = null;
 
-  @JsonProperty("opsStatusId")
-  private Integer opsStatusId = null;
+    @JsonProperty("oldSettleStatusId")
+    private Integer oldSettleStatusId = null;
 
-  @JsonProperty("orderActionTs")
-  private LocalDateTime orderActionTs = null;
+    @JsonProperty("opsStatusId")
+    private Integer opsStatusId = null;
 
-  @JsonProperty("parentId")
-  private Integer parentId = null;
+    @JsonProperty("orderActionTs")
+    private LocalDateTime orderActionTs = null;
 
-  @JsonProperty("positionDTO")
-  private PositionDTO positionDTO = null;
+    @JsonProperty("parentId")
+    private Integer parentId = null;
 
-  @JsonProperty("positionId")
-  private Long positionId = null;
+    @JsonProperty("positionDTO")
+    private PositionDTO positionDTO = null;
 
-  @JsonProperty("positionTypeId")
-  private Integer positionTypeId = null;
+    @JsonProperty("positionId")
+    private Long positionId = null;
 
-  @JsonProperty("postDate")
-  private LocalDateTime postDate = null;
+    @JsonProperty("positionTypeId")
+    private Integer positionTypeId = null;
 
-  @JsonProperty("price")
-  private Double price = null;
+    @JsonProperty("postDate")
+    private LocalDateTime postDate = null;
 
-  @JsonProperty("quantity")
-  private Double quantity = null;
+    @JsonProperty("price")
+    private Double price = null;
 
-  @JsonProperty("rateOrSpread")
-  private Double rateOrSpread = null;
-
-  @JsonProperty("securityId")
-  private Integer securityId = null;
-
-  @JsonProperty("settleDate")
-  private LocalDateTime settleDate = null;
-
-  @JsonProperty("settleStatusId")
-  private Integer settleStatusId = null;
-
-  @JsonProperty("signedQuantity")
-  private Double signedQuantity = null;
-
-  @JsonProperty("startAllocationId")
-  private Long startAllocationId = null;
-
-  @JsonProperty("statusId")
-  private Integer statusId = null;
-
-  @JsonProperty("statusMessage")
-  private String statusMessage = null;
-
-  @JsonProperty("systemId")
-  private Integer systemId = null;
-
-  @JsonProperty("tradeDate")
-  private LocalDateTime tradeDate = null;
-
-  @JsonProperty("tradeId")
-  private Long tradeId = null;
-
-  @JsonProperty("tradeType")
-  private TradeTypeDTO tradeType = null;
-
-  @JsonProperty("tradeTypeId")
-  private Integer tradeTypeId = null;
-
-  @JsonProperty("tradingDeskId")
-  private Integer tradingDeskId = null;
-
-  @JsonProperty("userComments")
-  private String userComments = null;
-
-  @JsonProperty("uti")
-  private String uti = null;
-
-  public TradeDTO qualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-    return this;
-  }
-
-   /**
-   * Get qualifiedName
-   * @return qualifiedName
-  **/
-  @ApiModelProperty(value = "")
-  public String getQualifiedName() {
-    return qualifiedName;
-  }
-
-  public void setQualifiedName(String qualifiedName) {
-    this.qualifiedName = qualifiedName;
-  }
-
-  public TradeDTO accountId(Integer accountId) {
-    this.accountId = accountId;
-    return this;
-  }
-
-   /**
-   * Get accountId
-   * @return accountId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getAccountId() {
-    return accountId;
-  }
-
-  public void setAccountId(Integer accountId) {
-    this.accountId = accountId;
-  }
-
-  public TradeDTO accountId2(Integer accountId2) {
-    this.accountId2 = accountId2;
-    return this;
-  }
-
-   /**
-   * Get accountId2
-   * @return accountId2
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getAccountId2() {
-    return accountId2;
-  }
-
-  public void setAccountId2(Integer accountId2) {
-    this.accountId2 = accountId2;
-  }
-
-  public TradeDTO accrualDate(LocalDateTime accrualDate) {
-    this.accrualDate = accrualDate;
-    return this;
-  }
-
-   /**
-   * Get accrualDate
-   * @return accrualDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getAccrualDate() {
-    return accrualDate;
-  }
-
-  public void setAccrualDate(LocalDateTime accrualDate) {
-    this.accrualDate = accrualDate;
-  }
-
-  public TradeDTO amount(Double amount) {
-    this.amount = amount;
-    return this;
-  }
-
-   /**
-   * Get amount
-   * @return amount
-  **/
-  @ApiModelProperty(value = "")
-  public Double getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Double amount) {
-    this.amount = amount;
-  }
-
-  public TradeDTO basisId(Integer basisId) {
-    this.basisId = basisId;
-    return this;
-  }
-
-   /**
-   * Get basisId
-   * @return basisId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getBasisId() {
-    return basisId;
-  }
-
-  public void setBasisId(Integer basisId) {
-    this.basisId = basisId;
-  }
-
-  public TradeDTO changeQuantity(Boolean changeQuantity) {
-    this.changeQuantity = changeQuantity;
-    return this;
-  }
-
-   /**
-   * Get changeQuantity
-   * @return changeQuantity
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isChangeQuantity() {
-    return changeQuantity;
-  }
-
-  public void setChangeQuantity(Boolean changeQuantity) {
-    this.changeQuantity = changeQuantity;
-  }
-
-  public TradeDTO childTrades(List<TradeDTO> childTrades) {
-    this.childTrades = childTrades;
-    return this;
-  }
-
-  public TradeDTO addChildTradesItem(TradeDTO childTradesItem) {
-    if (this.childTrades == null) {
-      this.childTrades = new ArrayList<>();
+    @JsonProperty("quantity")
+    private Double quantity = null;
+
+    @JsonProperty("rateOrSpread")
+    private Double rateOrSpread = null;
+
+    @JsonProperty("securityId")
+    private Integer securityId = null;
+
+    @JsonProperty("settleDate")
+    private LocalDateTime settleDate = null;
+
+    @JsonProperty("settleStatusId")
+    private Integer settleStatusId = null;
+
+    @JsonProperty("signedQuantity")
+    private Double signedQuantity = null;
+
+    @JsonProperty("startAllocationId")
+    private Long startAllocationId = null;
+
+    @JsonProperty("statusId")
+    private Integer statusId = null;
+
+    @JsonProperty("statusMessage")
+    private String statusMessage = null;
+
+    @JsonProperty("systemId")
+    private Integer systemId = null;
+
+    @JsonProperty("tradeDate")
+    private LocalDateTime tradeDate = null;
+
+    @JsonProperty("tradeId")
+    private Long tradeId = null;
+
+    @JsonProperty("tradeType")
+    private TradeTypeDTO tradeType = null;
+
+    @JsonProperty("tradeTypeId")
+    private Integer tradeTypeId = null;
+
+    @JsonProperty("tradingDeskId")
+    private Integer tradingDeskId = null;
+
+    @JsonProperty("userComments")
+    private String userComments = null;
+
+    @JsonProperty("uti")
+    private String uti = null;
+
+    public TradeDTO qualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
+        return this;
     }
-    this.childTrades.add(childTradesItem);
-    return this;
-  }
 
-   /**
-   * Get childTrades
-   * @return childTrades
-  **/
-  @ApiModelProperty(value = "")
-  public List<TradeDTO> getChildTrades() {
-    return childTrades;
-  }
-
-  public void setChildTrades(List<TradeDTO> childTrades) {
-    this.childTrades = childTrades;
-  }
-
-  public TradeDTO comments(String comments) {
-    this.comments = comments;
-    return this;
-  }
-
-   /**
-   * Get comments
-   * @return comments
-  **/
-  @ApiModelProperty(value = "")
-  public String getComments() {
-    return comments;
-  }
-
-  public void setComments(String comments) {
-    this.comments = comments;
-  }
-
-  public TradeDTO counterpartyId(Integer counterpartyId) {
-    this.counterpartyId = counterpartyId;
-    return this;
-  }
-
-   /**
-   * Get counterpartyId
-   * @return counterpartyId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCounterpartyId() {
-    return counterpartyId;
-  }
-
-  public void setCounterpartyId(Integer counterpartyId) {
-    this.counterpartyId = counterpartyId;
-  }
-
-  public TradeDTO cptySubTypeId(Integer cptySubTypeId) {
-    this.cptySubTypeId = cptySubTypeId;
-    return this;
-  }
-
-   /**
-   * Get cptySubTypeId
-   * @return cptySubTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCptySubTypeId() {
-    return cptySubTypeId;
-  }
-
-  public void setCptySubTypeId(Integer cptySubTypeId) {
-    this.cptySubTypeId = cptySubTypeId;
-  }
-
-  public TradeDTO currencyId(Integer currencyId) {
-    this.currencyId = currencyId;
-    return this;
-  }
-
-   /**
-   * Get currencyId
-   * @return currencyId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getCurrencyId() {
-    return currencyId;
-  }
-
-  public void setCurrencyId(Integer currencyId) {
-    this.currencyId = currencyId;
-  }
-
-  public TradeDTO currentDaySettleDate(Boolean currentDaySettleDate) {
-    this.currentDaySettleDate = currentDaySettleDate;
-    return this;
-  }
-
-   /**
-   * Get currentDaySettleDate
-   * @return currentDaySettleDate
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isCurrentDaySettleDate() {
-    return currentDaySettleDate;
-  }
-
-  public void setCurrentDaySettleDate(Boolean currentDaySettleDate) {
-    this.currentDaySettleDate = currentDaySettleDate;
-  }
-
-  public TradeDTO depoId(Integer depoId) {
-    this.depoId = depoId;
-    return this;
-  }
-
-   /**
-   * Get depoId
-   * @return depoId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getDepoId() {
-    return depoId;
-  }
-
-  public void setDepoId(Integer depoId) {
-    this.depoId = depoId;
-  }
-
-  public TradeDTO doNotRecall(Boolean doNotRecall) {
-    this.doNotRecall = doNotRecall;
-    return this;
-  }
-
-   /**
-   * Get doNotRecall
-   * @return doNotRecall
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isDoNotRecall() {
-    return doNotRecall;
-  }
-
-  public void setDoNotRecall(Boolean doNotRecall) {
-    this.doNotRecall = doNotRecall;
-  }
-
-  public TradeDTO endAllocationId(Long endAllocationId) {
-    this.endAllocationId = endAllocationId;
-    return this;
-  }
-
-   /**
-   * Get endAllocationId
-   * @return endAllocationId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getEndAllocationId() {
-    return endAllocationId;
-  }
-
-  public void setEndAllocationId(Long endAllocationId) {
-    this.endAllocationId = endAllocationId;
-  }
-
-  public TradeDTO endDate(LocalDateTime endDate) {
-    this.endDate = endDate;
-    return this;
-  }
-
-   /**
-   * Get endDate
-   * @return endDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getEndDate() {
-    return endDate;
-  }
-
-  public void setEndDate(LocalDateTime endDate) {
-    this.endDate = endDate;
-  }
-
-  public TradeDTO factor(Double factor) {
-    this.factor = factor;
-    return this;
-  }
-
-   /**
-   * Get factor
-   * @return factor
-  **/
-  @ApiModelProperty(value = "")
-  public Double getFactor() {
-    return factor;
-  }
-
-  public void setFactor(Double factor) {
-    this.factor = factor;
-  }
-
-  public TradeDTO futureSettleDate(Boolean futureSettleDate) {
-    this.futureSettleDate = futureSettleDate;
-    return this;
-  }
-
-   /**
-   * Get futureSettleDate
-   * @return futureSettleDate
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isFutureSettleDate() {
-    return futureSettleDate;
-  }
-
-  public void setFutureSettleDate(Boolean futureSettleDate) {
-    this.futureSettleDate = futureSettleDate;
-  }
-
-  public TradeDTO indexId(Long indexId) {
-    this.indexId = indexId;
-    return this;
-  }
-
-   /**
-   * Get indexId
-   * @return indexId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getIndexId() {
-    return indexId;
-  }
-
-  public void setIndexId(Long indexId) {
-    this.indexId = indexId;
-  }
-
-  public TradeDTO instStatusId(Integer instStatusId) {
-    this.instStatusId = instStatusId;
-    return this;
-  }
-
-   /**
-   * Get instStatusId
-   * @return instStatusId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getInstStatusId() {
-    return instStatusId;
-  }
-
-  public void setInstStatusId(Integer instStatusId) {
-    this.instStatusId = instStatusId;
-  }
-
-  public TradeDTO micId(Long micId) {
-    this.micId = micId;
-    return this;
-  }
-
-   /**
-   * Get micId
-   * @return micId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getMicId() {
-    return micId;
-  }
-
-  public void setMicId(Long micId) {
-    this.micId = micId;
-  }
-
-  public TradeDTO offsetId(Integer offsetId) {
-    this.offsetId = offsetId;
-    return this;
-  }
-
-   /**
-   * Get offsetId
-   * @return offsetId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getOffsetId() {
-    return offsetId;
-  }
-
-  public void setOffsetId(Integer offsetId) {
-    this.offsetId = offsetId;
-  }
-
-  public TradeDTO oldSettleStatusId(Integer oldSettleStatusId) {
-    this.oldSettleStatusId = oldSettleStatusId;
-    return this;
-  }
-
-   /**
-   * Get oldSettleStatusId
-   * @return oldSettleStatusId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getOldSettleStatusId() {
-    return oldSettleStatusId;
-  }
-
-  public void setOldSettleStatusId(Integer oldSettleStatusId) {
-    this.oldSettleStatusId = oldSettleStatusId;
-  }
-
-  public TradeDTO opsStatusId(Integer opsStatusId) {
-    this.opsStatusId = opsStatusId;
-    return this;
-  }
-
-   /**
-   * Get opsStatusId
-   * @return opsStatusId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getOpsStatusId() {
-    return opsStatusId;
-  }
-
-  public void setOpsStatusId(Integer opsStatusId) {
-    this.opsStatusId = opsStatusId;
-  }
-
-  public TradeDTO orderActionTs(LocalDateTime orderActionTs) {
-    this.orderActionTs = orderActionTs;
-    return this;
-  }
-
-   /**
-   * Get orderActionTs
-   * @return orderActionTs
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getOrderActionTs() {
-    return orderActionTs;
-  }
-
-  public void setOrderActionTs(LocalDateTime orderActionTs) {
-    this.orderActionTs = orderActionTs;
-  }
-
-  public TradeDTO parentId(Integer parentId) {
-    this.parentId = parentId;
-    return this;
-  }
-
-   /**
-   * Get parentId
-   * @return parentId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getParentId() {
-    return parentId;
-  }
-
-  public void setParentId(Integer parentId) {
-    this.parentId = parentId;
-  }
-
-  public TradeDTO positionDTO(PositionDTO positionDTO) {
-    this.positionDTO = positionDTO;
-    return this;
-  }
-
-   /**
-   * Get positionDTO
-   * @return positionDTO
-  **/
-  @ApiModelProperty(value = "")
-  public PositionDTO getPositionDTO() {
-    return positionDTO;
-  }
-
-  public void setPositionDTO(PositionDTO positionDTO) {
-    this.positionDTO = positionDTO;
-  }
-
-  public TradeDTO positionId(Long positionId) {
-    this.positionId = positionId;
-    return this;
-  }
-
-   /**
-   * Get positionId
-   * @return positionId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getPositionId() {
-    return positionId;
-  }
-
-  public void setPositionId(Long positionId) {
-    this.positionId = positionId;
-  }
-
-  public TradeDTO positionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-    return this;
-  }
-
-   /**
-   * Get positionTypeId
-   * @return positionTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getPositionTypeId() {
-    return positionTypeId;
-  }
-
-  public void setPositionTypeId(Integer positionTypeId) {
-    this.positionTypeId = positionTypeId;
-  }
-
-  public TradeDTO postDate(LocalDateTime postDate) {
-    this.postDate = postDate;
-    return this;
-  }
-
-   /**
-   * Get postDate
-   * @return postDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getPostDate() {
-    return postDate;
-  }
-
-  public void setPostDate(LocalDateTime postDate) {
-    this.postDate = postDate;
-  }
-
-  public TradeDTO price(Double price) {
-    this.price = price;
-    return this;
-  }
-
-   /**
-   * Get price
-   * @return price
-  **/
-  @ApiModelProperty(value = "")
-  public Double getPrice() {
-    return price;
-  }
-
-  public void setPrice(Double price) {
-    this.price = price;
-  }
-
-  public TradeDTO quantity(Double quantity) {
-    this.quantity = quantity;
-    return this;
-  }
-
-   /**
-   * Get quantity
-   * @return quantity
-  **/
-  @ApiModelProperty(value = "")
-  public Double getQuantity() {
-    return quantity;
-  }
-
-  public void setQuantity(Double quantity) {
-    this.quantity = quantity;
-  }
-
-  public TradeDTO rateOrSpread(Double rateOrSpread) {
-    this.rateOrSpread = rateOrSpread;
-    return this;
-  }
-
-   /**
-   * Get rateOrSpread
-   * @return rateOrSpread
-  **/
-  @ApiModelProperty(value = "")
-  public Double getRateOrSpread() {
-    return rateOrSpread;
-  }
-
-  public void setRateOrSpread(Double rateOrSpread) {
-    this.rateOrSpread = rateOrSpread;
-  }
-
-  public TradeDTO securityId(Integer securityId) {
-    this.securityId = securityId;
-    return this;
-  }
-
-   /**
-   * Get securityId
-   * @return securityId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getSecurityId() {
-    return securityId;
-  }
-
-  public void setSecurityId(Integer securityId) {
-    this.securityId = securityId;
-  }
-
-  public TradeDTO settleDate(LocalDateTime settleDate) {
-    this.settleDate = settleDate;
-    return this;
-  }
-
-   /**
-   * Get settleDate
-   * @return settleDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getSettleDate() {
-    return settleDate;
-  }
-
-  public void setSettleDate(LocalDateTime settleDate) {
-    this.settleDate = settleDate;
-  }
-
-  public TradeDTO settleStatusId(Integer settleStatusId) {
-    this.settleStatusId = settleStatusId;
-    return this;
-  }
-
-   /**
-   * Get settleStatusId
-   * @return settleStatusId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getSettleStatusId() {
-    return settleStatusId;
-  }
-
-  public void setSettleStatusId(Integer settleStatusId) {
-    this.settleStatusId = settleStatusId;
-  }
-
-  public TradeDTO signedQuantity(Double signedQuantity) {
-    this.signedQuantity = signedQuantity;
-    return this;
-  }
-
-   /**
-   * Get signedQuantity
-   * @return signedQuantity
-  **/
-  @ApiModelProperty(value = "")
-  public Double getSignedQuantity() {
-    return signedQuantity;
-  }
-
-  public void setSignedQuantity(Double signedQuantity) {
-    this.signedQuantity = signedQuantity;
-  }
-
-  public TradeDTO startAllocationId(Long startAllocationId) {
-    this.startAllocationId = startAllocationId;
-    return this;
-  }
-
-   /**
-   * Get startAllocationId
-   * @return startAllocationId
-  **/
-  @ApiModelProperty(value = "")
-  public Long getStartAllocationId() {
-    return startAllocationId;
-  }
-
-  public void setStartAllocationId(Long startAllocationId) {
-    this.startAllocationId = startAllocationId;
-  }
-
-  public TradeDTO statusId(Integer statusId) {
-    this.statusId = statusId;
-    return this;
-  }
-
-   /**
-   * Get statusId
-   * @return statusId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getStatusId() {
-    return statusId;
-  }
-
-  public void setStatusId(Integer statusId) {
-    this.statusId = statusId;
-  }
-
-  public TradeDTO statusMessage(String statusMessage) {
-    this.statusMessage = statusMessage;
-    return this;
-  }
-
-   /**
-   * Get statusMessage
-   * @return statusMessage
-  **/
-  @ApiModelProperty(value = "")
-  public String getStatusMessage() {
-    return statusMessage;
-  }
-
-  public void setStatusMessage(String statusMessage) {
-    this.statusMessage = statusMessage;
-  }
-
-  public TradeDTO systemId(Integer systemId) {
-    this.systemId = systemId;
-    return this;
-  }
-
-   /**
-   * Get systemId
-   * @return systemId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getSystemId() {
-    return systemId;
-  }
-
-  public void setSystemId(Integer systemId) {
-    this.systemId = systemId;
-  }
-
-  public TradeDTO tradeDate(LocalDateTime tradeDate) {
-    this.tradeDate = tradeDate;
-    return this;
-  }
-
-   /**
-   * Get tradeDate
-   * @return tradeDate
-  **/
-  @ApiModelProperty(value = "")
-  public LocalDateTime getTradeDate() {
-    return tradeDate;
-  }
-
-  public void setTradeDate(LocalDateTime tradeDate) {
-    this.tradeDate = tradeDate;
-  }
-
-  public TradeDTO tradeId(Long tradeId) {
-    this.tradeId = tradeId;
-    return this;
-  }
-
-   /**
-   * Required only for updating/cancelling an existing trade
-   * @return tradeId
-  **/
-  @ApiModelProperty(required = true, value = "Required only for updating/cancelling an existing trade")
-  public Long getTradeId() {
-    return tradeId;
-  }
-
-  public void setTradeId(Long tradeId) {
-    this.tradeId = tradeId;
-  }
-
-  public TradeDTO tradeType(TradeTypeDTO tradeType) {
-    this.tradeType = tradeType;
-    return this;
-  }
-
-   /**
-   * Get tradeType
-   * @return tradeType
-  **/
-  @ApiModelProperty(value = "")
-  public TradeTypeDTO getTradeType() {
-    return tradeType;
-  }
-
-  public void setTradeType(TradeTypeDTO tradeType) {
-    this.tradeType = tradeType;
-  }
-
-  public TradeDTO tradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-    return this;
-  }
-
-   /**
-   * Get tradeTypeId
-   * @return tradeTypeId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTradeTypeId() {
-    return tradeTypeId;
-  }
-
-  public void setTradeTypeId(Integer tradeTypeId) {
-    this.tradeTypeId = tradeTypeId;
-  }
-
-  public TradeDTO tradingDeskId(Integer tradingDeskId) {
-    this.tradingDeskId = tradingDeskId;
-    return this;
-  }
-
-   /**
-   * Get tradingDeskId
-   * @return tradingDeskId
-  **/
-  @ApiModelProperty(value = "")
-  public Integer getTradingDeskId() {
-    return tradingDeskId;
-  }
-
-  public void setTradingDeskId(Integer tradingDeskId) {
-    this.tradingDeskId = tradingDeskId;
-  }
-
-  public TradeDTO userComments(String userComments) {
-    this.userComments = userComments;
-    return this;
-  }
-
-   /**
-   * Get userComments
-   * @return userComments
-  **/
-  @ApiModelProperty(value = "")
-  public String getUserComments() {
-    return userComments;
-  }
-
-  public void setUserComments(String userComments) {
-    this.userComments = userComments;
-  }
-
-  public TradeDTO uti(String uti) {
-    this.uti = uti;
-    return this;
-  }
-
-   /**
-   * Get uti
-   * @return uti
-  **/
-  @ApiModelProperty(value = "")
-  public String getUti() {
-    return uti;
-  }
-
-  public void setUti(String uti) {
-    this.uti = uti;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+    /**
+     * Get qualifiedName
+     *
+     * @return qualifiedName
+     **/
+    @ApiModelProperty(value = "")
+    public String getQualifiedName() {
+        return qualifiedName;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    public void setQualifiedName(String qualifiedName) {
+        this.qualifiedName = qualifiedName;
     }
-    TradeDTO tradeDTO = (TradeDTO) o;
-    return Objects.equals(this.qualifiedName, tradeDTO.qualifiedName) &&
-        Objects.equals(this.accountId, tradeDTO.accountId) &&
-        Objects.equals(this.accountId2, tradeDTO.accountId2) &&
-        Objects.equals(this.accrualDate, tradeDTO.accrualDate) &&
-        Objects.equals(this.amount, tradeDTO.amount) &&
-        Objects.equals(this.basisId, tradeDTO.basisId) &&
-        Objects.equals(this.changeQuantity, tradeDTO.changeQuantity) &&
-        Objects.equals(this.childTrades, tradeDTO.childTrades) &&
-        Objects.equals(this.comments, tradeDTO.comments) &&
-        Objects.equals(this.counterpartyId, tradeDTO.counterpartyId) &&
-        Objects.equals(this.cptySubTypeId, tradeDTO.cptySubTypeId) &&
-        Objects.equals(this.currencyId, tradeDTO.currencyId) &&
-        Objects.equals(this.currentDaySettleDate, tradeDTO.currentDaySettleDate) &&
-        Objects.equals(this.depoId, tradeDTO.depoId) &&
-        Objects.equals(this.doNotRecall, tradeDTO.doNotRecall) &&
-        Objects.equals(this.endAllocationId, tradeDTO.endAllocationId) &&
-        Objects.equals(this.endDate, tradeDTO.endDate) &&
-        Objects.equals(this.factor, tradeDTO.factor) &&
-        Objects.equals(this.futureSettleDate, tradeDTO.futureSettleDate) &&
-        Objects.equals(this.indexId, tradeDTO.indexId) &&
-        Objects.equals(this.instStatusId, tradeDTO.instStatusId) &&
-        Objects.equals(this.micId, tradeDTO.micId) &&
-        Objects.equals(this.offsetId, tradeDTO.offsetId) &&
-        Objects.equals(this.oldSettleStatusId, tradeDTO.oldSettleStatusId) &&
-        Objects.equals(this.opsStatusId, tradeDTO.opsStatusId) &&
-        Objects.equals(this.orderActionTs, tradeDTO.orderActionTs) &&
-        Objects.equals(this.parentId, tradeDTO.parentId) &&
-        Objects.equals(this.positionDTO, tradeDTO.positionDTO) &&
-        Objects.equals(this.positionId, tradeDTO.positionId) &&
-        Objects.equals(this.positionTypeId, tradeDTO.positionTypeId) &&
-        Objects.equals(this.postDate, tradeDTO.postDate) &&
-        Objects.equals(this.price, tradeDTO.price) &&
-        Objects.equals(this.quantity, tradeDTO.quantity) &&
-        Objects.equals(this.rateOrSpread, tradeDTO.rateOrSpread) &&
-        Objects.equals(this.securityId, tradeDTO.securityId) &&
-        Objects.equals(this.settleDate, tradeDTO.settleDate) &&
-        Objects.equals(this.settleStatusId, tradeDTO.settleStatusId) &&
-        Objects.equals(this.signedQuantity, tradeDTO.signedQuantity) &&
-        Objects.equals(this.startAllocationId, tradeDTO.startAllocationId) &&
-        Objects.equals(this.statusId, tradeDTO.statusId) &&
-        Objects.equals(this.statusMessage, tradeDTO.statusMessage) &&
-        Objects.equals(this.systemId, tradeDTO.systemId) &&
-        Objects.equals(this.tradeDate, tradeDTO.tradeDate) &&
-        Objects.equals(this.tradeId, tradeDTO.tradeId) &&
-        Objects.equals(this.tradeType, tradeDTO.tradeType) &&
-        Objects.equals(this.tradeTypeId, tradeDTO.tradeTypeId) &&
-        Objects.equals(this.tradingDeskId, tradeDTO.tradingDeskId) &&
-        Objects.equals(this.userComments, tradeDTO.userComments) &&
-        Objects.equals(this.uti, tradeDTO.uti);
-  }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(qualifiedName, accountId, accountId2, accrualDate, amount, basisId, changeQuantity, childTrades, comments, counterpartyId, cptySubTypeId, currencyId, currentDaySettleDate, depoId, doNotRecall, endAllocationId, endDate, factor, futureSettleDate, indexId, instStatusId, micId, offsetId, oldSettleStatusId, opsStatusId, orderActionTs, parentId, positionDTO, positionId, positionTypeId, postDate, price, quantity, rateOrSpread, securityId, settleDate, settleStatusId, signedQuantity, startAllocationId, statusId, statusMessage, systemId, tradeDate, tradeId, tradeType, tradeTypeId, tradingDeskId, userComments, uti);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class TradeDTO {\n");
-    
-    sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-    sb.append("    accountId2: ").append(toIndentedString(accountId2)).append("\n");
-    sb.append("    accrualDate: ").append(toIndentedString(accrualDate)).append("\n");
-    sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
-    sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
-    sb.append("    changeQuantity: ").append(toIndentedString(changeQuantity)).append("\n");
-    sb.append("    childTrades: ").append(toIndentedString(childTrades)).append("\n");
-    sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
-    sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
-    sb.append("    cptySubTypeId: ").append(toIndentedString(cptySubTypeId)).append("\n");
-    sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
-    sb.append("    currentDaySettleDate: ").append(toIndentedString(currentDaySettleDate)).append("\n");
-    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-    sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
-    sb.append("    endAllocationId: ").append(toIndentedString(endAllocationId)).append("\n");
-    sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
-    sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
-    sb.append("    futureSettleDate: ").append(toIndentedString(futureSettleDate)).append("\n");
-    sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
-    sb.append("    instStatusId: ").append(toIndentedString(instStatusId)).append("\n");
-    sb.append("    micId: ").append(toIndentedString(micId)).append("\n");
-    sb.append("    offsetId: ").append(toIndentedString(offsetId)).append("\n");
-    sb.append("    oldSettleStatusId: ").append(toIndentedString(oldSettleStatusId)).append("\n");
-    sb.append("    opsStatusId: ").append(toIndentedString(opsStatusId)).append("\n");
-    sb.append("    orderActionTs: ").append(toIndentedString(orderActionTs)).append("\n");
-    sb.append("    parentId: ").append(toIndentedString(parentId)).append("\n");
-    sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
-    sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
-    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-    sb.append("    postDate: ").append(toIndentedString(postDate)).append("\n");
-    sb.append("    price: ").append(toIndentedString(price)).append("\n");
-    sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-    sb.append("    rateOrSpread: ").append(toIndentedString(rateOrSpread)).append("\n");
-    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-    sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
-    sb.append("    settleStatusId: ").append(toIndentedString(settleStatusId)).append("\n");
-    sb.append("    signedQuantity: ").append(toIndentedString(signedQuantity)).append("\n");
-    sb.append("    startAllocationId: ").append(toIndentedString(startAllocationId)).append("\n");
-    sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
-    sb.append("    statusMessage: ").append(toIndentedString(statusMessage)).append("\n");
-    sb.append("    systemId: ").append(toIndentedString(systemId)).append("\n");
-    sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
-    sb.append("    tradeId: ").append(toIndentedString(tradeId)).append("\n");
-    sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
-    sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
-    sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
-    sb.append("    userComments: ").append(toIndentedString(userComments)).append("\n");
-    sb.append("    uti: ").append(toIndentedString(uti)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+    public TradeDTO accountId(Integer accountId) {
+        this.accountId = accountId;
+        return this;
     }
-    return o.toString().replace("\n", "\n    ");
-  }
+
+    /**
+     * Get accountId
+     *
+     * @return accountId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(Integer accountId) {
+        this.accountId = accountId;
+    }
+
+    public TradeDTO accountId2(Integer accountId2) {
+        this.accountId2 = accountId2;
+        return this;
+    }
+
+    /**
+     * Get accountId2
+     *
+     * @return accountId2
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getAccountId2() {
+        return accountId2;
+    }
+
+    public void setAccountId2(Integer accountId2) {
+        this.accountId2 = accountId2;
+    }
+
+    public TradeDTO accrualDate(LocalDateTime accrualDate) {
+        this.accrualDate = accrualDate;
+        return this;
+    }
+
+    /**
+     * Get accrualDate
+     *
+     * @return accrualDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getAccrualDate() {
+        return accrualDate;
+    }
+
+    public void setAccrualDate(LocalDateTime accrualDate) {
+        this.accrualDate = accrualDate;
+    }
+
+    public TradeDTO amount(Double amount) {
+        this.amount = amount;
+        return this;
+    }
+
+    /**
+     * Get amount
+     *
+     * @return amount
+     **/
+    @ApiModelProperty(value = "")
+    public Double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public TradeDTO basisId(Integer basisId) {
+        this.basisId = basisId;
+        return this;
+    }
+
+    /**
+     * Get basisId
+     *
+     * @return basisId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getBasisId() {
+        return basisId;
+    }
+
+    public void setBasisId(Integer basisId) {
+        this.basisId = basisId;
+    }
+
+    public TradeDTO changeQuantity(Boolean changeQuantity) {
+        this.changeQuantity = changeQuantity;
+        return this;
+    }
+
+    /**
+     * Get changeQuantity
+     *
+     * @return changeQuantity
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isChangeQuantity() {
+        return changeQuantity;
+    }
+
+    public void setChangeQuantity(Boolean changeQuantity) {
+        this.changeQuantity = changeQuantity;
+    }
+
+    public TradeDTO childTrades(List<TradeDTO> childTrades) {
+        this.childTrades = childTrades;
+        return this;
+    }
+
+    public TradeDTO addChildTradesItem(TradeDTO childTradesItem) {
+        if (this.childTrades == null) {
+            this.childTrades = new ArrayList<>();
+        }
+        this.childTrades.add(childTradesItem);
+        return this;
+    }
+
+    /**
+     * Get childTrades
+     *
+     * @return childTrades
+     **/
+    @ApiModelProperty(value = "")
+    public List<TradeDTO> getChildTrades() {
+        return childTrades;
+    }
+
+    public void setChildTrades(List<TradeDTO> childTrades) {
+        this.childTrades = childTrades;
+    }
+
+    public TradeDTO comments(String comments) {
+        this.comments = comments;
+        return this;
+    }
+
+    /**
+     * Get comments
+     *
+     * @return comments
+     **/
+    @ApiModelProperty(value = "")
+    public String getComments() {
+        return comments;
+    }
+
+    public void setComments(String comments) {
+        this.comments = comments;
+    }
+
+    public TradeDTO counterpartyId(Integer counterpartyId) {
+        this.counterpartyId = counterpartyId;
+        return this;
+    }
+
+    /**
+     * Get counterpartyId
+     *
+     * @return counterpartyId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCounterpartyId() {
+        return counterpartyId;
+    }
+
+    public void setCounterpartyId(Integer counterpartyId) {
+        this.counterpartyId = counterpartyId;
+    }
+
+    public TradeDTO cptySubTypeId(Integer cptySubTypeId) {
+        this.cptySubTypeId = cptySubTypeId;
+        return this;
+    }
+
+    /**
+     * Get cptySubTypeId
+     *
+     * @return cptySubTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCptySubTypeId() {
+        return cptySubTypeId;
+    }
+
+    public void setCptySubTypeId(Integer cptySubTypeId) {
+        this.cptySubTypeId = cptySubTypeId;
+    }
+
+    public TradeDTO currencyId(Integer currencyId) {
+        this.currencyId = currencyId;
+        return this;
+    }
+
+    /**
+     * Get currencyId
+     *
+     * @return currencyId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getCurrencyId() {
+        return currencyId;
+    }
+
+    public void setCurrencyId(Integer currencyId) {
+        this.currencyId = currencyId;
+    }
+
+    public TradeDTO currentDaySettleDate(Boolean currentDaySettleDate) {
+        this.currentDaySettleDate = currentDaySettleDate;
+        return this;
+    }
+
+    /**
+     * Get currentDaySettleDate
+     *
+     * @return currentDaySettleDate
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isCurrentDaySettleDate() {
+        return currentDaySettleDate;
+    }
+
+    public void setCurrentDaySettleDate(Boolean currentDaySettleDate) {
+        this.currentDaySettleDate = currentDaySettleDate;
+    }
+
+    public TradeDTO depoId(Integer depoId) {
+        this.depoId = depoId;
+        return this;
+    }
+
+    /**
+     * Get depoId
+     *
+     * @return depoId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getDepoId() {
+        return depoId;
+    }
+
+    public void setDepoId(Integer depoId) {
+        this.depoId = depoId;
+    }
+
+    public TradeDTO doNotRecall(Boolean doNotRecall) {
+        this.doNotRecall = doNotRecall;
+        return this;
+    }
+
+    /**
+     * Get doNotRecall
+     *
+     * @return doNotRecall
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isDoNotRecall() {
+        return doNotRecall;
+    }
+
+    public void setDoNotRecall(Boolean doNotRecall) {
+        this.doNotRecall = doNotRecall;
+    }
+
+    public TradeDTO endAllocationId(Long endAllocationId) {
+        this.endAllocationId = endAllocationId;
+        return this;
+    }
+
+    /**
+     * Get endAllocationId
+     *
+     * @return endAllocationId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getEndAllocationId() {
+        return endAllocationId;
+    }
+
+    public void setEndAllocationId(Long endAllocationId) {
+        this.endAllocationId = endAllocationId;
+    }
+
+    public TradeDTO endDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+        return this;
+    }
+
+    /**
+     * Get endDate
+     *
+     * @return endDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public TradeDTO factor(Double factor) {
+        this.factor = factor;
+        return this;
+    }
+
+    /**
+     * Get factor
+     *
+     * @return factor
+     **/
+    @ApiModelProperty(value = "")
+    public Double getFactor() {
+        return factor;
+    }
+
+    public void setFactor(Double factor) {
+        this.factor = factor;
+    }
+
+    public TradeDTO futureSettleDate(Boolean futureSettleDate) {
+        this.futureSettleDate = futureSettleDate;
+        return this;
+    }
+
+    /**
+     * Get futureSettleDate
+     *
+     * @return futureSettleDate
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isFutureSettleDate() {
+        return futureSettleDate;
+    }
+
+    public void setFutureSettleDate(Boolean futureSettleDate) {
+        this.futureSettleDate = futureSettleDate;
+    }
+
+    public TradeDTO indexId(Long indexId) {
+        this.indexId = indexId;
+        return this;
+    }
+
+    /**
+     * Get indexId
+     *
+     * @return indexId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getIndexId() {
+        return indexId;
+    }
+
+    public void setIndexId(Long indexId) {
+        this.indexId = indexId;
+    }
+
+    public TradeDTO instStatusId(Integer instStatusId) {
+        this.instStatusId = instStatusId;
+        return this;
+    }
+
+    /**
+     * Get instStatusId
+     *
+     * @return instStatusId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getInstStatusId() {
+        return instStatusId;
+    }
+
+    public void setInstStatusId(Integer instStatusId) {
+        this.instStatusId = instStatusId;
+    }
+
+    public TradeDTO micId(Long micId) {
+        this.micId = micId;
+        return this;
+    }
+
+    /**
+     * Get micId
+     *
+     * @return micId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getMicId() {
+        return micId;
+    }
+
+    public void setMicId(Long micId) {
+        this.micId = micId;
+    }
+
+    public TradeDTO offsetId(Integer offsetId) {
+        this.offsetId = offsetId;
+        return this;
+    }
+
+    /**
+     * Get offsetId
+     *
+     * @return offsetId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getOffsetId() {
+        return offsetId;
+    }
+
+    public void setOffsetId(Integer offsetId) {
+        this.offsetId = offsetId;
+    }
+
+    public TradeDTO oldSettleStatusId(Integer oldSettleStatusId) {
+        this.oldSettleStatusId = oldSettleStatusId;
+        return this;
+    }
+
+    /**
+     * Get oldSettleStatusId
+     *
+     * @return oldSettleStatusId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getOldSettleStatusId() {
+        return oldSettleStatusId;
+    }
+
+    public void setOldSettleStatusId(Integer oldSettleStatusId) {
+        this.oldSettleStatusId = oldSettleStatusId;
+    }
+
+    public TradeDTO opsStatusId(Integer opsStatusId) {
+        this.opsStatusId = opsStatusId;
+        return this;
+    }
+
+    /**
+     * Get opsStatusId
+     *
+     * @return opsStatusId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getOpsStatusId() {
+        return opsStatusId;
+    }
+
+    public void setOpsStatusId(Integer opsStatusId) {
+        this.opsStatusId = opsStatusId;
+    }
+
+    public TradeDTO orderActionTs(LocalDateTime orderActionTs) {
+        this.orderActionTs = orderActionTs;
+        return this;
+    }
+
+    /**
+     * Get orderActionTs
+     *
+     * @return orderActionTs
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getOrderActionTs() {
+        return orderActionTs;
+    }
+
+    public void setOrderActionTs(LocalDateTime orderActionTs) {
+        this.orderActionTs = orderActionTs;
+    }
+
+    public TradeDTO parentId(Integer parentId) {
+        this.parentId = parentId;
+        return this;
+    }
+
+    /**
+     * Get parentId
+     *
+     * @return parentId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(Integer parentId) {
+        this.parentId = parentId;
+    }
+
+    public TradeDTO positionDTO(PositionDTO positionDTO) {
+        this.positionDTO = positionDTO;
+        return this;
+    }
+
+    /**
+     * Get positionDTO
+     *
+     * @return positionDTO
+     **/
+    @ApiModelProperty(value = "")
+    public PositionDTO getPositionDTO() {
+        return positionDTO;
+    }
+
+    public void setPositionDTO(PositionDTO positionDTO) {
+        this.positionDTO = positionDTO;
+    }
+
+    public TradeDTO positionId(Long positionId) {
+        this.positionId = positionId;
+        return this;
+    }
+
+    /**
+     * Get positionId
+     *
+     * @return positionId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getPositionId() {
+        return positionId;
+    }
+
+    public void setPositionId(Long positionId) {
+        this.positionId = positionId;
+    }
+
+    public TradeDTO positionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+        return this;
+    }
+
+    /**
+     * Get positionTypeId
+     *
+     * @return positionTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getPositionTypeId() {
+        return positionTypeId;
+    }
+
+    public void setPositionTypeId(Integer positionTypeId) {
+        this.positionTypeId = positionTypeId;
+    }
+
+    public TradeDTO postDate(LocalDateTime postDate) {
+        this.postDate = postDate;
+        return this;
+    }
+
+    /**
+     * Get postDate
+     *
+     * @return postDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getPostDate() {
+        return postDate;
+    }
+
+    public void setPostDate(LocalDateTime postDate) {
+        this.postDate = postDate;
+    }
+
+    public TradeDTO price(Double price) {
+        this.price = price;
+        return this;
+    }
+
+    /**
+     * Get price
+     *
+     * @return price
+     **/
+    @ApiModelProperty(value = "")
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public TradeDTO quantity(Double quantity) {
+        this.quantity = quantity;
+        return this;
+    }
+
+    /**
+     * Get quantity
+     *
+     * @return quantity
+     **/
+    @ApiModelProperty(value = "")
+    public Double getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Double quantity) {
+        this.quantity = quantity;
+    }
+
+    public TradeDTO rateOrSpread(Double rateOrSpread) {
+        this.rateOrSpread = rateOrSpread;
+        return this;
+    }
+
+    /**
+     * Get rateOrSpread
+     *
+     * @return rateOrSpread
+     **/
+    @ApiModelProperty(value = "")
+    public Double getRateOrSpread() {
+        return rateOrSpread;
+    }
+
+    public void setRateOrSpread(Double rateOrSpread) {
+        this.rateOrSpread = rateOrSpread;
+    }
+
+    public TradeDTO securityId(Integer securityId) {
+        this.securityId = securityId;
+        return this;
+    }
+
+    /**
+     * Get securityId
+     *
+     * @return securityId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getSecurityId() {
+        return securityId;
+    }
+
+    public void setSecurityId(Integer securityId) {
+        this.securityId = securityId;
+    }
+
+    public TradeDTO settleDate(LocalDateTime settleDate) {
+        this.settleDate = settleDate;
+        return this;
+    }
+
+    /**
+     * Get settleDate
+     *
+     * @return settleDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getSettleDate() {
+        return settleDate;
+    }
+
+    public void setSettleDate(LocalDateTime settleDate) {
+        this.settleDate = settleDate;
+    }
+
+    public TradeDTO settleStatusId(Integer settleStatusId) {
+        this.settleStatusId = settleStatusId;
+        return this;
+    }
+
+    /**
+     * Get settleStatusId
+     *
+     * @return settleStatusId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getSettleStatusId() {
+        return settleStatusId;
+    }
+
+    public void setSettleStatusId(Integer settleStatusId) {
+        this.settleStatusId = settleStatusId;
+    }
+
+    public TradeDTO signedQuantity(Double signedQuantity) {
+        this.signedQuantity = signedQuantity;
+        return this;
+    }
+
+    /**
+     * Get signedQuantity
+     *
+     * @return signedQuantity
+     **/
+    @ApiModelProperty(value = "")
+    public Double getSignedQuantity() {
+        return signedQuantity;
+    }
+
+    public void setSignedQuantity(Double signedQuantity) {
+        this.signedQuantity = signedQuantity;
+    }
+
+    public TradeDTO startAllocationId(Long startAllocationId) {
+        this.startAllocationId = startAllocationId;
+        return this;
+    }
+
+    /**
+     * Get startAllocationId
+     *
+     * @return startAllocationId
+     **/
+    @ApiModelProperty(value = "")
+    public Long getStartAllocationId() {
+        return startAllocationId;
+    }
+
+    public void setStartAllocationId(Long startAllocationId) {
+        this.startAllocationId = startAllocationId;
+    }
+
+    public TradeDTO statusId(Integer statusId) {
+        this.statusId = statusId;
+        return this;
+    }
+
+    /**
+     * Get statusId
+     *
+     * @return statusId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getStatusId() {
+        return statusId;
+    }
+
+    public void setStatusId(Integer statusId) {
+        this.statusId = statusId;
+    }
+
+    public TradeDTO statusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+        return this;
+    }
+
+    /**
+     * Get statusMessage
+     *
+     * @return statusMessage
+     **/
+    @ApiModelProperty(value = "")
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
+    public TradeDTO systemId(Integer systemId) {
+        this.systemId = systemId;
+        return this;
+    }
+
+    /**
+     * Get systemId
+     *
+     * @return systemId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getSystemId() {
+        return systemId;
+    }
+
+    public void setSystemId(Integer systemId) {
+        this.systemId = systemId;
+    }
+
+    public TradeDTO tradeDate(LocalDateTime tradeDate) {
+        this.tradeDate = tradeDate;
+        return this;
+    }
+
+    /**
+     * Get tradeDate
+     *
+     * @return tradeDate
+     **/
+    @ApiModelProperty(value = "")
+    public LocalDateTime getTradeDate() {
+        return tradeDate;
+    }
+
+    public void setTradeDate(LocalDateTime tradeDate) {
+        this.tradeDate = tradeDate;
+    }
+
+    public TradeDTO tradeId(Long tradeId) {
+        this.tradeId = tradeId;
+        return this;
+    }
+
+    /**
+     * Required only for updating/cancelling an existing trade
+     *
+     * @return tradeId
+     **/
+    @ApiModelProperty(required = true, value = "Required only for updating/cancelling an existing trade")
+    public Long getTradeId() {
+        return tradeId;
+    }
+
+    public void setTradeId(Long tradeId) {
+        this.tradeId = tradeId;
+    }
+
+    public TradeDTO tradeType(TradeTypeDTO tradeType) {
+        this.tradeType = tradeType;
+        return this;
+    }
+
+    /**
+     * Get tradeType
+     *
+     * @return tradeType
+     **/
+    @ApiModelProperty(value = "")
+    public TradeTypeDTO getTradeType() {
+        return tradeType;
+    }
+
+    public void setTradeType(TradeTypeDTO tradeType) {
+        this.tradeType = tradeType;
+    }
+
+    public TradeDTO tradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+        return this;
+    }
+
+    /**
+     * Get tradeTypeId
+     *
+     * @return tradeTypeId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTradeTypeId() {
+        return tradeTypeId;
+    }
+
+    public void setTradeTypeId(Integer tradeTypeId) {
+        this.tradeTypeId = tradeTypeId;
+    }
+
+    public TradeDTO tradingDeskId(Integer tradingDeskId) {
+        this.tradingDeskId = tradingDeskId;
+        return this;
+    }
+
+    /**
+     * Get tradingDeskId
+     *
+     * @return tradingDeskId
+     **/
+    @ApiModelProperty(value = "")
+    public Integer getTradingDeskId() {
+        return tradingDeskId;
+    }
+
+    public void setTradingDeskId(Integer tradingDeskId) {
+        this.tradingDeskId = tradingDeskId;
+    }
+
+    public TradeDTO userComments(String userComments) {
+        this.userComments = userComments;
+        return this;
+    }
+
+    /**
+     * Get userComments
+     *
+     * @return userComments
+     **/
+    @ApiModelProperty(value = "")
+    public String getUserComments() {
+        return userComments;
+    }
+
+    public void setUserComments(String userComments) {
+        this.userComments = userComments;
+    }
+
+    public TradeDTO uti(String uti) {
+        this.uti = uti;
+        return this;
+    }
+
+    /**
+     * Get uti
+     *
+     * @return uti
+     **/
+    @ApiModelProperty(value = "")
+    public String getUti() {
+        return uti;
+    }
+
+    public void setUti(String uti) {
+        this.uti = uti;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TradeDTO tradeDTO = (TradeDTO) o;
+        return Objects.equals(this.qualifiedName, tradeDTO.qualifiedName) &&
+            Objects.equals(this.accountId, tradeDTO.accountId) &&
+            Objects.equals(this.accountId2, tradeDTO.accountId2) &&
+            Objects.equals(this.accrualDate, tradeDTO.accrualDate) &&
+            Objects.equals(this.amount, tradeDTO.amount) &&
+            Objects.equals(this.basisId, tradeDTO.basisId) &&
+            Objects.equals(this.changeQuantity, tradeDTO.changeQuantity) &&
+            Objects.equals(this.childTrades, tradeDTO.childTrades) &&
+            Objects.equals(this.comments, tradeDTO.comments) &&
+            Objects.equals(this.counterpartyId, tradeDTO.counterpartyId) &&
+            Objects.equals(this.cptySubTypeId, tradeDTO.cptySubTypeId) &&
+            Objects.equals(this.currencyId, tradeDTO.currencyId) &&
+            Objects.equals(this.currentDaySettleDate, tradeDTO.currentDaySettleDate) &&
+            Objects.equals(this.depoId, tradeDTO.depoId) &&
+            Objects.equals(this.doNotRecall, tradeDTO.doNotRecall) &&
+            Objects.equals(this.endAllocationId, tradeDTO.endAllocationId) &&
+            Objects.equals(this.endDate, tradeDTO.endDate) &&
+            Objects.equals(this.factor, tradeDTO.factor) &&
+            Objects.equals(this.futureSettleDate, tradeDTO.futureSettleDate) &&
+            Objects.equals(this.indexId, tradeDTO.indexId) &&
+            Objects.equals(this.instStatusId, tradeDTO.instStatusId) &&
+            Objects.equals(this.micId, tradeDTO.micId) &&
+            Objects.equals(this.offsetId, tradeDTO.offsetId) &&
+            Objects.equals(this.oldSettleStatusId, tradeDTO.oldSettleStatusId) &&
+            Objects.equals(this.opsStatusId, tradeDTO.opsStatusId) &&
+            Objects.equals(this.orderActionTs, tradeDTO.orderActionTs) &&
+            Objects.equals(this.parentId, tradeDTO.parentId) &&
+            Objects.equals(this.positionDTO, tradeDTO.positionDTO) &&
+            Objects.equals(this.positionId, tradeDTO.positionId) &&
+            Objects.equals(this.positionTypeId, tradeDTO.positionTypeId) &&
+            Objects.equals(this.postDate, tradeDTO.postDate) &&
+            Objects.equals(this.price, tradeDTO.price) &&
+            Objects.equals(this.quantity, tradeDTO.quantity) &&
+            Objects.equals(this.rateOrSpread, tradeDTO.rateOrSpread) &&
+            Objects.equals(this.securityId, tradeDTO.securityId) &&
+            Objects.equals(this.settleDate, tradeDTO.settleDate) &&
+            Objects.equals(this.settleStatusId, tradeDTO.settleStatusId) &&
+            Objects.equals(this.signedQuantity, tradeDTO.signedQuantity) &&
+            Objects.equals(this.startAllocationId, tradeDTO.startAllocationId) &&
+            Objects.equals(this.statusId, tradeDTO.statusId) &&
+            Objects.equals(this.statusMessage, tradeDTO.statusMessage) &&
+            Objects.equals(this.systemId, tradeDTO.systemId) &&
+            Objects.equals(this.tradeDate, tradeDTO.tradeDate) &&
+            Objects.equals(this.tradeId, tradeDTO.tradeId) &&
+            Objects.equals(this.tradeType, tradeDTO.tradeType) &&
+            Objects.equals(this.tradeTypeId, tradeDTO.tradeTypeId) &&
+            Objects.equals(this.tradingDeskId, tradeDTO.tradingDeskId) &&
+            Objects.equals(this.userComments, tradeDTO.userComments) &&
+            Objects.equals(this.uti, tradeDTO.uti);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(qualifiedName, accountId, accountId2, accrualDate, amount, basisId, changeQuantity,
+            childTrades, comments, counterpartyId, cptySubTypeId, currencyId, currentDaySettleDate, depoId, doNotRecall,
+            endAllocationId, endDate, factor, futureSettleDate, indexId, instStatusId, micId, offsetId,
+            oldSettleStatusId, opsStatusId, orderActionTs, parentId, positionDTO, positionId, positionTypeId, postDate,
+            price, quantity, rateOrSpread, securityId, settleDate, settleStatusId, signedQuantity, startAllocationId,
+            statusId, statusMessage, systemId, tradeDate, tradeId, tradeType, tradeTypeId, tradingDeskId, userComments,
+            uti);
+    }
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("class TradeDTO {\n");
+
+        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
+        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+        sb.append("    accountId2: ").append(toIndentedString(accountId2)).append("\n");
+        sb.append("    accrualDate: ").append(toIndentedString(accrualDate)).append("\n");
+        sb.append("    amount: ").append(toIndentedString(amount)).append("\n");
+        sb.append("    basisId: ").append(toIndentedString(basisId)).append("\n");
+        sb.append("    changeQuantity: ").append(toIndentedString(changeQuantity)).append("\n");
+        sb.append("    childTrades: ").append(toIndentedString(childTrades)).append("\n");
+        sb.append("    comments: ").append(toIndentedString(comments)).append("\n");
+        sb.append("    counterpartyId: ").append(toIndentedString(counterpartyId)).append("\n");
+        sb.append("    cptySubTypeId: ").append(toIndentedString(cptySubTypeId)).append("\n");
+        sb.append("    currencyId: ").append(toIndentedString(currencyId)).append("\n");
+        sb.append("    currentDaySettleDate: ").append(toIndentedString(currentDaySettleDate)).append("\n");
+        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+        sb.append("    doNotRecall: ").append(toIndentedString(doNotRecall)).append("\n");
+        sb.append("    endAllocationId: ").append(toIndentedString(endAllocationId)).append("\n");
+        sb.append("    endDate: ").append(toIndentedString(endDate)).append("\n");
+        sb.append("    factor: ").append(toIndentedString(factor)).append("\n");
+        sb.append("    futureSettleDate: ").append(toIndentedString(futureSettleDate)).append("\n");
+        sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
+        sb.append("    instStatusId: ").append(toIndentedString(instStatusId)).append("\n");
+        sb.append("    micId: ").append(toIndentedString(micId)).append("\n");
+        sb.append("    offsetId: ").append(toIndentedString(offsetId)).append("\n");
+        sb.append("    oldSettleStatusId: ").append(toIndentedString(oldSettleStatusId)).append("\n");
+        sb.append("    opsStatusId: ").append(toIndentedString(opsStatusId)).append("\n");
+        sb.append("    orderActionTs: ").append(toIndentedString(orderActionTs)).append("\n");
+        sb.append("    parentId: ").append(toIndentedString(parentId)).append("\n");
+        sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
+        sb.append("    positionId: ").append(toIndentedString(positionId)).append("\n");
+        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+        sb.append("    postDate: ").append(toIndentedString(postDate)).append("\n");
+        sb.append("    price: ").append(toIndentedString(price)).append("\n");
+        sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+        sb.append("    rateOrSpread: ").append(toIndentedString(rateOrSpread)).append("\n");
+        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+        sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
+        sb.append("    settleStatusId: ").append(toIndentedString(settleStatusId)).append("\n");
+        sb.append("    signedQuantity: ").append(toIndentedString(signedQuantity)).append("\n");
+        sb.append("    startAllocationId: ").append(toIndentedString(startAllocationId)).append("\n");
+        sb.append("    statusId: ").append(toIndentedString(statusId)).append("\n");
+        sb.append("    statusMessage: ").append(toIndentedString(statusMessage)).append("\n");
+        sb.append("    systemId: ").append(toIndentedString(systemId)).append("\n");
+        sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
+        sb.append("    tradeId: ").append(toIndentedString(tradeId)).append("\n");
+        sb.append("    tradeType: ").append(toIndentedString(tradeType)).append("\n");
+        sb.append("    tradeTypeId: ").append(toIndentedString(tradeTypeId)).append("\n");
+        sb.append("    tradingDeskId: ").append(toIndentedString(tradingDeskId)).append("\n");
+        sb.append("    userComments: ").append(toIndentedString(userComments)).append("\n");
+        sb.append("    uti: ").append(toIndentedString(uti)).append("\n");
+        sb.append("}");
+        return sb.toString();
+    }
+
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
+        }
+        return o.toString().replace("\n", "\n    ");
+    }
 
 }
 

@@ -25,284 +25,291 @@ import java.util.Objects;
 /**
  * SResponseListTradeByCptyDTO
  */
-@javax.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
 public class SResponseListTradeByCptyDTO {
-  /**
-   * Gets or Sets code
-   */
-  public enum CodeEnum {
-    ERROR("ERROR"),
-    
-    SUCCESS("SUCCESS");
 
-    private String value;
+    /**
+     * Gets or Sets code
+     */
+    public enum CodeEnum {
+        ERROR("ERROR"),
 
-    CodeEnum(String value) {
-      this.value = value;
+        SUCCESS("SUCCESS");
+
+        private String value;
+
+        CodeEnum(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static CodeEnum fromValue(String value) {
+            for (CodeEnum b : CodeEnum.values()) {
+                if (b.value.equals(value)) {
+                    return b;
+                }
+            }
+            return null;
+        }
     }
 
-    @JsonValue
-    public String getValue() {
-      return value;
+    @JsonProperty("code")
+    private CodeEnum code = null;
+
+    @JsonProperty("data")
+    private List<TradeByCptyDTO> data = null;
+
+    @JsonProperty("errCode")
+    private String errCode = null;
+
+    @JsonProperty("error")
+    private Boolean error = null;
+
+    @JsonProperty("message")
+    private String message = null;
+
+    /**
+     * Gets or Sets status
+     */
+    public enum StatusEnum {
+        ERROR("ERROR"),
+
+        SUCCESS("SUCCESS");
+
+        private String value;
+
+        StatusEnum(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String getValue() {
+            return value;
+        }
+
+        @Override
+        public String toString() {
+            return String.valueOf(value);
+        }
+
+        @JsonCreator
+        public static StatusEnum fromValue(String value) {
+            for (StatusEnum b : StatusEnum.values()) {
+                if (b.value.equals(value)) {
+                    return b;
+                }
+            }
+            return null;
+        }
+    }
+
+    @JsonProperty("status")
+    private StatusEnum status = null;
+
+    @JsonProperty("success")
+    private Boolean success = null;
+
+    public SResponseListTradeByCptyDTO code(CodeEnum code) {
+        this.code = code;
+        return this;
+    }
+
+    /**
+     * Get code
+     *
+     * @return code
+     **/
+    @ApiModelProperty(value = "")
+    public CodeEnum getCode() {
+        return code;
+    }
+
+    public void setCode(CodeEnum code) {
+        this.code = code;
+    }
+
+    public SResponseListTradeByCptyDTO data(List<TradeByCptyDTO> data) {
+        this.data = data;
+        return this;
+    }
+
+    public SResponseListTradeByCptyDTO addDataItem(TradeByCptyDTO dataItem) {
+        if (this.data == null) {
+            this.data = new ArrayList<>();
+        }
+        this.data.add(dataItem);
+        return this;
+    }
+
+    /**
+     * Get data
+     *
+     * @return data
+     **/
+    @ApiModelProperty(value = "")
+    public List<TradeByCptyDTO> getData() {
+        return data;
+    }
+
+    public void setData(List<TradeByCptyDTO> data) {
+        this.data = data;
+    }
+
+    public SResponseListTradeByCptyDTO errCode(String errCode) {
+        this.errCode = errCode;
+        return this;
+    }
+
+    /**
+     * Get errCode
+     *
+     * @return errCode
+     **/
+    @ApiModelProperty(value = "")
+    public String getErrCode() {
+        return errCode;
+    }
+
+    public void setErrCode(String errCode) {
+        this.errCode = errCode;
+    }
+
+    public SResponseListTradeByCptyDTO error(Boolean error) {
+        this.error = error;
+        return this;
+    }
+
+    /**
+     * Get error
+     *
+     * @return error
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isError() {
+        return error;
+    }
+
+    public void setError(Boolean error) {
+        this.error = error;
+    }
+
+    public SResponseListTradeByCptyDTO message(String message) {
+        this.message = message;
+        return this;
+    }
+
+    /**
+     * Get message
+     *
+     * @return message
+     **/
+    @ApiModelProperty(value = "")
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public SResponseListTradeByCptyDTO status(StatusEnum status) {
+        this.status = status;
+        return this;
+    }
+
+    /**
+     * Get status
+     *
+     * @return status
+     **/
+    @ApiModelProperty(value = "")
+    public StatusEnum getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusEnum status) {
+        this.status = status;
+    }
+
+    public SResponseListTradeByCptyDTO success(Boolean success) {
+        this.success = success;
+        return this;
+    }
+
+    /**
+     * Get success
+     *
+     * @return success
+     **/
+    @ApiModelProperty(value = "")
+    public Boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SResponseListTradeByCptyDTO sresponseListTradeByCptyDTO = (SResponseListTradeByCptyDTO) o;
+        return Objects.equals(this.code, sresponseListTradeByCptyDTO.code) &&
+            Objects.equals(this.data, sresponseListTradeByCptyDTO.data) &&
+            Objects.equals(this.errCode, sresponseListTradeByCptyDTO.errCode) &&
+            Objects.equals(this.error, sresponseListTradeByCptyDTO.error) &&
+            Objects.equals(this.message, sresponseListTradeByCptyDTO.message) &&
+            Objects.equals(this.status, sresponseListTradeByCptyDTO.status) &&
+            Objects.equals(this.success, sresponseListTradeByCptyDTO.success);
     }
 
     @Override
-    public String toString() {
-      return String.valueOf(value);
+    public int hashCode() {
+        return Objects.hash(code, data, errCode, error, message, status, success);
     }
 
-    @JsonCreator
-    public static CodeEnum fromValue(String value) {
-      for (CodeEnum b : CodeEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      return null;
-    }
-  }
-
-  @JsonProperty("code")
-  private CodeEnum code = null;
-
-  @JsonProperty("data")
-  private List<TradeByCptyDTO> data = null;
-
-  @JsonProperty("errCode")
-  private String errCode = null;
-
-  @JsonProperty("error")
-  private Boolean error = null;
-
-  @JsonProperty("message")
-  private String message = null;
-
-  /**
-   * Gets or Sets status
-   */
-  public enum StatusEnum {
-    ERROR("ERROR"),
-    
-    SUCCESS("SUCCESS");
-
-    private String value;
-
-    StatusEnum(String value) {
-      this.value = value;
-    }
-
-    @JsonValue
-    public String getValue() {
-      return value;
-    }
 
     @Override
     public String toString() {
-      return String.valueOf(value);
+        StringBuilder sb = new StringBuilder();
+        sb.append("class SResponseListTradeByCptyDTO {\n");
+
+        sb.append("    code: ").append(toIndentedString(code)).append("\n");
+        sb.append("    data: ").append(toIndentedString(data)).append("\n");
+        sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
+        sb.append("    error: ").append(toIndentedString(error)).append("\n");
+        sb.append("    message: ").append(toIndentedString(message)).append("\n");
+        sb.append("    status: ").append(toIndentedString(status)).append("\n");
+        sb.append("    success: ").append(toIndentedString(success)).append("\n");
+        sb.append("}");
+        return sb.toString();
     }
 
-    @JsonCreator
-    public static StatusEnum fromValue(String value) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
+    /**
+     * Convert the given object to string with each line indented by 4 spaces (except the first line).
+     */
+    private String toIndentedString(Object o) {
+        if (o == null) {
+            return "null";
         }
-      }
-      return null;
+        return o.toString().replace("\n", "\n    ");
     }
-  }
-
-  @JsonProperty("status")
-  private StatusEnum status = null;
-
-  @JsonProperty("success")
-  private Boolean success = null;
-
-  public SResponseListTradeByCptyDTO code(CodeEnum code) {
-    this.code = code;
-    return this;
-  }
-
-   /**
-   * Get code
-   * @return code
-  **/
-  @ApiModelProperty(value = "")
-  public CodeEnum getCode() {
-    return code;
-  }
-
-  public void setCode(CodeEnum code) {
-    this.code = code;
-  }
-
-  public SResponseListTradeByCptyDTO data(List<TradeByCptyDTO> data) {
-    this.data = data;
-    return this;
-  }
-
-  public SResponseListTradeByCptyDTO addDataItem(TradeByCptyDTO dataItem) {
-    if (this.data == null) {
-      this.data = new ArrayList<>();
-    }
-    this.data.add(dataItem);
-    return this;
-  }
-
-   /**
-   * Get data
-   * @return data
-  **/
-  @ApiModelProperty(value = "")
-  public List<TradeByCptyDTO> getData() {
-    return data;
-  }
-
-  public void setData(List<TradeByCptyDTO> data) {
-    this.data = data;
-  }
-
-  public SResponseListTradeByCptyDTO errCode(String errCode) {
-    this.errCode = errCode;
-    return this;
-  }
-
-   /**
-   * Get errCode
-   * @return errCode
-  **/
-  @ApiModelProperty(value = "")
-  public String getErrCode() {
-    return errCode;
-  }
-
-  public void setErrCode(String errCode) {
-    this.errCode = errCode;
-  }
-
-  public SResponseListTradeByCptyDTO error(Boolean error) {
-    this.error = error;
-    return this;
-  }
-
-   /**
-   * Get error
-   * @return error
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isError() {
-    return error;
-  }
-
-  public void setError(Boolean error) {
-    this.error = error;
-  }
-
-  public SResponseListTradeByCptyDTO message(String message) {
-    this.message = message;
-    return this;
-  }
-
-   /**
-   * Get message
-   * @return message
-  **/
-  @ApiModelProperty(value = "")
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  public SResponseListTradeByCptyDTO status(StatusEnum status) {
-    this.status = status;
-    return this;
-  }
-
-   /**
-   * Get status
-   * @return status
-  **/
-  @ApiModelProperty(value = "")
-  public StatusEnum getStatus() {
-    return status;
-  }
-
-  public void setStatus(StatusEnum status) {
-    this.status = status;
-  }
-
-  public SResponseListTradeByCptyDTO success(Boolean success) {
-    this.success = success;
-    return this;
-  }
-
-   /**
-   * Get success
-   * @return success
-  **/
-  @ApiModelProperty(value = "")
-  public Boolean isSuccess() {
-    return success;
-  }
-
-  public void setSuccess(Boolean success) {
-    this.success = success;
-  }
-
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    SResponseListTradeByCptyDTO sresponseListTradeByCptyDTO = (SResponseListTradeByCptyDTO) o;
-    return Objects.equals(this.code, sresponseListTradeByCptyDTO.code) &&
-        Objects.equals(this.data, sresponseListTradeByCptyDTO.data) &&
-        Objects.equals(this.errCode, sresponseListTradeByCptyDTO.errCode) &&
-        Objects.equals(this.error, sresponseListTradeByCptyDTO.error) &&
-        Objects.equals(this.message, sresponseListTradeByCptyDTO.message) &&
-        Objects.equals(this.status, sresponseListTradeByCptyDTO.status) &&
-        Objects.equals(this.success, sresponseListTradeByCptyDTO.success);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(code, data, errCode, error, message, status, success);
-  }
-
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class SResponseListTradeByCptyDTO {\n");
-    
-    sb.append("    code: ").append(toIndentedString(code)).append("\n");
-    sb.append("    data: ").append(toIndentedString(data)).append("\n");
-    sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
-    sb.append("    error: ").append(toIndentedString(error)).append("\n");
-    sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    success: ").append(toIndentedString(success)).append("\n");
-    sb.append("}");
-    return sb.toString();
-  }
-
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
-    }
-    return o.toString().replace("\n", "\n    ");
-  }
 
 }
 

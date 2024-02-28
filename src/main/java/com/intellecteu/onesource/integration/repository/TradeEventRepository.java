@@ -1,17 +1,17 @@
 package com.intellecteu.onesource.integration.repository;
 
-import com.intellecteu.onesource.integration.model.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface TradeEventRepository extends JpaRepository<TradeEvent, Long> {
+public interface TradeEventRepository extends JpaRepository<TradeEventEntity, Long> {
 
-    Optional<TradeEvent> findById(Long id);
+    Optional<TradeEventEntity> findById(Long id);
 
-    List<TradeEvent> findAllByProcessingStatus(ProcessingStatus status);
+    List<TradeEventEntity> findAllByProcessingStatus(ProcessingStatus status);
 
     @Query(nativeQuery = true,
         value = "SELECT event_id FROM trade_event WHERE resource_uri=:resourceUri AND event_type=:eventType")
