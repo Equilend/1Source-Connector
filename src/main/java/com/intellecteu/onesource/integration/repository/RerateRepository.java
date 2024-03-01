@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface RerateRepository extends JpaRepository<RerateEntity, String> {
 
-    List<RerateEntity> findByRelatedSpirePositionIdAndProcessingStatus(Long positionId, ProcessingStatus processingStatus);
+    List<RerateEntity> findByContractId(String contractId);
 }

@@ -83,7 +83,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case RERATE_TRADE_CREATED -> createCreatedRerateRecordRequest(recorded);
             case RERATE_PROPOSAL_MATCHED -> createMatchedRerateRecordRequest(recorded, related);
             case RERATE_PROPOSAL_UNMATCHED -> createUnMatchedRerateRecordRequest(recorded);
-            case RERATE_PROPOSAL_PENDING_APPROVAL -> createPendingApprovalRecordRequest(recorded, related);
+            case RERATE_PROPOSAL_PENDING_APPROVAL -> createMatchedAndPendingApprovalRecordRequest(recorded, related);
             default -> null;
         };
     }
@@ -110,7 +110,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
      * @param related - backoffice rerate tradeId
      * @return
      */
-    private CloudEventBuildRequest createPendingApprovalRecordRequest(String recorded, String related) {
+    private CloudEventBuildRequest createMatchedAndPendingApprovalRecordRequest(String recorded, String related) {
         String dataMessage = format(MATCHED_RERATE_MSG, recorded, related);
         return createRecordRequest(
             RERATE_PROPOSAL_PENDING_APPROVAL,
@@ -146,7 +146,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             RERATE_PROPOSAL_UNMATCHED,
             format(UNMATCHED_RERATE, recorded),
             RERATE,
-            PROCESS_RERATE_PENDING_CONFIRMATION,
+            MATCH_LOAN_RERATE_PROPOSAL,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }

@@ -16,7 +16,6 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 @ConditionalOnProperty(
@@ -77,7 +76,7 @@ public class RerateRoute extends RouteBuilder {
 
         from("direct:matchRerate")
             .log(">>>>> Started matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate")
-            .bean(rerateProcessor, "matchWithRerate")
+            .bean(rerateProcessor, "matchBackOfficeRerateTradeWith1SourceRerate")
             .bean(rerateProcessor, "saveRerateTrade")
             .log("<<<<< Finished matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate");
 
@@ -93,6 +92,7 @@ public class RerateRoute extends RouteBuilder {
             .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
             .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processRerateEvent")
+            //1Source Rerate
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
@@ -100,18 +100,10 @@ public class RerateRoute extends RouteBuilder {
         from(createRerateSQLEndpoint(PROPOSED))
             .log(">>>>> Started processing 1Source Rerate with rerateId ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "matchRerateTrade")
-            .choice()
-                .when(simple("${body.matchingSpireTradeId} != null"))
-                    .bean(rerateProcessor, "updateRerateProcessingStatus(${body}, MATCHED_RERATE_TRADE)")
-                .endChoice()
-                .otherwise()
-                    .bean(rerateProcessor, "updateRerateProcessingStatus(${body}, PROPOSED)")
-                .endChoice()
-            .end()
+            .bean(rerateProcessor, "match1SourceRerateWithBackOfficeRerateTrade")
+             //Result status can be MATCHED, TO_VALIDATE or UNMATCHED
             .bean(rerateProcessor, "saveRerate")
             .log(">>>>> Finished processing 1Source Rerate with rerateId ${body.rerateId}");
-
     }
     //@formatter:on
 

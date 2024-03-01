@@ -3,7 +3,14 @@ package com.intellecteu.onesource.integration.routes.rerate.processor;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UPDATED;
 
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -15,7 +22,6 @@ import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import jakarta.transaction.TransactionManager;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -84,15 +90,13 @@ public class RerateProcessor {
         return rerateTradeList;
     }
 
-    public RerateTrade matchWithRerate(RerateTrade rerateTrade) {
-        LocalDate accrualDate = rerateTrade.getTradeOut().getAccrualDate().toLocalDate();
-        Optional<Rerate> rerateOptional = rerateService.findRerate(rerateTrade.getRelatedPositionId(),
-            accrualDate, ProcessingStatus.UNMATCHED);
-        Rerate rerate = rerateOptional.orElse(null);
+    public RerateTrade matchBackOfficeRerateTradeWith1SourceRerate(RerateTrade rerateTrade) {
+        LocalDate settleDate = rerateTrade.getTradeOut().getSettleDate().toLocalDate();
+        Rerate rerate = rerateService.findUnmatchedRerate(rerateTrade.getRelatedContractId(),
+            settleDate).orElse(null);
         if (rerate != null) {
             rerateTrade.setMatchingRerateId(rerate.getRerateId());
-            rerateService.markRerateAsMatchedWithRerateTradeIdAndPositionId(rerate, rerateTrade.getTradeId(),
-                rerateTrade.getRelatedPositionId());
+            rerateService.markRerateAsMatchedWithRerateTrade(rerate, rerateTrade);
             recordRerateTradeSuccessMatched1SourceRerateCloudEvent(rerate);
         } else {
             recordCreatedRerateTradeCloudEvent(rerateTrade);
@@ -112,17 +116,32 @@ public class RerateProcessor {
         return rerateTrade;
     }
 
-    public Rerate matchRerateTrade(Rerate rerate) {
-        Optional<LocalDate> rerateEffectiveDateOptional = getRerateEffectiveDate(rerate);
-        if (rerateEffectiveDateOptional.isPresent()) {
-            Optional<RerateTrade> rerateTradeOptional = rerateTradeService.findRerateTradeByContractIdAndSettleDate(
-                rerate.getContractId(), rerateEffectiveDateOptional.get());
-            if (rerateTradeOptional.isPresent()) {
-                rerate.setMatchingSpireTradeId(rerateTradeOptional.get().getTradeId());
-                record1SourceRerateSuccessMatchedRerateTradeCloudEvent(rerate);
-                return rerate;
+    public Rerate match1SourceRerateWithBackOfficeRerateTrade(Rerate rerate) {
+        LocalDate rerateEffectiveDate = getRerateEffectiveDate(rerate).orElse(null);
+        if (rerateEffectiveDate != null) {
+            RerateTrade rerateTrade = rerateTradeService.findUnmatchedRerateTrade(
+                rerate.getContractId(), rerateEffectiveDate).orElse(null);
+            if (rerateTrade != null) {
+                if(SUBMITTED.equals(rerateTrade.getProcessingStatus())){
+                    //Initiator
+                    rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
+                    rerateTradeService.markRerateTradeAsMatchedWithRerate(rerateTrade, rerate);
+                    rerate.setProcessingStatus(MATCHED);
+                    recordInitiator1SourceRerateSuccessMatchedCloudEvent(rerate);
+                    return rerate;
+                }
+                if(CREATED.equals(rerateTrade.getProcessingStatus()) || UPDATED.equals(rerateTrade.getProcessingStatus())){
+                    //Receiver
+                    rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
+                    rerateTradeService.markRerateTradeAsMatchedWithRerate(rerateTrade, rerate);
+                    rerate.setProcessingStatus(TO_VALIDATE);
+                    recordReceiver1SourceRerateSuccessMatchedCloudEvent(rerate);
+                    return rerate;
+                }
             }
         }
+        rerate.setProcessingStatus(UNMATCHED);
+        record1SourceRerateSuccessUnMatchedRerateTradeCloudEvent(rerate);
         return rerate;
     }
 
@@ -162,11 +181,27 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void record1SourceRerateSuccessMatchedRerateTradeCloudEvent(Rerate rerate) {
+    private void recordInitiator1SourceRerateSuccessMatchedCloudEvent(Rerate rerate) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.RERATE);
         var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
             RERATE_PROPOSAL_PENDING_APPROVAL, String.valueOf(rerate.getMatchingSpireTradeId()));
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordReceiver1SourceRerateSuccessMatchedCloudEvent(Rerate rerate) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
+            RERATE_PROPOSAL_MATCHED, String.valueOf(rerate.getMatchingSpireTradeId()));
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void record1SourceRerateSuccessUnMatchedRerateTradeCloudEvent(Rerate rerate) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
+            RERATE_PROPOSAL_UNMATCHED, String.valueOf(rerate.getMatchingSpireTradeId()));
         cloudEventRecordService.record(recordRequest);
     }
 

@@ -1,7 +1,9 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -102,23 +104,24 @@ class RerateProcessorTest {
 
 
     @Test
-    void matchRerate_matched1SourceRerate_filledMatchingRerateId() {
+    void matchWithRerate_matched1SourceRerate_filledMatchingRerateId() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
         TradeOut tradeOut = new TradeOut();
         tradeOut.setAccrualDate(LocalDateTime.now());
+        tradeOut.setSettleDate(LocalDateTime.now());
         rerateTrade.setTradeOut(tradeOut);
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
-        doReturn(Optional.of(rerate)).when(rerateService).findRerate(any(), any(), any());
+        doReturn(Optional.of(rerate)).when(rerateService).findUnmatchedRerate(any(), any());
 
-        RerateTrade result = rerateProcessor.matchWithRerate(rerateTrade);
+        RerateTrade result = rerateProcessor.matchBackOfficeRerateTradeWith1SourceRerate(rerateTrade);
 
         assertEquals(rerate.getRerateId(), result.getMatchingRerateId());
     }
 
     @Test
-    void matchRerateTrade() {
+    void match1SourceRerateWithBackOfficeRerate_matchedSubmittedRerateTrade_filledMatchingSpireTradeIdAndMATCHED() {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
         rerate.setRerate(Rate.builder()
@@ -126,11 +129,32 @@ class RerateProcessorTest {
             .build());
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
+        rerateTrade.setProcessingStatus(SUBMITTED);
         doReturn(Optional.of(rerateTrade)).when(rerateTradeService)
-            .findRerateTradeByContractIdAndSettleDate(any(), any());
+            .findUnmatchedRerateTrade(any(), any());
 
-        Rerate result = rerateProcessor.matchRerateTrade(rerate);
+        Rerate result = rerateProcessor.match1SourceRerateWithBackOfficeRerateTrade(rerate);
 
-        assertEquals(result.getMatchingSpireTradeId(), rerateTrade.getTradeId());
+        assertEquals(rerateTrade.getTradeId(), result.getMatchingSpireTradeId());
+        assertEquals(MATCHED, result.getProcessingStatus());
+    }
+
+    @Test
+    void match1SourceRerateWithBackOfficeRerate_matchedCreatedRerateTrade_filledMatchingSpireTradeIdAndTO_VALIDATE() {
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("rerateId");
+        rerate.setRerate(Rate.builder()
+            .rebate(RebateRate.builder().fixed(FixedRate.builder().effectiveDate(LocalDate.now()).build()).build())
+            .build());
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(1l);
+        rerateTrade.setProcessingStatus(CREATED);
+        doReturn(Optional.of(rerateTrade)).when(rerateTradeService)
+            .findUnmatchedRerateTrade(any(), any());
+
+        Rerate result = rerateProcessor.match1SourceRerateWithBackOfficeRerateTrade(rerate);
+
+        assertEquals(rerateTrade.getTradeId(), result.getMatchingSpireTradeId());
+        assertEquals(TO_VALIDATE, result.getProcessingStatus());
     }
 }

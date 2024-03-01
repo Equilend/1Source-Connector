@@ -33,7 +33,8 @@ public enum ProcessingStatus {
     VALIDATED("VALIDATED"),
     MATCHED("MATCHED"),
     UNMATCHED("UNMATCHED"),
-    SUBMITTED("SUBMITTED");
+    SUBMITTED("SUBMITTED"),
+    TO_VALIDATE("TO_VALIDATE");
 
     private final String value;
 
