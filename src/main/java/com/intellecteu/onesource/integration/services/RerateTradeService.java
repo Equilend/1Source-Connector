@@ -2,10 +2,11 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.repository.RerateTradeRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -41,14 +42,20 @@ public class RerateTradeService {
         return lastRerateTrade.map(rerateTrade -> rerateTrade.getTradeId());
     }
 
-    public Optional<RerateTrade> findRerateTradeByContractIdAndSettleDate(String contractId, LocalDate settleDate) {
-        List<RerateTrade> rerateTradesWithRelatedContractId = rerateTradeRepository.findByRelatedContractIdAndProcessingStatus(
-            contractId, ProcessingStatus.SUBMITTED).stream().map(backOfficeMapper::toModel).collect(
+    public Optional<RerateTrade> findUnmatchedRerateTrade(String contractId, LocalDate settleDate) {
+        List<RerateTrade> rerateTradesWithRelatedContractId = rerateTradeRepository.findUnmatchedRerateTrades(
+            contractId).stream().map(backOfficeMapper::toModel).collect(
             Collectors.toList());
         Optional<RerateTrade> rerateTrade = rerateTradesWithRelatedContractId.stream()
-            .filter(r -> r.getMatchingRerateId() == null && r.getTradeOut().getSettleDate().toLocalDate()
+            .filter(r -> r.getTradeOut().getSettleDate().toLocalDate()
                 .equals(settleDate))
             .findFirst();
         return rerateTrade;
+    }
+
+    public RerateTrade markRerateTradeAsMatchedWithRerate(RerateTrade rerateTrade, Rerate rerate) {
+        rerateTrade.setMatchingRerateId(rerate.getRerateId());
+        rerateTrade.setLastUpdateDatetime(LocalDateTime.now());
+        return save(rerateTrade);
     }
 }

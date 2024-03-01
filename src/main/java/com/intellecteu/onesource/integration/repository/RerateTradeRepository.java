@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface RerateTradeRepository extends JpaRepository<RerateTradeEntity, Integer> {
 
@@ -13,6 +14,7 @@ public interface RerateTradeRepository extends JpaRepository<RerateTradeEntity, 
 
     List<RerateTradeEntity> findByRelatedContractId(String contractId);
 
-    List<RerateTradeEntity> findByRelatedContractIdAndProcessingStatus(String contractId, ProcessingStatus processingStatus);
+    @Query("SELECT rt FROM RerateTradeEntity rt WHERE rt.relatedContractId = :contractId AND rt.matchingRerateId IS null ")
+    List<RerateTradeEntity> findUnmatchedRerateTrades(String contractId);
 
 }
