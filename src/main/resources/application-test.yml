@@ -58,19 +58,9 @@ spring:
       resourceserver:
         jwt:
           #should be a link to a localhost where keycloak instance is running
-          issuer-uri: http://localhost:8088/realms/${onesource.auth.realm}
+          issuer-uri: http://localhost:8088/realms/${onesource.auth.api.realm}
           # should be a link to the service in the docker container
-          jwk-set-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}/protocol/openid-connect/certs
-      client:
-        registration:
-          keycloak:
-            client-id: ${onesource.auth.resource}
-            authorization-grant-type: authorization_code
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-            user-name-attribute: ${onesource.auth.principal-attribute}
+          jwk-set-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}/protocol/openid-connect/certs
 
 logging:
   level:
@@ -97,6 +87,10 @@ onesource:
   baseEndpoint: http://1source-mock:8081
   version:
   auth:
+    api:
+      server-url: ${1SOURCE_AUTH_API_URL:http://keycloak-mock:8080}
+      realm: ${1SOURCE_AUTH_API_REALM:1source-keycloak}
+      resource: ${1SOURCE_AUTH_API_CLIENT_ID:1source-ui-app}
     server-url: http://keycloak-mock:8080
     realm: 1source-keycloak
     public-client: true

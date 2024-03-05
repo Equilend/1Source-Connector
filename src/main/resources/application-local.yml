@@ -59,18 +59,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-          jwk-set-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}/protocol/openid-connect/certs
-      client:
-        registration:
-          keycloak:
-            client-id: ${onesource.auth.resource}
-            authorization-grant-type: authorization_code
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-            user-name-attribute: ${onesource.auth.principal-attribute}
+          issuer-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}
+          jwk-set-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}/protocol/openid-connect/certs
 
 logging:
   level:
@@ -110,6 +100,10 @@ onesource:
   baseEndpoint: ${1SOURCE_ENDPOINT_LOCAL:http://localhost:8081}
   version:
   auth:
+    api:
+      server-url: ${1SOURCE_AUTH_API_URL_LOCAL:http://localhost:8088}
+      realm: ${1SOURCE_AUTH_API_REALM_LOCAL:1source-keycloak}
+      resource: ${1SOURCE_AUTH_API_CLIENT_ID_LOCAL:1source-ui-app}
     server-url: ${1SOURCE_AUTH_URL_LOCAL:http://localhost:8088}
     realm: ${1SOURCE_AUTH_REALM_LOCAL:1source-keycloak}
     public-client: true
