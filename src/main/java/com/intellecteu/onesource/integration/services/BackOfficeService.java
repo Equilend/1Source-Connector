@@ -139,6 +139,7 @@ public class BackOfficeService {
 
     private boolean responseHasData(ResponseEntity<SResponseNQueryResponsePositionOutDTO> response) {
         return response.getBody() != null && response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
             && response.getBody().getData().getTotalRows() > 0;
     }
 
@@ -150,6 +151,7 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
                 nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
                 return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
@@ -173,6 +175,7 @@ public class BackOfficeService {
         try {
             ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
                 return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
@@ -246,7 +249,9 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
                 .getPositions(request);
             if (responseHasData(response)) {
-                if (response.getBody().getData().getTotalRows() > 1) {
+                if (response.getBody().getData() != null
+                    && response.getBody().getData().getTotalRows() != null
+                    && response.getBody().getData().getTotalRows() > 1) {
                     log.warn("Multiple response found! Getting the first element");
                 }
                 var positionResponse = response.getBody().getData().getBeans().get(0);
