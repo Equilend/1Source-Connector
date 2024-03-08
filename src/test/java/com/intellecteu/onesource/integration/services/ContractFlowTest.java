@@ -51,6 +51,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.reconciliation.ContractReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;

@@ -12,7 +12,7 @@ import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.onesource.CollateralDescription;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.RoundingMode;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

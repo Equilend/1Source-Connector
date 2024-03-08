@@ -76,7 +76,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -165,7 +165,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
-        List<ExceptionMessageDto> exceptionData) {
+        List<ProcessExceptionDetails> exceptionData) {
         return switch (recordType) {
             case TRADE_AGREEMENT_DISCREPANCIES -> tradeAgreementDiscrepancies(recorded, recordType,
                 related, exceptionData);
@@ -188,9 +188,9 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     private CloudEventBuildRequest loanContractProposalDiscrepancies(String recorded, RecordType recordType,
-        String related, List<ExceptionMessageDto> exceptionData) {
+        String related, List<ProcessExceptionDetails> exceptionData) {
         final String formattedExceptions = exceptionData.stream()
-            .map(d -> "- " + d.getExceptionMessage())
+            .map(d -> "- " + d.getFieldValue())
             .collect(Collectors.joining("\n"));
         String dataMessage = format(RECONCILE_LOAN_CONTRACT_DISCREPANCIES_MSG, recorded, related, formattedExceptions);
         return createRecordRequest(
@@ -203,9 +203,9 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     private CloudEventBuildRequest tradeAgreementDiscrepancies(String recorded, RecordType recordType,
-        String related, List<ExceptionMessageDto> exceptionData) {
+        String related, List<ProcessExceptionDetails> exceptionData) {
         final String formattedExceptions = exceptionData.stream()
-            .map(d -> "- " + d.getExceptionMessage())
+            .map(d -> "- " + d.getFieldValue())
             .collect(Collectors.joining("\n"));
         String dataMessage = format(RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG, recorded, related,
             formattedExceptions);

@@ -1,10 +1,5 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
 import lombok.AllArgsConstructor;
@@ -13,23 +8,17 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "fixed")
 public class FixedRate {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public static final String FIXED_INDEX_NAME = "Fixed Rate";
     private Long id;
-    @Column(name = "base_rate")
     private Double baseRate;
-    @Column(name = "effective_rate")
     private Double effectiveRate;
-    @Column(name = "effective_date", columnDefinition = "DATE")
     private LocalDate effectiveDate;
-    @Column(name = "cutoff_time")
     private String cutoffTime;
 
     public FixedRate(Double baseRate) {

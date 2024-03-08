@@ -8,10 +8,11 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
@@ -66,7 +67,7 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
     public abstract CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related);
 
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
-        List<ExceptionMessageDto> exceptionData) {
+        List<ProcessExceptionDetails> exceptionData) {
         return null;
     }
 
@@ -74,6 +75,14 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return SystemEventData.builder()
             .message(message)
             .relatedObjects(relatedObjects)
+            .build();
+    }
+
+    protected SystemEventData createEventData(String message, List<RelatedObject> relatedObjects, List<FieldImpacted> fieldImpacteds) {
+        return SystemEventData.builder()
+            .message(message)
+            .relatedObjects(relatedObjects)
+            .fieldsImpacted(fieldImpacteds)
             .build();
     }
 

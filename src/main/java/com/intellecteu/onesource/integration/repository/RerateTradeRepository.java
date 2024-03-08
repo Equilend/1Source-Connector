@@ -8,7 +8,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface RerateTradeRepository extends JpaRepository<RerateTradeEntity, Integer> {
+public interface RerateTradeRepository extends JpaRepository<RerateTradeEntity, Long> {
 
     Optional<RerateTradeEntity> findTopByOrderByTradeIdDesc();
 

@@ -1,17 +1,21 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.VALIDATED;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
@@ -21,17 +25,20 @@ import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
+import com.intellecteu.onesource.integration.services.reconciliation.RerateReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Component
+@Slf4j
 public class RerateProcessor {
 
     private final BackOfficeService lenderBackOfficeService;
@@ -40,19 +47,21 @@ public class RerateProcessor {
     private final ContractService contractService;
     private final RerateTradeService rerateTradeService;
     private final RerateService rerateService;
+    private final RerateReconcileService rerateReconcileService;
     private final CloudEventRecordService cloudEventRecordService;
 
     @Autowired
     public RerateProcessor(BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService,
         OneSourceService oneSourceService, ContractService contractService, RerateTradeService rerateTradeService,
         RerateService rerateService,
-        CloudEventRecordService cloudEventRecordService) {
+        RerateReconcileService rerateReconcileService, CloudEventRecordService cloudEventRecordService) {
         this.lenderBackOfficeService = lenderBackOfficeService;
         this.borrowerBackOfficeService = borrowerBackOfficeService;
         this.oneSourceService = oneSourceService;
         this.contractService = contractService;
         this.rerateTradeService = rerateTradeService;
         this.rerateService = rerateService;
+        this.rerateReconcileService = rerateReconcileService;
         this.cloudEventRecordService = cloudEventRecordService;
     }
 
@@ -145,6 +154,20 @@ public class RerateProcessor {
         return rerate;
     }
 
+    public Rerate validate(Rerate rerate){
+        RerateTrade rerateTrade = rerateTradeService.getByTradeId(rerate.getMatchingSpireTradeId());
+        try {
+            rerateReconcileService.reconcile(rerate, rerateTrade);
+            rerate.setProcessingStatus(VALIDATED);
+        } catch (ReconcileException e) {
+            log.error("Reconciliation fails with message: {} ", e.getMessage());
+            e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
+            createFailedReconciliationEvent(rerate, e);
+            rerate.setProcessingStatus(DISCREPANCIES);
+        }
+        return rerate;
+    }
+
     private Optional<LocalDate> getRerateEffectiveDate(Rerate rerate) {
         if (rerate.getRerate() != null && rerate.getRerate().getRebate() != null
             && rerate.getRerate().getRebate().getFixed() != null) {
@@ -202,6 +225,14 @@ public class RerateProcessor {
             .eventBuilder(IntegrationProcess.RERATE);
         var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
             RERATE_PROPOSAL_UNMATCHED, String.valueOf(rerate.getMatchingSpireTradeId()));
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void createFailedReconciliationEvent(Rerate rerate, ReconcileException e) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
+            RERATE_PROPOSAL_DISCREPANCIES, String.valueOf(rerate.getMatchingSpireTradeId()), e.getErrorList());
         cloudEventRecordService.record(recordRequest);
     }
 

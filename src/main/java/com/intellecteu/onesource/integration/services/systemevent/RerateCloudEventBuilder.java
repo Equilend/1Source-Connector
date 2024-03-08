@@ -1,5 +1,9 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.BACKOFFICE_RERATE;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_RERATE_DISCREPANCIES_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.RERATE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
@@ -13,6 +17,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
@@ -20,12 +25,15 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static java.lang.String.format;
 
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -54,7 +62,8 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         };
     }
 
-    private CloudEventBuildRequest createPostRerateExceptionCloudRequest(HttpStatusCodeException exception, IntegrationSubProcess subProcess, String recorded) {
+    private CloudEventBuildRequest createPostRerateExceptionCloudRequest(HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String recorded) {
         String dataMessage = format(POST_RERATE_EXCEPTION_1SOURCE_MSG, recorded, exception.getStatusText());
         return createRecordRequest(
             TECHNICAL_EXCEPTION_1SOURCE,
@@ -75,6 +84,42 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
+    }
+
+    @Override
+    public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
+        List<ProcessExceptionDetails> exceptionData) {
+        return switch (recordType) {
+            case RERATE_PROPOSAL_DISCREPANCIES -> reratetDiscrepancies(recorded, recordType,
+                related, exceptionData);
+            default -> null;
+        };
+    }
+
+    private CloudEventBuildRequest reratetDiscrepancies(String recorded, RecordType recordType, String related,
+        List<ProcessExceptionDetails> exceptionData) {
+        final String formattedExceptions = exceptionData.stream()
+            .map(d -> "- " + d.getFieldValue())
+            .collect(Collectors.joining("\n"));
+        String dataMessage = format(RECONCILE_RERATE_DISCREPANCIES_MSG, recorded, related,
+            formattedExceptions);
+        List<FieldImpacted> fieldImpacteds = exceptionData.stream().map(
+                ed -> new FieldImpacted(ed.getSource(), ed.getFieldName(), ed.getFieldValue(), ed.getFieldExceptionType()))
+            .collect(
+                Collectors.toList());
+        return createRecordRequest(
+            recordType,
+            format(RERATE_DISCREPANCIES, related),
+            RERATE,
+            VALIDATE_RERATE_PROPOSAL,
+            createEventData(dataMessage, getRerateRelatedToPosition(recorded, related), fieldImpacteds)
+        );
+    }
+
+    private List<RelatedObject> getRerateRelatedToPosition(String recorded, String related) {
+        var related1SourceRerate = new RelatedObject(recorded, ONESOURCE_RERATE);
+        var relatedBackOfficeRerate = new RelatedObject(related, BACKOFFICE_RERATE);
+        return List.of(related1SourceRerate, relatedBackOfficeRerate);
     }
 
     @Override
@@ -108,7 +153,6 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     /**
      * @param recorded - onesource rerate id
      * @param related - backoffice rerate tradeId
-     * @return
      */
     private CloudEventBuildRequest createMatchedAndPendingApprovalRecordRequest(String recorded, String related) {
         String dataMessage = format(MATCHED_RERATE_MSG, recorded, related);
@@ -123,7 +167,6 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     /**
      * @param recorded - backoffice rerate tradeId
-     * @return
      */
     private CloudEventBuildRequest createCreatedRerateRecordRequest(String recorded) {
         String dataMessage = format(CREATED_RERATE_MSG, recorded);
