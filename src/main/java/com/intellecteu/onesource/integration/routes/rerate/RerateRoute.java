@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.rerate;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
@@ -104,6 +105,14 @@ public class RerateRoute extends RouteBuilder {
              //Result status can be MATCHED, TO_VALIDATE or UNMATCHED
             .bean(rerateProcessor, "saveRerate")
             .log(">>>>> Finished processing 1Source Rerate with rerateId ${body.rerateId}");
+
+        from(createRerateSQLEndpoint(TO_VALIDATE))
+            .log(">>>>> Started validation 1Source Rerate with rerateId ${body.rerateId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateProcessor, "validate")
+            //Result status can be VALIDATED, DISCREPANCIES
+            .bean(rerateProcessor, "saveRerate")
+            .log(">>>>> Finished validation 1Source Rerate with rerateId ${body.rerateId}");
     }
     //@formatter:on
 

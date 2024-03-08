@@ -30,7 +30,7 @@ import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -82,7 +82,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
                 contract.getMatchingSpirePositionId());
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
-            e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
+            e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
             saveContract(contract, DISCREPANCIES);
             createFailedReconciliationEvent(contract, e);
         }

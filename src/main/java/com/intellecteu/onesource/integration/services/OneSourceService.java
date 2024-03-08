@@ -1,5 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.model.onesource.FixedRate.FIXED_INDEX_NAME;
+
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -91,7 +93,7 @@ public class OneSourceService {
     private RerateProposalDTO buildRerateProposal(RerateTrade rerateTrade) {
         RerateProposalDTO rerateProposalDTO = new RerateProposalDTO();
         RebateRateDTO rebateRate = new RebateRateDTO();
-        if (rerateTrade.getTradeOut().getPosition().getIndex().getIndexName().equals("Fixed Rate")) {
+        if (FIXED_INDEX_NAME.equals(rerateTrade.getTradeOut().getPosition().getIndex().getIndexName())) {
             FixedRateDTO rebate = new FixedRateDTO();
             rebate.fixed(new FixedRateDefDTO()
                 .baseRate(rerateTrade.getTradeOut().getRateOrSpread())

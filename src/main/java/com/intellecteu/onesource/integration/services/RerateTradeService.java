@@ -25,6 +25,11 @@ public class RerateTradeService {
         this.backOfficeMapper = backOfficeMapper;
     }
 
+    public RerateTrade getByTradeId(Long tradeId){
+        RerateTradeEntity rerateTradeEntity = rerateTradeRepository.getReferenceById(tradeId);
+        return  backOfficeMapper.toModel(rerateTradeEntity);
+    }
+
     public RerateTrade save(RerateTrade rerateTrade) {
         RerateTradeEntity rerateTradeEntity = rerateTradeRepository.save(backOfficeMapper.toEntity(rerateTrade));
         return backOfficeMapper.toModel(rerateTradeEntity);
