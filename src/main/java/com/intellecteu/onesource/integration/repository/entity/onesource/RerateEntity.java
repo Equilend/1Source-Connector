@@ -1,9 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.onesource;
 
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
-import com.intellecteu.onesource.integration.repository.entity.onesource.RateEntity;
-import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

@@ -26,7 +26,7 @@ import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;

@@ -1,24 +1,26 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SENT_FOR_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SUBMITTED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UNMATCHED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.UPDATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -119,7 +121,7 @@ public class RerateProcessor {
             rerateTrade.setProcessingStatus(ProcessingStatus.SUBMITTED);
         } catch (HttpClientErrorException httpClientErrorException) {
             if (httpClientErrorException.getStatusCode().value() != 400) {
-                recordTechnicalException1source(httpClientErrorException, rerateTrade.getTradeId());
+                recordTechnicalExceptionPostRerateTo1Source(httpClientErrorException, rerateTrade.getTradeId());
             }
         }
         return rerateTrade;
@@ -168,6 +170,16 @@ public class RerateProcessor {
         return rerate;
     }
 
+    public Rerate approve(Rerate rerate){
+        try {
+            oneSourceService.approveRerate(rerate.getContractId(), rerate.getRerateId());
+            rerate.setProcessingStatus(SENT_FOR_APPROVAL);
+        }catch (HttpClientErrorException httpClientErrorException){
+            recordTechnicalExceptionApproveRerate(httpClientErrorException, rerate);
+        }
+        return rerate;
+    }
+
     private Optional<LocalDate> getRerateEffectiveDate(Rerate rerate) {
         if (rerate.getRerate() != null && rerate.getRerate().getRebate() != null
             && rerate.getRerate().getRebate().getFixed() != null) {
@@ -179,12 +191,21 @@ public class RerateProcessor {
         return Optional.empty();
     }
 
-    private void recordTechnicalException1source(HttpClientErrorException httpClientErrorException,
+    private void recordTechnicalExceptionPostRerateTo1Source(HttpClientErrorException httpClientErrorException,
         Long spireRerateTradeId) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.RERATE);
         var recordRequest = eventBuilder.buildExceptionRequest(httpClientErrorException,
             POST_RERATE_PROPOSAL, String.valueOf(spireRerateTradeId));
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordTechnicalExceptionApproveRerate(HttpClientErrorException httpClientErrorException,
+        Rerate rerate) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildExceptionRequest(rerate.getRerateId(), httpClientErrorException,
+            APPROVE_RERATE_PROPOSAL, String.valueOf(rerate.getMatchingSpireTradeId()));
         cloudEventRecordService.record(recordRequest);
     }
 

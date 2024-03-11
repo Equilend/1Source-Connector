@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.model.onesource;
+package com.intellecteu.onesource.integration.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -34,12 +34,20 @@ public enum ProcessingStatus {
     MATCHED("MATCHED"),
     UNMATCHED("UNMATCHED"),
     SUBMITTED("SUBMITTED"),
-    TO_VALIDATE("TO_VALIDATE");
+    TO_VALIDATE("TO_VALIDATE"),
+    SENT_FOR_APPROVAL("SENT_FOR_APPROVAL", true)
+    ;
 
     private final String value;
+    private boolean isTechnical;
 
     ProcessingStatus(String value) {
         this.value = value;
+    }
+
+    ProcessingStatus(String value, Boolean isTechnical) {
+        this.value = value;
+        this.isTechnical = isTechnical;
     }
 
     @JsonValue

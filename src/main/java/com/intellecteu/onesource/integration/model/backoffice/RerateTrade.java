@@ -4,7 +4,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.LinkedList;

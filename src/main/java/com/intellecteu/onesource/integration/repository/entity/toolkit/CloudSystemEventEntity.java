@@ -4,7 +4,7 @@ package com.intellecteu.onesource.integration.repository.entity.toolkit;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SystemEventDataEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

@@ -3,7 +3,7 @@
 //import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 //import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 //import com.intellecteu.onesource.integration.model.backoffice.Position;
-//import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+//import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 //import com.intellecteu.onesource.integration.model.onesource.Rate;
 //import com.intellecteu.onesource.integration.repository.RerateTradeRepository;
 //import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionAccountEntity;

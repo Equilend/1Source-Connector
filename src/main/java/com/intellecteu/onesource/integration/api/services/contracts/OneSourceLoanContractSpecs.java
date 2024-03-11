@@ -28,7 +28,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import java.time.LocalDate;
 import lombok.experimental.UtilityClass;

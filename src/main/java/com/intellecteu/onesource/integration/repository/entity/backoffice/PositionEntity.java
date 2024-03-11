@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;

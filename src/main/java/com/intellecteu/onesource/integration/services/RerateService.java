@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.repository.RerateRepository;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
