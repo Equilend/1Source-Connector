@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_PROPOSAL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
@@ -114,10 +115,22 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return List.of(tradeAgreement, relatedPosition);
     }
 
+    protected List<RelatedObject> getContractRelatedToPositionWithTrade(String contractInfo, String positionInfo,
+        String tradeInfo) {
+        var tradeAgreement = new RelatedObject(contractInfo, ONESOURCE_LOAN_CONTRACT);
+        var relatedPosition = new RelatedObject(positionInfo, POSITION);
+        var relatedTrade = new RelatedObject(tradeInfo, SPIRE_TRADE);
+        return List.of(tradeAgreement, relatedPosition, relatedTrade);
+    }
+
     protected List<RelatedObject> getLoanProposalRelatedToPosition(String contractInfo, String positionInfo) {
         var relatedContractProposal = new RelatedObject(contractInfo, ONESOURCE_LOAN_PROPOSAL);
         var relatedPosition = new RelatedObject(positionInfo, POSITION);
         return List.of(relatedContractProposal, relatedPosition);
+    }
+
+    protected List<RelatedObject> getLoanContractRelated(String contractInfo) {
+        return List.of(new RelatedObject(contractInfo, ONESOURCE_LOAN_CONTRACT));
     }
 
     protected List<RelatedObject> getLoanContractRelatedToPosition(String contractInfo, String positionInfo) {

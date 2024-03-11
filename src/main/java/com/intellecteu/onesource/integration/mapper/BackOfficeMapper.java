@@ -7,6 +7,7 @@ import com.intellecteu.onesource.integration.repository.entity.backoffice.Positi
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
+import java.util.List;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -38,6 +39,8 @@ public abstract class BackOfficeMapper {
     @Mapping(source = "account", target = "positionAccount")
     @Mapping(source = "counterParty", target = "positionCpAccount")
     public abstract Position toModel(PositionEntity positionEntity);
+
+    public abstract List<Position> toPositionList(List<PositionEntity> positionEntities);
 
     @Mapping(target = "account", source = "positionAccount")
     @Mapping(target = "counterParty", source = "positionCpAccount")

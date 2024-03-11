@@ -300,6 +300,24 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
+    public void cancelContract(Contract contract) {
+        log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT);
+        try {
+            restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT, POST,
+                null, JsonNode.class, contract.getContractId());
+        } catch (HttpStatusCodeException e) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
+                    CANCEL_LOAN_CONTRACT_PROPOSAL, String.valueOf(contract.getMatchingSpirePositionId()));
+                cloudEventRecordService.record(recordRequest);
+            }
+        }
+    }
+
+    @Override
     public void cancelContract(Contract contract, String positionId) {
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT);
         try {

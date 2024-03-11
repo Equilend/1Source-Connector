@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.agreement;
+package com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.agreement;
 
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_RETRIEVED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SPIRE_ISSUE;

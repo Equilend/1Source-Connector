@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.model.enums.PositionStatusEn
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import java.time.LocalDateTime;
@@ -35,7 +36,8 @@ public class PositionService {
     public Position savePosition(Position position) {
         position.setLastUpdateDateTime(LocalDateTime.now());
         PositionEntity positionEntity = positionRepository.save(backOfficeMapper.toEntity(position));
-        log.debug("Position with id={} was saved.", positionEntity.getPositionId());
+        log.debug("Position with id={} was saved with status={}.",
+            positionEntity.getPositionId(), position.getProcessingStatus());
         return backOfficeMapper.toModel(positionEntity);
     }
 
@@ -54,7 +56,7 @@ public class PositionService {
         return backOfficeMapper.toModel(positionEntity);
     }
 
-    public List<Position> savePositions(List<Position> positions) {
+    public List<Position> saveAllPositions(List<Position> positions) {
         positions.forEach(position -> position.setLastUpdateDateTime(LocalDateTime.now()));
         List<PositionEntity> positionEntities = positions.stream().map(backOfficeMapper::toEntity).toList();
         positionEntities = positionRepository.saveAll(positionEntities);
@@ -68,11 +70,10 @@ public class PositionService {
     }
 
     public List<Position> findAllNotCanceledAndSettled() {
-        return positionRepository.findAllNotCanceledAndSettled().stream().map(backOfficeMapper::toModel).collect(
-            Collectors.toList());
+        return positionRepository.findAllNotCanceledAndSettled().stream().map(backOfficeMapper::toModel).toList();
     }
 
-    public Optional<String> getMaxPositionId() {
+    public Optional<String> getMaxPositionId() { // todo rework change logic with SQL query
         List<PositionEntity> storedPositions = positionRepository.findAll();
         log.debug("Found {} positions. Getting the latest id recorded.", storedPositions.size());
         return storedPositions.stream()
@@ -81,4 +82,8 @@ public class PositionService {
             .map(String::valueOf);
     }
 
+    public List<Position> findAllByProcessingStatus(ProcessingStatus status) {
+        return positionRepository.findAllByProcessingStatus(status).stream()
+            .map(backOfficeMapper::toModel).toList();
+    }
 }

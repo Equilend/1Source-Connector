@@ -3,9 +3,16 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_NEW_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_LOAN;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.PENDING_ONESOURCE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.POSITION_ID;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_LOAN;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
@@ -15,6 +22,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.EQUALS;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.GREATER_THAN;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.IN;
@@ -62,7 +70,9 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.instructi
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -148,6 +158,42 @@ public class BackOfficeService {
         return List.of();
     }
 
+    public List<TradeOut> fetchUpdatesOnPositions(List<Position> positions) {
+        Long lastTradeIdRecorded = retrieveLatestTradeId(positions);
+        String commaSeparatedIdList = positions.stream()
+            .map(p -> String.valueOf(p.getPositionId()))
+            .collect(Collectors.joining(COMMA_DELIMITER));
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(
+            createTuplesGetUpdatePositionsByIdList(lastTradeIdRecorded, commaSeparatedIdList));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
+        try {
+            log.debug("Sending request with SPIRE API Client");
+            final ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(
+                nQueryRequest);
+            if (responseTradeHasData(response)) {
+                List<SGroupTradeOutDTO> responseGroups = response.getBody().getData().getGroups();
+                List<TradeOut> tradesWithUpdatedPositions = responseGroups.stream()
+                    .map(SGroupTradeOutDTO::getAvg)
+                    .map(backOfficeMapper::toModel)
+                    .toList();
+                log.debug("Found {} trades with updated positions", tradesWithUpdatedPositions.size());
+                return tradesWithUpdatedPositions;
+            }
+        } catch (RestClientException e) {
+            log.warn("Rest client exception: {}", e.getMessage());
+            if (e instanceof HttpStatusCodeException exception) {
+                final HttpStatusCode statusCode = exception.getStatusCode();
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
+                    log.warn("SPIRE error response for {} subprocess. Details: {}",
+                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, statusCode);
+                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
+                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
+                }
+            }
+        }
+        return List.of();
+    }
+
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public List<Position> getNewSpirePositionsObsolete(LocalDateTime lastUpdate, List<Position> positionList) {
         String commaSeparatedIdList = positionList.stream()
@@ -182,6 +228,14 @@ public class BackOfficeService {
         tuples.add(new NQueryTuple().lValue("positionId").operator(IN).rValue1(commaSeparatedIdList));
         tuples.add(new NQueryTuple().lValue("lastModTs").operator(OperatorEnum.GREATER_THAN).rValue1(lastUpdate));
         return tuples;
+    }
+
+    private static Long retrieveLatestTradeId(List<Position> positions) {
+        return positions.stream()
+            .map(Position::getTradeId)
+            .filter(Objects::nonNull)
+            .max(Comparator.naturalOrder())
+            .orElse(STARTING_TRADE_ID);
     }
 
     private boolean responseTradeHasData(ResponseEntity<SResponseNQueryResponseTradeOutDTO> response) {
@@ -350,6 +404,16 @@ public class BackOfficeService {
             buildTuple(TRADE_TYPE, IN, join(COMMA_DELIMITER, List.of(NEW_LOAN, NEW_BORROW))),
             buildTuple(TRADE_STATUS, EQUALS, PENDING_ONESOURCE_CONFIRMATION),
             buildTuple(TRADE_ID, GREATER_THAN, lastTradeId)
+        );
+    }
+
+    private List<NQueryTuple> createTuplesGetUpdatePositionsByIdList(Long lastTradeId, String positionIdList) {
+        List<String> typeList = List.of(RERATE, RERATE_BORROW, ROLL_LOAN, ROLL_BORROW, CANCEL_LOAN, CANCEL_NEW_BORROW);
+        return List.of(
+            buildTuple(TRADE_TYPE, IN, join(COMMA_DELIMITER, typeList)),
+            buildTuple(TRADE_STATUS, EQUALS, OPEN.getValue()),
+            buildTuple(TRADE_ID, GREATER_THAN, String.valueOf(lastTradeId)),
+            buildTuple(POSITION_ID, IN, positionIdList)
         );
     }
 

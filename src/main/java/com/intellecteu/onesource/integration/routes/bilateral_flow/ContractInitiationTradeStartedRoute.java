@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.bilateral_flow;
+package com.intellecteu.onesource.integration.routes.bilateral_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
@@ -6,8 +6,8 @@ import static com.intellecteu.onesource.integration.model.onesource.ProcessingSt
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.AgreementProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.AgreementProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Deprecated(since = "0.0.5-SNAPSHOT")
 @Component
 @ConditionalOnProperty(
-    value = "route.contract-initiation.bilateral-flow.enable",
+    value = "route.bilateral-flow.contract-initiation.enable",
     havingValue = "disabled",
     matchIfMissing = true)
 public class ContractInitiationTradeStartedRoute extends RouteBuilder {

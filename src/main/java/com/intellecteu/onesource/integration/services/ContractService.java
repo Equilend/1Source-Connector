@@ -47,6 +47,18 @@ public class ContractService {
         return oneSourceMapper.toModel(savedEntity);
     }
 
+    @Transactional
+    public List<Contract> saveAll(List<Contract> contracts) {
+        final List<ContractEntity> entityList = contracts.stream()
+            .map(oneSourceMapper::toEntity)
+            .toList();
+        List<ContractEntity> savedEntities = contractRepository.saveAll(entityList);
+        log.debug("{} contracts were saved.", savedEntities.size());
+        return savedEntities.stream()
+            .map(oneSourceMapper::toModel)
+            .toList();
+    }
+
     public Optional<Contract> findByVenueRefId(String venueRefId) {
         return contractRepository.findByVenueRefId(venueRefId).stream().findFirst().map(oneSourceMapper::toModel);
     }
