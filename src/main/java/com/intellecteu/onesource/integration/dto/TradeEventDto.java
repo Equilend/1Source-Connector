@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

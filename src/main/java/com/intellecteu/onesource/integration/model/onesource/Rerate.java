@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.LinkedList;

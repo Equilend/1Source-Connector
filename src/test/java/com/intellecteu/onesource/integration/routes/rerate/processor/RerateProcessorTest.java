@@ -1,11 +1,12 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SUBMITTED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SENT_FOR_APPROVAL;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -17,11 +18,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
-import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
@@ -197,5 +196,27 @@ class RerateProcessorTest {
         Rerate result = rerateProcessor.validate(rerate);
 
         assertEquals(DISCREPANCIES, result.getProcessingStatus());
+    }
+
+    @Test
+    void approve_OkResponse_SENTFORAPPROVALStatus(){
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("rerateId");
+
+        Rerate result = rerateProcessor.approve(rerate);
+
+        assertEquals(SENT_FOR_APPROVAL, result.getProcessingStatus());
+    }
+
+    @Test
+    void approve_NotOkResponse_RecordTechnicalExceptionEvent(){
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("rerateId");
+
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).approveRerate(any(), any());
+
+        Rerate result = rerateProcessor.approve(rerate);
+
+        verify(cloudEventRecordService, times(1)).record(any());
     }
 }

@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Fixed
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDefDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDefDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
@@ -88,6 +89,11 @@ public class OneSourceService {
         RerateProposalDTO body = buildRerateProposal(rerateTrade);
         ResponseEntity<Void> voidResponseEntity = reratesApi.ledgerContractsContractIdReratesPostWithHttpInfo(body,
             rerateTrade.getRelatedContractId());
+    }
+
+    public void approveRerate(String contractId, String rerateId) {
+        ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdApprovePostWithHttpInfo(
+            contractId, rerateId);
     }
 
     private RerateProposalDTO buildRerateProposal(RerateTrade rerateTrade) {

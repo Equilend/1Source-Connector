@@ -1,14 +1,15 @@
 package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
@@ -113,6 +114,13 @@ public class RerateRoute extends RouteBuilder {
             //Result status can be VALIDATED, DISCREPANCIES
             .bean(rerateProcessor, "saveRerate")
             .log(">>>>> Finished validation 1Source Rerate with rerateId ${body.rerateId}");
+
+        from(createRerateSQLEndpoint(VALIDATED))
+            .log(">>>>> Started approval 1Source Rerate with rerateId ${body.rerateId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateProcessor, "approve")
+            .bean(rerateProcessor, "saveRerate")
+            .log(">>>>> Finished approval 1Source Rerate with rerateId ${body.rerateId}");
     }
     //@formatter:on
 

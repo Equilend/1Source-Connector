@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository;
 
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
