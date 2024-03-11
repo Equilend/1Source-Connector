@@ -18,6 +18,7 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
+import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
@@ -26,6 +27,7 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
@@ -210,6 +212,22 @@ public class ModelTestFactory {
         return om.convertValue(agreementDto, Agreement.class);
     }
 
+    public static TradeOut buildSpireTrade(String tradeType) {
+        return TradeOut.builder()
+            .tradeId(34L)
+            .tradeDate(LocalDateTime.now().minusDays(3))
+            .postDate(LocalDateTime.now().minusHours(1))
+            .settleDate(LocalDateTime.now().minusDays(2))
+            .accrualDate(LocalDateTime.now())
+            .rateOrSpread(123.00)
+            .tradeType(tradeType)
+            .index(new Index(12, "testIndexName", 1.05))
+            .status("testStatus")
+            .statusId(66)
+            .position(buildPosition())
+            .build();
+    }
+
     public static Position buildPosition() {
         return buildPosition(null);
     }
@@ -242,6 +260,7 @@ public class ModelTestFactory {
             .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", 345L, 345L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
+            .index(new Index(123, "testIndexName", 4.04))
             .build();
     }
 

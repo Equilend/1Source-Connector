@@ -39,7 +39,7 @@ public class PositionListenerProcessorObsolete {
             position.setVenueRefId(position.getCustomValue2());
             position.setProcessingStatus(CREATED);
         });
-        positionService.savePositions(newSpirePositions);
+        positionService.saveAllPositions(newSpirePositions);
     }
 
 }

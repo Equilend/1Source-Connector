@@ -10,6 +10,7 @@ import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.services.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -49,6 +50,32 @@ public class Contract implements Reconcilable {
     public void setProcessingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
         log.debug("Updated processing status to {} for contract: {}", processingStatus, contractId);
+    }
+
+    public String retrieveCusip() {
+        return isInstrumentAvailable() ? trade.getInstrument().getCusip() : "";
+    }
+
+    public String retrieveIsin() {
+        return isInstrumentAvailable() ? trade.getInstrument().getIsin() : "";
+    }
+
+    public String retrieveSedol() {
+        return isInstrumentAvailable() ? trade.getInstrument().getSedol() : "";
+    }
+
+    public String retrievePartyId(PartyRole partyRole) {
+        return trade.getTransactingParties().stream()
+            .filter(party -> party.getPartyRole() == partyRole)
+            .map(TransactingParty::getParty)
+            .filter(Objects::nonNull)
+            .map(Party::getPartyId)
+            .findAny()
+            .orElse("");
+    }
+
+    private boolean isInstrumentAvailable() {
+        return trade != null && trade.getInstrument() != null;
     }
 
 }

@@ -1,10 +1,10 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow;
+package com.intellecteu.onesource.integration.routes.delegate_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.PositionProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value = "route.contract-initiation.delegate-flow.enable",
+    value = "route.delegate-flow.contract-initiation.enable",
     havingValue = "true",
     matchIfMissing = true)
 @RequiredArgsConstructor
@@ -41,7 +41,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 .endChoice()
             .end()
             .log("Finished matching contract proposal for position with id ${body.positionId}")
-            .end();
+        .end();
     }
 
     private String createPositionSQLEndpoint(ProcessingStatus... status) {

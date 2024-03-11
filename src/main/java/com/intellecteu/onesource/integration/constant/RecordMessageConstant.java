@@ -28,6 +28,9 @@ public class RecordMessageConstant {
             public static final String DECLINE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String GET_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Loan contract proposal - %s";
             public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED = "Loan contract proposal - %s";
+            public static final String LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT = "Loan contract proposal - %s";
+            public static final String POSITION_CANCELED_SUBJECT = "Position - %s";
+            public static final String POSITION_CANCELED_SUBMITTED_SUBJECT = "Position - %s";
             public static final String POSITION_UNMATCHED_SUBJECT = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE = "Position - %s";
@@ -52,7 +55,7 @@ public class RecordMessageConstant {
                 The loan contract %s matching with the position %s cannot be approved for the following reason: %s""";
 
             public static final String CANCEL_LOAN_PROPOSAL_MSG = """
-                The loan contract %s (generated from the SPIRE Position: %s) \
+                The loan contract proposal %s (generated from the SPIRE Position: %s) \
                 cannot be canceled for the following reason: %s""";
 
             public static final String CONTRACT_CANCEL_MSG = """
@@ -131,6 +134,9 @@ public class RecordMessageConstant {
                 The trade agreement %s has been successfully reconciled \
                 with the position %s in SPIRE""";
 
+            public static final String LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG = """
+                The loan contract proposal %s has been received but not yet matched with a SPIRE position""";
+
             public static final String MATCHED_POSITION_TRADE_AGREEMENT_MSG = """
                 The trade agreement %s has been matched with a SPIRE position %s""";
 
@@ -140,6 +146,14 @@ public class RecordMessageConstant {
             public static final String MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG = """
                 The loan contract proposal %s has been matched \
                 with a SPIRE position %s""";
+
+            public static final String POSITION_CANCELED_MSG = """
+                The position %s has been canceled""";
+
+            public static final String POSITION_CANCELED_SUBMITTED_MSG = """
+                “The position %s has been canceled and the cancellation of \
+                the 1Source loan contract proposal %s generated \
+                from this position has been instructed to 1Source""";
 
             public static final String POSITION_UNMATCHED_MSG = """
                 A new position %s has been created \

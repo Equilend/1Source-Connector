@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract;
+package com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.contract;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_UPDATED;

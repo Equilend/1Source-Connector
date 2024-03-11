@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow;
+package com.intellecteu.onesource.integration.routes.delegate_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
@@ -12,9 +12,9 @@ import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.ContractProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.EventProcessor;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.PositionProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.ContractProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -26,7 +26,7 @@ import org.springframework.stereotype.Component;
 @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 @Component
 @ConditionalOnProperty(
-    value = "route.contract-initiation.delegate-flow.enable",
+    value = "route.delegate-flow.contract-initiation.enable",
     havingValue = "disabled",
     matchIfMissing = true)
 public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {

@@ -33,11 +33,7 @@ public class PositionListenerProcessor {
             position.setCreationDatetime(LocalDateTime.now());
             position.setProcessingStatus(CREATED);
         });
-        positionService.savePositions(newSpirePositions);
-    }
-
-    public void updateIfMatched(Position position) {
-
+        positionService.saveAllPositions(newSpirePositions);
     }
 
 }

@@ -14,5 +14,6 @@ public class IntegrationConstant {
         public static final String ONESOURCE_PARTICIPANT = "1SrceParticipant";
         public static final String ONESOURCE_TRADE_AGREEMENT = "1SrceTradeAgreement";
         public static final String POSITION = "Position";
+        public static final String SPIRE_TRADE = "Trade";
     }
 }

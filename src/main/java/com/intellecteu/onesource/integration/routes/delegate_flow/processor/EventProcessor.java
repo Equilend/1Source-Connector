@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor;
+package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;

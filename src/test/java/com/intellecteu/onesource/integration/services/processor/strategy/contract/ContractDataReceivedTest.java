@@ -28,7 +28,7 @@ import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
-import com.intellecteu.onesource.integration.routes.contract_initiation.delegate_flow.processor.strategy.contract.ContractDataReceived;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;

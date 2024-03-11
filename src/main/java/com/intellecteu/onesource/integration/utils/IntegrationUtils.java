@@ -10,8 +10,9 @@ import static java.lang.String.format;
 import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
-import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -78,6 +79,14 @@ public class IntegrationUtils {
 
     public static boolean isLender(Position position) {
         return extractPartyRole(position).filter(role -> role == LENDER).isPresent();
+    }
+
+    public static boolean isLender(TradeOut tradeOut) {
+        return isLender(tradeOut.getPosition());
+    }
+
+    public static boolean isBorrower(TradeOut tradeOut) {
+        return isBorrower(tradeOut.getPosition());
     }
 
     public static boolean isBorrower(Position position) {
