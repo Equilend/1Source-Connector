@@ -364,8 +364,8 @@ public class BackOfficeService {
     private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId) {
         List<NQueryTuple> tuples = new ArrayList<>();
         tuples.add(
-            new NQueryTuple().lValue("tradetype").operator(NQueryTuple.OperatorEnum.IN)
-                .rValue1("RERATE,RERATE BORROW"));
+            new NQueryTuple().lValue("tradeType").operator(NQueryTuple.OperatorEnum.IN)
+                .rValue1("Rerate, Rerate Borrow"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
         tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
             .rValue1("PENDING ONESOURCE CONFIRMATION"));
