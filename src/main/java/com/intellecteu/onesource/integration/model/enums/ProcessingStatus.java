@@ -35,8 +35,7 @@ public enum ProcessingStatus {
     UNMATCHED("UNMATCHED"),
     SUBMITTED("SUBMITTED"),
     TO_VALIDATE("TO_VALIDATE"),
-    SENT_FOR_APPROVAL("SENT_FOR_APPROVAL", true)
-    ;
+    SENT_FOR_APPROVAL("SENT_FOR_APPROVAL", true);
 
     private final String value;
     private boolean isTechnical;

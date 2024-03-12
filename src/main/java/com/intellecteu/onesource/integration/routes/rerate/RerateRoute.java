@@ -1,16 +1,17 @@
 package com.intellecteu.onesource.integration.routes.rerate;
 
-import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.routes.rerate.processor.RerateEventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -42,15 +43,15 @@ public class RerateRoute extends RouteBuilder {
             + "query=SELECT r FROM RerateEntity r WHERE r.processingStatus = '%s'";
 
     private final RerateProcessor rerateProcessor;
-    private final EventProcessor eventProcessor;
+    private final RerateEventProcessor rerateEventProcessor;
     private final OneSourceMapper oneSourceMapper;
     private final BackOfficeMapper backOfficeMapper;
 
     @Autowired
-    public RerateRoute(RerateProcessor rerateProcessor, EventProcessor eventProcessor, OneSourceMapper oneSourceMapper,
+    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
         BackOfficeMapper backOfficeMapper) {
         this.rerateProcessor = rerateProcessor;
-        this.eventProcessor = eventProcessor;
+        this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
         this.backOfficeMapper = backOfficeMapper;
     }
@@ -93,10 +94,10 @@ public class RerateRoute extends RouteBuilder {
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
             .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(eventProcessor, "processRerateEvent")
+            .bean(rerateEventProcessor, "processRerateProposedEvent")
             //1Source Rerate
-            .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
+            .bean(rerateEventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
             .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
 
         from(createRerateSQLEndpoint(PROPOSED))
@@ -121,6 +122,14 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateProcessor, "approve")
             .bean(rerateProcessor, "saveRerate")
             .log(">>>>> Finished approval 1Source Rerate with rerateId ${body.rerateId}");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_PENDING))
+            .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processReratePendingEvent")
+            .bean(rerateEventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
     }
     //@formatter:on
 

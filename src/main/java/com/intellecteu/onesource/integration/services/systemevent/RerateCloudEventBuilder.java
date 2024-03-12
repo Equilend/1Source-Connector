@@ -4,12 +4,16 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_RERATE_DISCREPANCIES_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.RERATE_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVED_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.UNMATCHED_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVED_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.GET_RERATE_EXCEPTION_1SOURCE;
@@ -17,9 +21,11 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
@@ -152,6 +158,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case RERATE_PROPOSAL_MATCHED -> createMatchedRerateRecordRequest(recorded, related);
             case RERATE_PROPOSAL_UNMATCHED -> createUnMatchedRerateRecordRequest(recorded);
             case RERATE_PROPOSAL_PENDING_APPROVAL -> createMatchedAndPendingApprovalRecordRequest(recorded, related);
+            case RERATE_PROPOSAL_APPROVED -> createApprovedRecordRequest(recorded, related);
             default -> null;
         };
     }
@@ -187,6 +194,22 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
+
+    /**
+     * @param recorded - onesource rerate id
+     * @param related - backoffice rerate tradeId
+     */
+    private CloudEventBuildRequest createApprovedRecordRequest(String recorded, String related) {
+        String dataMessage = format(APPROVED_RERATE_MSG, recorded, related);
+        return createRecordRequest(
+            RERATE_PROPOSAL_APPROVED,
+            format(APPROVED_RERATE, related),
+            RERATE,
+            GET_RERATE_APPROVED,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
 
     /**
      * @param recorded - backoffice rerate tradeId

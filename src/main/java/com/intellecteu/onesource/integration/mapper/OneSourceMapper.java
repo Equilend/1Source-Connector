@@ -9,6 +9,7 @@ import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -38,7 +39,10 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRerateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateStatusDTO;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring")
 public abstract class OneSourceMapper {
@@ -53,8 +57,12 @@ public abstract class OneSourceMapper {
 
     public abstract Rerate toModel(RerateEntity rerateEntity);
 
+    @Mapping(target = "rerateStatus", source = "status")
     public abstract Rerate toModel(RerateDTO rerateDTO);
 
+    public abstract RerateStatus mapStatus(RerateStatusDTO rerateStatusDTO);
+
+    @Mapping(target = "status", source = "rerateStatus")
     public abstract RerateEntity toEntity(Rerate rerate);
 
     public Rate toModel(OneOfRerateRateDTODTO rateDTO) {
