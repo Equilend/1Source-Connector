@@ -13,271 +13,242 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
-import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.IndexDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalDateTime;
 
 /**
  * IndexrateDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class IndexrateDTO {
+  @JsonProperty("histDate")
+  private LocalDateTime histDate = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("indexDTO")
+  private IndexDTO indexDTO = null;
 
-    @JsonProperty("histDate")
-    private LocalDateTime histDate = null;
+  @JsonProperty("indexId")
+  private Long indexId = null;
 
-    @JsonProperty("indexDTO")
-    private IndexDTO indexDTO = null;
+  @JsonProperty("lastModTs")
+  private LocalDateTime lastModTs = null;
 
-    @JsonProperty("indexId")
-    private Long indexId = null;
+  @JsonProperty("lastModUserId")
+  private Long lastModUserId = null;
 
-    @JsonProperty("lastModTs")
-    private LocalDateTime lastModTs = null;
+  @JsonProperty("priorDaysRate")
+  private Double priorDaysRate = null;
 
-    @JsonProperty("lastModUserId")
-    private Long lastModUserId = null;
+  @JsonProperty("rate")
+  private Double rate = null;
 
-    @JsonProperty("priorDaysRate")
-    private Double priorDaysRate = null;
+  @JsonProperty("status")
+  private String status = null;
 
-    @JsonProperty("rate")
-    private Double rate = null;
+  public IndexrateDTO histDate(LocalDateTime histDate) {
+    this.histDate = histDate;
+    return this;
+  }
 
-    @JsonProperty("status")
-    private String status = null;
+   /**
+   * Get histDate
+   * @return histDate
+  **/
+  @ApiModelProperty(required = true, value = "")
+  public LocalDateTime getHistDate() {
+    return histDate;
+  }
 
-    public IndexrateDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setHistDate(LocalDateTime histDate) {
+    this.histDate = histDate;
+  }
+
+  public IndexrateDTO indexDTO(IndexDTO indexDTO) {
+    this.indexDTO = indexDTO;
+    return this;
+  }
+
+   /**
+   * Get indexDTO
+   * @return indexDTO
+  **/
+  @ApiModelProperty(value = "")
+  public IndexDTO getIndexDTO() {
+    return indexDTO;
+  }
+
+  public void setIndexDTO(IndexDTO indexDTO) {
+    this.indexDTO = indexDTO;
+  }
+
+  public IndexrateDTO indexId(Long indexId) {
+    this.indexId = indexId;
+    return this;
+  }
+
+   /**
+   * Get indexId
+   * @return indexId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getIndexId() {
+    return indexId;
+  }
+
+  public void setIndexId(Long indexId) {
+    this.indexId = indexId;
+  }
+
+  public IndexrateDTO lastModTs(LocalDateTime lastModTs) {
+    this.lastModTs = lastModTs;
+    return this;
+  }
+
+   /**
+   * Get lastModTs
+   * @return lastModTs
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getLastModTs() {
+    return lastModTs;
+  }
+
+  public void setLastModTs(LocalDateTime lastModTs) {
+    this.lastModTs = lastModTs;
+  }
+
+  public IndexrateDTO lastModUserId(Long lastModUserId) {
+    this.lastModUserId = lastModUserId;
+    return this;
+  }
+
+   /**
+   * Get lastModUserId
+   * @return lastModUserId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getLastModUserId() {
+    return lastModUserId;
+  }
+
+  public void setLastModUserId(Long lastModUserId) {
+    this.lastModUserId = lastModUserId;
+  }
+
+  public IndexrateDTO priorDaysRate(Double priorDaysRate) {
+    this.priorDaysRate = priorDaysRate;
+    return this;
+  }
+
+   /**
+   * Get priorDaysRate
+   * @return priorDaysRate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getPriorDaysRate() {
+    return priorDaysRate;
+  }
+
+  public void setPriorDaysRate(Double priorDaysRate) {
+    this.priorDaysRate = priorDaysRate;
+  }
+
+  public IndexrateDTO rate(Double rate) {
+    this.rate = rate;
+    return this;
+  }
+
+   /**
+   * Get rate
+   * @return rate
+  **/
+  @ApiModelProperty(value = "")
+  public Double getRate() {
+    return rate;
+  }
+
+  public void setRate(Double rate) {
+    this.rate = rate;
+  }
+
+  public IndexrateDTO status(String status) {
+    this.status = status;
+    return this;
+  }
+
+   /**
+   * Get status
+   * @return status
+  **/
+  @ApiModelProperty(value = "")
+  public String getStatus() {
+    return status;
+  }
+
+  public void setStatus(String status) {
+    this.status = status;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    IndexrateDTO indexrateDTO = (IndexrateDTO) o;
+    return Objects.equals(this.histDate, indexrateDTO.histDate) &&
+        Objects.equals(this.indexDTO, indexrateDTO.indexDTO) &&
+        Objects.equals(this.indexId, indexrateDTO.indexId) &&
+        Objects.equals(this.lastModTs, indexrateDTO.lastModTs) &&
+        Objects.equals(this.lastModUserId, indexrateDTO.lastModUserId) &&
+        Objects.equals(this.priorDaysRate, indexrateDTO.priorDaysRate) &&
+        Objects.equals(this.rate, indexrateDTO.rate) &&
+        Objects.equals(this.status, indexrateDTO.status);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(histDate, indexDTO, indexId, lastModTs, lastModUserId, priorDaysRate, rate, status);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class IndexrateDTO {\n");
+    
+    sb.append("    histDate: ").append(toIndentedString(histDate)).append("\n");
+    sb.append("    indexDTO: ").append(toIndentedString(indexDTO)).append("\n");
+    sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
+    sb.append("    lastModTs: ").append(toIndentedString(lastModTs)).append("\n");
+    sb.append("    lastModUserId: ").append(toIndentedString(lastModUserId)).append("\n");
+    sb.append("    priorDaysRate: ").append(toIndentedString(priorDaysRate)).append("\n");
+    sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public IndexrateDTO histDate(LocalDateTime histDate) {
-        this.histDate = histDate;
-        return this;
-    }
-
-    /**
-     * Get histDate
-     *
-     * @return histDate
-     **/
-    @ApiModelProperty(required = true, value = "")
-    public LocalDateTime getHistDate() {
-        return histDate;
-    }
-
-    public void setHistDate(LocalDateTime histDate) {
-        this.histDate = histDate;
-    }
-
-    public IndexrateDTO indexDTO(IndexDTO indexDTO) {
-        this.indexDTO = indexDTO;
-        return this;
-    }
-
-    /**
-     * Get indexDTO
-     *
-     * @return indexDTO
-     **/
-    @ApiModelProperty(value = "")
-    public IndexDTO getIndexDTO() {
-        return indexDTO;
-    }
-
-    public void setIndexDTO(IndexDTO indexDTO) {
-        this.indexDTO = indexDTO;
-    }
-
-    public IndexrateDTO indexId(Long indexId) {
-        this.indexId = indexId;
-        return this;
-    }
-
-    /**
-     * Get indexId
-     *
-     * @return indexId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getIndexId() {
-        return indexId;
-    }
-
-    public void setIndexId(Long indexId) {
-        this.indexId = indexId;
-    }
-
-    public IndexrateDTO lastModTs(LocalDateTime lastModTs) {
-        this.lastModTs = lastModTs;
-        return this;
-    }
-
-    /**
-     * Get lastModTs
-     *
-     * @return lastModTs
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getLastModTs() {
-        return lastModTs;
-    }
-
-    public void setLastModTs(LocalDateTime lastModTs) {
-        this.lastModTs = lastModTs;
-    }
-
-    public IndexrateDTO lastModUserId(Long lastModUserId) {
-        this.lastModUserId = lastModUserId;
-        return this;
-    }
-
-    /**
-     * Get lastModUserId
-     *
-     * @return lastModUserId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getLastModUserId() {
-        return lastModUserId;
-    }
-
-    public void setLastModUserId(Long lastModUserId) {
-        this.lastModUserId = lastModUserId;
-    }
-
-    public IndexrateDTO priorDaysRate(Double priorDaysRate) {
-        this.priorDaysRate = priorDaysRate;
-        return this;
-    }
-
-    /**
-     * Get priorDaysRate
-     *
-     * @return priorDaysRate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getPriorDaysRate() {
-        return priorDaysRate;
-    }
-
-    public void setPriorDaysRate(Double priorDaysRate) {
-        this.priorDaysRate = priorDaysRate;
-    }
-
-    public IndexrateDTO rate(Double rate) {
-        this.rate = rate;
-        return this;
-    }
-
-    /**
-     * Get rate
-     *
-     * @return rate
-     **/
-    @ApiModelProperty(value = "")
-    public Double getRate() {
-        return rate;
-    }
-
-    public void setRate(Double rate) {
-        this.rate = rate;
-    }
-
-    public IndexrateDTO status(String status) {
-        this.status = status;
-        return this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return status
-     **/
-    @ApiModelProperty(value = "")
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        IndexrateDTO indexrateDTO = (IndexrateDTO) o;
-        return Objects.equals(this.qualifiedName, indexrateDTO.qualifiedName) &&
-            Objects.equals(this.histDate, indexrateDTO.histDate) &&
-            Objects.equals(this.indexDTO, indexrateDTO.indexDTO) &&
-            Objects.equals(this.indexId, indexrateDTO.indexId) &&
-            Objects.equals(this.lastModTs, indexrateDTO.lastModTs) &&
-            Objects.equals(this.lastModUserId, indexrateDTO.lastModUserId) &&
-            Objects.equals(this.priorDaysRate, indexrateDTO.priorDaysRate) &&
-            Objects.equals(this.rate, indexrateDTO.rate) &&
-            Objects.equals(this.status, indexrateDTO.status);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, histDate, indexDTO, indexId, lastModTs, lastModUserId, priorDaysRate, rate,
-            status);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class IndexrateDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    histDate: ").append(toIndentedString(histDate)).append("\n");
-        sb.append("    indexDTO: ").append(toIndentedString(indexDTO)).append("\n");
-        sb.append("    indexId: ").append(toIndentedString(indexId)).append("\n");
-        sb.append("    lastModTs: ").append(toIndentedString(lastModTs)).append("\n");
-        sb.append("    lastModUserId: ").append(toIndentedString(lastModUserId)).append("\n");
-        sb.append("    priorDaysRate: ").append(toIndentedString(priorDaysRate)).append("\n");
-        sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

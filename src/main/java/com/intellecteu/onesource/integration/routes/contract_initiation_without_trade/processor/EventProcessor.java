@@ -8,9 +8,9 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.isLender;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -21,7 +21,7 @@ import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
@@ -31,6 +31,7 @@ import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -121,7 +122,9 @@ public class EventProcessor {
         try {
             oneSourceService.retrieveRerate(resourceUri)
                 .ifPresent(rerate -> {
-                    rerate.setProcessingStatus(CREATED);
+                    rerate.setCreateUpdateDatetime(LocalDateTime.now());
+                    rerate.setLastUpdateDatetime(LocalDateTime.now());
+                    rerate.setProcessingStatus(ProcessingStatus.PROPOSED);
                     rerateService.saveRerate(rerate);
                 });
         } catch (HttpStatusCodeException e) {

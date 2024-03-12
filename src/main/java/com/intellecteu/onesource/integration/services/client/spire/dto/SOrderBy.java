@@ -13,138 +13,137 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * SOrderBy
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class SOrderBy {
+  /**
+   * Gets or Sets direction
+   */
+  public enum DirectionEnum {
+    ASC("ASC"),
+    
+    DESC("DESC");
 
-    /**
-     * Gets or Sets direction
-     */
-    public enum DirectionEnum {
-        ASC("ASC"),
+    private String value;
 
-        DESC("DESC");
-
-        private String value;
-
-        DirectionEnum(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static DirectionEnum fromValue(String value) {
-            for (DirectionEnum b : DirectionEnum.values()) {
-                if (b.value.equals(value)) {
-                    return b;
-                }
-            }
-            return null;
-        }
+    DirectionEnum(String value) {
+      this.value = value;
     }
 
-    @JsonProperty("direction")
-    private DirectionEnum direction = null;
-
-    @JsonProperty("prop")
-    private String prop = null;
-
-    public SOrderBy direction(DirectionEnum direction) {
-        this.direction = direction;
-        return this;
+    @JsonValue
+    public String getValue() {
+      return value;
     }
-
-    /**
-     * Get direction
-     *
-     * @return direction
-     **/
-    @ApiModelProperty(value = "")
-    public DirectionEnum getDirection() {
-        return direction;
-    }
-
-    public void setDirection(DirectionEnum direction) {
-        this.direction = direction;
-    }
-
-    public SOrderBy prop(String prop) {
-        this.prop = prop;
-        return this;
-    }
-
-    /**
-     * Get prop
-     *
-     * @return prop
-     **/
-    @ApiModelProperty(value = "")
-    public String getProp() {
-        return prop;
-    }
-
-    public void setProp(String prop) {
-        this.prop = prop;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SOrderBy sorderBy = (SOrderBy) o;
-        return Objects.equals(this.direction, sorderBy.direction) &&
-            Objects.equals(this.prop, sorderBy.prop);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(direction, prop);
-    }
-
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SOrderBy {\n");
-
-        sb.append("    direction: ").append(toIndentedString(direction)).append("\n");
-        sb.append("    prop: ").append(toIndentedString(prop)).append("\n");
-        sb.append("}");
-        return sb.toString();
+      return String.valueOf(value);
     }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
+    @JsonCreator
+    public static DirectionEnum fromValue(String value) {
+      for (DirectionEnum b : DirectionEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
         }
-        return o.toString().replace("\n", "\n    ");
+      }
+      return null;
     }
+  }
+
+  @JsonProperty("direction")
+  private DirectionEnum direction = null;
+
+  @JsonProperty("prop")
+  private String prop = null;
+
+  public SOrderBy direction(DirectionEnum direction) {
+    this.direction = direction;
+    return this;
+  }
+
+   /**
+   * Get direction
+   * @return direction
+  **/
+  @ApiModelProperty(value = "")
+  public DirectionEnum getDirection() {
+    return direction;
+  }
+
+  public void setDirection(DirectionEnum direction) {
+    this.direction = direction;
+  }
+
+  public SOrderBy prop(String prop) {
+    this.prop = prop;
+    return this;
+  }
+
+   /**
+   * Get prop
+   * @return prop
+  **/
+  @ApiModelProperty(value = "")
+  public String getProp() {
+    return prop;
+  }
+
+  public void setProp(String prop) {
+    this.prop = prop;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SOrderBy sorderBy = (SOrderBy) o;
+    return Objects.equals(this.direction, sorderBy.direction) &&
+        Objects.equals(this.prop, sorderBy.prop);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(direction, prop);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class SOrderBy {\n");
+    
+    sb.append("    direction: ").append(toIndentedString(direction)).append("\n");
+    sb.append("    prop: ").append(toIndentedString(prop)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

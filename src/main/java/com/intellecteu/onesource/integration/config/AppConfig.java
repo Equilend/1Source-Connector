@@ -16,6 +16,7 @@ import com.intellecteu.onesource.integration.services.systemevent.CloudEventReco
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import javax.sql.DataSource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,8 @@ import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.transaction.TransactionManager;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
@@ -121,6 +124,14 @@ public class AppConfig {
             spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
+    @Bean
+    public TransactionManager transactionManager(DataSource dataSource) {
+        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setDataSource(dataSource);
+        jpaTransactionManager.setGlobalRollbackOnParticipationFailure(false);
+        return jpaTransactionManager;
+    }
+
     private List<ClientHttpRequestInterceptor> getHttpRequestInterceptors(
         List<ClientHttpRequestInterceptor> interceptors) {
         if (CollectionUtils.isEmpty(interceptors)) {
@@ -137,4 +148,5 @@ public class AppConfig {
         messageConverters.add(converter);
         return messageConverters;
     }
+
 }

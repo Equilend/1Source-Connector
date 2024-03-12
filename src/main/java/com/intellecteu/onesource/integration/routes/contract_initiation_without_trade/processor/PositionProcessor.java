@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SI_FETCHED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TRADE_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TRADE_RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -19,7 +19,7 @@ import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;

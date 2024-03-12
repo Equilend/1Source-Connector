@@ -13,204 +13,203 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQuery;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * NQuery
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class NQuery {
+  /**
+   * Gets or Sets andOr
+   */
+  public enum AndOrEnum {
+    AND("AND"),
+    
+    OR("OR");
 
-    /**
-     * Gets or Sets andOr
-     */
-    public enum AndOrEnum {
-        AND("AND"),
+    private String value;
 
-        OR("OR");
-
-        private String value;
-
-        AndOrEnum(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static AndOrEnum fromValue(String value) {
-            for (AndOrEnum b : AndOrEnum.values()) {
-                if (b.value.equals(value)) {
-                    return b;
-                }
-            }
-            return null;
-        }
+    AndOrEnum(String value) {
+      this.value = value;
     }
 
-    @JsonProperty("andOr")
-    private AndOrEnum andOr = null;
-
-    @JsonProperty("empty")
-    private Boolean empty = null;
-
-    @JsonProperty("queries")
-    private List<NQuery> queries = null;
-
-    @JsonProperty("tuples")
-    private List<NQueryTuple> tuples = null;
-
-    public NQuery andOr(AndOrEnum andOr) {
-        this.andOr = andOr;
-        return this;
+    @JsonValue
+    public String getValue() {
+      return value;
     }
-
-    /**
-     * Get andOr
-     *
-     * @return andOr
-     **/
-    @ApiModelProperty(value = "")
-    public AndOrEnum getAndOr() {
-        return andOr;
-    }
-
-    public void setAndOr(AndOrEnum andOr) {
-        this.andOr = andOr;
-    }
-
-    public NQuery empty(Boolean empty) {
-        this.empty = empty;
-        return this;
-    }
-
-    /**
-     * Get empty
-     *
-     * @return empty
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isEmpty() {
-        return empty;
-    }
-
-    public void setEmpty(Boolean empty) {
-        this.empty = empty;
-    }
-
-    public NQuery queries(List<NQuery> queries) {
-        this.queries = queries;
-        return this;
-    }
-
-    public NQuery addQueriesItem(NQuery queriesItem) {
-        if (this.queries == null) {
-            this.queries = new ArrayList<>();
-        }
-        this.queries.add(queriesItem);
-        return this;
-    }
-
-    /**
-     * Get queries
-     *
-     * @return queries
-     **/
-    @ApiModelProperty(value = "")
-    public List<NQuery> getQueries() {
-        return queries;
-    }
-
-    public void setQueries(List<NQuery> queries) {
-        this.queries = queries;
-    }
-
-    public NQuery tuples(List<NQueryTuple> tuples) {
-        this.tuples = tuples;
-        return this;
-    }
-
-    public NQuery addTuplesItem(NQueryTuple tuplesItem) {
-        if (this.tuples == null) {
-            this.tuples = new ArrayList<>();
-        }
-        this.tuples.add(tuplesItem);
-        return this;
-    }
-
-    /**
-     * Get tuples
-     *
-     * @return tuples
-     **/
-    @ApiModelProperty(value = "")
-    public List<NQueryTuple> getTuples() {
-        return tuples;
-    }
-
-    public void setTuples(List<NQueryTuple> tuples) {
-        this.tuples = tuples;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        NQuery nquery = (NQuery) o;
-        return Objects.equals(this.andOr, nquery.andOr) &&
-            Objects.equals(this.empty, nquery.empty) &&
-            Objects.equals(this.queries, nquery.queries) &&
-            Objects.equals(this.tuples, nquery.tuples);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(andOr, empty, queries, tuples);
-    }
-
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class NQuery {\n");
-
-        sb.append("    andOr: ").append(toIndentedString(andOr)).append("\n");
-        sb.append("    empty: ").append(toIndentedString(empty)).append("\n");
-        sb.append("    queries: ").append(toIndentedString(queries)).append("\n");
-        sb.append("    tuples: ").append(toIndentedString(tuples)).append("\n");
-        sb.append("}");
-        return sb.toString();
+      return String.valueOf(value);
     }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
+    @JsonCreator
+    public static AndOrEnum fromValue(String value) {
+      for (AndOrEnum b : AndOrEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
         }
-        return o.toString().replace("\n", "\n    ");
+      }
+      return null;
     }
+  }
+
+  @JsonProperty("andOr")
+  private AndOrEnum andOr = null;
+
+  @JsonProperty("empty")
+  private Boolean empty = null;
+
+  @JsonProperty("queries")
+  private List<NQuery> queries = null;
+
+  @JsonProperty("tuples")
+  private List<NQueryTuple> tuples = null;
+
+  public NQuery andOr(AndOrEnum andOr) {
+    this.andOr = andOr;
+    return this;
+  }
+
+   /**
+   * Get andOr
+   * @return andOr
+  **/
+  @ApiModelProperty(value = "")
+  public AndOrEnum getAndOr() {
+    return andOr;
+  }
+
+  public void setAndOr(AndOrEnum andOr) {
+    this.andOr = andOr;
+  }
+
+  public NQuery empty(Boolean empty) {
+    this.empty = empty;
+    return this;
+  }
+
+   /**
+   * Get empty
+   * @return empty
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isEmpty() {
+    return empty;
+  }
+
+  public void setEmpty(Boolean empty) {
+    this.empty = empty;
+  }
+
+  public NQuery queries(List<NQuery> queries) {
+    this.queries = queries;
+    return this;
+  }
+
+  public NQuery addQueriesItem(NQuery queriesItem) {
+    if (this.queries == null) {
+      this.queries = new ArrayList<>();
+    }
+    this.queries.add(queriesItem);
+    return this;
+  }
+
+   /**
+   * Get queries
+   * @return queries
+  **/
+  @ApiModelProperty(value = "")
+  public List<NQuery> getQueries() {
+    return queries;
+  }
+
+  public void setQueries(List<NQuery> queries) {
+    this.queries = queries;
+  }
+
+  public NQuery tuples(List<NQueryTuple> tuples) {
+    this.tuples = tuples;
+    return this;
+  }
+
+  public NQuery addTuplesItem(NQueryTuple tuplesItem) {
+    if (this.tuples == null) {
+      this.tuples = new ArrayList<>();
+    }
+    this.tuples.add(tuplesItem);
+    return this;
+  }
+
+   /**
+   * Get tuples
+   * @return tuples
+  **/
+  @ApiModelProperty(value = "")
+  public List<NQueryTuple> getTuples() {
+    return tuples;
+  }
+
+  public void setTuples(List<NQueryTuple> tuples) {
+    this.tuples = tuples;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    NQuery nquery = (NQuery) o;
+    return Objects.equals(this.andOr, nquery.andOr) &&
+        Objects.equals(this.empty, nquery.empty) &&
+        Objects.equals(this.queries, nquery.queries) &&
+        Objects.equals(this.tuples, nquery.tuples);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(andOr, empty, queries, tuples);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class NQuery {\n");
+    
+    sb.append("    andOr: ").append(toIndentedString(andOr)).append("\n");
+    sb.append("    empty: ").append(toIndentedString(empty)).append("\n");
+    sb.append("    queries: ").append(toIndentedString(queries)).append("\n");
+    sb.append("    tuples: ").append(toIndentedString(tuples)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

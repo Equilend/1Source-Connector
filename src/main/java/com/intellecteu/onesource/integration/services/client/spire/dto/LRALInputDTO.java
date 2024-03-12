@@ -13,208 +13,181 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * LRALInputDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class LRALInputDTO {
+  @JsonProperty("omniAccountId")
+  private Long omniAccountId = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("productLine")
+  private String productLine = null;
 
-    @JsonProperty("omniAccountId")
-    private Long omniAccountId = null;
+  @JsonProperty("sourceAccountGroupIds")
+  private List<Long> sourceAccountGroupIds = null;
 
-    @JsonProperty("productLine")
-    private String productLine = null;
+  @JsonProperty("targetAccountGroupId")
+  private Long targetAccountGroupId = null;
 
-    @JsonProperty("sourceAccountGroupIds")
-    private List<Long> sourceAccountGroupIds = null;
+  @JsonProperty("userId")
+  private Integer userId = null;
 
-    @JsonProperty("targetAccountGroupId")
-    private Long targetAccountGroupId = null;
+  public LRALInputDTO omniAccountId(Long omniAccountId) {
+    this.omniAccountId = omniAccountId;
+    return this;
+  }
 
-    @JsonProperty("userId")
-    private Integer userId = null;
+   /**
+   * Get omniAccountId
+   * @return omniAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getOmniAccountId() {
+    return omniAccountId;
+  }
 
-    public LRALInputDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setOmniAccountId(Long omniAccountId) {
+    this.omniAccountId = omniAccountId;
+  }
+
+  public LRALInputDTO productLine(String productLine) {
+    this.productLine = productLine;
+    return this;
+  }
+
+   /**
+   * Get productLine
+   * @return productLine
+  **/
+  @ApiModelProperty(value = "")
+  public String getProductLine() {
+    return productLine;
+  }
+
+  public void setProductLine(String productLine) {
+    this.productLine = productLine;
+  }
+
+  public LRALInputDTO sourceAccountGroupIds(List<Long> sourceAccountGroupIds) {
+    this.sourceAccountGroupIds = sourceAccountGroupIds;
+    return this;
+  }
+
+  public LRALInputDTO addSourceAccountGroupIdsItem(Long sourceAccountGroupIdsItem) {
+    if (this.sourceAccountGroupIds == null) {
+      this.sourceAccountGroupIds = new ArrayList<>();
     }
+    this.sourceAccountGroupIds.add(sourceAccountGroupIdsItem);
+    return this;
+  }
 
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+   /**
+   * Get sourceAccountGroupIds
+   * @return sourceAccountGroupIds
+  **/
+  @ApiModelProperty(value = "")
+  public List<Long> getSourceAccountGroupIds() {
+    return sourceAccountGroupIds;
+  }
+
+  public void setSourceAccountGroupIds(List<Long> sourceAccountGroupIds) {
+    this.sourceAccountGroupIds = sourceAccountGroupIds;
+  }
+
+  public LRALInputDTO targetAccountGroupId(Long targetAccountGroupId) {
+    this.targetAccountGroupId = targetAccountGroupId;
+    return this;
+  }
+
+   /**
+   * Get targetAccountGroupId
+   * @return targetAccountGroupId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getTargetAccountGroupId() {
+    return targetAccountGroupId;
+  }
+
+  public void setTargetAccountGroupId(Long targetAccountGroupId) {
+    this.targetAccountGroupId = targetAccountGroupId;
+  }
+
+  public LRALInputDTO userId(Integer userId) {
+    this.userId = userId;
+    return this;
+  }
+
+   /**
+   * Get userId
+   * @return userId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    LRALInputDTO lrALInputDTO = (LRALInputDTO) o;
+    return Objects.equals(this.omniAccountId, lrALInputDTO.omniAccountId) &&
+        Objects.equals(this.productLine, lrALInputDTO.productLine) &&
+        Objects.equals(this.sourceAccountGroupIds, lrALInputDTO.sourceAccountGroupIds) &&
+        Objects.equals(this.targetAccountGroupId, lrALInputDTO.targetAccountGroupId) &&
+        Objects.equals(this.userId, lrALInputDTO.userId);
+  }
 
-    public LRALInputDTO omniAccountId(Long omniAccountId) {
-        this.omniAccountId = omniAccountId;
-        return this;
+  @Override
+  public int hashCode() {
+    return Objects.hash(omniAccountId, productLine, sourceAccountGroupIds, targetAccountGroupId, userId);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class LRALInputDTO {\n");
+    
+    sb.append("    omniAccountId: ").append(toIndentedString(omniAccountId)).append("\n");
+    sb.append("    productLine: ").append(toIndentedString(productLine)).append("\n");
+    sb.append("    sourceAccountGroupIds: ").append(toIndentedString(sourceAccountGroupIds)).append("\n");
+    sb.append("    targetAccountGroupId: ").append(toIndentedString(targetAccountGroupId)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    /**
-     * Get omniAccountId
-     *
-     * @return omniAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getOmniAccountId() {
-        return omniAccountId;
-    }
-
-    public void setOmniAccountId(Long omniAccountId) {
-        this.omniAccountId = omniAccountId;
-    }
-
-    public LRALInputDTO productLine(String productLine) {
-        this.productLine = productLine;
-        return this;
-    }
-
-    /**
-     * Get productLine
-     *
-     * @return productLine
-     **/
-    @ApiModelProperty(value = "")
-    public String getProductLine() {
-        return productLine;
-    }
-
-    public void setProductLine(String productLine) {
-        this.productLine = productLine;
-    }
-
-    public LRALInputDTO sourceAccountGroupIds(List<Long> sourceAccountGroupIds) {
-        this.sourceAccountGroupIds = sourceAccountGroupIds;
-        return this;
-    }
-
-    public LRALInputDTO addSourceAccountGroupIdsItem(Long sourceAccountGroupIdsItem) {
-        if (this.sourceAccountGroupIds == null) {
-            this.sourceAccountGroupIds = new ArrayList<>();
-        }
-        this.sourceAccountGroupIds.add(sourceAccountGroupIdsItem);
-        return this;
-    }
-
-    /**
-     * Get sourceAccountGroupIds
-     *
-     * @return sourceAccountGroupIds
-     **/
-    @ApiModelProperty(value = "")
-    public List<Long> getSourceAccountGroupIds() {
-        return sourceAccountGroupIds;
-    }
-
-    public void setSourceAccountGroupIds(List<Long> sourceAccountGroupIds) {
-        this.sourceAccountGroupIds = sourceAccountGroupIds;
-    }
-
-    public LRALInputDTO targetAccountGroupId(Long targetAccountGroupId) {
-        this.targetAccountGroupId = targetAccountGroupId;
-        return this;
-    }
-
-    /**
-     * Get targetAccountGroupId
-     *
-     * @return targetAccountGroupId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getTargetAccountGroupId() {
-        return targetAccountGroupId;
-    }
-
-    public void setTargetAccountGroupId(Long targetAccountGroupId) {
-        this.targetAccountGroupId = targetAccountGroupId;
-    }
-
-    public LRALInputDTO userId(Integer userId) {
-        this.userId = userId;
-        return this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return userId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        LRALInputDTO lrALInputDTO = (LRALInputDTO) o;
-        return Objects.equals(this.qualifiedName, lrALInputDTO.qualifiedName) &&
-            Objects.equals(this.omniAccountId, lrALInputDTO.omniAccountId) &&
-            Objects.equals(this.productLine, lrALInputDTO.productLine) &&
-            Objects.equals(this.sourceAccountGroupIds, lrALInputDTO.sourceAccountGroupIds) &&
-            Objects.equals(this.targetAccountGroupId, lrALInputDTO.targetAccountGroupId) &&
-            Objects.equals(this.userId, lrALInputDTO.userId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, omniAccountId, productLine, sourceAccountGroupIds, targetAccountGroupId,
-            userId);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class LRALInputDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    omniAccountId: ").append(toIndentedString(omniAccountId)).append("\n");
-        sb.append("    productLine: ").append(toIndentedString(productLine)).append("\n");
-        sb.append("    sourceAccountGroupIds: ").append(toIndentedString(sourceAccountGroupIds)).append("\n");
-        sb.append("    targetAccountGroupId: ").append(toIndentedString(targetAccountGroupId)).append("\n");
-        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

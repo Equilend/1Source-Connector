@@ -13,463 +13,424 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * DepositoryDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class DepositoryDTO {
+  @JsonProperty("bulkable")
+  private Boolean bulkable = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("countryId")
+  private Integer countryId = null;
 
-    @JsonProperty("bulkable")
-    private Boolean bulkable = null;
+  @JsonProperty("depoGroup")
+  private String depoGroup = null;
 
-    @JsonProperty("countryId")
-    private Integer countryId = null;
+  @JsonProperty("depoId")
+  private Integer depoId = null;
 
-    @JsonProperty("depoGroup")
-    private String depoGroup = null;
+  @JsonProperty("depoKy")
+  private String depoKy = null;
 
-    @JsonProperty("depoId")
-    private Integer depoId = null;
+  @JsonProperty("forAutomark")
+  private Boolean forAutomark = null;
 
-    @JsonProperty("depoKy")
-    private String depoKy = null;
+  @JsonProperty("forPrepayDate")
+  private Boolean forPrepayDate = null;
 
-    @JsonProperty("forAutomark")
-    private Boolean forAutomark = null;
+  @JsonProperty("maxQuantity")
+  private Long maxQuantity = null;
 
-    @JsonProperty("forPrepayDate")
-    private Boolean forPrepayDate = null;
+  @JsonProperty("offset")
+  private Integer offset = null;
 
-    @JsonProperty("maxQuantity")
-    private Long maxQuantity = null;
+  @JsonProperty("partyBicBranchRequired")
+  private Boolean partyBicBranchRequired = null;
 
-    @JsonProperty("offset")
-    private Integer offset = null;
+  @JsonProperty("securityRefId")
+  private Integer securityRefId = null;
 
-    @JsonProperty("partyBicBranchRequired")
-    private Boolean partyBicBranchRequired = null;
+  @JsonProperty("stcoValue")
+  private String stcoValue = null;
 
-    @JsonProperty("securityRefId")
-    private Integer securityRefId = null;
+  @JsonProperty("swiftBicId")
+  private Long swiftBicId = null;
 
-    @JsonProperty("stcoValue")
-    private String stcoValue = null;
+  @JsonProperty("swiftCode")
+  private String swiftCode = null;
 
-    @JsonProperty("swiftBicId")
-    private Long swiftBicId = null;
+  @JsonProperty("tzname")
+  private String tzname = null;
 
-    @JsonProperty("swiftCode")
-    private String swiftCode = null;
+  @JsonProperty("useSwiftCodeOnly")
+  private Boolean useSwiftCodeOnly = null;
 
-    @JsonProperty("tzname")
-    private String tzname = null;
+  public DepositoryDTO bulkable(Boolean bulkable) {
+    this.bulkable = bulkable;
+    return this;
+  }
 
-    @JsonProperty("useSwiftCodeOnly")
-    private Boolean useSwiftCodeOnly = null;
+   /**
+   * Get bulkable
+   * @return bulkable
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isBulkable() {
+    return bulkable;
+  }
 
-    public DepositoryDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setBulkable(Boolean bulkable) {
+    this.bulkable = bulkable;
+  }
+
+  public DepositoryDTO countryId(Integer countryId) {
+    this.countryId = countryId;
+    return this;
+  }
+
+   /**
+   * Get countryId
+   * @return countryId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCountryId() {
+    return countryId;
+  }
+
+  public void setCountryId(Integer countryId) {
+    this.countryId = countryId;
+  }
+
+  public DepositoryDTO depoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+    return this;
+  }
+
+   /**
+   * Get depoGroup
+   * @return depoGroup
+  **/
+  @ApiModelProperty(value = "")
+  public String getDepoGroup() {
+    return depoGroup;
+  }
+
+  public void setDepoGroup(String depoGroup) {
+    this.depoGroup = depoGroup;
+  }
+
+  public DepositoryDTO depoId(Integer depoId) {
+    this.depoId = depoId;
+    return this;
+  }
+
+   /**
+   * Get depoId
+   * @return depoId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getDepoId() {
+    return depoId;
+  }
+
+  public void setDepoId(Integer depoId) {
+    this.depoId = depoId;
+  }
+
+  public DepositoryDTO depoKy(String depoKy) {
+    this.depoKy = depoKy;
+    return this;
+  }
+
+   /**
+   * Get depoKy
+   * @return depoKy
+  **/
+  @ApiModelProperty(value = "")
+  public String getDepoKy() {
+    return depoKy;
+  }
+
+  public void setDepoKy(String depoKy) {
+    this.depoKy = depoKy;
+  }
+
+  public DepositoryDTO forAutomark(Boolean forAutomark) {
+    this.forAutomark = forAutomark;
+    return this;
+  }
+
+   /**
+   * Get forAutomark
+   * @return forAutomark
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isForAutomark() {
+    return forAutomark;
+  }
+
+  public void setForAutomark(Boolean forAutomark) {
+    this.forAutomark = forAutomark;
+  }
+
+  public DepositoryDTO forPrepayDate(Boolean forPrepayDate) {
+    this.forPrepayDate = forPrepayDate;
+    return this;
+  }
+
+   /**
+   * Get forPrepayDate
+   * @return forPrepayDate
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isForPrepayDate() {
+    return forPrepayDate;
+  }
+
+  public void setForPrepayDate(Boolean forPrepayDate) {
+    this.forPrepayDate = forPrepayDate;
+  }
+
+  public DepositoryDTO maxQuantity(Long maxQuantity) {
+    this.maxQuantity = maxQuantity;
+    return this;
+  }
+
+   /**
+   * Get maxQuantity
+   * @return maxQuantity
+  **/
+  @ApiModelProperty(value = "")
+  public Long getMaxQuantity() {
+    return maxQuantity;
+  }
+
+  public void setMaxQuantity(Long maxQuantity) {
+    this.maxQuantity = maxQuantity;
+  }
+
+  public DepositoryDTO offset(Integer offset) {
+    this.offset = offset;
+    return this;
+  }
+
+   /**
+   * Get offset
+   * @return offset
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
+
+  public DepositoryDTO partyBicBranchRequired(Boolean partyBicBranchRequired) {
+    this.partyBicBranchRequired = partyBicBranchRequired;
+    return this;
+  }
+
+   /**
+   * Get partyBicBranchRequired
+   * @return partyBicBranchRequired
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isPartyBicBranchRequired() {
+    return partyBicBranchRequired;
+  }
+
+  public void setPartyBicBranchRequired(Boolean partyBicBranchRequired) {
+    this.partyBicBranchRequired = partyBicBranchRequired;
+  }
+
+  public DepositoryDTO securityRefId(Integer securityRefId) {
+    this.securityRefId = securityRefId;
+    return this;
+  }
+
+   /**
+   * Get securityRefId
+   * @return securityRefId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getSecurityRefId() {
+    return securityRefId;
+  }
+
+  public void setSecurityRefId(Integer securityRefId) {
+    this.securityRefId = securityRefId;
+  }
+
+  public DepositoryDTO stcoValue(String stcoValue) {
+    this.stcoValue = stcoValue;
+    return this;
+  }
+
+   /**
+   * Get stcoValue
+   * @return stcoValue
+  **/
+  @ApiModelProperty(value = "")
+  public String getStcoValue() {
+    return stcoValue;
+  }
+
+  public void setStcoValue(String stcoValue) {
+    this.stcoValue = stcoValue;
+  }
+
+  public DepositoryDTO swiftBicId(Long swiftBicId) {
+    this.swiftBicId = swiftBicId;
+    return this;
+  }
+
+   /**
+   * Get swiftBicId
+   * @return swiftBicId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSwiftBicId() {
+    return swiftBicId;
+  }
+
+  public void setSwiftBicId(Long swiftBicId) {
+    this.swiftBicId = swiftBicId;
+  }
+
+  public DepositoryDTO swiftCode(String swiftCode) {
+    this.swiftCode = swiftCode;
+    return this;
+  }
+
+   /**
+   * Get swiftCode
+   * @return swiftCode
+  **/
+  @ApiModelProperty(value = "")
+  public String getSwiftCode() {
+    return swiftCode;
+  }
+
+  public void setSwiftCode(String swiftCode) {
+    this.swiftCode = swiftCode;
+  }
+
+  public DepositoryDTO tzname(String tzname) {
+    this.tzname = tzname;
+    return this;
+  }
+
+   /**
+   * Get tzname
+   * @return tzname
+  **/
+  @ApiModelProperty(value = "")
+  public String getTzname() {
+    return tzname;
+  }
+
+  public void setTzname(String tzname) {
+    this.tzname = tzname;
+  }
+
+  public DepositoryDTO useSwiftCodeOnly(Boolean useSwiftCodeOnly) {
+    this.useSwiftCodeOnly = useSwiftCodeOnly;
+    return this;
+  }
+
+   /**
+   * Get useSwiftCodeOnly
+   * @return useSwiftCodeOnly
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isUseSwiftCodeOnly() {
+    return useSwiftCodeOnly;
+  }
+
+  public void setUseSwiftCodeOnly(Boolean useSwiftCodeOnly) {
+    this.useSwiftCodeOnly = useSwiftCodeOnly;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    DepositoryDTO depositoryDTO = (DepositoryDTO) o;
+    return Objects.equals(this.bulkable, depositoryDTO.bulkable) &&
+        Objects.equals(this.countryId, depositoryDTO.countryId) &&
+        Objects.equals(this.depoGroup, depositoryDTO.depoGroup) &&
+        Objects.equals(this.depoId, depositoryDTO.depoId) &&
+        Objects.equals(this.depoKy, depositoryDTO.depoKy) &&
+        Objects.equals(this.forAutomark, depositoryDTO.forAutomark) &&
+        Objects.equals(this.forPrepayDate, depositoryDTO.forPrepayDate) &&
+        Objects.equals(this.maxQuantity, depositoryDTO.maxQuantity) &&
+        Objects.equals(this.offset, depositoryDTO.offset) &&
+        Objects.equals(this.partyBicBranchRequired, depositoryDTO.partyBicBranchRequired) &&
+        Objects.equals(this.securityRefId, depositoryDTO.securityRefId) &&
+        Objects.equals(this.stcoValue, depositoryDTO.stcoValue) &&
+        Objects.equals(this.swiftBicId, depositoryDTO.swiftBicId) &&
+        Objects.equals(this.swiftCode, depositoryDTO.swiftCode) &&
+        Objects.equals(this.tzname, depositoryDTO.tzname) &&
+        Objects.equals(this.useSwiftCodeOnly, depositoryDTO.useSwiftCodeOnly);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(bulkable, countryId, depoGroup, depoId, depoKy, forAutomark, forPrepayDate, maxQuantity, offset, partyBicBranchRequired, securityRefId, stcoValue, swiftBicId, swiftCode, tzname, useSwiftCodeOnly);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class DepositoryDTO {\n");
+    
+    sb.append("    bulkable: ").append(toIndentedString(bulkable)).append("\n");
+    sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
+    sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
+    sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
+    sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
+    sb.append("    forAutomark: ").append(toIndentedString(forAutomark)).append("\n");
+    sb.append("    forPrepayDate: ").append(toIndentedString(forPrepayDate)).append("\n");
+    sb.append("    maxQuantity: ").append(toIndentedString(maxQuantity)).append("\n");
+    sb.append("    offset: ").append(toIndentedString(offset)).append("\n");
+    sb.append("    partyBicBranchRequired: ").append(toIndentedString(partyBicBranchRequired)).append("\n");
+    sb.append("    securityRefId: ").append(toIndentedString(securityRefId)).append("\n");
+    sb.append("    stcoValue: ").append(toIndentedString(stcoValue)).append("\n");
+    sb.append("    swiftBicId: ").append(toIndentedString(swiftBicId)).append("\n");
+    sb.append("    swiftCode: ").append(toIndentedString(swiftCode)).append("\n");
+    sb.append("    tzname: ").append(toIndentedString(tzname)).append("\n");
+    sb.append("    useSwiftCodeOnly: ").append(toIndentedString(useSwiftCodeOnly)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public DepositoryDTO bulkable(Boolean bulkable) {
-        this.bulkable = bulkable;
-        return this;
-    }
-
-    /**
-     * Get bulkable
-     *
-     * @return bulkable
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isBulkable() {
-        return bulkable;
-    }
-
-    public void setBulkable(Boolean bulkable) {
-        this.bulkable = bulkable;
-    }
-
-    public DepositoryDTO countryId(Integer countryId) {
-        this.countryId = countryId;
-        return this;
-    }
-
-    /**
-     * Get countryId
-     *
-     * @return countryId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCountryId() {
-        return countryId;
-    }
-
-    public void setCountryId(Integer countryId) {
-        this.countryId = countryId;
-    }
-
-    public DepositoryDTO depoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-        return this;
-    }
-
-    /**
-     * Get depoGroup
-     *
-     * @return depoGroup
-     **/
-    @ApiModelProperty(value = "")
-    public String getDepoGroup() {
-        return depoGroup;
-    }
-
-    public void setDepoGroup(String depoGroup) {
-        this.depoGroup = depoGroup;
-    }
-
-    public DepositoryDTO depoId(Integer depoId) {
-        this.depoId = depoId;
-        return this;
-    }
-
-    /**
-     * Get depoId
-     *
-     * @return depoId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getDepoId() {
-        return depoId;
-    }
-
-    public void setDepoId(Integer depoId) {
-        this.depoId = depoId;
-    }
-
-    public DepositoryDTO depoKy(String depoKy) {
-        this.depoKy = depoKy;
-        return this;
-    }
-
-    /**
-     * Get depoKy
-     *
-     * @return depoKy
-     **/
-    @ApiModelProperty(value = "")
-    public String getDepoKy() {
-        return depoKy;
-    }
-
-    public void setDepoKy(String depoKy) {
-        this.depoKy = depoKy;
-    }
-
-    public DepositoryDTO forAutomark(Boolean forAutomark) {
-        this.forAutomark = forAutomark;
-        return this;
-    }
-
-    /**
-     * Get forAutomark
-     *
-     * @return forAutomark
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isForAutomark() {
-        return forAutomark;
-    }
-
-    public void setForAutomark(Boolean forAutomark) {
-        this.forAutomark = forAutomark;
-    }
-
-    public DepositoryDTO forPrepayDate(Boolean forPrepayDate) {
-        this.forPrepayDate = forPrepayDate;
-        return this;
-    }
-
-    /**
-     * Get forPrepayDate
-     *
-     * @return forPrepayDate
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isForPrepayDate() {
-        return forPrepayDate;
-    }
-
-    public void setForPrepayDate(Boolean forPrepayDate) {
-        this.forPrepayDate = forPrepayDate;
-    }
-
-    public DepositoryDTO maxQuantity(Long maxQuantity) {
-        this.maxQuantity = maxQuantity;
-        return this;
-    }
-
-    /**
-     * Get maxQuantity
-     *
-     * @return maxQuantity
-     **/
-    @ApiModelProperty(value = "")
-    public Long getMaxQuantity() {
-        return maxQuantity;
-    }
-
-    public void setMaxQuantity(Long maxQuantity) {
-        this.maxQuantity = maxQuantity;
-    }
-
-    public DepositoryDTO offset(Integer offset) {
-        this.offset = offset;
-        return this;
-    }
-
-    /**
-     * Get offset
-     *
-     * @return offset
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getOffset() {
-        return offset;
-    }
-
-    public void setOffset(Integer offset) {
-        this.offset = offset;
-    }
-
-    public DepositoryDTO partyBicBranchRequired(Boolean partyBicBranchRequired) {
-        this.partyBicBranchRequired = partyBicBranchRequired;
-        return this;
-    }
-
-    /**
-     * Get partyBicBranchRequired
-     *
-     * @return partyBicBranchRequired
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isPartyBicBranchRequired() {
-        return partyBicBranchRequired;
-    }
-
-    public void setPartyBicBranchRequired(Boolean partyBicBranchRequired) {
-        this.partyBicBranchRequired = partyBicBranchRequired;
-    }
-
-    public DepositoryDTO securityRefId(Integer securityRefId) {
-        this.securityRefId = securityRefId;
-        return this;
-    }
-
-    /**
-     * Get securityRefId
-     *
-     * @return securityRefId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getSecurityRefId() {
-        return securityRefId;
-    }
-
-    public void setSecurityRefId(Integer securityRefId) {
-        this.securityRefId = securityRefId;
-    }
-
-    public DepositoryDTO stcoValue(String stcoValue) {
-        this.stcoValue = stcoValue;
-        return this;
-    }
-
-    /**
-     * Get stcoValue
-     *
-     * @return stcoValue
-     **/
-    @ApiModelProperty(value = "")
-    public String getStcoValue() {
-        return stcoValue;
-    }
-
-    public void setStcoValue(String stcoValue) {
-        this.stcoValue = stcoValue;
-    }
-
-    public DepositoryDTO swiftBicId(Long swiftBicId) {
-        this.swiftBicId = swiftBicId;
-        return this;
-    }
-
-    /**
-     * Get swiftBicId
-     *
-     * @return swiftBicId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSwiftBicId() {
-        return swiftBicId;
-    }
-
-    public void setSwiftBicId(Long swiftBicId) {
-        this.swiftBicId = swiftBicId;
-    }
-
-    public DepositoryDTO swiftCode(String swiftCode) {
-        this.swiftCode = swiftCode;
-        return this;
-    }
-
-    /**
-     * Get swiftCode
-     *
-     * @return swiftCode
-     **/
-    @ApiModelProperty(value = "")
-    public String getSwiftCode() {
-        return swiftCode;
-    }
-
-    public void setSwiftCode(String swiftCode) {
-        this.swiftCode = swiftCode;
-    }
-
-    public DepositoryDTO tzname(String tzname) {
-        this.tzname = tzname;
-        return this;
-    }
-
-    /**
-     * Get tzname
-     *
-     * @return tzname
-     **/
-    @ApiModelProperty(value = "")
-    public String getTzname() {
-        return tzname;
-    }
-
-    public void setTzname(String tzname) {
-        this.tzname = tzname;
-    }
-
-    public DepositoryDTO useSwiftCodeOnly(Boolean useSwiftCodeOnly) {
-        this.useSwiftCodeOnly = useSwiftCodeOnly;
-        return this;
-    }
-
-    /**
-     * Get useSwiftCodeOnly
-     *
-     * @return useSwiftCodeOnly
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isUseSwiftCodeOnly() {
-        return useSwiftCodeOnly;
-    }
-
-    public void setUseSwiftCodeOnly(Boolean useSwiftCodeOnly) {
-        this.useSwiftCodeOnly = useSwiftCodeOnly;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        DepositoryDTO depositoryDTO = (DepositoryDTO) o;
-        return Objects.equals(this.qualifiedName, depositoryDTO.qualifiedName) &&
-            Objects.equals(this.bulkable, depositoryDTO.bulkable) &&
-            Objects.equals(this.countryId, depositoryDTO.countryId) &&
-            Objects.equals(this.depoGroup, depositoryDTO.depoGroup) &&
-            Objects.equals(this.depoId, depositoryDTO.depoId) &&
-            Objects.equals(this.depoKy, depositoryDTO.depoKy) &&
-            Objects.equals(this.forAutomark, depositoryDTO.forAutomark) &&
-            Objects.equals(this.forPrepayDate, depositoryDTO.forPrepayDate) &&
-            Objects.equals(this.maxQuantity, depositoryDTO.maxQuantity) &&
-            Objects.equals(this.offset, depositoryDTO.offset) &&
-            Objects.equals(this.partyBicBranchRequired, depositoryDTO.partyBicBranchRequired) &&
-            Objects.equals(this.securityRefId, depositoryDTO.securityRefId) &&
-            Objects.equals(this.stcoValue, depositoryDTO.stcoValue) &&
-            Objects.equals(this.swiftBicId, depositoryDTO.swiftBicId) &&
-            Objects.equals(this.swiftCode, depositoryDTO.swiftCode) &&
-            Objects.equals(this.tzname, depositoryDTO.tzname) &&
-            Objects.equals(this.useSwiftCodeOnly, depositoryDTO.useSwiftCodeOnly);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, bulkable, countryId, depoGroup, depoId, depoKy, forAutomark, forPrepayDate,
-            maxQuantity, offset, partyBicBranchRequired, securityRefId, stcoValue, swiftBicId, swiftCode, tzname,
-            useSwiftCodeOnly);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class DepositoryDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    bulkable: ").append(toIndentedString(bulkable)).append("\n");
-        sb.append("    countryId: ").append(toIndentedString(countryId)).append("\n");
-        sb.append("    depoGroup: ").append(toIndentedString(depoGroup)).append("\n");
-        sb.append("    depoId: ").append(toIndentedString(depoId)).append("\n");
-        sb.append("    depoKy: ").append(toIndentedString(depoKy)).append("\n");
-        sb.append("    forAutomark: ").append(toIndentedString(forAutomark)).append("\n");
-        sb.append("    forPrepayDate: ").append(toIndentedString(forPrepayDate)).append("\n");
-        sb.append("    maxQuantity: ").append(toIndentedString(maxQuantity)).append("\n");
-        sb.append("    offset: ").append(toIndentedString(offset)).append("\n");
-        sb.append("    partyBicBranchRequired: ").append(toIndentedString(partyBicBranchRequired)).append("\n");
-        sb.append("    securityRefId: ").append(toIndentedString(securityRefId)).append("\n");
-        sb.append("    stcoValue: ").append(toIndentedString(stcoValue)).append("\n");
-        sb.append("    swiftBicId: ").append(toIndentedString(swiftBicId)).append("\n");
-        sb.append("    swiftCode: ").append(toIndentedString(swiftCode)).append("\n");
-        sb.append("    tzname: ").append(toIndentedString(tzname)).append("\n");
-        sb.append("    useSwiftCodeOnly: ").append(toIndentedString(useSwiftCodeOnly)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

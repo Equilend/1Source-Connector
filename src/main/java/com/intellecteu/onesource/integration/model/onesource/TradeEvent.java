@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.model.onesource;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

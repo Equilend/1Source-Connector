@@ -5,7 +5,7 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIf
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

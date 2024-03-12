@@ -13,125 +13,126 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * BulkTradeResponseDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class BulkTradeResponseDTO {
+  @JsonProperty("positionDTO")
+  private PositionDTO positionDTO = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("tradeId")
+  private Long tradeId = null;
 
-    @JsonProperty("positionDTO")
-    private PositionDTO positionDTO = null;
+  @JsonProperty("tradeRefNo")
+  private String tradeRefNo = null;
 
-    @JsonProperty("tradeRefNo")
-    private String tradeRefNo = null;
+  public BulkTradeResponseDTO positionDTO(PositionDTO positionDTO) {
+    this.positionDTO = positionDTO;
+    return this;
+  }
 
-    public BulkTradeResponseDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+   /**
+   * Get positionDTO
+   * @return positionDTO
+  **/
+  @ApiModelProperty(value = "")
+  public PositionDTO getPositionDTO() {
+    return positionDTO;
+  }
+
+  public void setPositionDTO(PositionDTO positionDTO) {
+    this.positionDTO = positionDTO;
+  }
+
+  public BulkTradeResponseDTO tradeId(Long tradeId) {
+    this.tradeId = tradeId;
+    return this;
+  }
+
+   /**
+   * Get tradeId
+   * @return tradeId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getTradeId() {
+    return tradeId;
+  }
+
+  public void setTradeId(Long tradeId) {
+    this.tradeId = tradeId;
+  }
+
+  public BulkTradeResponseDTO tradeRefNo(String tradeRefNo) {
+    this.tradeRefNo = tradeRefNo;
+    return this;
+  }
+
+   /**
+   * Get tradeRefNo
+   * @return tradeRefNo
+  **/
+  @ApiModelProperty(value = "")
+  public String getTradeRefNo() {
+    return tradeRefNo;
+  }
+
+  public void setTradeRefNo(String tradeRefNo) {
+    this.tradeRefNo = tradeRefNo;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BulkTradeResponseDTO bulkTradeResponseDTO = (BulkTradeResponseDTO) o;
+    return Objects.equals(this.positionDTO, bulkTradeResponseDTO.positionDTO) &&
+        Objects.equals(this.tradeId, bulkTradeResponseDTO.tradeId) &&
+        Objects.equals(this.tradeRefNo, bulkTradeResponseDTO.tradeRefNo);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(positionDTO, tradeId, tradeRefNo);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class BulkTradeResponseDTO {\n");
+    
+    sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
+    sb.append("    tradeId: ").append(toIndentedString(tradeId)).append("\n");
+    sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public BulkTradeResponseDTO positionDTO(PositionDTO positionDTO) {
-        this.positionDTO = positionDTO;
-        return this;
-    }
-
-    /**
-     * Get positionDTO
-     *
-     * @return positionDTO
-     **/
-    @ApiModelProperty(value = "")
-    public PositionDTO getPositionDTO() {
-        return positionDTO;
-    }
-
-    public void setPositionDTO(PositionDTO positionDTO) {
-        this.positionDTO = positionDTO;
-    }
-
-    public BulkTradeResponseDTO tradeRefNo(String tradeRefNo) {
-        this.tradeRefNo = tradeRefNo;
-        return this;
-    }
-
-    /**
-     * Get tradeRefNo
-     *
-     * @return tradeRefNo
-     **/
-    @ApiModelProperty(value = "")
-    public String getTradeRefNo() {
-        return tradeRefNo;
-    }
-
-    public void setTradeRefNo(String tradeRefNo) {
-        this.tradeRefNo = tradeRefNo;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BulkTradeResponseDTO bulkTradeResponseDTO = (BulkTradeResponseDTO) o;
-        return Objects.equals(this.qualifiedName, bulkTradeResponseDTO.qualifiedName) &&
-            Objects.equals(this.positionDTO, bulkTradeResponseDTO.positionDTO) &&
-            Objects.equals(this.tradeRefNo, bulkTradeResponseDTO.tradeRefNo);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, positionDTO, tradeRefNo);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BulkTradeResponseDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    positionDTO: ").append(toIndentedString(positionDTO)).append("\n");
-        sb.append("    tradeRefNo: ").append(toIndentedString(tradeRefNo)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

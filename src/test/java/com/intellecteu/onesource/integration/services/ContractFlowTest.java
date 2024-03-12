@@ -25,8 +25,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
@@ -36,6 +34,8 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -51,6 +51,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractDataReceived;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.reconciliation.ContractReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -155,10 +156,13 @@ public class ContractFlowTest {
         eventMapper = new EventMapper(objectMapper);
         spireMapper = new SpireMapper(objectMapper);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
-        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder());
-        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST, new MaintainParticipantsCloudEventBuilder());
-        builderMap.put(CONTRACT_SETTLEMENT, new ContractSettlementCloudEventBuilder());
+        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(CONTRACT_INITIATION,
+            new ContractInitiationCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(MAINTAIN_1SOURCE_PARTICIPANTS_LIST,
+            new MaintainParticipantsCloudEventBuilder("specVersion", "http://localhost:8000"));
+        builderMap.put(CONTRACT_SETTLEMENT,
+            new ContractSettlementCloudEventBuilder("specVersion", "http://localhost:8000"));
         recordFactory = new CloudEventFactoryImpl(builderMap);
         oneSourceService = new OneSourceApiClientImpl(contractRepository, cloudEventRecordService, restTemplate,
             settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);

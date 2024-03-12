@@ -13,197 +13,172 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * PositionSnapshotNQueryRequestDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class PositionSnapshotNQueryRequestDTO {
+  @JsonProperty("closedPositionDays")
+  private Integer closedPositionDays = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("fetchLatest")
+  private Boolean fetchLatest = null;
 
-    @JsonProperty("closedPositionDays")
-    private Integer closedPositionDays = null;
+  @JsonProperty("latestEvent")
+  private Boolean latestEvent = null;
 
-    @JsonProperty("fetchLatest")
-    private Boolean fetchLatest = null;
+  @JsonProperty("liveRange")
+  private Boolean liveRange = null;
 
-    @JsonProperty("latestEvent")
-    private Boolean latestEvent = null;
+  @JsonProperty("nQueryRequest")
+  private NQueryRequest nQueryRequest = null;
 
-    @JsonProperty("liveRange")
-    private Boolean liveRange = null;
+  public PositionSnapshotNQueryRequestDTO closedPositionDays(Integer closedPositionDays) {
+    this.closedPositionDays = closedPositionDays;
+    return this;
+  }
 
-    @JsonProperty("nQueryRequest")
-    private NQueryRequest nQueryRequest = null;
+   /**
+   * Get closedPositionDays
+   * @return closedPositionDays
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getClosedPositionDays() {
+    return closedPositionDays;
+  }
 
-    public PositionSnapshotNQueryRequestDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setClosedPositionDays(Integer closedPositionDays) {
+    this.closedPositionDays = closedPositionDays;
+  }
+
+  public PositionSnapshotNQueryRequestDTO fetchLatest(Boolean fetchLatest) {
+    this.fetchLatest = fetchLatest;
+    return this;
+  }
+
+   /**
+   * If true then fetches the latest version of the snapshots
+   * @return fetchLatest
+  **/
+  @ApiModelProperty(value = "If true then fetches the latest version of the snapshots")
+  public Boolean isFetchLatest() {
+    return fetchLatest;
+  }
+
+  public void setFetchLatest(Boolean fetchLatest) {
+    this.fetchLatest = fetchLatest;
+  }
+
+  public PositionSnapshotNQueryRequestDTO latestEvent(Boolean latestEvent) {
+    this.latestEvent = latestEvent;
+    return this;
+  }
+
+   /**
+   * If true then fetches the record whose TRADE_STATUS_ID is Not Cancelled or Failed or SETTLE_STATUS is SETTLED
+   * @return latestEvent
+  **/
+  @ApiModelProperty(value = "If true then fetches the record whose TRADE_STATUS_ID is Not Cancelled or Failed or SETTLE_STATUS is SETTLED")
+  public Boolean isLatestEvent() {
+    return latestEvent;
+  }
+
+  public void setLatestEvent(Boolean latestEvent) {
+    this.latestEvent = latestEvent;
+  }
+
+  public PositionSnapshotNQueryRequestDTO liveRange(Boolean liveRange) {
+    this.liveRange = liveRange;
+    return this;
+  }
+
+   /**
+   * If true then fetches the trades of live positions
+   * @return liveRange
+  **/
+  @ApiModelProperty(value = "If true then fetches the trades of live positions")
+  public Boolean isLiveRange() {
+    return liveRange;
+  }
+
+  public void setLiveRange(Boolean liveRange) {
+    this.liveRange = liveRange;
+  }
+
+  public PositionSnapshotNQueryRequestDTO nQueryRequest(NQueryRequest nQueryRequest) {
+    this.nQueryRequest = nQueryRequest;
+    return this;
+  }
+
+   /**
+   * Get nQueryRequest
+   * @return nQueryRequest
+  **/
+  @ApiModelProperty(value = "")
+  public NQueryRequest getNQueryRequest() {
+    return nQueryRequest;
+  }
+
+  public void setNQueryRequest(NQueryRequest nQueryRequest) {
+    this.nQueryRequest = nQueryRequest;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    PositionSnapshotNQueryRequestDTO positionSnapshotNQueryRequestDTO = (PositionSnapshotNQueryRequestDTO) o;
+    return Objects.equals(this.closedPositionDays, positionSnapshotNQueryRequestDTO.closedPositionDays) &&
+        Objects.equals(this.fetchLatest, positionSnapshotNQueryRequestDTO.fetchLatest) &&
+        Objects.equals(this.latestEvent, positionSnapshotNQueryRequestDTO.latestEvent) &&
+        Objects.equals(this.liveRange, positionSnapshotNQueryRequestDTO.liveRange) &&
+        Objects.equals(this.nQueryRequest, positionSnapshotNQueryRequestDTO.nQueryRequest);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(closedPositionDays, fetchLatest, latestEvent, liveRange, nQueryRequest);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class PositionSnapshotNQueryRequestDTO {\n");
+    
+    sb.append("    closedPositionDays: ").append(toIndentedString(closedPositionDays)).append("\n");
+    sb.append("    fetchLatest: ").append(toIndentedString(fetchLatest)).append("\n");
+    sb.append("    latestEvent: ").append(toIndentedString(latestEvent)).append("\n");
+    sb.append("    liveRange: ").append(toIndentedString(liveRange)).append("\n");
+    sb.append("    nQueryRequest: ").append(toIndentedString(nQueryRequest)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public PositionSnapshotNQueryRequestDTO closedPositionDays(Integer closedPositionDays) {
-        this.closedPositionDays = closedPositionDays;
-        return this;
-    }
-
-    /**
-     * Get closedPositionDays
-     *
-     * @return closedPositionDays
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getClosedPositionDays() {
-        return closedPositionDays;
-    }
-
-    public void setClosedPositionDays(Integer closedPositionDays) {
-        this.closedPositionDays = closedPositionDays;
-    }
-
-    public PositionSnapshotNQueryRequestDTO fetchLatest(Boolean fetchLatest) {
-        this.fetchLatest = fetchLatest;
-        return this;
-    }
-
-    /**
-     * If true then fetches the latest version of the snapshots
-     *
-     * @return fetchLatest
-     **/
-    @ApiModelProperty(value = "If true then fetches the latest version of the snapshots")
-    public Boolean isFetchLatest() {
-        return fetchLatest;
-    }
-
-    public void setFetchLatest(Boolean fetchLatest) {
-        this.fetchLatest = fetchLatest;
-    }
-
-    public PositionSnapshotNQueryRequestDTO latestEvent(Boolean latestEvent) {
-        this.latestEvent = latestEvent;
-        return this;
-    }
-
-    /**
-     * If true then fetches the record whose TRADE_STATUS_ID is Not Cancelled or Failed or SETTLE_STATUS is SETTLED
-     *
-     * @return latestEvent
-     **/
-    @ApiModelProperty(value = "If true then fetches the record whose TRADE_STATUS_ID is Not Cancelled or Failed or SETTLE_STATUS is SETTLED")
-    public Boolean isLatestEvent() {
-        return latestEvent;
-    }
-
-    public void setLatestEvent(Boolean latestEvent) {
-        this.latestEvent = latestEvent;
-    }
-
-    public PositionSnapshotNQueryRequestDTO liveRange(Boolean liveRange) {
-        this.liveRange = liveRange;
-        return this;
-    }
-
-    /**
-     * If true then fetches the trades of live positions
-     *
-     * @return liveRange
-     **/
-    @ApiModelProperty(value = "If true then fetches the trades of live positions")
-    public Boolean isLiveRange() {
-        return liveRange;
-    }
-
-    public void setLiveRange(Boolean liveRange) {
-        this.liveRange = liveRange;
-    }
-
-    public PositionSnapshotNQueryRequestDTO nQueryRequest(NQueryRequest nQueryRequest) {
-        this.nQueryRequest = nQueryRequest;
-        return this;
-    }
-
-    /**
-     * Get nQueryRequest
-     *
-     * @return nQueryRequest
-     **/
-    @ApiModelProperty(value = "")
-    public NQueryRequest getNQueryRequest() {
-        return nQueryRequest;
-    }
-
-    public void setNQueryRequest(NQueryRequest nQueryRequest) {
-        this.nQueryRequest = nQueryRequest;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PositionSnapshotNQueryRequestDTO positionSnapshotNQueryRequestDTO = (PositionSnapshotNQueryRequestDTO) o;
-        return Objects.equals(this.qualifiedName, positionSnapshotNQueryRequestDTO.qualifiedName) &&
-            Objects.equals(this.closedPositionDays, positionSnapshotNQueryRequestDTO.closedPositionDays) &&
-            Objects.equals(this.fetchLatest, positionSnapshotNQueryRequestDTO.fetchLatest) &&
-            Objects.equals(this.latestEvent, positionSnapshotNQueryRequestDTO.latestEvent) &&
-            Objects.equals(this.liveRange, positionSnapshotNQueryRequestDTO.liveRange) &&
-            Objects.equals(this.nQueryRequest, positionSnapshotNQueryRequestDTO.nQueryRequest);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, closedPositionDays, fetchLatest, latestEvent, liveRange, nQueryRequest);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class PositionSnapshotNQueryRequestDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    closedPositionDays: ").append(toIndentedString(closedPositionDays)).append("\n");
-        sb.append("    fetchLatest: ").append(toIndentedString(fetchLatest)).append("\n");
-        sb.append("    latestEvent: ").append(toIndentedString(latestEvent)).append("\n");
-        sb.append("    liveRange: ").append(toIndentedString(liveRange)).append("\n");
-        sb.append("    nQueryRequest: ").append(toIndentedString(nQueryRequest)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

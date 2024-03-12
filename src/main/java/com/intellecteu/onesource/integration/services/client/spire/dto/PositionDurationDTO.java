@@ -13,197 +13,172 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.PositiontypeDTO;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * PositionDurationDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class PositionDurationDTO {
+  @JsonProperty("accountId")
+  private Long accountId = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("maxDuration")
+  private Integer maxDuration = null;
 
-    @JsonProperty("accountId")
-    private Long accountId = null;
+  @JsonProperty("minDuration")
+  private Integer minDuration = null;
 
-    @JsonProperty("maxDuration")
-    private Integer maxDuration = null;
+  @JsonProperty("positionTypeDTO")
+  private PositiontypeDTO positionTypeDTO = null;
 
-    @JsonProperty("minDuration")
-    private Integer minDuration = null;
+  @JsonProperty("positionTypeId")
+  private Integer positionTypeId = null;
 
-    @JsonProperty("positionTypeDTO")
-    private PositiontypeDTO positionTypeDTO = null;
+  public PositionDurationDTO accountId(Long accountId) {
+    this.accountId = accountId;
+    return this;
+  }
 
-    @JsonProperty("positionTypeId")
-    private Integer positionTypeId = null;
+   /**
+   * Get accountId
+   * @return accountId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getAccountId() {
+    return accountId;
+  }
 
-    public PositionDurationDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setAccountId(Long accountId) {
+    this.accountId = accountId;
+  }
+
+  public PositionDurationDTO maxDuration(Integer maxDuration) {
+    this.maxDuration = maxDuration;
+    return this;
+  }
+
+   /**
+   * Get maxDuration
+   * @return maxDuration
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMaxDuration() {
+    return maxDuration;
+  }
+
+  public void setMaxDuration(Integer maxDuration) {
+    this.maxDuration = maxDuration;
+  }
+
+  public PositionDurationDTO minDuration(Integer minDuration) {
+    this.minDuration = minDuration;
+    return this;
+  }
+
+   /**
+   * Get minDuration
+   * @return minDuration
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getMinDuration() {
+    return minDuration;
+  }
+
+  public void setMinDuration(Integer minDuration) {
+    this.minDuration = minDuration;
+  }
+
+  public PositionDurationDTO positionTypeDTO(PositiontypeDTO positionTypeDTO) {
+    this.positionTypeDTO = positionTypeDTO;
+    return this;
+  }
+
+   /**
+   * Get positionTypeDTO
+   * @return positionTypeDTO
+  **/
+  @ApiModelProperty(value = "")
+  public PositiontypeDTO getPositionTypeDTO() {
+    return positionTypeDTO;
+  }
+
+  public void setPositionTypeDTO(PositiontypeDTO positionTypeDTO) {
+    this.positionTypeDTO = positionTypeDTO;
+  }
+
+  public PositionDurationDTO positionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+    return this;
+  }
+
+   /**
+   * Get positionTypeId
+   * @return positionTypeId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getPositionTypeId() {
+    return positionTypeId;
+  }
+
+  public void setPositionTypeId(Integer positionTypeId) {
+    this.positionTypeId = positionTypeId;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    PositionDurationDTO positionDurationDTO = (PositionDurationDTO) o;
+    return Objects.equals(this.accountId, positionDurationDTO.accountId) &&
+        Objects.equals(this.maxDuration, positionDurationDTO.maxDuration) &&
+        Objects.equals(this.minDuration, positionDurationDTO.minDuration) &&
+        Objects.equals(this.positionTypeDTO, positionDurationDTO.positionTypeDTO) &&
+        Objects.equals(this.positionTypeId, positionDurationDTO.positionTypeId);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(accountId, maxDuration, minDuration, positionTypeDTO, positionTypeId);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class PositionDurationDTO {\n");
+    
+    sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
+    sb.append("    maxDuration: ").append(toIndentedString(maxDuration)).append("\n");
+    sb.append("    minDuration: ").append(toIndentedString(minDuration)).append("\n");
+    sb.append("    positionTypeDTO: ").append(toIndentedString(positionTypeDTO)).append("\n");
+    sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public PositionDurationDTO accountId(Long accountId) {
-        this.accountId = accountId;
-        return this;
-    }
-
-    /**
-     * Get accountId
-     *
-     * @return accountId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getAccountId() {
-        return accountId;
-    }
-
-    public void setAccountId(Long accountId) {
-        this.accountId = accountId;
-    }
-
-    public PositionDurationDTO maxDuration(Integer maxDuration) {
-        this.maxDuration = maxDuration;
-        return this;
-    }
-
-    /**
-     * Get maxDuration
-     *
-     * @return maxDuration
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMaxDuration() {
-        return maxDuration;
-    }
-
-    public void setMaxDuration(Integer maxDuration) {
-        this.maxDuration = maxDuration;
-    }
-
-    public PositionDurationDTO minDuration(Integer minDuration) {
-        this.minDuration = minDuration;
-        return this;
-    }
-
-    /**
-     * Get minDuration
-     *
-     * @return minDuration
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getMinDuration() {
-        return minDuration;
-    }
-
-    public void setMinDuration(Integer minDuration) {
-        this.minDuration = minDuration;
-    }
-
-    public PositionDurationDTO positionTypeDTO(PositiontypeDTO positionTypeDTO) {
-        this.positionTypeDTO = positionTypeDTO;
-        return this;
-    }
-
-    /**
-     * Get positionTypeDTO
-     *
-     * @return positionTypeDTO
-     **/
-    @ApiModelProperty(value = "")
-    public PositiontypeDTO getPositionTypeDTO() {
-        return positionTypeDTO;
-    }
-
-    public void setPositionTypeDTO(PositiontypeDTO positionTypeDTO) {
-        this.positionTypeDTO = positionTypeDTO;
-    }
-
-    public PositionDurationDTO positionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-        return this;
-    }
-
-    /**
-     * Get positionTypeId
-     *
-     * @return positionTypeId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getPositionTypeId() {
-        return positionTypeId;
-    }
-
-    public void setPositionTypeId(Integer positionTypeId) {
-        this.positionTypeId = positionTypeId;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        PositionDurationDTO positionDurationDTO = (PositionDurationDTO) o;
-        return Objects.equals(this.qualifiedName, positionDurationDTO.qualifiedName) &&
-            Objects.equals(this.accountId, positionDurationDTO.accountId) &&
-            Objects.equals(this.maxDuration, positionDurationDTO.maxDuration) &&
-            Objects.equals(this.minDuration, positionDurationDTO.minDuration) &&
-            Objects.equals(this.positionTypeDTO, positionDurationDTO.positionTypeDTO) &&
-            Objects.equals(this.positionTypeId, positionDurationDTO.positionTypeId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, accountId, maxDuration, minDuration, positionTypeDTO, positionTypeId);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class PositionDurationDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    accountId: ").append(toIndentedString(accountId)).append("\n");
-        sb.append("    maxDuration: ").append(toIndentedString(maxDuration)).append("\n");
-        sb.append("    minDuration: ").append(toIndentedString(minDuration)).append("\n");
-        sb.append("    positionTypeDTO: ").append(toIndentedString(positionTypeDTO)).append("\n");
-        sb.append("    positionTypeId: ").append(toIndentedString(positionTypeId)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

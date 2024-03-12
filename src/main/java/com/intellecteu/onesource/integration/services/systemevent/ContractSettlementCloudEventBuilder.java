@@ -9,15 +9,22 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Component
 public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBuilder {
+
+    public ContractSettlementCloudEventBuilder(
+        @Value("${cloudevents.specversion}") String specVersion,
+        @Value("${integration-toolkit.uri}") String integrationUri) {
+        super(specVersion, integrationUri);
+    }
 
     @Override
     public IntegrationProcess getVersion() {

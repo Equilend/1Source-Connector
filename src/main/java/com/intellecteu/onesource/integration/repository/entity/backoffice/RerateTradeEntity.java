@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import jakarta.persistence.CascadeType;
@@ -21,6 +21,7 @@ public class RerateTradeEntity {
 
     @Id
     private Long tradeId;
+    private LocalDateTime creationDatetime;
     private LocalDateTime lastUpdateDatetime;
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;

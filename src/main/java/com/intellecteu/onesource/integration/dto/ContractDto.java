@@ -1,8 +1,8 @@
 package com.intellecteu.onesource.integration.dto;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SPIRE_ISSUE;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
@@ -11,9 +11,9 @@ import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;

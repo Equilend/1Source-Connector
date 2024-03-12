@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.exception;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class ValidationException extends Exception {
 
-    private ExceptionMessageDto dto;
+    private List<String> invalidFields;
 
     public ValidationException() {
         super();
@@ -18,9 +18,9 @@ public class ValidationException extends Exception {
         super(message);
     }
 
-    public ValidationException(ExceptionMessageDto dto) {
-        super(dto.getExceptionMessage());
-        this.dto = dto;
+    public ValidationException(List<String> invalidFields) {
+        super(String.join(",", invalidFields));
+        this.invalidFields = invalidFields;
     }
 
 }

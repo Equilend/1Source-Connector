@@ -13,149 +13,125 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * CalendarDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class CalendarDTO {
+  @JsonProperty("calendarId")
+  private Integer calendarId = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("calendarName")
+  private String calendarName = null;
 
-    @JsonProperty("calendarId")
-    private Integer calendarId = null;
+  @JsonProperty("timezone")
+  private String timezone = null;
 
-    @JsonProperty("calendarName")
-    private String calendarName = null;
+  public CalendarDTO calendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+    return this;
+  }
 
-    @JsonProperty("timezone")
-    private String timezone = null;
+   /**
+   * Get calendarId
+   * @return calendarId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getCalendarId() {
+    return calendarId;
+  }
 
-    public CalendarDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setCalendarId(Integer calendarId) {
+    this.calendarId = calendarId;
+  }
+
+  public CalendarDTO calendarName(String calendarName) {
+    this.calendarName = calendarName;
+    return this;
+  }
+
+   /**
+   * Get calendarName
+   * @return calendarName
+  **/
+  @ApiModelProperty(value = "")
+  public String getCalendarName() {
+    return calendarName;
+  }
+
+  public void setCalendarName(String calendarName) {
+    this.calendarName = calendarName;
+  }
+
+  public CalendarDTO timezone(String timezone) {
+    this.timezone = timezone;
+    return this;
+  }
+
+   /**
+   * Get timezone
+   * @return timezone
+  **/
+  @ApiModelProperty(value = "")
+  public String getTimezone() {
+    return timezone;
+  }
+
+  public void setTimezone(String timezone) {
+    this.timezone = timezone;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    CalendarDTO calendarDTO = (CalendarDTO) o;
+    return Objects.equals(this.calendarId, calendarDTO.calendarId) &&
+        Objects.equals(this.calendarName, calendarDTO.calendarName) &&
+        Objects.equals(this.timezone, calendarDTO.timezone);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(calendarId, calendarName, timezone);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class CalendarDTO {\n");
+    
+    sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
+    sb.append("    calendarName: ").append(toIndentedString(calendarName)).append("\n");
+    sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public CalendarDTO calendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-        return this;
-    }
-
-    /**
-     * Get calendarId
-     *
-     * @return calendarId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getCalendarId() {
-        return calendarId;
-    }
-
-    public void setCalendarId(Integer calendarId) {
-        this.calendarId = calendarId;
-    }
-
-    public CalendarDTO calendarName(String calendarName) {
-        this.calendarName = calendarName;
-        return this;
-    }
-
-    /**
-     * Get calendarName
-     *
-     * @return calendarName
-     **/
-    @ApiModelProperty(value = "")
-    public String getCalendarName() {
-        return calendarName;
-    }
-
-    public void setCalendarName(String calendarName) {
-        this.calendarName = calendarName;
-    }
-
-    public CalendarDTO timezone(String timezone) {
-        this.timezone = timezone;
-        return this;
-    }
-
-    /**
-     * Get timezone
-     *
-     * @return timezone
-     **/
-    @ApiModelProperty(value = "")
-    public String getTimezone() {
-        return timezone;
-    }
-
-    public void setTimezone(String timezone) {
-        this.timezone = timezone;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        CalendarDTO calendarDTO = (CalendarDTO) o;
-        return Objects.equals(this.qualifiedName, calendarDTO.qualifiedName) &&
-            Objects.equals(this.calendarId, calendarDTO.calendarId) &&
-            Objects.equals(this.calendarName, calendarDTO.calendarName) &&
-            Objects.equals(this.timezone, calendarDTO.timezone);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, calendarId, calendarName, timezone);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class CalendarDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    calendarId: ").append(toIndentedString(calendarId)).append("\n");
-        sb.append("    calendarName: ").append(toIndentedString(calendarName)).append("\n");
-        sb.append("    timezone: ").append(toIndentedString(timezone)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

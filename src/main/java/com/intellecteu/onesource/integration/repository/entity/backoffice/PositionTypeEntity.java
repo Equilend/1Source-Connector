@@ -15,6 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PositionTypeEntity {
 
+    private Integer positionTypeId;
     private String positionType;
 
 }

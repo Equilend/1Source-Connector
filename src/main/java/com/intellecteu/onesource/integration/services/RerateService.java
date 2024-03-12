@@ -1,9 +1,9 @@
 package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
-import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
 import com.intellecteu.onesource.integration.repository.RerateRepository;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
 import java.time.LocalDate;
@@ -31,21 +31,27 @@ public class RerateService {
         return oneSourceMapper.toModel(rerateEntity);
     }
 
-    public Optional<Rerate> findRerate(Long positionId, LocalDate effectiveDate, RerateStatus rerateStatus) {
-        List<Rerate> rerateList = rerateRepository.findByRelatedSpirePositionIdAndStatus(
-            positionId, rerateStatus).stream().map(oneSourceMapper::toModel).collect(Collectors.toList());
+    public Optional<Rerate> findUnmatchedRerate(String contractId, LocalDate effectiveDate) {
+        List<Rerate> rerateList = rerateRepository.findByContractId(contractId).stream().map(oneSourceMapper::toModel)
+            .collect(Collectors.toList());
         Optional<Rerate> rerateOptional = rerateList.stream().filter(rerate ->
-            (rerate.getRerate().getRebate().getFloating() != null && effectiveDate.equals(
-                rerate.getRerate().getRebate().getFloating().getEffectiveDate()))
-                || (rerate.getRerate().getRebate().getFixed() != null && effectiveDate.equals(
-                rerate.getRerate().getRebate().getFixed().getEffectiveDate()))).findFirst();
+            compareEffectiveDate(rerate, effectiveDate)).findFirst();
         return rerateOptional;
     }
 
-    public Rerate markRerateAsMatchedWithRerateTradeId(Rerate rerate, Long tradeId) {
-        rerate.setMatchingSpireTradeId(tradeId);
+    private Boolean compareEffectiveDate(Rerate rerate, LocalDate effectiveDate) {
+        return (rerate.getRerate().getRebate().getFloating() != null && effectiveDate.equals(
+            rerate.getRerate().getRebate().getFloating().getEffectiveDate()))
+            || (rerate.getRerate().getRebate().getFixed() != null && effectiveDate.equals(
+            rerate.getRerate().getRebate().getFixed().getEffectiveDate()));
+
+    }
+
+    public Rerate markRerateAsMatchedWithRerateTrade(Rerate rerate, RerateTrade rerateTrade) {
+        rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
+        rerate.setRelatedSpirePositionId(rerateTrade.getRelatedPositionId());
         rerate.setLastUpdateDatetime(LocalDateTime.now());
-        rerate.setProcessingStatus(ProcessingStatus.MATCHED_RERATE_TRADE);
+        rerate.setProcessingStatus(ProcessingStatus.MATCHED);
         return saveRerate(rerate);
     }
 }

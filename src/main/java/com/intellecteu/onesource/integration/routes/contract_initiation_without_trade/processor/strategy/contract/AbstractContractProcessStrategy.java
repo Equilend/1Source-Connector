@@ -8,12 +8,12 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
 import static java.lang.String.format;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -26,11 +26,11 @@ import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -82,7 +82,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
                 contract.getMatchingSpirePositionId());
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
-            e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
+            e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
             saveContract(contract, DISCREPANCIES);
             createFailedReconciliationEvent(contract, e);
         }

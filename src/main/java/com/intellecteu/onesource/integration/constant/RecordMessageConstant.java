@@ -43,6 +43,7 @@ public class RecordMessageConstant {
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED = "Position - %s";
+            public static final String RERATE_DISCREPANCIES = "Trade - %s";
         }
 
         public static class DataMsg {
@@ -126,6 +127,9 @@ public class RecordMessageConstant {
                 List of discrepancies:
                 %s""";
 
+            public static final String RECONCILE_RERATE_DISCREPANCIES_MSG = """
+                The rerate proposal %s has not been reconciled with a SPIRE rerate trade: %s. Discrepancies must be sort-out""";
+
             public static final String RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG = """
                 The trade agreement %s has been successfully reconciled \
                 with the position %s in SPIRE""";
@@ -176,16 +180,27 @@ public class RecordMessageConstant {
         }
     }
 
-    public static class Rerate{
+    public static class Rerate {
+
         public static class Subject {
-            public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source rerate id - %s";
-            public static final String MATCHED_RERATE = "SPIRE trade event id - %s";
+
+            public static final String POST_RERATE_EXCEPTION_1SOURCE = "Trade - %s";
+            public static final String GET_RERATE_EXCEPTION_1SOURCE = "1Source Rerate - %s";
+            public static final String MATCHED_RERATE = "Trade - %s";
+            public static final String CREATED_RERATE = "Trade - %s";
             public static final String UNMATCHED_RERATE = "1Source rerate id -  %s";
+            public static final String APPROVE_EXCEPTION_RERATE = "Trade -  %s";
         }
+
         public static class DataMsg {
+
+            public static final String POST_RERATE_EXCEPTION_1SOURCE_MSG = "The rerate proposal instruction (generated from the SPIRE rerate trade: %s) has not been processed by 1Source for the following reason: %s";
             public static final String GET_RERATE_EXCEPTION_1SOURCE_MSG = "The details of rerate proposal %s have not been retrieved from 1Source for the following reason: %s";
-            public static final String MATCHED_RERATE_MSG = "The 1Source rerate proposal: %s has been matched with the SPIRE trade event: %s";
+            public static final String MATCHED_RERATE_MSG = "The rerate proposal %s has been matched with a SPIRE rerate trade: %s and needs now to be validated.";
+            public static final String CREATED_RERATE_MSG = "A new rerate trade %s has been captured but yet matched with a rerate proposal.";
             public static final String UNMATCHED_RERATE_MSG = "The rerate proposal %s has been captured but not yet matched with a SPIRE trade event";
+            public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
+
         }
     }
 

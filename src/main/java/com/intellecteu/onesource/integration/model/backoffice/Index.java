@@ -16,6 +16,7 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Index {
 
+    private Integer indexId;
     private String indexName;
     private Double spread;
 

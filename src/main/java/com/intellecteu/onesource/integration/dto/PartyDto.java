@@ -4,7 +4,7 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

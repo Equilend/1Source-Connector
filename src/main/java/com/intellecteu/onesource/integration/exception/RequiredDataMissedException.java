@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.exception;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import java.util.List;
 
 public class RequiredDataMissedException extends ValidationException {
 
@@ -9,8 +9,8 @@ public class RequiredDataMissedException extends ValidationException {
     public RequiredDataMissedException() {
     }
 
-    public RequiredDataMissedException(ExceptionMessageDto dto) {
-        super(dto);
+    public RequiredDataMissedException(List<String> invalidFields) {
+        super(invalidFields);
     }
 
 }
