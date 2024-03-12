@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;

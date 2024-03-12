@@ -189,6 +189,7 @@ public class RecordMessageConstant {
             public static final String MATCHED_RERATE = "Trade - %s";
             public static final String CREATED_RERATE = "Trade - %s";
             public static final String UNMATCHED_RERATE = "1Source rerate id -  %s";
+            public static final String APPROVED_RERATE = "Trade -  %s";
             public static final String APPROVE_EXCEPTION_RERATE = "Trade -  %s";
         }
 
@@ -199,6 +200,7 @@ public class RecordMessageConstant {
             public static final String MATCHED_RERATE_MSG = "The rerate proposal %s has been matched with a SPIRE rerate trade: %s and needs now to be validated.";
             public static final String CREATED_RERATE_MSG = "A new rerate trade %s has been captured but yet matched with a rerate proposal.";
             public static final String UNMATCHED_RERATE_MSG = "The rerate proposal %s has been captured but not yet matched with a SPIRE trade event";
+            public static final String APPROVED_RERATE_MSG = "The rerate proposal %s matching with the SPIRE rerate trade %s has been approved";
             public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
 
         }
