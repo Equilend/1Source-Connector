@@ -13,232 +13,204 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * BaseResponseDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class BaseResponseDTO {
+  @JsonProperty("genericObject")
+  private Object genericObject = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("returnIntOne")
+  private Integer returnIntOne = null;
 
-    @JsonProperty("genericObject")
-    private Object genericObject = null;
+  @JsonProperty("returnLongOne")
+  private Long returnLongOne = null;
 
-    @JsonProperty("returnIntOne")
-    private Integer returnIntOne = null;
+  @JsonProperty("stringOne")
+  private String stringOne = null;
 
-    @JsonProperty("returnLongOne")
-    private Long returnLongOne = null;
+  @JsonProperty("stringOneList")
+  private List<String> stringOneList = null;
 
-    @JsonProperty("stringOne")
-    private String stringOne = null;
+  @JsonProperty("success")
+  private Boolean success = null;
 
-    @JsonProperty("stringOneList")
-    private List<String> stringOneList = null;
+  public BaseResponseDTO genericObject(Object genericObject) {
+    this.genericObject = genericObject;
+    return this;
+  }
 
-    @JsonProperty("success")
-    private Boolean success = null;
+   /**
+   * Get genericObject
+   * @return genericObject
+  **/
+  @ApiModelProperty(value = "")
+  public Object getGenericObject() {
+    return genericObject;
+  }
 
-    public BaseResponseDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setGenericObject(Object genericObject) {
+    this.genericObject = genericObject;
+  }
+
+  public BaseResponseDTO returnIntOne(Integer returnIntOne) {
+    this.returnIntOne = returnIntOne;
+    return this;
+  }
+
+   /**
+   * Get returnIntOne
+   * @return returnIntOne
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getReturnIntOne() {
+    return returnIntOne;
+  }
+
+  public void setReturnIntOne(Integer returnIntOne) {
+    this.returnIntOne = returnIntOne;
+  }
+
+  public BaseResponseDTO returnLongOne(Long returnLongOne) {
+    this.returnLongOne = returnLongOne;
+    return this;
+  }
+
+   /**
+   * Get returnLongOne
+   * @return returnLongOne
+  **/
+  @ApiModelProperty(value = "")
+  public Long getReturnLongOne() {
+    return returnLongOne;
+  }
+
+  public void setReturnLongOne(Long returnLongOne) {
+    this.returnLongOne = returnLongOne;
+  }
+
+  public BaseResponseDTO stringOne(String stringOne) {
+    this.stringOne = stringOne;
+    return this;
+  }
+
+   /**
+   * Get stringOne
+   * @return stringOne
+  **/
+  @ApiModelProperty(value = "")
+  public String getStringOne() {
+    return stringOne;
+  }
+
+  public void setStringOne(String stringOne) {
+    this.stringOne = stringOne;
+  }
+
+  public BaseResponseDTO stringOneList(List<String> stringOneList) {
+    this.stringOneList = stringOneList;
+    return this;
+  }
+
+  public BaseResponseDTO addStringOneListItem(String stringOneListItem) {
+    if (this.stringOneList == null) {
+      this.stringOneList = new ArrayList<>();
     }
+    this.stringOneList.add(stringOneListItem);
+    return this;
+  }
 
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+   /**
+   * Get stringOneList
+   * @return stringOneList
+  **/
+  @ApiModelProperty(value = "")
+  public List<String> getStringOneList() {
+    return stringOneList;
+  }
+
+  public void setStringOneList(List<String> stringOneList) {
+    this.stringOneList = stringOneList;
+  }
+
+  public BaseResponseDTO success(Boolean success) {
+    this.success = success;
+    return this;
+  }
+
+   /**
+   * Get success
+   * @return success
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSuccess() {
+    return success;
+  }
+
+  public void setSuccess(Boolean success) {
+    this.success = success;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BaseResponseDTO baseResponseDTO = (BaseResponseDTO) o;
+    return Objects.equals(this.genericObject, baseResponseDTO.genericObject) &&
+        Objects.equals(this.returnIntOne, baseResponseDTO.returnIntOne) &&
+        Objects.equals(this.returnLongOne, baseResponseDTO.returnLongOne) &&
+        Objects.equals(this.stringOne, baseResponseDTO.stringOne) &&
+        Objects.equals(this.stringOneList, baseResponseDTO.stringOneList) &&
+        Objects.equals(this.success, baseResponseDTO.success);
+  }
 
-    public BaseResponseDTO genericObject(Object genericObject) {
-        this.genericObject = genericObject;
-        return this;
+  @Override
+  public int hashCode() {
+    return Objects.hash(genericObject, returnIntOne, returnLongOne, stringOne, stringOneList, success);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class BaseResponseDTO {\n");
+    
+    sb.append("    genericObject: ").append(toIndentedString(genericObject)).append("\n");
+    sb.append("    returnIntOne: ").append(toIndentedString(returnIntOne)).append("\n");
+    sb.append("    returnLongOne: ").append(toIndentedString(returnLongOne)).append("\n");
+    sb.append("    stringOne: ").append(toIndentedString(stringOne)).append("\n");
+    sb.append("    stringOneList: ").append(toIndentedString(stringOneList)).append("\n");
+    sb.append("    success: ").append(toIndentedString(success)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    /**
-     * Get genericObject
-     *
-     * @return genericObject
-     **/
-    @ApiModelProperty(value = "")
-    public Object getGenericObject() {
-        return genericObject;
-    }
-
-    public void setGenericObject(Object genericObject) {
-        this.genericObject = genericObject;
-    }
-
-    public BaseResponseDTO returnIntOne(Integer returnIntOne) {
-        this.returnIntOne = returnIntOne;
-        return this;
-    }
-
-    /**
-     * Get returnIntOne
-     *
-     * @return returnIntOne
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getReturnIntOne() {
-        return returnIntOne;
-    }
-
-    public void setReturnIntOne(Integer returnIntOne) {
-        this.returnIntOne = returnIntOne;
-    }
-
-    public BaseResponseDTO returnLongOne(Long returnLongOne) {
-        this.returnLongOne = returnLongOne;
-        return this;
-    }
-
-    /**
-     * Get returnLongOne
-     *
-     * @return returnLongOne
-     **/
-    @ApiModelProperty(value = "")
-    public Long getReturnLongOne() {
-        return returnLongOne;
-    }
-
-    public void setReturnLongOne(Long returnLongOne) {
-        this.returnLongOne = returnLongOne;
-    }
-
-    public BaseResponseDTO stringOne(String stringOne) {
-        this.stringOne = stringOne;
-        return this;
-    }
-
-    /**
-     * Get stringOne
-     *
-     * @return stringOne
-     **/
-    @ApiModelProperty(value = "")
-    public String getStringOne() {
-        return stringOne;
-    }
-
-    public void setStringOne(String stringOne) {
-        this.stringOne = stringOne;
-    }
-
-    public BaseResponseDTO stringOneList(List<String> stringOneList) {
-        this.stringOneList = stringOneList;
-        return this;
-    }
-
-    public BaseResponseDTO addStringOneListItem(String stringOneListItem) {
-        if (this.stringOneList == null) {
-            this.stringOneList = new ArrayList<>();
-        }
-        this.stringOneList.add(stringOneListItem);
-        return this;
-    }
-
-    /**
-     * Get stringOneList
-     *
-     * @return stringOneList
-     **/
-    @ApiModelProperty(value = "")
-    public List<String> getStringOneList() {
-        return stringOneList;
-    }
-
-    public void setStringOneList(List<String> stringOneList) {
-        this.stringOneList = stringOneList;
-    }
-
-    public BaseResponseDTO success(Boolean success) {
-        this.success = success;
-        return this;
-    }
-
-    /**
-     * Get success
-     *
-     * @return success
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BaseResponseDTO baseResponseDTO = (BaseResponseDTO) o;
-        return Objects.equals(this.qualifiedName, baseResponseDTO.qualifiedName) &&
-            Objects.equals(this.genericObject, baseResponseDTO.genericObject) &&
-            Objects.equals(this.returnIntOne, baseResponseDTO.returnIntOne) &&
-            Objects.equals(this.returnLongOne, baseResponseDTO.returnLongOne) &&
-            Objects.equals(this.stringOne, baseResponseDTO.stringOne) &&
-            Objects.equals(this.stringOneList, baseResponseDTO.stringOneList) &&
-            Objects.equals(this.success, baseResponseDTO.success);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, genericObject, returnIntOne, returnLongOne, stringOne, stringOneList,
-            success);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BaseResponseDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    genericObject: ").append(toIndentedString(genericObject)).append("\n");
-        sb.append("    returnIntOne: ").append(toIndentedString(returnIntOne)).append("\n");
-        sb.append("    returnLongOne: ").append(toIndentedString(returnLongOne)).append("\n");
-        sb.append("    stringOne: ").append(toIndentedString(stringOne)).append("\n");
-        sb.append("    stringOneList: ").append(toIndentedString(stringOneList)).append("\n");
-        sb.append("    success: ").append(toIndentedString(success)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

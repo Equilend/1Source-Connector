@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.exception;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import java.util.List;
 
 public class DataMismatchException extends ValidationException {
 
@@ -10,8 +10,8 @@ public class DataMismatchException extends ValidationException {
     public DataMismatchException() {
     }
 
-    public DataMismatchException(ExceptionMessageDto dto) {
-        super(dto);
+    public DataMismatchException(List<String> invalidFields) {
+        super(invalidFields);
     }
 
 }

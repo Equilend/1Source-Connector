@@ -17,17 +17,17 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.CO
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DECLINED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSAL_CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROPOSAL_DECLINED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.SETTLED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TO_DECLINE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_DECLINE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractLenderOrBorrower;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
@@ -51,14 +51,14 @@ import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
@@ -236,9 +236,9 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             final AccountDTO accountDTO = new AccountDTO();
             accountDTO.setDtc(
                 Long.valueOf(contractInstruction.getInstruction().getDtcParticipantNumber()));
-            final SwiftbicDTO swiftBic = new SwiftbicDTO(
-                contractInstruction.getInstruction().getSettlementBic(),
-                contractInstruction.getInstruction().getLocalAgentBic());
+            final SwiftbicDTO swiftBic = new SwiftbicDTO();
+            swiftBic.setBic(contractInstruction.getInstruction().getSettlementBic());
+            swiftBic.setBranch(contractInstruction.getInstruction().getLocalAgentBic());
 
             return InstructionDTO.builder()
                 .agentName(contractInstruction.getInstruction().getLocalAgentName())

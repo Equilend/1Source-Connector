@@ -15,20 +15,20 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
-import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
+import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
+import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
@@ -139,6 +139,7 @@ public class BackOfficeService {
 
     private boolean responseHasData(ResponseEntity<SResponseNQueryResponsePositionOutDTO> response) {
         return response.getBody() != null && response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
             && response.getBody().getData().getTotalRows() > 0;
     }
 
@@ -150,6 +151,7 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
                 nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
                 return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
@@ -165,14 +167,15 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public List<RerateTrade> getNewBackOfficeTradeEvents(Optional<Long> lastTradeId, List<String> positionIds) {
+    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeId) {
         Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTrades(maxTradeId.toString(), positionIds));
+            .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
                 return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
@@ -194,7 +197,8 @@ public class BackOfficeService {
         PartyRole partyRole, Long accountId) throws InstructionRetrievementException {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createListOfTuplesGetInstruction(String.valueOf(position.getExposure().getDepoId()),
-                String.valueOf(position.getSecurityId()), String.valueOf(position.getPositionTypeId()),
+                String.valueOf(position.getSecurityId()),
+                String.valueOf(position.getPositionType().getPositionTypeId()),
                 String.valueOf(position.getCurrencyId()), String.valueOf(accountId)));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
@@ -221,9 +225,9 @@ public class BackOfficeService {
             final AccountDTO accountDTO = new AccountDTO();
             accountDTO.setDtc(
                 Long.valueOf(settlement.getInstruction().getDtcParticipantNumber()));
-            final SwiftbicDTO swiftBic = new SwiftbicDTO(
-                settlement.getInstruction().getSettlementBic(),
-                settlement.getInstruction().getLocalAgentBic());
+            final SwiftbicDTO swiftBic = new SwiftbicDTO();
+            swiftBic.setBic(settlement.getInstruction().getSettlementBic());
+            swiftBic.setBranch(settlement.getInstruction().getLocalAgentBic());
 
             return InstructionDTO.builder()
                 .agentName(settlement.getInstruction().getLocalAgentName())
@@ -245,7 +249,9 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
                 .getPositions(request);
             if (responseHasData(response)) {
-                if (response.getBody().getData().getTotalRows() > 1) {
+                if (response.getBody().getData() != null
+                    && response.getBody().getData().getTotalRows() != null
+                    && response.getBody().getData().getTotalRows() > 1) {
                     log.warn("Multiple response found! Getting the first element");
                 }
                 var positionResponse = response.getBody().getData().getBeans().get(0);
@@ -355,14 +361,14 @@ public class BackOfficeService {
         return tuples;
     }
 
-    private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId, List<String> positionIds) {
+    private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId) {
         List<NQueryTuple> tuples = new ArrayList<>();
         tuples.add(
-            new NQueryTuple().lValue("positionType").operator(NQueryTuple.OperatorEnum.IN)
-                .rValue1(String.join(",", positionTypes)));
+            new NQueryTuple().lValue("tradeType").operator(NQueryTuple.OperatorEnum.IN)
+                .rValue1("Rerate, Rerate Borrow"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
-        tuples.add(new NQueryTuple().lValue("positionId").operator(NQueryTuple.OperatorEnum.IN)
-            .rValue1(String.join(",", positionIds)));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
+            .rValue1("PENDING ONESOURCE CONFIRMATION"));
         return tuples;
     }
 
@@ -372,6 +378,7 @@ public class BackOfficeService {
         rerateTrade.setTradeOut(tradeOut);
         rerateTrade.setTradeId(tradeOut.getTradeId());
         rerateTrade.setRelatedPositionId(Long.valueOf(tradeOut.getPosition().getPositionId()));
+        rerateTrade.setRelatedContractId(tradeOutDTO.getPositionOutDTO().getLedgerId());
         return rerateTrade;
     }
 

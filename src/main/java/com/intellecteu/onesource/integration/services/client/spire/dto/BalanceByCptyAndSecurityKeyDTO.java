@@ -13,125 +13,102 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * BalanceByCptyAndSecurityKeyDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class BalanceByCptyAndSecurityKeyDTO {
+  @JsonProperty("cptyGroupId")
+  private Long cptyGroupId = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("securityId")
+  private Long securityId = null;
 
-    @JsonProperty("cptyGroupId")
-    private Long cptyGroupId = null;
+  public BalanceByCptyAndSecurityKeyDTO cptyGroupId(Long cptyGroupId) {
+    this.cptyGroupId = cptyGroupId;
+    return this;
+  }
 
-    @JsonProperty("securityId")
-    private Long securityId = null;
+   /**
+   * Get cptyGroupId
+   * @return cptyGroupId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getCptyGroupId() {
+    return cptyGroupId;
+  }
 
-    public BalanceByCptyAndSecurityKeyDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setCptyGroupId(Long cptyGroupId) {
+    this.cptyGroupId = cptyGroupId;
+  }
+
+  public BalanceByCptyAndSecurityKeyDTO securityId(Long securityId) {
+    this.securityId = securityId;
+    return this;
+  }
+
+   /**
+   * Get securityId
+   * @return securityId
+  **/
+  @ApiModelProperty(value = "")
+  public Long getSecurityId() {
+    return securityId;
+  }
+
+  public void setSecurityId(Long securityId) {
+    this.securityId = securityId;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    BalanceByCptyAndSecurityKeyDTO balanceByCptyAndSecurityKeyDTO = (BalanceByCptyAndSecurityKeyDTO) o;
+    return Objects.equals(this.cptyGroupId, balanceByCptyAndSecurityKeyDTO.cptyGroupId) &&
+        Objects.equals(this.securityId, balanceByCptyAndSecurityKeyDTO.securityId);
+  }
 
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+  @Override
+  public int hashCode() {
+    return Objects.hash(cptyGroupId, securityId);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class BalanceByCptyAndSecurityKeyDTO {\n");
+    
+    sb.append("    cptyGroupId: ").append(toIndentedString(cptyGroupId)).append("\n");
+    sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public BalanceByCptyAndSecurityKeyDTO cptyGroupId(Long cptyGroupId) {
-        this.cptyGroupId = cptyGroupId;
-        return this;
-    }
-
-    /**
-     * Get cptyGroupId
-     *
-     * @return cptyGroupId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getCptyGroupId() {
-        return cptyGroupId;
-    }
-
-    public void setCptyGroupId(Long cptyGroupId) {
-        this.cptyGroupId = cptyGroupId;
-    }
-
-    public BalanceByCptyAndSecurityKeyDTO securityId(Long securityId) {
-        this.securityId = securityId;
-        return this;
-    }
-
-    /**
-     * Get securityId
-     *
-     * @return securityId
-     **/
-    @ApiModelProperty(value = "")
-    public Long getSecurityId() {
-        return securityId;
-    }
-
-    public void setSecurityId(Long securityId) {
-        this.securityId = securityId;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        BalanceByCptyAndSecurityKeyDTO balanceByCptyAndSecurityKeyDTO = (BalanceByCptyAndSecurityKeyDTO) o;
-        return Objects.equals(this.qualifiedName, balanceByCptyAndSecurityKeyDTO.qualifiedName) &&
-            Objects.equals(this.cptyGroupId, balanceByCptyAndSecurityKeyDTO.cptyGroupId) &&
-            Objects.equals(this.securityId, balanceByCptyAndSecurityKeyDTO.securityId);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, cptyGroupId, securityId);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class BalanceByCptyAndSecurityKeyDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    cptyGroupId: ").append(toIndentedString(cptyGroupId)).append("\n");
-        sb.append("    securityId: ").append(toIndentedString(securityId)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

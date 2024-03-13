@@ -40,23 +40,16 @@ public class TradeSpireApiClient {
     }
 
     /**
-     * getTrades
+     * getOneSourceTrades
      *
      * <p><b>200</b> - OK
      * <p><b>201</b> - Created
      * <p><b>401</b> - Unauthorized
      * <p><b>403</b> - Forbidden
      * <p><b>404</b> - Not Found
-     *
      * @param accessToken Access token generated during user authentication (required)
      * @param clientId client_id (optional)
-     * @param nQueryRequest Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId,
-     * tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2, accountName, accountNo,
-     * accountNo2, collateralName, collateralAccountNo, collateralAccountNo2, status, groupType, depoGroup, depoKy,
-     * currencyKy, tradeType, productLine, counterpartyGroupName, counterpartyGroupAccountNo,
-     * counterpartyGroupAccountNo2, counterpartyName, counterpartyShortName, counterpartyAccountNo,
-     * counterpartyAccountNo2, dtcNo, positionRef, settleDate, postDate, positionType, settleStatus, userName,
-     * isStreetView, isLate, baseCurrencyKy, secCountryKy (optional)
+     * @param nQueryRequest Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId,  tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2,  accountName, accountNo, accountNo2,  collateralName, collateralAccountNo, collateralAccountNo2, status,  groupType, depoGroup, depoKy, currencyKy, tradeType, productLine,  counterpartyGroupName, counterpartyGroupAccountNo, counterpartyGroupAccountNo2,   counterpartyName, counterpartyShortName, counterpartyAccountNo, counterpartyAccountNo2,  dtcNo, positionRef,  settleDate, postDate, positionType, settleStatus, userName, isStreetView, isLate,  baseCurrencyKy, secCountryKy (optional)
      * @return ResponseEntity&lt;SResponseNQueryResponseTradeOutDTO&gt;
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
@@ -64,7 +57,7 @@ public class TradeSpireApiClient {
         String clientId, NQueryRequest nQueryRequest) throws RestClientException {
         Object postBody = nQueryRequest;
 
-        String path = UriComponentsBuilder.fromPath("/trades/search/trade/query").build().toUriString();
+        String path = UriComponentsBuilder.fromPath("/trades/search/onesource/trade/query").build().toUriString();
 
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
         final HttpHeaders headerParams = new HttpHeaders();

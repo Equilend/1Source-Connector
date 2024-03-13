@@ -12,8 +12,13 @@ public class TradeOut {
     private LocalDateTime tradeDate;
     private LocalDateTime postDate;
     private LocalDateTime settleDate;
+    private LocalDateTime accrualDate;
+    private Double rateOrSpread;
     private String tradeType;
     private Integer tradeTypeId;
+    private Index index;
+    private String status;
+    private Integer statusId;
     private Position position;
 
 }

@@ -1,7 +1,12 @@
 package com.intellecteu.onesource.integration;
 
+import static com.intellecteu.onesource.integration.EntityTestFactory.createFieldImpacted;
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
+import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.DISCREPANCY;
+import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RERATE;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralType.CASH;
 import static com.intellecteu.onesource.integration.model.onesource.CurrencyCd.USD;
@@ -21,6 +26,12 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventMetadata;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
@@ -43,7 +54,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
-import com.intellecteu.onesource.integration.repository.entity.onesource.CloudEventEntity;
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -224,7 +235,7 @@ public class ModelTestFactory {
             .positionStatus(positionStatus)
             .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(0.05d, 10, 12))
-            .positionType(new PositionType("CASH BORROW"))
+            .positionType(new PositionType(1, "CASH BORROW"))
             .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
             .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
             .endDate(LocalDateTime.now())
@@ -239,8 +250,8 @@ public class ModelTestFactory {
         return securityDetail;
     }
 
-    public static CloudEventEntity buildCloudEventEntity() {
-        return CloudEventEntity.builder()
+    public static CloudSystemEvent buildCloudEventModel() {
+        return CloudSystemEvent.builder()
             .id(UUID.randomUUID().toString())
             .specVersion("testSpecVersion")
             .type("testType")
@@ -250,8 +261,19 @@ public class ModelTestFactory {
             .relatedProcess("testRelatedProcess")
             .relatedSubProcess("testRelatedSubProcess")
             .dataContentType("testDataContentType")
-            .data("testData")
+            .eventData(buildSystemEventDataModel())
             .build();
+    }
+
+    public static SystemEventData buildSystemEventDataModel() {
+        FieldImpacted firstFieldImpacted = createFieldImpacted(ONE_SOURCE_RERATE, DISCREPANCY);
+        FieldImpacted secondFieldImpacted = createFieldImpacted(ONE_SOURCE_LOAN_CONTRACT, UNMATCHED);
+
+        SystemEventData dataModel = new SystemEventData();
+        dataModel.setMessage("Test message");
+        dataModel.setFieldsImpacted(List.of(firstFieldImpacted, secondFieldImpacted));
+        dataModel.setRelatedObjects(List.of(RelatedObject.notApplicable(), new RelatedObject("testId", "testType")));
+        return dataModel;
     }
 
     public static Price buildPrice() {
@@ -289,5 +311,24 @@ public class ModelTestFactory {
             .roundingRule(2)
             .roundingMode(ALWAYSUP)
             .build();
+    }
+
+    public static CloudEventMetadata buildCloudEventMetadata() {
+        return CloudEventMetadata.builder()
+            .specVersion("testSpecVersion")
+            .type("testType")
+            .source(URI.create("https://test.com"))
+            .subject("testSubject")
+            .time(LocalDateTime.now())
+            .relatedProcess("testRelatedProcess")
+            .relatedSubProcess("testRelatedSubProcess")
+            .dataContentType("testDataContentType")
+            .build();
+    }
+
+    public static IntegrationCloudEvent createIntegrationRecord() {
+        SystemEventData systemEventData = buildSystemEventDataModel();
+        CloudEventMetadata metadata = buildCloudEventMetadata();
+        return new IntegrationCloudEvent(metadata, systemEventData);
     }
 }

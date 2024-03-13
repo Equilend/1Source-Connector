@@ -13,112 +13,90 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.services.client.spire.dto.ReverseRepoTradeInputDTO;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * ReverseRepoTradeInputBulkDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class ReverseRepoTradeInputBulkDTO {
+  @JsonProperty("revRepoTradeInputDTOs")
+  private List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  public ReverseRepoTradeInputBulkDTO revRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
+    this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
+    return this;
+  }
 
-    @JsonProperty("revRepoTradeInputDTOs")
-    private List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs = null;
-
-    public ReverseRepoTradeInputBulkDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public ReverseRepoTradeInputBulkDTO addRevRepoTradeInputDTOsItem(ReverseRepoTradeInputDTO revRepoTradeInputDTOsItem) {
+    if (this.revRepoTradeInputDTOs == null) {
+      this.revRepoTradeInputDTOs = new ArrayList<>();
     }
+    this.revRepoTradeInputDTOs.add(revRepoTradeInputDTOsItem);
+    return this;
+  }
 
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+   /**
+   * Get revRepoTradeInputDTOs
+   * @return revRepoTradeInputDTOs
+  **/
+  @ApiModelProperty(value = "")
+  public List<ReverseRepoTradeInputDTO> getRevRepoTradeInputDTOs() {
+    return revRepoTradeInputDTOs;
+  }
+
+  public void setRevRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
+    this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    ReverseRepoTradeInputBulkDTO reverseRepoTradeInputBulkDTO = (ReverseRepoTradeInputBulkDTO) o;
+    return Objects.equals(this.revRepoTradeInputDTOs, reverseRepoTradeInputBulkDTO.revRepoTradeInputDTOs);
+  }
 
-    public ReverseRepoTradeInputBulkDTO revRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
-        this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
-        return this;
+  @Override
+  public int hashCode() {
+    return Objects.hash(revRepoTradeInputDTOs);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class ReverseRepoTradeInputBulkDTO {\n");
+    
+    sb.append("    revRepoTradeInputDTOs: ").append(toIndentedString(revRepoTradeInputDTOs)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    public ReverseRepoTradeInputBulkDTO addRevRepoTradeInputDTOsItem(
-        ReverseRepoTradeInputDTO revRepoTradeInputDTOsItem) {
-        if (this.revRepoTradeInputDTOs == null) {
-            this.revRepoTradeInputDTOs = new ArrayList<>();
-        }
-        this.revRepoTradeInputDTOs.add(revRepoTradeInputDTOsItem);
-        return this;
-    }
-
-    /**
-     * Get revRepoTradeInputDTOs
-     *
-     * @return revRepoTradeInputDTOs
-     **/
-    @ApiModelProperty(value = "")
-    public List<ReverseRepoTradeInputDTO> getRevRepoTradeInputDTOs() {
-        return revRepoTradeInputDTOs;
-    }
-
-    public void setRevRepoTradeInputDTOs(List<ReverseRepoTradeInputDTO> revRepoTradeInputDTOs) {
-        this.revRepoTradeInputDTOs = revRepoTradeInputDTOs;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        ReverseRepoTradeInputBulkDTO reverseRepoTradeInputBulkDTO = (ReverseRepoTradeInputBulkDTO) o;
-        return Objects.equals(this.qualifiedName, reverseRepoTradeInputBulkDTO.qualifiedName) &&
-            Objects.equals(this.revRepoTradeInputDTOs, reverseRepoTradeInputBulkDTO.revRepoTradeInputDTOs);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, revRepoTradeInputDTOs);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class ReverseRepoTradeInputBulkDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    revRepoTradeInputDTOs: ").append(toIndentedString(revRepoTradeInputDTOs)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

@@ -12,13 +12,13 @@ import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
@@ -91,8 +91,9 @@ class OneSourceApiServiceTest {
         ReflectionTestUtils.setField(service, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(service, VERSION_FIELD_INJECT, TEST_API_VERSION);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
-        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder());
-        builderMap.put(CONTRACT_INITIATION, new ContractInitiationCloudEventBuilder());
+        builderMap.put(GENERIC, new GenericRecordCloudEventBuilder(VERSION_FIELD_INJECT, TEST_ENDPOINT));
+        builderMap.put(CONTRACT_INITIATION,
+            new ContractInitiationCloudEventBuilder(VERSION_FIELD_INJECT, TEST_ENDPOINT));
         eventFactory = new CloudEventFactoryImpl(builderMap);
     }
 

@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.routes.contract_initiation_with_trade;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.AgreementProcessor;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.EventProcessor;
 import java.util.Arrays;

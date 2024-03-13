@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.onesource;
 
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import java.time.LocalDateTime;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

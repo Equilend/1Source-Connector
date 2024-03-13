@@ -13,293 +13,229 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModelProperty;
-
 import java.util.Objects;
+import java.util.Arrays;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * SResponse
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class SResponse {
+  @JsonProperty("data")
+  private Object data = null;
 
-    /**
-     * Gets or Sets code
-     */
-    public enum CodeEnum {
-        ERROR("ERROR"),
+  @JsonProperty("errCode")
+  private String errCode = null;
 
-        SUCCESS("SUCCESS");
+  @JsonProperty("error")
+  private Boolean error = null;
 
-        private String value;
+  @JsonProperty("message")
+  private String message = null;
 
-        CodeEnum(String value) {
-            this.value = value;
-        }
+  /**
+   * Gets or Sets status
+   */
+  public enum StatusEnum {
+    ERROR("ERROR"),
+    
+    SUCCESS("SUCCESS");
 
-        @JsonValue
-        public String getValue() {
-            return value;
-        }
+    private String value;
 
-        @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static CodeEnum fromValue(String value) {
-            for (CodeEnum b : CodeEnum.values()) {
-                if (b.value.equals(value)) {
-                    return b;
-                }
-            }
-            return null;
-        }
+    StatusEnum(String value) {
+      this.value = value;
     }
 
-    @JsonProperty("code")
-    private CodeEnum code = null;
-
-    @JsonProperty("data")
-    private Object data = null;
-
-    @JsonProperty("errCode")
-    private String errCode = null;
-
-    @JsonProperty("error")
-    private Boolean error = null;
-
-    @JsonProperty("message")
-    private String message = null;
-
-    /**
-     * Gets or Sets status
-     */
-    public enum StatusEnum {
-        ERROR("ERROR"),
-
-        SUCCESS("SUCCESS");
-
-        private String value;
-
-        StatusEnum(String value) {
-            this.value = value;
-        }
-
-        @JsonValue
-        public String getValue() {
-            return value;
-        }
-
-        @Override
-        public String toString() {
-            return String.valueOf(value);
-        }
-
-        @JsonCreator
-        public static StatusEnum fromValue(String value) {
-            for (StatusEnum b : StatusEnum.values()) {
-                if (b.value.equals(value)) {
-                    return b;
-                }
-            }
-            return null;
-        }
+    @JsonValue
+    public String getValue() {
+      return value;
     }
-
-    @JsonProperty("status")
-    private StatusEnum status = null;
-
-    @JsonProperty("success")
-    private Boolean success = null;
-
-    public SResponse code(CodeEnum code) {
-        this.code = code;
-        return this;
-    }
-
-    /**
-     * Get code
-     *
-     * @return code
-     **/
-    @ApiModelProperty(value = "")
-    public CodeEnum getCode() {
-        return code;
-    }
-
-    public void setCode(CodeEnum code) {
-        this.code = code;
-    }
-
-    public SResponse data(Object data) {
-        this.data = data;
-        return this;
-    }
-
-    /**
-     * Get data
-     *
-     * @return data
-     **/
-    @ApiModelProperty(value = "")
-    public Object getData() {
-        return data;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
-    public SResponse errCode(String errCode) {
-        this.errCode = errCode;
-        return this;
-    }
-
-    /**
-     * Get errCode
-     *
-     * @return errCode
-     **/
-    @ApiModelProperty(value = "")
-    public String getErrCode() {
-        return errCode;
-    }
-
-    public void setErrCode(String errCode) {
-        this.errCode = errCode;
-    }
-
-    public SResponse error(Boolean error) {
-        this.error = error;
-        return this;
-    }
-
-    /**
-     * Get error
-     *
-     * @return error
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isError() {
-        return error;
-    }
-
-    public void setError(Boolean error) {
-        this.error = error;
-    }
-
-    public SResponse message(String message) {
-        this.message = message;
-        return this;
-    }
-
-    /**
-     * Get message
-     *
-     * @return message
-     **/
-    @ApiModelProperty(value = "")
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public SResponse status(StatusEnum status) {
-        this.status = status;
-        return this;
-    }
-
-    /**
-     * Get status
-     *
-     * @return status
-     **/
-    @ApiModelProperty(value = "")
-    public StatusEnum getStatus() {
-        return status;
-    }
-
-    public void setStatus(StatusEnum status) {
-        this.status = status;
-    }
-
-    public SResponse success(Boolean success) {
-        this.success = success;
-        return this;
-    }
-
-    /**
-     * Get success
-     *
-     * @return success
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SResponse sresponse = (SResponse) o;
-        return Objects.equals(this.code, sresponse.code) &&
-            Objects.equals(this.data, sresponse.data) &&
-            Objects.equals(this.errCode, sresponse.errCode) &&
-            Objects.equals(this.error, sresponse.error) &&
-            Objects.equals(this.message, sresponse.message) &&
-            Objects.equals(this.status, sresponse.status) &&
-            Objects.equals(this.success, sresponse.success);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(code, data, errCode, error, message, status, success);
-    }
-
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SResponse {\n");
-
-        sb.append("    code: ").append(toIndentedString(code)).append("\n");
-        sb.append("    data: ").append(toIndentedString(data)).append("\n");
-        sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
-        sb.append("    error: ").append(toIndentedString(error)).append("\n");
-        sb.append("    message: ").append(toIndentedString(message)).append("\n");
-        sb.append("    status: ").append(toIndentedString(status)).append("\n");
-        sb.append("    success: ").append(toIndentedString(success)).append("\n");
-        sb.append("}");
-        return sb.toString();
+      return String.valueOf(value);
     }
 
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
         }
-        return o.toString().replace("\n", "\n    ");
+      }
+      return null;
     }
+  }
+
+  @JsonProperty("status")
+  private StatusEnum status = null;
+
+  @JsonProperty("success")
+  private Boolean success = null;
+
+  public SResponse data(Object data) {
+    this.data = data;
+    return this;
+  }
+
+   /**
+   * Get data
+   * @return data
+  **/
+  @ApiModelProperty(value = "")
+  public Object getData() {
+    return data;
+  }
+
+  public void setData(Object data) {
+    this.data = data;
+  }
+
+  public SResponse errCode(String errCode) {
+    this.errCode = errCode;
+    return this;
+  }
+
+   /**
+   * Get errCode
+   * @return errCode
+  **/
+  @ApiModelProperty(value = "")
+  public String getErrCode() {
+    return errCode;
+  }
+
+  public void setErrCode(String errCode) {
+    this.errCode = errCode;
+  }
+
+  public SResponse error(Boolean error) {
+    this.error = error;
+    return this;
+  }
+
+   /**
+   * Get error
+   * @return error
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isError() {
+    return error;
+  }
+
+  public void setError(Boolean error) {
+    this.error = error;
+  }
+
+  public SResponse message(String message) {
+    this.message = message;
+    return this;
+  }
+
+   /**
+   * Get message
+   * @return message
+  **/
+  @ApiModelProperty(value = "")
+  public String getMessage() {
+    return message;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public SResponse status(StatusEnum status) {
+    this.status = status;
+    return this;
+  }
+
+   /**
+   * Get status
+   * @return status
+  **/
+  @ApiModelProperty(value = "")
+  public StatusEnum getStatus() {
+    return status;
+  }
+
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
+
+  public SResponse success(Boolean success) {
+    this.success = success;
+    return this;
+  }
+
+   /**
+   * Get success
+   * @return success
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSuccess() {
+    return success;
+  }
+
+  public void setSuccess(Boolean success) {
+    this.success = success;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    SResponse sresponse = (SResponse) o;
+    return Objects.equals(this.data, sresponse.data) &&
+        Objects.equals(this.errCode, sresponse.errCode) &&
+        Objects.equals(this.error, sresponse.error) &&
+        Objects.equals(this.message, sresponse.message) &&
+        Objects.equals(this.status, sresponse.status) &&
+        Objects.equals(this.success, sresponse.success);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(data, errCode, error, message, status, success);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class SResponse {\n");
+    
+    sb.append("    data: ").append(toIndentedString(data)).append("\n");
+    sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
+    sb.append("    error: ").append(toIndentedString(error)).append("\n");
+    sb.append("    message: ").append(toIndentedString(message)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    success: ").append(toIndentedString(success)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

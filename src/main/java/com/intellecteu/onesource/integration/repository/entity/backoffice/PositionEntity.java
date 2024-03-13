@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.AttributeOverrides;
 import jakarta.persistence.Column;
@@ -78,9 +78,6 @@ public class PositionEntity {
     @Column(name = "security_id")
     private Long securityId;
 
-    @Column(name = "position_type_id")
-    private Integer positionTypeId;
-
     @Column(name = "processing_status")
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;
@@ -140,6 +137,7 @@ public class PositionEntity {
     @Embedded
     @JsonProperty("positiontypeDTO")
     @AttributeOverrides({
+        @AttributeOverride(name = "positionTypeId", column = @Column(name = "position_type_id")),
         @AttributeOverride(name = "positionType", column = @Column(name = "position_type"))
     })
     private PositionTypeEntity positionType;
@@ -147,6 +145,7 @@ public class PositionEntity {
     @Embedded
     @JsonProperty("indexDTO")
     @AttributeOverrides({
+        @AttributeOverride(name = "indexId", column = @Column(name = "index_id")),
         @AttributeOverride(name = "indexName", column = @Column(name = "index_name"))
     })
     private IndexEntity index;

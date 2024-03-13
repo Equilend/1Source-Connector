@@ -9,18 +9,25 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.RelatedObject;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Component
 public class GenericRecordCloudEventBuilder extends IntegrationCloudEventBuilder {
+
+    public GenericRecordCloudEventBuilder(
+        @Value("${cloudevents.specversion}") String specVersion,
+        @Value("${integration-toolkit.uri}") String integrationUri) {
+        super(specVersion, integrationUri);
+    }
 
     @Override
     public IntegrationProcess getVersion() {
@@ -28,7 +35,8 @@ public class GenericRecordCloudEventBuilder extends IntegrationCloudEventBuilder
     }
 
     @Override
-    public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException exception, IntegrationSubProcess subProcess) {
+    public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess) {
         return switch (subProcess) {
             case GET_1SOURCE_EVENTS -> createOneSourceExceptionCloudRequest(subProcess, exception);
             case GET_TRADE_EVENTS_PENDING_CONFIRMATION ->

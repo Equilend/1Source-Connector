@@ -2,9 +2,9 @@ package com.intellecteu.onesource.integration.services.systemevent;
 
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.record.CloudEventBuildRequest;
-import com.intellecteu.onesource.integration.dto.record.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import java.util.Map;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;

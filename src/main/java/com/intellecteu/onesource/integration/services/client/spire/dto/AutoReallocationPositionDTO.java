@@ -13,305 +13,274 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
+import java.util.Objects;
+import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * AutoReallocationPositionDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-07T21:15:14.632Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
 public class AutoReallocationPositionDTO {
+  @JsonProperty("doNotInstruct")
+  private Boolean doNotInstruct = null;
 
-    @JsonProperty("__qualifiedName")
-    private String qualifiedName = null;
+  @JsonProperty("doNotPost")
+  private Boolean doNotPost = null;
 
-    @JsonProperty("doNotInstruct")
-    private Boolean doNotInstruct = null;
+  @JsonProperty("omniLendingAccountId")
+  private Integer omniLendingAccountId = null;
 
-    @JsonProperty("doNotPost")
-    private Boolean doNotPost = null;
+  @JsonProperty("positionIds")
+  private List<Long> positionIds = null;
 
-    @JsonProperty("omniLendingAccountId")
-    private Integer omniLendingAccountId = null;
+  @JsonProperty("settleDate")
+  private LocalDateTime settleDate = null;
 
-    @JsonProperty("positionIds")
-    private List<Long> positionIds = null;
+  @JsonProperty("tradeDate")
+  private LocalDateTime tradeDate = null;
 
-    @JsonProperty("settleDate")
-    private LocalDateTime settleDate = null;
+  @JsonProperty("tradeReasonId")
+  private Integer tradeReasonId = null;
 
-    @JsonProperty("tradeDate")
-    private LocalDateTime tradeDate = null;
+  @JsonProperty("userId")
+  private Integer userId = null;
 
-    @JsonProperty("tradeReasonId")
-    private Integer tradeReasonId = null;
+  @JsonProperty("userName")
+  private String userName = null;
 
-    @JsonProperty("userId")
-    private Integer userId = null;
+  public AutoReallocationPositionDTO doNotInstruct(Boolean doNotInstruct) {
+    this.doNotInstruct = doNotInstruct;
+    return this;
+  }
 
-    @JsonProperty("userName")
-    private String userName = null;
+   /**
+   * Get doNotInstruct
+   * @return doNotInstruct
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotInstruct() {
+    return doNotInstruct;
+  }
 
-    public AutoReallocationPositionDTO qualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
-        return this;
+  public void setDoNotInstruct(Boolean doNotInstruct) {
+    this.doNotInstruct = doNotInstruct;
+  }
+
+  public AutoReallocationPositionDTO doNotPost(Boolean doNotPost) {
+    this.doNotPost = doNotPost;
+    return this;
+  }
+
+   /**
+   * Get doNotPost
+   * @return doNotPost
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isDoNotPost() {
+    return doNotPost;
+  }
+
+  public void setDoNotPost(Boolean doNotPost) {
+    this.doNotPost = doNotPost;
+  }
+
+  public AutoReallocationPositionDTO omniLendingAccountId(Integer omniLendingAccountId) {
+    this.omniLendingAccountId = omniLendingAccountId;
+    return this;
+  }
+
+   /**
+   * Get omniLendingAccountId
+   * @return omniLendingAccountId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getOmniLendingAccountId() {
+    return omniLendingAccountId;
+  }
+
+  public void setOmniLendingAccountId(Integer omniLendingAccountId) {
+    this.omniLendingAccountId = omniLendingAccountId;
+  }
+
+  public AutoReallocationPositionDTO positionIds(List<Long> positionIds) {
+    this.positionIds = positionIds;
+    return this;
+  }
+
+  public AutoReallocationPositionDTO addPositionIdsItem(Long positionIdsItem) {
+    if (this.positionIds == null) {
+      this.positionIds = new ArrayList<>();
     }
+    this.positionIds.add(positionIdsItem);
+    return this;
+  }
 
-    /**
-     * Get qualifiedName
-     *
-     * @return qualifiedName
-     **/
-    @ApiModelProperty(value = "")
-    public String getQualifiedName() {
-        return qualifiedName;
+   /**
+   * Get positionIds
+   * @return positionIds
+  **/
+  @ApiModelProperty(value = "")
+  public List<Long> getPositionIds() {
+    return positionIds;
+  }
+
+  public void setPositionIds(List<Long> positionIds) {
+    this.positionIds = positionIds;
+  }
+
+  public AutoReallocationPositionDTO settleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+    return this;
+  }
+
+   /**
+   * Get settleDate
+   * @return settleDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getSettleDate() {
+    return settleDate;
+  }
+
+  public void setSettleDate(LocalDateTime settleDate) {
+    this.settleDate = settleDate;
+  }
+
+  public AutoReallocationPositionDTO tradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+    return this;
+  }
+
+   /**
+   * Get tradeDate
+   * @return tradeDate
+  **/
+  @ApiModelProperty(value = "")
+  public LocalDateTime getTradeDate() {
+    return tradeDate;
+  }
+
+  public void setTradeDate(LocalDateTime tradeDate) {
+    this.tradeDate = tradeDate;
+  }
+
+  public AutoReallocationPositionDTO tradeReasonId(Integer tradeReasonId) {
+    this.tradeReasonId = tradeReasonId;
+    return this;
+  }
+
+   /**
+   * Get tradeReasonId
+   * @return tradeReasonId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getTradeReasonId() {
+    return tradeReasonId;
+  }
+
+  public void setTradeReasonId(Integer tradeReasonId) {
+    this.tradeReasonId = tradeReasonId;
+  }
+
+  public AutoReallocationPositionDTO userId(Integer userId) {
+    this.userId = userId;
+    return this;
+  }
+
+   /**
+   * Get userId
+   * @return userId
+  **/
+  @ApiModelProperty(value = "")
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Integer userId) {
+    this.userId = userId;
+  }
+
+  public AutoReallocationPositionDTO userName(String userName) {
+    this.userName = userName;
+    return this;
+  }
+
+   /**
+   * Get userName
+   * @return userName
+  **/
+  @ApiModelProperty(value = "")
+  public String getUserName() {
+    return userName;
+  }
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public void setQualifiedName(String qualifiedName) {
-        this.qualifiedName = qualifiedName;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    AutoReallocationPositionDTO autoReallocationPositionDTO = (AutoReallocationPositionDTO) o;
+    return Objects.equals(this.doNotInstruct, autoReallocationPositionDTO.doNotInstruct) &&
+        Objects.equals(this.doNotPost, autoReallocationPositionDTO.doNotPost) &&
+        Objects.equals(this.omniLendingAccountId, autoReallocationPositionDTO.omniLendingAccountId) &&
+        Objects.equals(this.positionIds, autoReallocationPositionDTO.positionIds) &&
+        Objects.equals(this.settleDate, autoReallocationPositionDTO.settleDate) &&
+        Objects.equals(this.tradeDate, autoReallocationPositionDTO.tradeDate) &&
+        Objects.equals(this.tradeReasonId, autoReallocationPositionDTO.tradeReasonId) &&
+        Objects.equals(this.userId, autoReallocationPositionDTO.userId) &&
+        Objects.equals(this.userName, autoReallocationPositionDTO.userName);
+  }
 
-    public AutoReallocationPositionDTO doNotInstruct(Boolean doNotInstruct) {
-        this.doNotInstruct = doNotInstruct;
-        return this;
+  @Override
+  public int hashCode() {
+    return Objects.hash(doNotInstruct, doNotPost, omniLendingAccountId, positionIds, settleDate, tradeDate, tradeReasonId, userId, userName);
+  }
+
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("class AutoReallocationPositionDTO {\n");
+    
+    sb.append("    doNotInstruct: ").append(toIndentedString(doNotInstruct)).append("\n");
+    sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
+    sb.append("    omniLendingAccountId: ").append(toIndentedString(omniLendingAccountId)).append("\n");
+    sb.append("    positionIds: ").append(toIndentedString(positionIds)).append("\n");
+    sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
+    sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
+    sb.append("    tradeReasonId: ").append(toIndentedString(tradeReasonId)).append("\n");
+    sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
+    sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
+    sb.append("}");
+    return sb.toString();
+  }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(Object o) {
+    if (o == null) {
+      return "null";
     }
-
-    /**
-     * Get doNotInstruct
-     *
-     * @return doNotInstruct
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotInstruct() {
-        return doNotInstruct;
-    }
-
-    public void setDoNotInstruct(Boolean doNotInstruct) {
-        this.doNotInstruct = doNotInstruct;
-    }
-
-    public AutoReallocationPositionDTO doNotPost(Boolean doNotPost) {
-        this.doNotPost = doNotPost;
-        return this;
-    }
-
-    /**
-     * Get doNotPost
-     *
-     * @return doNotPost
-     **/
-    @ApiModelProperty(value = "")
-    public Boolean isDoNotPost() {
-        return doNotPost;
-    }
-
-    public void setDoNotPost(Boolean doNotPost) {
-        this.doNotPost = doNotPost;
-    }
-
-    public AutoReallocationPositionDTO omniLendingAccountId(Integer omniLendingAccountId) {
-        this.omniLendingAccountId = omniLendingAccountId;
-        return this;
-    }
-
-    /**
-     * Get omniLendingAccountId
-     *
-     * @return omniLendingAccountId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getOmniLendingAccountId() {
-        return omniLendingAccountId;
-    }
-
-    public void setOmniLendingAccountId(Integer omniLendingAccountId) {
-        this.omniLendingAccountId = omniLendingAccountId;
-    }
-
-    public AutoReallocationPositionDTO positionIds(List<Long> positionIds) {
-        this.positionIds = positionIds;
-        return this;
-    }
-
-    public AutoReallocationPositionDTO addPositionIdsItem(Long positionIdsItem) {
-        if (this.positionIds == null) {
-            this.positionIds = new ArrayList<>();
-        }
-        this.positionIds.add(positionIdsItem);
-        return this;
-    }
-
-    /**
-     * Get positionIds
-     *
-     * @return positionIds
-     **/
-    @ApiModelProperty(value = "")
-    public List<Long> getPositionIds() {
-        return positionIds;
-    }
-
-    public void setPositionIds(List<Long> positionIds) {
-        this.positionIds = positionIds;
-    }
-
-    public AutoReallocationPositionDTO settleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-        return this;
-    }
-
-    /**
-     * Get settleDate
-     *
-     * @return settleDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getSettleDate() {
-        return settleDate;
-    }
-
-    public void setSettleDate(LocalDateTime settleDate) {
-        this.settleDate = settleDate;
-    }
-
-    public AutoReallocationPositionDTO tradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-        return this;
-    }
-
-    /**
-     * Get tradeDate
-     *
-     * @return tradeDate
-     **/
-    @ApiModelProperty(value = "")
-    public LocalDateTime getTradeDate() {
-        return tradeDate;
-    }
-
-    public void setTradeDate(LocalDateTime tradeDate) {
-        this.tradeDate = tradeDate;
-    }
-
-    public AutoReallocationPositionDTO tradeReasonId(Integer tradeReasonId) {
-        this.tradeReasonId = tradeReasonId;
-        return this;
-    }
-
-    /**
-     * Get tradeReasonId
-     *
-     * @return tradeReasonId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getTradeReasonId() {
-        return tradeReasonId;
-    }
-
-    public void setTradeReasonId(Integer tradeReasonId) {
-        this.tradeReasonId = tradeReasonId;
-    }
-
-    public AutoReallocationPositionDTO userId(Integer userId) {
-        this.userId = userId;
-        return this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return userId
-     **/
-    @ApiModelProperty(value = "")
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
-
-    public AutoReallocationPositionDTO userName(String userName) {
-        this.userName = userName;
-        return this;
-    }
-
-    /**
-     * Get userName
-     *
-     * @return userName
-     **/
-    @ApiModelProperty(value = "")
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        AutoReallocationPositionDTO autoReallocationPositionDTO = (AutoReallocationPositionDTO) o;
-        return Objects.equals(this.qualifiedName, autoReallocationPositionDTO.qualifiedName) &&
-            Objects.equals(this.doNotInstruct, autoReallocationPositionDTO.doNotInstruct) &&
-            Objects.equals(this.doNotPost, autoReallocationPositionDTO.doNotPost) &&
-            Objects.equals(this.omniLendingAccountId, autoReallocationPositionDTO.omniLendingAccountId) &&
-            Objects.equals(this.positionIds, autoReallocationPositionDTO.positionIds) &&
-            Objects.equals(this.settleDate, autoReallocationPositionDTO.settleDate) &&
-            Objects.equals(this.tradeDate, autoReallocationPositionDTO.tradeDate) &&
-            Objects.equals(this.tradeReasonId, autoReallocationPositionDTO.tradeReasonId) &&
-            Objects.equals(this.userId, autoReallocationPositionDTO.userId) &&
-            Objects.equals(this.userName, autoReallocationPositionDTO.userName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(qualifiedName, doNotInstruct, doNotPost, omniLendingAccountId, positionIds, settleDate,
-            tradeDate, tradeReasonId, userId, userName);
-    }
-
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class AutoReallocationPositionDTO {\n");
-
-        sb.append("    qualifiedName: ").append(toIndentedString(qualifiedName)).append("\n");
-        sb.append("    doNotInstruct: ").append(toIndentedString(doNotInstruct)).append("\n");
-        sb.append("    doNotPost: ").append(toIndentedString(doNotPost)).append("\n");
-        sb.append("    omniLendingAccountId: ").append(toIndentedString(omniLendingAccountId)).append("\n");
-        sb.append("    positionIds: ").append(toIndentedString(positionIds)).append("\n");
-        sb.append("    settleDate: ").append(toIndentedString(settleDate)).append("\n");
-        sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");
-        sb.append("    tradeReasonId: ").append(toIndentedString(tradeReasonId)).append("\n");
-        sb.append("    userId: ").append(toIndentedString(userId)).append("\n");
-        sb.append("    userName: ").append(toIndentedString(userName)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
-    }
+    return o.toString().replace("\n", "\n    ");
+  }
 
 }
 

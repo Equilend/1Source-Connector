@@ -3,7 +3,7 @@ package com.intellecteu.onesource.integration.repository.entity.onesource;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import jakarta.persistence.CascadeType;

@@ -2,9 +2,9 @@ package com.intellecteu.onesource.integration.api.controllers;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import com.intellecteu.onesource.integration.api.declineinstructions.DeclineInstructionService;
-import com.intellecteu.onesource.integration.api.dto.DeclineInstruction;
+import com.intellecteu.onesource.integration.api.dto.DeclineInstructionDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionApiService;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
@@ -27,23 +27,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/decline-instructions")
 public class DeclineInstructionController {
 
-    private final DeclineInstructionService declineInstructionService;
+    private final DeclineInstructionApiService declineInstructionApiService;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<PageResponse<DeclineInstruction>> getDeclineInstructions(final Pageable pageable,
+    public ResponseEntity<PageResponse<DeclineInstructionDto>> getDeclineInstructions(final Pageable pageable,
         @RequestParam(required = false) final MultiValueMap<String, String> parameters) {
-        PageResponse<DeclineInstruction> contracts = declineInstructionService.getAllInstructions(pageable, parameters);
+        PageResponse<DeclineInstructionDto> contracts = declineInstructionApiService.getAllInstructions(pageable,
+            parameters);
         return ResponseEntity
             .status(HttpStatus.OK)
             .body(contracts);
     }
 
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
-    public ResponseEntity<DeclineInstruction> createDeclineInstruction(
-        @NotNull @RequestBody DeclineInstruction declineInstruction) {
-        DeclineInstruction createdInstruction = declineInstructionService.createDeclineInstruction(declineInstruction);
+    public ResponseEntity<DeclineInstructionDto> createDeclineInstruction(
+        @NotNull @RequestBody DeclineInstructionDto declineInstructionDto) {
+        DeclineInstructionDto createdInstruction = declineInstructionApiService.createDeclineInstruction(
+            declineInstructionDto);
         return ResponseEntity
-            .status(HttpStatus.CREATED)
+            .status(HttpStatus.ACCEPTED)
             .body(createdInstruction);
     }
 }
