@@ -103,8 +103,9 @@ spire:
   baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083/lender}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_LOCAL:http://localhost:8083/lender}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT_LOCAL:http://localhost:8083/borrower}
-  username: ${SPIRE_LENDER_USERNAME_LOCAL:test-user}
-  password: ${SPIRE_LENDER_PASSWORD_LOCAL:12345}
+  userId: ${SPIRE_USERID_LOCAL:-1}
+  username: ${SPIRE_USERNAME_LOCAL:test-user}
+  password: ${SPIRE_PASSWORD_LOCAL:12345}
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}

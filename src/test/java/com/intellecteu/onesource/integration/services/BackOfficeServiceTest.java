@@ -50,6 +50,10 @@ class BackOfficeServiceTest {
     @Mock
     private InstructionSpireApiClient instructionClient;
 
+    private Integer userId = -1;
+
+    private String userName = "userName";
+
     @Mock
     private SpireMapper spireMapper;
 
@@ -63,7 +67,7 @@ class BackOfficeServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
-        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient,
+        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient, userId, userName,
             spireMapper, rerateTradeMapper, cloudEventRecordService);
     }
 

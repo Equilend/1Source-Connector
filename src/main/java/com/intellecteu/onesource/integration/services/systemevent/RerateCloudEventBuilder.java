@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CONFIRM_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
@@ -15,6 +16,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CONFIRM_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.GET_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.MATCHED_RERATE;
@@ -31,6 +33,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
@@ -75,6 +78,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         IntegrationSubProcess subProcess, String related) {
         return switch (subProcess) {
             case APPROVE_RERATE_PROPOSAL -> createApproveRerateExceptionCloudRequest(record, e, subProcess, related);
+            case POST_RERATE_TRADE_CONFIRMATION -> createConfirmRerateExceptionCloudRequest(record, e, subProcess, related);
             default -> null;
         };
     }
@@ -103,6 +107,13 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         );
     }
 
+    /**
+     * @param recorded - spireId
+     * @param exception
+     * @param subProcess
+     * @param related - tradeId
+     * @return
+     */
     private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(String recorded, HttpStatusCodeException exception,
         IntegrationSubProcess subProcess, String related) {
         String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, recorded, related, exception.getStatusText());
@@ -114,6 +125,26 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
+
+    /**
+     * @param recorded - spireId
+     * @param exception
+     * @param subProcess
+     * @param related - tradeId
+     * @return
+     */
+    private CloudEventBuildRequest createConfirmRerateExceptionCloudRequest(String recorded, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related) {
+        String dataMessage = format(CONFIRM_EXCEPTION_RERATE_MSG, related, recorded, exception.getStatusText());
+        return createRecordRequest(
+            TECHNICAL_EXCEPTION_SPIRE,
+            format(CONFIRM_EXCEPTION_RERATE, related),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
 
     @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,

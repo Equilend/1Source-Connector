@@ -2,6 +2,8 @@ package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_TRADE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -121,7 +123,7 @@ public class RerateProcessor {
             rerateTrade.setProcessingStatus(ProcessingStatus.SUBMITTED);
         } catch (HttpClientErrorException httpClientErrorException) {
             if (httpClientErrorException.getStatusCode().value() != 400) {
-                recordTechnicalExceptionPostRerateTo1Source(httpClientErrorException, rerateTrade.getTradeId());
+                recordPostRerateTo1SourceTechnicalException(httpClientErrorException, rerateTrade.getTradeId());
             }
         }
         return rerateTrade;
@@ -133,7 +135,7 @@ public class RerateProcessor {
             RerateTrade rerateTrade = rerateTradeService.findUnmatchedRerateTrade(
                 rerate.getContractId(), rerateEffectiveDate).orElse(null);
             if (rerateTrade != null) {
-                if(SUBMITTED.equals(rerateTrade.getProcessingStatus())){
+                if (SUBMITTED.equals(rerateTrade.getProcessingStatus())) {
                     //Initiator
                     rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
                     rerateTradeService.markRerateTradeAsMatchedWithRerate(rerateTrade, rerate);
@@ -141,7 +143,8 @@ public class RerateProcessor {
                     recordInitiator1SourceRerateSuccessMatchedCloudEvent(rerate);
                     return rerate;
                 }
-                if(CREATED.equals(rerateTrade.getProcessingStatus()) || UPDATED.equals(rerateTrade.getProcessingStatus())){
+                if (CREATED.equals(rerateTrade.getProcessingStatus()) || UPDATED.equals(
+                    rerateTrade.getProcessingStatus())) {
                     //Receiver
                     rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
                     rerateTradeService.markRerateTradeAsMatchedWithRerate(rerateTrade, rerate);
@@ -156,7 +159,7 @@ public class RerateProcessor {
         return rerate;
     }
 
-    public Rerate validate(Rerate rerate){
+    public Rerate validate(Rerate rerate) {
         RerateTrade rerateTrade = rerateTradeService.getByTradeId(rerate.getMatchingSpireTradeId());
         try {
             rerateReconcileService.reconcile(rerate, rerateTrade);
@@ -170,14 +173,24 @@ public class RerateProcessor {
         return rerate;
     }
 
-    public Rerate approve(Rerate rerate){
+    public Rerate approve(Rerate rerate) {
         try {
             oneSourceService.approveRerate(rerate.getContractId(), rerate.getRerateId());
             rerate.setProcessingStatus(SENT_FOR_APPROVAL);
-        }catch (HttpClientErrorException httpClientErrorException){
-            recordTechnicalExceptionApproveRerate(httpClientErrorException, rerate);
+        } catch (HttpClientErrorException httpClientErrorException) {
+            recordApproveRerateTechnicalException(httpClientErrorException, rerate);
         }
         return rerate;
+    }
+
+    public RerateTrade confirmRerateTrade(RerateTrade rerateTrade) {
+        try {
+            lenderBackOfficeService.confirmBackOfficeRerateTrade(rerateTrade);
+            rerateTrade.setProcessingStatus(CONFIRMED);
+        }catch (HttpClientErrorException httpClientErrorException){
+            recordConfirmationRerateTradeTechnicalException(httpClientErrorException, rerateTrade);
+        }
+        return rerateTrade;
     }
 
     private Optional<LocalDate> getRerateEffectiveDate(Rerate rerate) {
@@ -191,7 +204,7 @@ public class RerateProcessor {
         return Optional.empty();
     }
 
-    private void recordTechnicalExceptionPostRerateTo1Source(HttpClientErrorException httpClientErrorException,
+    private void recordPostRerateTo1SourceTechnicalException(HttpClientErrorException httpClientErrorException,
         Long spireRerateTradeId) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.RERATE);
@@ -200,12 +213,21 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordTechnicalExceptionApproveRerate(HttpClientErrorException httpClientErrorException,
+    private void recordApproveRerateTechnicalException(HttpClientErrorException httpClientErrorException,
         Rerate rerate) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.RERATE);
         var recordRequest = eventBuilder.buildExceptionRequest(rerate.getRerateId(), httpClientErrorException,
             APPROVE_RERATE_PROPOSAL, String.valueOf(rerate.getMatchingSpireTradeId()));
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordConfirmationRerateTradeTechnicalException(HttpClientErrorException httpClientErrorException,
+        RerateTrade rerateTrade) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildExceptionRequest(rerateTrade.getMatchingRerateId(), httpClientErrorException,
+            POST_RERATE_TRADE_CONFIRMATION, String.valueOf(rerateTrade.getTradeId()));
         cloudEventRecordService.record(recordRequest);
     }
 
