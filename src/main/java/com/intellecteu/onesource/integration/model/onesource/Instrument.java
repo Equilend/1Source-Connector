@@ -8,7 +8,7 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFi
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;

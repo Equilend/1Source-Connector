@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.toolkit;
 
 import com.intellecteu.onesource.integration.model.enums.RelatedProposalType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

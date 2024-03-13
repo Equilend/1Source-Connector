@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.services;
+package com.intellecteu.onesource.integration.services.reconciliation;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
@@ -49,11 +49,11 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
@@ -70,7 +70,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.lang.NonNull;
@@ -80,6 +80,9 @@ import org.springframework.stereotype.Service;
 @Service
 public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R extends Reconcilable>
     implements ReconcileService<T, R> {
+
+    public static final String RECONCILE_EXCEPTION = "The trade agreement %s is in discrepancies "
+        + "with the position %s in Spire";
 
     /**
      * Reconcile the trade agreement retrieved from OneSource against the position retrieved from Spire.
@@ -93,17 +96,22 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
     /*
      * Validates required fields presence and required data mismatches.
      */
-    List<ExceptionMessageDto> validateReconcilableObjects(T first, R second) {
-        var firstExceptionValidation = validateFunction().apply(first);
-        var secondExceptionValidation = validateFunction().apply(second);
-        var failsList = new ArrayList<ExceptionMessageDto>();
-        CollectionUtils.addIgnoreNull(failsList, firstExceptionValidation);
-        CollectionUtils.addIgnoreNull(failsList, secondExceptionValidation);
+    List<ProcessExceptionDetails> validateReconcilableObjects(T first, R second) {
+        var firstExceptionValidation = validateReconcilableObject().apply(first).stream()
+            .map(invalidField -> new ProcessExceptionDetails(null, invalidField, "null", FieldExceptionType.MISSING))
+            .toList();
+        var secondExceptionValidation = validateReconcilableObject().apply(second).stream()
+            .map(invalidField -> new ProcessExceptionDetails(null, invalidField, "null", FieldExceptionType.MISSING))
+            .toList();
+        var failsList = new ArrayList<ProcessExceptionDetails>();
+        CollectionUtils.addAll(failsList, firstExceptionValidation);
+        CollectionUtils.addAll(failsList, secondExceptionValidation);
         return failsList;
     }
 
-    List<ExceptionMessageDto> reconcileTrade(TradeAgreement trade, PositionDto positionDto) {
-        var failedList = new ArrayList<ExceptionMessageDto>();
+
+    List<ProcessExceptionDetails> reconcileTrade(TradeAgreement trade, PositionDto positionDto) {
+        var failedList = new ArrayList<ProcessExceptionDetails>();
         reconcileVenue(trade, positionDto).ifPresent(failedList::add);
         failedList.addAll(reconcileRate(trade.getRate(), positionDto));
         failedList.addAll(reconcileInstrument(trade.getInstrument(), positionDto));
@@ -118,25 +126,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failedList;
     }
 
-    /*
-     * Function to wrap try-catch and validate objects that implement Reconcilable interface.
-     */
-    private Function<Reconcilable, ExceptionMessageDto> validateFunction() {
-        return reconcilable -> {
-            try {
-                reconcilable.validateForReconciliation();
-            } catch (Exception e) {
-                if (e instanceof ValidationException exception) {
-                    return exception.getDto();
-                } else {
-                    log.error("Reconciliation unexpected error: " + e.getMessage());
-                }
-            }
-            return null;
-        };
-    }
-
-    private Optional<ExceptionMessageDto> reconcileLei(List<TransactingParty> transactionParties,
+    private Optional<ProcessExceptionDetails> reconcileLei(List<TransactingParty> transactionParties,
         PositionDto position) {
         var positionAccountLei = position.getAccountLei();
         var positionCpLei = position.getCpLei();
@@ -149,15 +139,15 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
                 }
             }
         }
-        var exceptionDto = new ExceptionMessageDto();
-        exceptionDto.setValue(GLEIF_LEI);
-        exceptionDto.setExceptionMessage("Reconciliation mismatch. OneSourceAccount Lei or CounterParty Lei "
+        var exceptionDto = new ProcessExceptionDetails();
+        exceptionDto.setFieldName(GLEIF_LEI);
+        exceptionDto.setFieldValue("Reconciliation mismatch. OneSourceAccount Lei or CounterParty Lei "
             + "is not matched with Spire Position Lei");
         return Optional.of(exceptionDto);
     }
 
-    private List<ExceptionMessageDto> reconcileCollateral(Collateral collateral, PositionDto position) {
-        List<ExceptionMessageDto> failsLog = new ArrayList<>();
+    private List<ProcessExceptionDetails> reconcileCollateral(Collateral collateral, PositionDto position) {
+        List<ProcessExceptionDetails> failsLog = new ArrayList<>();
         if (collateral.getContractPrice() != null) {
             checkEquality(collateral.getContractPrice(), CONTRACT_PRICE, position.getPrice(), POSITION_PRICE)
                 .ifPresent(failsLog::add);
@@ -184,7 +174,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
                 if (collateral.getType() != CollateralType.CASH) {
                     var msg = format("Reconciliation mismatch. OneSource %s must be %s when %s is empty",
                         COLLATERAL_TYPE, CollateralType.CASH, POSITION_COLLATERAL_TYPE);
-                    failsLog.add(new ExceptionMessageDto(COLLATERAL_TYPE, msg));
+                    failsLog.add(new ProcessExceptionDetails(null, COLLATERAL_TYPE, String.valueOf(collateral.getType()), FieldExceptionType.DISCREPANCY));
                 }
             } else {
                 checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
@@ -208,13 +198,14 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
     /*
      * If the SettlementType is DVP then the deliverFree must be True
      */
-    private Optional<ExceptionMessageDto> reconcileSettlementType(SettlementType settlementType, PositionDto position) {
+    private Optional<ProcessExceptionDetails> reconcileSettlementType(SettlementType settlementType,
+        PositionDto position) {
         if (settlementType != null && position.getDeliverFree() != null) {
             if ((settlementType == DVP && position.getDeliverFree())
                 || (settlementType == FOP && !position.getDeliverFree())) {
-                var exceptionDto = new ExceptionMessageDto();
-                exceptionDto.setValue(SETTLEMENT_TYPE);
-                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
+                var exceptionDto = new ProcessExceptionDetails();
+                exceptionDto.setFieldName(SETTLEMENT_TYPE);
+                exceptionDto.setFieldValue(String.format(RECONCILE_MISMATCH, SETTLEMENT_TYPE, settlementType,
                     DELIVER_FREE, position.getDeliverFree()));
                 return Optional.of(exceptionDto);
             }
@@ -226,9 +217,9 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
      * Must reconcile if present. At least one security identifier must be present
      * ('At least one' presence is checked inside PositionDto domain model logic)
      */
-    private List<ExceptionMessageDto> checkEqualityOfSecurityIdentifiers(Instrument instrument,
+    private List<ProcessExceptionDetails> checkEqualityOfSecurityIdentifiers(Instrument instrument,
         PositionDto position) {
-        List<ExceptionMessageDto> failsLog = new ArrayList<>();
+        List<ProcessExceptionDetails> failsLog = new ArrayList<>();
         var securityDetailDto = position.getSecurityDetailDto();
         if (securityDetailDto != null) {
             if (securityDetailDto.getCusip() != null) {
@@ -251,7 +242,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsLog;
     }
 
-    private Optional<ExceptionMessageDto> reconcileSettlementDate(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileSettlementDate(TradeAgreement trade, PositionDto positionDto) {
         if (trade.getSettlementDate() != null && positionDto.getSettleDate() != null) {
             return checkEquality(trade.getSettlementDate(), SETTLEMENT_DATE,
                 positionDto.getSettleDate().toLocalDate(), SETTLE_DATE);
@@ -259,7 +250,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileTradeDate(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileTradeDate(TradeAgreement trade, PositionDto positionDto) {
         if (trade.getTradeDate() != null && positionDto.getTradeDate() != null) {
             return checkEquality(trade.getTradeDate(), TRADE_DATE,
                 positionDto.getTradeDate().toLocalDate(), POSITION_TRADE_DATE);
@@ -267,7 +258,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileDividendRate(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileDividendRate(TradeAgreement trade, PositionDto positionDto) {
         if (positionDto.getLoanBorrowDto() != null && positionDto.getLoanBorrowDto().getTaxWithholdingRate() != null
             && trade.getDividendRatePct() != null) {
             return checkEquality(trade.getDividendRatePct().doubleValue(), DIVIDENT_RATE_PCT,
@@ -276,7 +267,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileQuantity(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileQuantity(TradeAgreement trade, PositionDto positionDto) {
         if (trade.getQuantity() != null) {
             return checkEquality(trade.getQuantity().doubleValue(), QUANTITY,
                 positionDto.getQuantity(), POSITION_QUANTITY);
@@ -284,13 +275,13 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileVenue(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileVenue(TradeAgreement trade, PositionDto positionDto) {
         return checkEquality(trade.getVenue().getVenueRefKey(), VENUE_REF_ID,
             positionDto.getCustomValue2(), CUSTOM_VALUE_2);
     }
 
-    private List<ExceptionMessageDto> reconcileRate(Rate rate, PositionDto positionDto) {
-        List<ExceptionMessageDto> failsLog = new ArrayList<>();
+    private List<ProcessExceptionDetails> reconcileRate(Rate rate, PositionDto positionDto) {
+        List<ProcessExceptionDetails> failsLog = new ArrayList<>();
 
         if (rate != null && positionDto != null) {
             var positionRate = positionDto.getRate();
@@ -304,7 +295,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsLog;
     }
 
-    private Optional<ExceptionMessageDto> reconcileFixedRebate(RebateRate rebate, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileFixedRebate(RebateRate rebate, PositionDto positionDto) {
         if (rebate != null && rebate.getFixed() != null) {
             final LocalDate effectiveDate = rebate.getFixed().getEffectiveDate();
             final LocalDateTime settleDate = positionDto.getSettleDate();
@@ -316,7 +307,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileFloatingRebate(RebateRate rebate, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileFloatingRebate(RebateRate rebate, PositionDto positionDto) {
         if (rebate != null && rebate.getFloating() != null && positionDto.getIndexDto() != null) {
             final Double spread = rebate.getFloating().getSpread();
             final Double positionSpread = positionDto.getIndexDto().getSpread();
@@ -327,13 +318,13 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ExceptionMessageDto> reconcileTermType(TermType termType, Integer termId) {
+    private Optional<ProcessExceptionDetails> reconcileTermType(TermType termType, Integer termId) {
         if (termType != null && termId != null) {
             if ((termId.equals(1) && termType != TermType.OPEN)
                 || (termId.equals(2) && termType != TermType.TERM)) {
-                var exceptionDto = new ExceptionMessageDto();
-                exceptionDto.setValue(TERM_TYPE);
-                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, TERM_TYPE, termType,
+                var exceptionDto = new ProcessExceptionDetails();
+                exceptionDto.setFieldName(TERM_TYPE);
+                exceptionDto.setFieldValue(String.format(RECONCILE_MISMATCH, TERM_TYPE, termType,
                     POSITION_TERM_ID, termId));
                 return Optional.of(exceptionDto);
             }
@@ -341,21 +332,21 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private List<ExceptionMessageDto> reconcileInstrument(Instrument instrument, PositionDto positionDto) {
+    private List<ProcessExceptionDetails> reconcileInstrument(Instrument instrument, PositionDto positionDto) {
         var failsList = checkEqualityOfSecurityIdentifiers(instrument, positionDto);
         failsList.addAll(checkInstrumentUnit(instrument.getPrice(), positionDto.getSecurityDetailDto()));
         return failsList;
     }
 
-    private List<ExceptionMessageDto> checkInstrumentUnit(Price price, SecurityDetailDto securityDetailDto) {
-        List<ExceptionMessageDto> failsLog = new ArrayList<>();
+    private List<ProcessExceptionDetails> checkInstrumentUnit(Price price, SecurityDetailDto securityDetailDto) {
+        List<ProcessExceptionDetails> failsLog = new ArrayList<>();
         if (price != null && securityDetailDto != null && securityDetailDto.getPriceFactor() != null) {
             final Integer priceFactor = securityDetailDto.getPriceFactor();
             if ((priceFactor.equals(1) && price.getUnit() != SHARE)
                 || (!priceFactor.equals(1) && price.getUnit() != LOT)) {
-                var exceptionDto = new ExceptionMessageDto();
-                exceptionDto.setValue(PRICE_UNIT);
-                exceptionDto.setExceptionMessage(String.format(RECONCILE_MISMATCH, PRICE_UNIT, price.getUnit(),
+                var exceptionDto = new ProcessExceptionDetails();
+                exceptionDto.setFieldName(PRICE_UNIT);
+                exceptionDto.setFieldValue(String.format(RECONCILE_MISMATCH, PRICE_UNIT, price.getUnit(),
                     POSITION_PRICE_FACTOR, priceFactor));
                 failsLog.add(exceptionDto);
             }
@@ -363,12 +354,12 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsLog;
     }
 
-    Optional<ExceptionMessageDto> checkEquality(@NonNull Object first, String firstName, @NonNull Object second,
+    Optional<ProcessExceptionDetails> checkEquality(@NonNull Object first, String firstName, @NonNull Object second,
         String secondName) {
         if (!Objects.equals(first, second)) {
             var msg = String.format(RECONCILE_MISMATCH, first, firstName, second, secondName);
             log.debug(msg);
-            return Optional.of(new ExceptionMessageDto(firstName, msg));
+            return Optional.of(new ProcessExceptionDetails(null, firstName, String.valueOf(first), FieldExceptionType.DISCREPANCY));
         }
         return Optional.empty();
     }

@@ -1,17 +1,17 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.ContractProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;

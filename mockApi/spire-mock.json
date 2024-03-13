@@ -1002,16 +1002,23 @@
           "rules": [
             {
               "target": "body",
-              "modifier": "nQuery.tuples.1.tradeId",
+              "modifier": "nquery.tuples.1.rvalue1",
               "value": "2",
               "invert": true,
               "operator": "equals"
+            },
+            {
+              "target": "body",
+              "modifier": "nquery.tuples.1.lvalue",
+              "value": "tradeId",
+              "invert": false,
+              "operator": "equals"
             }
           ],
-          "rulesOperator": "OR",
+          "rulesOperator": "AND",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": true,
+          "default": false,
           "crudKey": "id",
           "callbacks": []
         },
@@ -1035,7 +1042,7 @@
           "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false,
+          "default": true,
           "crudKey": "id",
           "callbacks": []
         }

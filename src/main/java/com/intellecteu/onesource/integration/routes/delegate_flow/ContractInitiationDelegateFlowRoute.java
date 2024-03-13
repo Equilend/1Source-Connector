@@ -1,9 +1,9 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.Arrays;

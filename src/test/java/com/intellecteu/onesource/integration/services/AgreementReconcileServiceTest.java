@@ -1,9 +1,9 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.DtoTestFactory.buildPositionDtoFromTradeAgreement;
-import static com.intellecteu.onesource.integration.exception.ReconcileException.RECONCILE_EXCEPTION;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
+import static com.intellecteu.onesource.integration.services.reconciliation.OneSourceSpireReconcileService.RECONCILE_EXCEPTION;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -24,6 +24,8 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
+import com.intellecteu.onesource.integration.services.reconciliation.AgreementReconcileService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

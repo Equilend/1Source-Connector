@@ -44,7 +44,7 @@ import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
@@ -245,6 +245,7 @@ public class BackOfficeService {
 
     private boolean responseHasData(ResponseEntity<SResponseNQueryResponsePositionOutDTO> response) {
         return response.getBody() != null && response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
             && response.getBody().getData().getTotalRows() > 0;
     }
 
@@ -256,6 +257,7 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
                 nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
                 return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
@@ -279,6 +281,7 @@ public class BackOfficeService {
         try {
             ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
             if (response.getBody().getData() != null
+                && response.getBody().getData().getTotalRows() != null
                 && response.getBody().getData().getTotalRows() > 0) {
                 List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
                 return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
@@ -358,7 +361,9 @@ public class BackOfficeService {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
                 .getPositions(request);
             if (responseHasData(response)) {
-                if (response.getBody().getData().getTotalRows() > 1) {
+                if (response.getBody().getData() != null
+                    && response.getBody().getData().getTotalRows() != null
+                    && response.getBody().getData().getTotalRows() > 1) {
                     log.warn("Multiple response found! Getting the first element");
                 }
                 var positionResponse = response.getBody().getData().getBeans().get(0);
@@ -498,8 +503,8 @@ public class BackOfficeService {
     private List<NQueryTuple> createTuplesGetNewTrades(String maxTradeId) {
         List<NQueryTuple> tuples = new ArrayList<>();
         tuples.add(
-            new NQueryTuple().lValue("tradetype").operator(NQueryTuple.OperatorEnum.IN)
-                .rValue1("RERATE,RERATE BORROW"));
+            new NQueryTuple().lValue("tradeType").operator(NQueryTuple.OperatorEnum.IN)
+                .rValue1("Rerate, Rerate Borrow"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
         tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
             .rValue1("PENDING ONESOURCE CONFIRMATION"));
@@ -512,6 +517,7 @@ public class BackOfficeService {
         rerateTrade.setTradeOut(tradeOut);
         rerateTrade.setTradeId(tradeOut.getTradeId());
         rerateTrade.setRelatedPositionId(Long.valueOf(tradeOut.getPosition().getPositionId()));
+        rerateTrade.setRelatedContractId(tradeOutDTO.getPositionOutDTO().getLedgerId());
         return rerateTrade;
     }
 

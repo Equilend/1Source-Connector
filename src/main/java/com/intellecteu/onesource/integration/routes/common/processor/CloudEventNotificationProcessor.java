@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.routes.common.processor;
 
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.PROCESSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
 
 import com.intellecteu.onesource.integration.exception.ConvertException;
 import com.intellecteu.onesource.integration.mapper.CloudSystemEventMapper;

@@ -3,9 +3,9 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
 
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -95,7 +96,7 @@ public class AgreementService {
     }
 
     private void recordFailReconciliationCloudEvent(Agreement agreement, ReconcileException exception) {
-        exception.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
+        exception.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,

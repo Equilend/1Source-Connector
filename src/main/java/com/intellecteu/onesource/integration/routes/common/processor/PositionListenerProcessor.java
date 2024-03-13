@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.routes.common.processor;
 
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.BackOfficeService;

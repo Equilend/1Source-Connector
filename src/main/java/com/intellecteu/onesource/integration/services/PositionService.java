@@ -5,7 +5,7 @@ import static com.intellecteu.onesource.integration.model.enums.PositionStatusEn
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import java.time.LocalDateTime;
