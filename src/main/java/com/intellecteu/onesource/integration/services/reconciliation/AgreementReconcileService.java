@@ -1,9 +1,8 @@
-package com.intellecteu.onesource.integration.services;
+package com.intellecteu.onesource.integration.services.reconciliation;
 
-import static com.intellecteu.onesource.integration.exception.ReconcileException.RECONCILE_EXCEPTION;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -17,13 +16,13 @@ public class AgreementReconcileService extends OneSourceSpireReconcileService<Ag
 
     @Override
     public void reconcile(Agreement agreementDto, PositionDto positionDto) throws ReconcileException {
-        var reconciliationFailMessages = new ArrayList<ExceptionMessageDto>();
+        var reconciliationFailMessages = new ArrayList<ProcessExceptionDetails>();
         var tradeAgreement = agreementDto.getTrade();
         reconciliationFailMessages.addAll(validateReconcilableObjects(agreementDto, positionDto));
         reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
         if (!reconciliationFailMessages.isEmpty()) {
             String errorMsg = format(RECONCILE_EXCEPTION, agreementDto.getAgreementId(), positionDto.getPositionId());
-            reconciliationFailMessages.forEach(msg -> log.debug(msg.getExceptionMessage()));
+            reconciliationFailMessages.forEach(msg -> log.debug(msg.getFieldValue()));
             throw new ReconcileException(errorMsg, reconciliationFailMessages);
         }
     }

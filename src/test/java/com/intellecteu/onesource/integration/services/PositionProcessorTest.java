@@ -4,7 +4,7 @@
 //import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 //import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 //import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
-//import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.*;
+//import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.*;
 //import static org.mockito.ArgumentMatchers.any;
 //import static org.mockito.Mockito.doNothing;
 //import static org.mockito.Mockito.never;

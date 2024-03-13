@@ -22,8 +22,8 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFi
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
-import com.intellecteu.onesource.integration.services.Reconcilable;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import java.time.LocalDateTime;
 import java.util.Objects;

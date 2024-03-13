@@ -3,7 +3,7 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.contract.ContractProcessFlowStrategy;
 import com.intellecteu.onesource.integration.services.ContractService;

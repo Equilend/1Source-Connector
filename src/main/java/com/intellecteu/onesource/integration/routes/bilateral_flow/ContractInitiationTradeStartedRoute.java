@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.routes.bilateral_flow;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.onesource.ProcessingStatus;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.AgreementProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import java.util.Arrays;

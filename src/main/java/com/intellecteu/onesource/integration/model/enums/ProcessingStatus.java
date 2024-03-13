@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.model.onesource;
+package com.intellecteu.onesource.integration.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -25,6 +25,7 @@ public enum ProcessingStatus {
     TRADE_RECONCILED("TRADE_RECONCILED"),
     TRADE_CANCELED("TRADE_CANCELED"),
     SAVED("SAVED"),
+    SENT_FOR_APPROVAL("SENT_FOR_APPROVAL", true),
     SETTLED("SETTLED"),
     SI_FETCHED("SI_FETCHED"),
     SPIRE_ISSUE("SPIRE_ISSUE"),
@@ -32,14 +33,21 @@ public enum ProcessingStatus {
     SUBMITTED("SUBMITTED"),
     TO_CANCEL("TO_CANCEL"),
     TO_DECLINE("TO_DECLINE"),
+    TO_VALIDATE("TO_VALIDATE"),
     UNMATCHED("UNMATCHED"),
     UPDATED("UPDATED"),
     VALIDATED("VALIDATED");
 
     private final String value;
+    private boolean isTechnical;
 
     ProcessingStatus(String value) {
         this.value = value;
+    }
+
+    ProcessingStatus(String value, Boolean isTechnical) {
+        this.value = value;
+        this.isTechnical = isTechnical;
     }
 
     @JsonValue

@@ -85,14 +85,25 @@ logging:
             services: DEBUG
             utils: DEBUG
     org:
-      apache:
-        kafka: WARN
-      springframework:
-        web:
-          client:
-            RestTemplate: INFO
-    #        transaction:
-    #          interceptor: TRACE
+      #      hibernate:
+      #        SQL: DEBUG
+      #        type:
+      #          descriptor:
+      #            sql:
+      #              BasicBinder: TRACE
+      #      apache:
+      #        kafka: WARN
+      #        camel:
+      #          spi:
+      #            ExceptionHandler: ERROR
+      #      springframework:
+      #        orm:
+      #          jpa:  DEBUG
+      #        transaction:
+      #          interceptor: DEBUG
+      web:
+        client:
+          RestTemplate: INFO
     root: INFO
 
 onesource:

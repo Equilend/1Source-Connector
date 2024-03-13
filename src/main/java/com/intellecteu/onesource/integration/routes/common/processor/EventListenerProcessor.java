@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.routes.common.processor;
 
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.OneSourceService;

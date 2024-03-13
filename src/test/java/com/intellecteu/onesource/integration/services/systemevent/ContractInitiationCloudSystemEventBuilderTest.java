@@ -6,7 +6,8 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.intellecteu.onesource.integration.DtoTestFactory;
-import com.intellecteu.onesource.integration.dto.ExceptionMessageDto;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import java.util.List;
@@ -26,9 +27,9 @@ class ContractInitiationCloudSystemEventBuilderTest {
     void createTradeAgreementReconcileFailBuildRequest() {
         var agreement = DtoTestFactory.buildAgreementDto();
         var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(agreement.getTrade());
-        var firstException = new ExceptionMessageDto(QUANTITY, "First test message");
-        var secondException = new ExceptionMessageDto(GLEIF_LEI, "Second test message");
-        var thirdException = new ExceptionMessageDto(FIGI, "Third test message");
+        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message", FieldExceptionType.DISCREPANCY);
+        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message", FieldExceptionType.DISCREPANCY);
+        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message", FieldExceptionType.DISCREPANCY);
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
@@ -49,9 +50,9 @@ class ContractInitiationCloudSystemEventBuilderTest {
     void createLoanContractProposalReconcileFailBuildRequest() {
         var contractDto = DtoTestFactory.buildContractDto();
         var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(contractDto.getTrade());
-        var firstException = new ExceptionMessageDto(QUANTITY, "First test message");
-        var secondException = new ExceptionMessageDto(GLEIF_LEI, "Second test message");
-        var thirdException = new ExceptionMessageDto(FIGI, "Third test message");
+        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message", FieldExceptionType.DISCREPANCY);
+        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message", FieldExceptionType.DISCREPANCY);
+        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message", FieldExceptionType.DISCREPANCY);
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """

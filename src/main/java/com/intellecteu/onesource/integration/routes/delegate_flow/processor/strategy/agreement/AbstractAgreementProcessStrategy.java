@@ -9,14 +9,14 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TRADE_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.onesource.ProcessingStatus.TRADE_RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static java.lang.String.format;
@@ -42,7 +42,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.ReconcileService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -100,7 +100,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             cloudEventRecordService.record(recordRequest);
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
-            e.getErrorList().forEach(msg -> log.debug(msg.getExceptionMessage()));
+            e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
             agreement.getTrade().setProcessingStatus(DISCREPANCIES);
             position.setProcessingStatus(TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
