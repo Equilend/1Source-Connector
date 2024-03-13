@@ -38,6 +38,7 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.NQuery;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum;
+import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseInstructionDTO;
@@ -56,6 +57,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
@@ -74,9 +76,24 @@ public class BackOfficeService {
     private final PositionSpireApiClient positionSpireApiClient;
     private final TradeSpireApiClient tradeSpireApiClient;
     private final InstructionSpireApiClient instructionClient;
+    private final Integer userId;
+    private final String userName;
     private final SpireMapper spireMapper;
     private final BackOfficeMapper backOfficeMapper;
     private final CloudEventRecordService cloudEventRecordService;
+
+    public BackOfficeService(PositionSpireApiClient positionSpireApiClient, TradeSpireApiClient tradeSpireApiClient,
+        InstructionSpireApiClient instructionClient, Integer userId, String userName, SpireMapper spireMapper, BackOfficeMapper backOfficeMapper,
+        CloudEventRecordService cloudEventRecordService) {
+        this.positionSpireApiClient = positionSpireApiClient;
+        this.tradeSpireApiClient = tradeSpireApiClient;
+        this.instructionClient = instructionClient;
+        this.userId = userId;
+        this.userName = userName;
+        this.spireMapper = spireMapper;
+        this.backOfficeMapper = backOfficeMapper;
+        this.cloudEventRecordService = cloudEventRecordService;
+    }
 
     public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
         String maxPositionId = lastPositionId.orElse(STARTING_POSITION_ID);
@@ -191,6 +208,16 @@ public class BackOfficeService {
             }
         }
         return List.of();
+    }
+
+    public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade){
+        OneSourceConfimationDTO body = new OneSourceConfimationDTO();
+        body.setTradeId(rerateTrade.getTradeId());
+        body.setPositionId(rerateTrade.getRelatedPositionId());
+        body.setLedgerId(rerateTrade.getMatchingRerateId());
+        body.userId(userId);
+        body.setUserName(userName);
+        tradeSpireApiClient.confirmTrade(body);
     }
 
     public Optional<Settlement> retrieveSettlementInstruction(Position position,
@@ -403,17 +430,6 @@ public class BackOfficeService {
         final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(exception,
             IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION);
         cloudEventRecordService.record(recordRequest);
-    }
-
-    public BackOfficeService(PositionSpireApiClient positionSpireApiClient, TradeSpireApiClient tradeSpireApiClient,
-        InstructionSpireApiClient instructionClient, SpireMapper spireMapper, BackOfficeMapper backOfficeMapper,
-        CloudEventRecordService cloudEventRecordService) {
-        this.positionSpireApiClient = positionSpireApiClient;
-        this.tradeSpireApiClient = tradeSpireApiClient;
-        this.instructionClient = instructionClient;
-        this.spireMapper = spireMapper;
-        this.backOfficeMapper = backOfficeMapper;
-        this.cloudEventRecordService = cloudEventRecordService;
     }
 
 }

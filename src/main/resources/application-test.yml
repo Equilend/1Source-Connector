@@ -92,8 +92,8 @@ spire:
   baseEndpoint: ${SPIRE_BASE_ENDPOINT:http://spire-mock:8083/lender}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT:http://spire-mock:8083/lender}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT:http://spire-mock:8083/borrower}
-  username: ${SPIRE_LENDER_USERNAME:test-user}
-  password: ${SPIRE_LENDER_PASSWORD:12345}
+  username: ${SPIRE_USERNAME:test-user}
+  password: ${SPIRE_PASSWORD:12345}
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}

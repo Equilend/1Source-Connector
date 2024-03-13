@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -216,6 +217,27 @@ class RerateProcessorTest {
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).approveRerate(any(), any());
 
         Rerate result = rerateProcessor.approve(rerate);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void confirmRerateTrade_OkResponse_SENTFORAPPROVALStatus() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(1l);
+
+        RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
+
+        assertEquals(CONFIRMED, result.getProcessingStatus());
+    }
+
+    @Test
+    void confirmRerateTrade_NotOkResponse_RecordTechnicalExceptionEvent() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(1l);
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(lenderBackOfficeService).confirmBackOfficeRerateTrade(any());
+
+        RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
 
         verify(cloudEventRecordService, times(1)).record(any());
     }

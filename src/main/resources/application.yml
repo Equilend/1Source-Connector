@@ -83,8 +83,9 @@ spire:
   baseEndpoint: ${SPIRE_BASE_ENDPOINT}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT}
-  username: ${SPIRE_LENDER_USERNAME}
-  password: ${SPIRE_LENDER_PASSWORD}
+  userId: ${SPIRE_USERID}
+  username: ${SPIRE_USERNAME}
+  password: ${SPIRE_PASSWORD}
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
