@@ -18,9 +18,15 @@ public class DeclineInstructionDto {
     @NotEmpty(message = "The Decline Instruction Id is required.")
     @JsonProperty(required = true)
     private String declineInstructionId;
+    @NotEmpty(message = "The Related Exception Event Id is required.")
+    @JsonProperty(required = true)
     private String relatedExceptionEventId;
+    @NotEmpty(message = "The Related Proposal Id is required.")
+    @JsonProperty(required = true)
     private String relatedProposalId;
     private RelatedProposalType relatedProposalType;
+    @NotEmpty(message = "The Creation Date Time is required.")
+    @JsonProperty(required = true)
     private LocalDateTime creationDateTime;
     private String userId;
     private String declineReasonCode;

@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 interface DeclineInstructionApiRepository extends JpaRepository<DeclineInstructionEntity, String>,
     JpaSpecificationExecutor<DeclineInstructionEntity> {
 
+    boolean existsByRelatedExceptionEventId(String eventId);
+
 }

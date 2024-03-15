@@ -989,9 +989,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeclineInstruction'
-        '400':
-          description: Bad request. Check the response body
+        '404':
+          description: The related cloud event or proposal is not found for the required decline instruction
         '401':
           description: The access to the API is not authorized
+        '406':
+          description: The decline instruction is not acceptable
         '500':
-          description: The API is not getting the data due to a technical error
+          description: The decline instruction cannot be processed due to a technical error

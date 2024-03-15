@@ -10,4 +10,6 @@ public interface ContractApiRepository extends JpaRepository<ContractEntity, Lon
 
     Optional<ContractEntity> getByContractId(String contractId);
 
+    Optional<ProcessingStatusDbResponse> getProcessingStatusByContractId(String contractId);
+
 }

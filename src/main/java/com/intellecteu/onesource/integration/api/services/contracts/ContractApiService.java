@@ -24,6 +24,7 @@ import static com.intellecteu.onesource.integration.api.services.contracts.OneSo
 
 import com.intellecteu.onesource.integration.api.dto.ContractDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -66,6 +67,11 @@ public class ContractApiService {
     public ContractDto getContractById(String id) {
         Optional<ContractEntity> contract = contractRepository.getByContractId(id);
         return contract.map(mapper::toDto).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Optional<ProcessingStatus> getProcessingStatusByContractId(String contractId) {
+        return contractRepository.getProcessingStatusByContractId(contractId)
+            .map(ProcessingStatusDbResponse::getProcessingStatus);
     }
 
     private Specification<ContractEntity> createSpecificationForContract(MultiValueMap<String, String> parameters) {
