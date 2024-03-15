@@ -5,12 +5,12 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
-import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
+import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.isLender;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -18,10 +18,10 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
@@ -74,6 +74,7 @@ public class EventProcessor {
             .ifPresent(agreement -> recordCloudEvent(eventUri));
     }
 
+    @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
     @Transactional
     public void processContractEvent(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
@@ -169,10 +170,10 @@ public class EventProcessor {
     private Contract enrichContract(Contract contract, TradeEvent event) {
         contract.getTrade().setEventId(event.getEventId());
         contract.getTrade().setResourceUri(event.getResourceUri());
-        contract.setEventType(event.getEventType());
+//        contract.setEventType(event.getEventType());
         contract.setProcessingStatus(NEW);
-        contract.setFlowStatus(TRADE_DATA_RECEIVED);
-        contract.setLastEvent(event);
+//        contract.setFlowStatus(TRADE_DATA_RECEIVED);
+//        contract.setLastEvent(event);
         return contract;
     }
 

@@ -6,11 +6,6 @@ import static com.intellecteu.onesource.integration.model.enums.PositionStatusEn
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FAILED;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FUTURE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_SETTLED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -18,6 +13,11 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.SettlementStatusUpdateDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -71,7 +70,6 @@ public class PositionPendingConfirmationProcessor {
     private final AgreementService agreementService;
     private final ContractService contractService;
     private final SpireMapper spireMapper;
-    private final EventMapper eventMapper;
     private final PositionService positionService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
@@ -219,7 +217,7 @@ public class PositionPendingConfirmationProcessor {
     private void processSettledStatusForContract(PositionDto positionDto) {
         contractService.findByVenueRefId(positionDto.getCustomValue2())
             .ifPresent(contract -> {
-                contract.setSettlementStatus(SettlementStatus.SETTLED);
+//                contract.setSettlementStatus(SettlementStatus.SETTLED);
                 executeSettledContractUpdate(contract);
                 contractService.save(contract);
                 recordCloudEvent(contract.getContractId(), LOAN_CONTRACT_SETTLED,

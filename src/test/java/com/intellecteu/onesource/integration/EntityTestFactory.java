@@ -30,7 +30,6 @@ import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
@@ -83,10 +82,8 @@ public class EntityTestFactory {
     public static ContractEntity buildContract() {
         return ContractEntity.builder()
             .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
-            .lastEvent(buildTradeEvent())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
-            .lastUpdateDatetime(LocalDateTime.now())
+            .lastUpdateDateTime(LocalDateTime.now())
             .settlement(List.of(buildSettlementEntity()))
             .trade(buildTradeAgreement())
             .build();

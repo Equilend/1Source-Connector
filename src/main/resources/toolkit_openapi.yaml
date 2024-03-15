@@ -133,27 +133,30 @@ components:
       properties:
         contractId:
           type: string
-        lastEvent:
-          $ref: '#/components/schemas/TradeEvent'
-        settlementStatus:
-          $ref: '#/components/schemas/SettlementStatus'
         contractStatus:
           $ref: '#/components/schemas/ContractStatus'
-        lastUpdatePartyId:
-          type: integer
+        createDateTime:
+          type: string
+          format: date-time
         lastUpdateDatetime:
           type: string
           format: date-time
-        trade:
-          $ref: '#/components/schemas/TradeAgreement'
-        settlement:
-          $ref: '#/components/schemas/Settlements'
+        lastUpdatePartyId:
+          type: string
+        matching1SourceTradeAgreementId:
+          type: string
+        matchingSpirePositionId:
+          type: number
+          format: int64
+        matchingSpireTradeId:
+          type: number
+          format: int64
         processingStatus:
           $ref: '#/components/schemas/ProcessingStatus'
-        eventType:
-          $ref: '#/components/schemas/EventType'
-        matchingSpirePositionId:
-          type: string
+        settlement:
+          $ref: '#/components/schemas/Settlements'
+        trade:
+          $ref: '#/components/schemas/TradeAgreement'
     ContractStatus:
       type: string
       enum:

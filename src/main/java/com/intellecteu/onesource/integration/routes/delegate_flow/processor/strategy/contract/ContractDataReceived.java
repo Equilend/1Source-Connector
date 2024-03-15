@@ -2,25 +2,13 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor.str
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_UPDATED;
-import static com.intellecteu.onesource.integration.model.enums.FlowStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_SETTLEMENT_INSTRUCTION_UPDATE;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
-import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCELED;
-import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
-import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_OPENED;
-import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
-import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_DECLINED;
@@ -28,6 +16,11 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractLenderOrBorrower;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
@@ -41,29 +34,27 @@ import com.intellecteu.onesource.integration.dto.SettlementDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.ContractMapper;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SwiftbicDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -82,6 +73,7 @@ import org.springframework.web.client.RestClientException;
 
 @Component
 @Slf4j
+@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     private final AgreementRepository agreementRepository;
@@ -111,34 +103,34 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processContractByRole(PartyRole partyRole, Contract contract, PositionDto positionDto) {
-        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
-        EventType eventType = contract.getEventType();
-        log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
-            positionDto.getPositionId(), partyRole);
-        if (eventType == CONTRACT_PROPOSED) {
-            processMatchingPosition(contract, positionDto);
-            if (partyRole == BORROWER) {
-                if (MATCHED_POSITION.equals(contract.getProcessingStatus())) {
-                    reconcile(contract, positionDto);
-                }
-                processContractForBorrower(contract, venueRefId, partyRole);
-            }
-        }
-        if (eventType == CONTRACT_PENDING) {
-            processApprovedContract(contract, positionDto);
-            processPositionAfterContractApproved(contract, positionDto, partyRole);
-        }
-        if (eventType == CONTRACT_CANCELED) {
-            processCanceledContract(contract, positionDto);
-        }
-        if (eventType == CONTRACT_DECLINED) {
-            processDeclinedContract(contract, positionDto);
-        }
-        if (eventType == CONTRACT_OPENED) {
-            processSettledContract(contract);
-        }
-        contract.setFlowStatus(PROCESSED);
-        contractService.save(contract);
+//        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
+//        EventType eventType = contract.getEventType();
+//        log.debug("Processing contractId: {} with position: {} for party: {}", contract.getContractId(),
+//            positionDto.getPositionId(), partyRole);
+//        if (eventType == CONTRACT_PROPOSED) {
+//            processMatchingPosition(contract, positionDto);
+//            if (partyRole == BORROWER) {
+//                if (MATCHED_POSITION.equals(contract.getProcessingStatus())) {
+//                    reconcile(contract, positionDto);
+//                }
+//                processContractForBorrower(contract, venueRefId, partyRole);
+//            }
+//        }
+//        if (eventType == CONTRACT_PENDING) {
+//            processApprovedContract(contract, positionDto);
+//            processPositionAfterContractApproved(contract, positionDto, partyRole);
+//        }
+//        if (eventType == CONTRACT_CANCELED) {
+//            processCanceledContract(contract, positionDto);
+//        }
+//        if (eventType == CONTRACT_DECLINED) {
+//            processDeclinedContract(contract, positionDto);
+//        }
+//        if (eventType == CONTRACT_OPENED) {
+//            processSettledContract(contract);
+//        }
+//        contract.setFlowStatus(PROCESSED);
+//        contractService.save(contract);
     }
 
     private void processSettledContract(Contract contract) {
@@ -150,7 +142,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     private void persistPartyRoleIssue(Contract contract, String positionType) {
         processPartyRoleIssue(positionType, contract);
-        contract.setFlowStatus(PROCESSED);
+//        contract.setFlowStatus(PROCESSED);
         contractService.save(contract);
     }
 
@@ -363,10 +355,10 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
         BackOfficeService lenderBackOfficeService,
         CloudEventRecordService cloudEventRecordService,
         ReconcileService<Contract, PositionDto> contractReconcileService,
-        EventMapper eventMapper, SpireMapper spireMapper,
+        SpireMapper spireMapper,
         AgreementRepository agreementRepository, OneSourceApiClient oneSourceApiClient, ContractMapper contractMapper) {
         super(contractService, positionService, settlementTempRepository, settlementService,
-            cloudEventRecordService, contractReconcileService, eventMapper, spireMapper, contractMapper);
+            cloudEventRecordService, contractReconcileService, spireMapper, contractMapper);
         this.agreementRepository = agreementRepository;
         this.oneSourceApiClient = oneSourceApiClient;
         this.borrowerBackOfficeService = borrowerBackOfficeService;

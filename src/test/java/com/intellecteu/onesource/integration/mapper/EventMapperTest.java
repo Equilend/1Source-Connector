@@ -1,170 +1,153 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import static com.intellecteu.onesource.integration.DtoTestFactory.buildInstrumentDto;
-import static com.intellecteu.onesource.integration.ModelTestFactory.buildInstrument;
-import static com.intellecteu.onesource.integration.ModelTestFactory.buildVenueParty;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.intellecteu.onesource.integration.DtoTestFactory;
-import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.TestConfig;
-import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
-import com.intellecteu.onesource.integration.dto.InstrumentDto;
-import com.intellecteu.onesource.integration.model.onesource.Agreement;
-import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.Instrument;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
+// Deprecated, should be tested in actual mappers
+@Deprecated(since = "0.0.5-SNAPSHOT")
+@Disabled
 class EventMapperTest {
 
-    private EventMapper eventMapper;
-
-    private ObjectMapper objectMapper;
-
-    @BeforeEach
-    void setUp() {
-        objectMapper = TestConfig.createTestObjectMapper();
-        eventMapper = new EventMapper(objectMapper);
-    }
-
-    @Test
-    @DisplayName("Entity mapping shall ignore Price when missed")
-    void priceModelMapping_shouldIgnore_whenPriceIsMissed() {
-        Instrument instrument = buildInstrument();
-        instrument.setPrice(null);
-
-        var instrumentDto = eventMapper.toInstrumentDto(instrument);
-
-        assertNotNull(instrumentDto);
-        assertNull(instrumentDto.getPrice());
-    }
-
-    @Test
-    @DisplayName("Dto mapping shall ignore Price when missed")
-    void priceDtoMapping_shouldIgnore_whenPriceIsMissed() {
-        InstrumentDto instrumentDto = buildInstrumentDto();
-        instrumentDto.setPrice(null);
-
-        var instrument = eventMapper.toInstrumentEntity(instrumentDto);
-
-        assertNotNull(instrument);
-        assertNull(instrument.getPrice());
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("Entity mapping shall ignore Internal Ref when missed")
-    void internalRefModelMapping_shouldIgnore_whenInternalRefIsMissed() {
-        var venueParty = buildVenueParty();
-
-        var venuePartyDto = eventMapper.toVenuePartyDto(venueParty);
-
-        assertNotNull(venuePartyDto);
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("Dto mapping shall ignore Internal Ref when missed")
-    void internalRefDtoMapping_shouldIgnore_whenInternalRefIsMissed() {
-        var venuePartyDto = DtoTestFactory.buildVenuePartyDto();
-
-        var venueParty = eventMapper.toVenueParty(venuePartyDto);
-
-        assertNotNull(venueParty);
-    }
-
-    @Test
-    @DisplayName("Dto mapping shall ignore Rounding Rule when missed")
-    void roundingRuleDtoMapping_shouldIgnore_whenRoundingRuleIsMissed() {
-        var collateralDto = DtoTestFactory.buildCollateralDto();
-        collateralDto.setRoundingRule(null);
-
-        var collateral = eventMapper.toCollateralEntity(collateralDto);
-
-        assertNotNull(collateral);
-        assertNull(collateral.getRoundingRule());
-    }
-
-    @Test
-    @DisplayName("Entity mapping shall ignore Rounding Rule when missed")
-    void roundingRuleModelMapping_shouldIgnore_whenRoundingRuleIsMissed() {
-        var collateral = ModelTestFactory.buildCollateral();
-        collateral.setRoundingRule(null);
-
-        var collateralDto = eventMapper.toCollateralDto(collateral);
-
-        assertNotNull(collateralDto);
-        assertNull(collateralDto.getRoundingRule());
-    }
-
-    @Test
-    @DisplayName("Agreement mapping shall read lastUpdateDatetime on missed camel case Style")
-    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenMissedCamelCaseStyle() throws Exception {
-        var agreementJson = getRawAgreement();
-        final Agreement agreementEntity = objectMapper.readValue(agreementJson, Agreement.class);
-        final AgreementDto agreementDto = eventMapper.toAgreementDto(agreementEntity);
-
-        assertNotNull(agreementDto.getLastUpdateDatetime());
-    }
-
+//    private EventMapper eventMapper;
+//
+//    private ObjectMapper objectMapper;
+//
+//    @BeforeEach
+//    void setUp() {
+//        objectMapper = TestConfig.createTestObjectMapper();
+//        eventMapper = new EventMapper(objectMapper);
+//    }
+//
 //    @Test
-//    @DisplayName("Agreement mapping shall read lastUpdateDateTime")
-//    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
-//        var agreementJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+//    @DisplayName("Entity mapping shall ignore Price when missed")
+//    void priceModelMapping_shouldIgnore_whenPriceIsMissed() {
+//        Instrument instrument = buildInstrument();
+//        instrument.setPrice(null);
+//
+//        var instrumentDto = eventMapper.toInstrumentDto(instrument);
+//
+//        assertNotNull(instrumentDto);
+//        assertNull(instrumentDto.getPrice());
+//    }
+//
+//    @Test
+//    @DisplayName("Dto mapping shall ignore Price when missed")
+//    void priceDtoMapping_shouldIgnore_whenPriceIsMissed() {
+//        InstrumentDto instrumentDto = buildInstrumentDto();
+//        instrumentDto.setPrice(null);
+//
+//        var instrument = eventMapper.toInstrumentEntity(instrumentDto);
+//
+//        assertNotNull(instrument);
+//        assertNull(instrument.getPrice());
+//    }
+//
+//    @Test
+//    @Disabled
+//    @DisplayName("Entity mapping shall ignore Internal Ref when missed")
+//    void internalRefModelMapping_shouldIgnore_whenInternalRefIsMissed() {
+//        var venueParty = buildVenueParty();
+//
+//        var venuePartyDto = eventMapper.toVenuePartyDto(venueParty);
+//
+//        assertNotNull(venuePartyDto);
+//    }
+//
+//    @Test
+//    @Disabled
+//    @DisplayName("Dto mapping shall ignore Internal Ref when missed")
+//    void internalRefDtoMapping_shouldIgnore_whenInternalRefIsMissed() {
+//        var venuePartyDto = DtoTestFactory.buildVenuePartyDto();
+//
+//        var venueParty = eventMapper.toVenueParty(venuePartyDto);
+//
+//        assertNotNull(venueParty);
+//    }
+//
+//    @Test
+//    @DisplayName("Dto mapping shall ignore Rounding Rule when missed")
+//    void roundingRuleDtoMapping_shouldIgnore_whenRoundingRuleIsMissed() {
+//        var collateralDto = DtoTestFactory.buildCollateralDto();
+//        collateralDto.setRoundingRule(null);
+//
+//        var collateral = eventMapper.toCollateralEntity(collateralDto);
+//
+//        assertNotNull(collateral);
+//        assertNull(collateral.getRoundingRule());
+//    }
+//
+//    @Test
+//    @DisplayName("Entity mapping shall ignore Rounding Rule when missed")
+//    void roundingRuleModelMapping_shouldIgnore_whenRoundingRuleIsMissed() {
+//        var collateral = ModelTestFactory.buildCollateral();
+//        collateral.setRoundingRule(null);
+//
+//        var collateralDto = eventMapper.toCollateralDto(collateral);
+//
+//        assertNotNull(collateralDto);
+//        assertNull(collateralDto.getRoundingRule());
+//    }
+//
+//    @Test
+//    @DisplayName("Agreement mapping shall read lastUpdateDatetime on missed camel case Style")
+//    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenMissedCamelCaseStyle() throws Exception {
+//        var agreementJson = getRawAgreement();
 //        final Agreement agreementEntity = objectMapper.readValue(agreementJson, Agreement.class);
 //        final AgreementDto agreementDto = eventMapper.toAgreementDto(agreementEntity);
 //
 //        assertNotNull(agreementDto.getLastUpdateDatetime());
 //    }
-
-    @Test
-    @DisplayName("Contract mapping shall read lastUpdateDatetime on missed camel case Style")
-    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenMissedCamelCaseStyle() throws Exception {
-        var contractJson = getRawContract();
-        final Contract contractEntity = objectMapper.readValue(contractJson, Contract.class);
-        final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
-
-        assertNotNull(contractDto.getLastUpdateDatetime());
-    }
-
+//
+////    @Test
+////    @DisplayName("Agreement mapping shall read lastUpdateDateTime")
+////    void testAgreementDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
+////        var agreementJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+////        final Agreement agreementEntity = objectMapper.readValue(agreementJson, Agreement.class);
+////        final AgreementDto agreementDto = eventMapper.toAgreementDto(agreementEntity);
+////
+////        assertNotNull(agreementDto.getLastUpdateDatetime());
+////    }
+//
 //    @Test
-//    @DisplayName("Contract mapping shall read lastUpdateDateTime")
-//    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
-//        var contractJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+//    @DisplayName("Contract mapping shall read lastUpdateDatetime on missed camel case Style")
+//    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenMissedCamelCaseStyle() throws Exception {
+//        var contractJson = getRawContract();
 //        final Contract contractEntity = objectMapper.readValue(contractJson, Contract.class);
 //        final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
 //
 //        assertNotNull(contractDto.getLastUpdateDatetime());
 //    }
-
-    @Test
-    @DisplayName("Test agreement mapping for trade.venue inner object")
-    void testAgreementDtoMapping_shouldMapVenueId() {
-        var agreementDto = DtoTestFactory.buildAgreementDto();
-        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
-
-        assertEquals(
-            agreementDto.getTrade().getExecutionVenue().getId(),
-            agreementEntity.getTrade().getVenue().getId());
-    }
-
-    @Test
-    @DisplayName("Test agreement mapping for trade.instrument inner object")
-    void testAgreementDtoMapping_shouldMapInstrumentId() {
-        var agreementDto = DtoTestFactory.buildAgreementDto();
-        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
-
-        assertEquals(
-            agreementDto.getTrade().getInstrument().getId(),
-            agreementEntity.getTrade().getInstrument().getId());
-    }
+//
+////    @Test
+////    @DisplayName("Contract mapping shall read lastUpdateDateTime")
+////    void testContractDtoMapping_shouldMapLastUpdateDatetime_whenInCamelCaseStyle() throws Exception {
+////        var contractJson = getRawContract().replace("lastUpdateDatetime", "lastUpdateDateTime");
+////        final Contract contractEntity = objectMapper.readValue(contractJson, Contract.class);
+////        final ContractDto contractDto = eventMapper.toContractDto(contractEntity);
+////
+////        assertNotNull(contractDto.getLastUpdateDatetime());
+////    }
+//
+//    @Test
+//    @DisplayName("Test agreement mapping for trade.venue inner object")
+//    void testAgreementDtoMapping_shouldMapVenueId() {
+//        var agreementDto = DtoTestFactory.buildAgreementDto();
+//        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+//
+//        assertEquals(
+//            agreementDto.getTrade().getExecutionVenue().getId(),
+//            agreementEntity.getTrade().getVenue().getId());
+//    }
+//
+//    @Test
+//    @DisplayName("Test agreement mapping for trade.instrument inner object")
+//    void testAgreementDtoMapping_shouldMapInstrumentId() {
+//        var agreementDto = DtoTestFactory.buildAgreementDto();
+//        var agreementEntity = eventMapper.toAgreementEntity(agreementDto);
+//
+//        assertEquals(
+//            agreementDto.getTrade().getInstrument().getId(),
+//            agreementEntity.getTrade().getInstrument().getId());
+//    }
 
     private String getRawAgreement() {
         return """

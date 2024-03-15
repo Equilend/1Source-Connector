@@ -3,35 +3,34 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor.str
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.SKIP_RECONCILIATION_STATUSES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static java.lang.String.format;
 import static lombok.AccessLevel.PROTECTED;
 
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.ContractMapper;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.SettlementTempRepository;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.SettlementService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -43,6 +42,7 @@ import org.springframework.lang.NonNull;
 @Slf4j
 @AllArgsConstructor
 @FieldDefaults(makeFinal = true, level = PROTECTED)
+//@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 public abstract class AbstractContractProcessStrategy implements ContractProcessFlowStrategy {
 
     ContractService contractService;
@@ -51,7 +51,6 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     SettlementService settlementService;
     CloudEventRecordService cloudEventRecordService;
     ReconcileService<Contract, PositionDto> reconcileService;
-    EventMapper eventMapper;
     SpireMapper spireMapper;
     ContractMapper contractMapper;
 
@@ -60,7 +59,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     }
 
     void saveContractWithStage(Contract contract, FlowStatus status) {
-        contract.setFlowStatus(status);
+//        contract.setFlowStatus(status);
         contractService.save(contract);
         log.debug("Contract id: {} was saved with flow status: {}", contract.getContractId(), status);
     }

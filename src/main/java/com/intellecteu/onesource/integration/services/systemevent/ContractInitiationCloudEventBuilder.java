@@ -492,8 +492,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     private CloudEventBuildRequest getLoanContractProposalExceptionEvent(String record,
-        HttpStatusCodeException exception,
-        String related) {
+        HttpStatusCodeException exception, String related) {
         String message = format(GET_LOAN_CONTRACT_PROPOSAL_EXCEPTION_MSG, record, exception.getStatusText());
         return createRecordRequest(
             TECHNICAL_EXCEPTION_1SOURCE,

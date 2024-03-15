@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.services.client.onesource;
 
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -30,7 +29,7 @@ public interface OneSourceApiClient {
     void updateContract(Contract contract, HttpEntity<?> request);
 
     @Deprecated(since = "1.0.4")
-    void approveContract(ContractDto contractDto);
+    void approveContract(Contract contract);
 
     void approveContract(Contract contract, Settlement settlement);
 
