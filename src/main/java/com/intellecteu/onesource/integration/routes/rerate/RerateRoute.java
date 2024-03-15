@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
@@ -130,6 +131,14 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateEventProcessor, "updateEventStatus(${body}, PROCESSED)")
             .bean(rerateEventProcessor, "saveEvent")
             .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
+
+        from(createRerateTradeSQLEndpoint(PROPOSAL_APPROVED))
+            .log(">>>>> Started confirmation BackOffice Rerate Trades with rerateId ${body.tradeId}")
+            .bean(backOfficeMapper, "toModel")
+            .bean(rerateProcessor, "confirmRerateTrade")
+             //Success result status is CONFIRMED
+            .bean(rerateProcessor, "saveRerateTrade")
+            .log(">>>>> Finished confirmation BackOffice Rerate Trades with rerateId ${body.tradeId}");
     }
     //@formatter:on
 

@@ -1082,6 +1082,35 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "3d3dd571-b27f-4619-8214-2666601011d1",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "lender/trades/oneSource/comfirmation",
+      "responses": [
+        {
+          "uuid": "43c90b73-89ed-4297-939d-43102f0c99df",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1124,6 +1153,10 @@
     {
       "type": "route",
       "uuid": "99c8df43-d6a2-44fc-9646-893071277c87"
+    },
+    {
+      "type": "route",
+      "uuid": "3d3dd571-b27f-4619-8214-2666601011d1"
     }
   ],
   "proxyMode": false,

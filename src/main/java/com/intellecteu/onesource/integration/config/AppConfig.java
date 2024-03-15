@@ -111,17 +111,19 @@ public class AppConfig {
     @Bean("lenderBackOfficeService") // todo rework to use only one backoffice
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
         TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
+        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
         SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
-        return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient,
-            spireMapper, backOfficeMapper, cloudEventRecordService);
+        return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient, userId,
+            userName, spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean("borrowerBackOfficeService") // todo rework to use only one backoffice
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
         TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
+        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
         SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, instructionClient,
-            spireMapper, backOfficeMapper, cloudEventRecordService);
+            userId, userName, spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean
