@@ -26,6 +26,7 @@ import com.intellecteu.onesource.integration.api.dto.PageResponse;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -68,7 +69,15 @@ public class CloudSystemEventService {
 
     public CloudSystemEventDto getCloudEventById(@NonNull String id) {
         final Optional<CloudSystemEventEntity> event = cloudEventRepository.findById(id);
-        return event.map(this::mapEvent).orElseThrow(EntityNotFoundException::new);
+        return event.map(this::mapEvent).orElseThrow(() -> new EntityNotFoundException(
+            "The System event referred in decline instruction is not found"));
+    }
+
+    public LocalDateTime getLatestDateBySubject(@NonNull String subject) {
+        return cloudEventRepository.findFirstBySubjectOrderByTimeDesc(subject)
+            .map(CloudSystemEventEntity::getTime)
+            .orElseThrow(() -> new EntityNotFoundException(
+                "The System event referred in decline instruction is not found"));
     }
 
     private CloudSystemEventDto mapEvent(CloudSystemEventEntity entity) {

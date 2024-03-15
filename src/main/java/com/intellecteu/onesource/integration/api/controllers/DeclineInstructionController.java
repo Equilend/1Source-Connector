@@ -45,7 +45,7 @@ public class DeclineInstructionController {
         DeclineInstructionDto createdInstruction = declineInstructionApiService.createDeclineInstruction(
             declineInstructionDto);
         return ResponseEntity
-            .status(HttpStatus.ACCEPTED)
+            .accepted()
             .body(createdInstruction);
     }
 }

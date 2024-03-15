@@ -64,22 +64,22 @@ logging:
             services: DEBUG
             utils: DEBUG
     org:
-#      hibernate:
-#        SQL: DEBUG
-#        type:
-#          descriptor:
-#            sql:
-#              BasicBinder: TRACE
+      #      hibernate:
+      #        SQL: DEBUG
+      #        type:
+      #          descriptor:
+      #            sql:
+      #              BasicBinder: TRACE
       apache:
         kafka: WARN
         camel:
           spi:
             ExceptionHandler: ERROR
       springframework:
-        orm:
-          jpa:  DEBUG
-        transaction:
-          interceptor: DEBUG
+        #        orm:
+        #          jpa:  DEBUG
+        #        transaction:
+        #          interceptor: DEBUG
         web:
           client:
             RestTemplate: INFO

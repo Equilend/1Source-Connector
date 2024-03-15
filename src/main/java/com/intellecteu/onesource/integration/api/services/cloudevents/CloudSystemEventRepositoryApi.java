@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.api.services.cloudevents;
 
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -10,5 +11,7 @@ interface CloudSystemEventRepositoryApi extends JpaRepository<CloudSystemEventEn
     JpaSpecificationExecutor<CloudSystemEventEntity> {
 
     Page<CloudSystemEventEntity> findAllById(Pageable pageable, String id);
+
+    Optional<CloudSystemEventEntity> findFirstBySubjectOrderByTimeDesc(String subject);
 
 }
