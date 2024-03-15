@@ -87,7 +87,7 @@ public class OneSourceService {
 
     public void instructRerate(RerateTrade rerateTrade) {
         RerateProposalDTO body = buildRerateProposal(rerateTrade);
-        ResponseEntity<Void> voidResponseEntity = reratesApi.ledgerContractsContractIdReratesPostWithHttpInfo(body,
+        reratesApi.ledgerContractsContractIdReratesPost(body,
             rerateTrade.getRelatedContractId());
     }
 
