@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.intellecteu.onesource.integration.DtoTestFactory;
+import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -27,9 +28,12 @@ class ContractInitiationCloudSystemEventBuilderTest {
     void createTradeAgreementReconcileFailBuildRequest() {
         var agreement = DtoTestFactory.buildAgreementDto();
         var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(agreement.getTrade());
-        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message", FieldExceptionType.DISCREPANCY);
-        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message", FieldExceptionType.DISCREPANCY);
-        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message", FieldExceptionType.DISCREPANCY);
+        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message",
+            FieldExceptionType.DISCREPANCY);
+        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message",
+            FieldExceptionType.DISCREPANCY);
+        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message",
+            FieldExceptionType.DISCREPANCY);
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
@@ -48,11 +52,14 @@ class ContractInitiationCloudSystemEventBuilderTest {
 
     @Test
     void createLoanContractProposalReconcileFailBuildRequest() {
-        var contractDto = DtoTestFactory.buildContractDto();
-        var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(contractDto.getTrade());
-        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message", FieldExceptionType.DISCREPANCY);
-        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message", FieldExceptionType.DISCREPANCY);
-        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message", FieldExceptionType.DISCREPANCY);
+        var contractDto = ModelTestFactory.buildContract();
+        var position = ModelTestFactory.buildPosition();
+        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message",
+            FieldExceptionType.DISCREPANCY);
+        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message",
+            FieldExceptionType.DISCREPANCY);
+        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message",
+            FieldExceptionType.DISCREPANCY);
         var discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
@@ -64,7 +71,7 @@ class ContractInitiationCloudSystemEventBuilderTest {
             - Third test message""".formatted(contractDto.getContractId(), position.getPositionId());
 
         CloudEventBuildRequest actualBuildRequest = builder.buildRequest(contractDto.getContractId(),
-            RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, position.getPositionId(), discrepancies);
+            RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, String.valueOf(position.getPositionId()), discrepancies);
 
         final String actualDataMsg = actualBuildRequest.getData().getMessage();
         assertEquals(expectedDataMsg, actualDataMsg);

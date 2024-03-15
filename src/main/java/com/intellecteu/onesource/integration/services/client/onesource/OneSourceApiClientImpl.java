@@ -16,9 +16,9 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -31,10 +31,8 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
@@ -80,7 +78,6 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private final RestTemplate restTemplate;
     private final SettlementUpdateRepository settlementUpdateRepository;
     private final TradeEventRepository eventRepository;
-    private final EventMapper eventMapper;
     private final OneSourceMapper oneSourceMapper;
 
     private static final String EVENTS_ENDPOINT = "/ledger/events";
@@ -99,13 +96,12 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     public OneSourceApiClientImpl(ContractRepository contractRepository,
         CloudEventRecordService cloudEventRecordService,
-        RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository, EventMapper eventMapper,
+        RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository,
         TradeEventRepository eventRepository, OneSourceMapper oneSourceMapper) {
         this.contractRepository = contractRepository;
         this.cloudEventRecordService = cloudEventRecordService;
         this.restTemplate = restTemplate;
         this.settlementUpdateRepository = settlementUpdateRepository;
-        this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
         this.oneSourceMapper = oneSourceMapper;
     }
@@ -201,7 +197,8 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         }
         Settlement settlement = Settlement.builder()
             .partyRole(BORROWER)
-            .instruction(eventMapper.toInstruction(settlementInstructionUpdate.getInstruction())).build();
+//            .instruction(eventMapper.toInstruction(settlementInstructionUpdate.getInstruction()))
+            .build();
 
         log.debug("Settlement with role {} was created from venueRefId:{}",
             settlement.getPartyRole(), venueRefId);
@@ -232,7 +229,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     @Deprecated(since = "1.0.4")
-    public void approveContract(ContractDto contract) {
+    public void approveContract(Contract contract) {
         log.debug("Approving contract: {}", contract.getContractId());
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);

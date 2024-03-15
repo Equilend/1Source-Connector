@@ -18,6 +18,8 @@ public class Settlement {
     private Long id;
     private Long instructionId;
     private PartyRole partyRole;
+    private SettlementStatus settlementStatus;
     private SettlementInstruction instruction;
+    private Long contractId;
 
 }

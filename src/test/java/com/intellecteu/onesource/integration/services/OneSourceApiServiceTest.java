@@ -12,7 +12,6 @@ import static org.springframework.http.HttpMethod.POST;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
@@ -75,9 +74,6 @@ class OneSourceApiServiceTest {
     @Mock
     private TradeEventRepository eventRepository;
 
-    @Mock
-    private EventMapper eventMapper;
-
     private CloudEventFactory<IntegrationCloudEvent> eventFactory;
 
     private OneSourceApiClientImpl service;
@@ -87,7 +83,7 @@ class OneSourceApiServiceTest {
     @BeforeEach
     void setUp() {
         service = new OneSourceApiClientImpl(contractRepository, recordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
+            settlementUpdateRepository, eventRepository, oneSourceMapper);
         ReflectionTestUtils.setField(service, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(service, VERSION_FIELD_INJECT, TEST_API_VERSION);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();

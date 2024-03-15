@@ -30,19 +30,17 @@ CREATE TABLE IF NOT EXISTS collateral
 
 CREATE TABLE IF NOT EXISTS contract
 (
-    id                   SERIAL NOT NULL,
-    contract_id          VARCHAR(255) NULL,
-    last_event_id        BIGINT       NULL,
-    contract_status      VARCHAR(255) NULL,
-    settlement_status    VARCHAR(255) NULL,
-    last_update_party_id VARCHAR(255) NULL,
-    last_update_datetime timestamp    NULL,
-    trade_id             BIGINT       NULL,
-    processing_status    VARCHAR(255) NULL,
-    event_type           VARCHAR(255) NULL,
-    matching_spire_position_id          BIGINT NULL,
-    flow_status          VARCHAR(255) NULL,
-    CONSTRAINT pk_contract PRIMARY KEY (id)
+    id                                      BIGSERIAL PRIMARY KEY,
+    contract_id                             VARCHAR(255) NULL,
+    processing_status                       VARCHAR(255) NULL,
+    matching_1source_trade_agreement_id     VARCHAR(255) NULL,
+    matching_spire_position_id              BIGINT NULL,
+    matching_spire_trade_id                 BIGINT NULL,
+    contract_status                         VARCHAR(255) NULL,
+    last_update_party_id                    VARCHAR(255) NULL,
+    create_datetime                         timestamp    NULL,
+    last_update_datetime                    timestamp    NULL,
+    trade_id                                BIGINT       NULL
 );
 
 CREATE TABLE IF NOT EXISTS fee
@@ -215,12 +213,12 @@ CREATE TABLE IF NOT EXISTS rate
 
 CREATE TABLE IF NOT EXISTS settlement
 (
-    id            SERIAL NOT NULL,
-    party_role    VARCHAR(255) NULL,
-    instruction_id   BIGINT       NULL,
-    instruction   BIGINT       NULL,
-    settlement_id BIGINT       NULL,
-    CONSTRAINT pk_settlement PRIMARY KEY (id)
+    id                  BIGSERIAL PRIMARY KEY,
+    instruction_id      BIGINT       NULL,
+    party_role          VARCHAR(255) NULL,
+    settlement_status   VARCHAR(255) NULL,
+    instruction         BIGINT       NULL,
+    contract_id         BIGINT       NULL
 );
 
 CREATE TABLE IF NOT EXISTS settlement_instruction_update
@@ -425,10 +423,6 @@ ALTER TABLE contract DROP CONSTRAINT IF EXISTS FK_CONTRACT_ON_TRADE;
 ALTER TABLE contract
     ADD CONSTRAINT FK_CONTRACT_ON_TRADE FOREIGN KEY (trade_id) REFERENCES trade (id);
 
-ALTER TABLE contract DROP CONSTRAINT IF EXISTS FK_CONTRACT_ON_EVENT;
-ALTER TABLE contract
-    ADD CONSTRAINT FK_CONTRACT_ON_EVENT FOREIGN KEY (last_event_id) REFERENCES trade_event (id);
-
 ALTER TABLE instrument DROP CONSTRAINT IF EXISTS FK_INSTRUMENT_ON_PRICE;
 ALTER TABLE instrument
     ADD CONSTRAINT FK_INSTRUMENT_ON_PRICE FOREIGN KEY (price_id) REFERENCES price (id);
@@ -452,11 +446,11 @@ ALTER TABLE rebate
     ADD CONSTRAINT FK_REBATE_ON_FLOATING FOREIGN KEY (floating) REFERENCES floating (id);
 
 ALTER TABLE settlement DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_INSTRUCTION;
-ALTER TABLE settlement DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_SETTLEMENT;
+ALTER TABLE settlement DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_CONTRACT;
 ALTER TABLE settlement
     ADD CONSTRAINT FK_SETTLEMENT_ON_INSTRUCTION FOREIGN KEY (instruction) REFERENCES settlement_instruction (id);
 ALTER TABLE settlement
-    ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT FOREIGN KEY (settlement_id) REFERENCES contract (id);
+    ADD CONSTRAINT FK_SETTLEMENT_ON_CONTRACT FOREIGN KEY (contract_id) REFERENCES contract (id);
 
 ALTER TABLE settlement_instruction_update DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_INSTRUCTION;
 ALTER TABLE settlement_instruction_update

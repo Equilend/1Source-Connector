@@ -15,14 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class AgreementProcessor implements TradeDataProcessor {
+@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
+public class AgreementProcessor {
 
     private final Map<FlowStatus, AgreementProcessFlowStrategy> strategyByFlow;
 
     private final AgreementRepository agreementRepository;
     private final EventMapper mapper;
 
-    @Override
     @Transactional
     public void processTradeData() {
         agreementRepository.findAllNotProcessed().stream()

@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -28,19 +27,19 @@ public class Contract implements Reconcilable {
     @JsonIgnore
     private Long id;
     private String contractId;
-    private TradeEvent lastEvent;
+    private ProcessingStatus processingStatus;
+    private String matching1SourceTradeAgreementId;
+    private Long matchingSpirePositionId;
+    private Long matchingSpireTradeId;
     private ContractStatus contractStatus;
-    private SettlementStatus settlementStatus;
     private String lastUpdatePartyId;
+    @JsonAlias({"createDateTime", "createDatetime"})
+    private LocalDateTime createDateTime;
     @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
     private LocalDateTime lastUpdateDateTime;
     private TradeAgreement trade;
+    // Expected one settlement for each party role
     private List<Settlement> settlement;
-    private ProcessingStatus processingStatus;
-    private EventType eventType;
-    private Long matchingSpirePositionId;
-    @JsonIgnore
-    private FlowStatus flowStatus;
 
     @Override
     public void validateForReconciliation() throws ValidationException {

@@ -37,7 +37,6 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
@@ -89,9 +88,7 @@ public class ModelTestFactory {
     public static Contract buildContract() {
         return Contract.builder()
             .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
-            .lastEvent(buildTradeEvent())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
             .lastUpdateDateTime(LocalDateTime.now())
             .settlement(List.of(buildSettlement()))
             .trade(buildTradeAgreement())

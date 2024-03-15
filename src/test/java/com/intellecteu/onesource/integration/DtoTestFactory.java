@@ -14,7 +14,6 @@ import static com.intellecteu.onesource.integration.model.onesource.VenueType.ON
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.FeeRateDto;
 import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
@@ -39,12 +38,12 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionExposureDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.LocalMarketField;
 import com.intellecteu.onesource.integration.model.onesource.LocalVenueField;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
@@ -75,15 +74,13 @@ public class DtoTestFactory {
             .build();
     }
 
-    public static ContractDto buildContractDto() {
-        return ContractDto.builder()
+    public static Contract buildContractDto() {
+        return Contract.builder()
             .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
-            .lastEvent(buildTradeEventDto())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
-            .lastUpdateDatetime(LocalDateTime.now())
-            .settlement(List.of(buildSettlementDto()))
-            .trade(buildTradeAgreementDto())
+            .lastUpdateDateTime(LocalDateTime.now())
+            .settlement(List.of())
+            .trade(null)
             .build();
     }
 

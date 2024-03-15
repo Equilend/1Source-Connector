@@ -14,7 +14,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -131,9 +130,8 @@ class PositionPendingConfirmationProcessorTest {
     @BeforeEach
     void setUp() {
         SpireMapper spireMapper = new SpireMapper(createTestObjectMapper());
-        EventMapper eventMapper = new EventMapper(createTestObjectMapper());
         service = new PositionPendingConfirmationProcessor(agreementService, contractService, spireMapper,
-            eventMapper, positionService, settlementService, cloudEventRecordService, oneSourceApiClient,
+            positionService, settlementService, cloudEventRecordService, oneSourceApiClient,
             lenderBackOfficeService, borrowerBackOfficeService);
     }
 

@@ -24,6 +24,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRerateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
@@ -83,13 +84,17 @@ public abstract class OneSourceMapper {
 
     public abstract ContractEntity toEntity(Contract contract);
 
+    public abstract Settlement toModel(SettlementEntity settlement);
+
+    public abstract SettlementEntity toEntity(Settlement settlement);
+
+    public abstract List<SettlementEntity> toEntityList(List<Settlement> settlement);
+
+    public abstract List<Settlement> toModelList(List<SettlementEntity> settlement);
+
     public abstract TradeEvent toModel(TradeEventEntity tradeEventEntity);
 
     public abstract TradeEventEntity toEntity(TradeEvent tradeEvent);
-
-    public abstract Settlement toModel(SettlementEntity settlementEntity);
-
-    public abstract SettlementEntity toEntity(Settlement settlement);
 
     public abstract SettlementInstructionUpdateEntity toEntity(SettlementInstructionUpdate settlementInstructionUpdate);
 
