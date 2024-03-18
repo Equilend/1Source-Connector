@@ -104,9 +104,9 @@ public class RerateProcessor {
     }
 
     public RerateTrade matchBackOfficeRerateTradeWith1SourceRerate(RerateTrade rerateTrade) {
-        LocalDate settleDate = rerateTrade.getTradeOut().getSettleDate().toLocalDate();
+        LocalDate accrualDate = rerateTrade.getTradeOut().getAccrualDate().toLocalDate();
         Rerate rerate = rerateService.findUnmatchedRerate(rerateTrade.getRelatedContractId(),
-            settleDate).orElse(null);
+            accrualDate).orElse(null);
         if (rerate != null) {
             rerateTrade.setMatchingRerateId(rerate.getRerateId());
             rerateService.markRerateAsMatchedWithRerateTrade(rerate, rerateTrade);
