@@ -27,9 +27,11 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -75,9 +77,13 @@ public class OneSourceService {
         return oneSourceApiClient.retrieveContract(eventUri);
     }
 
-    public Optional<Rerate> retrieveRerate(String eventUri) {
+    public Rerate retrieveRerate(String eventUri) {
         RerateDTO rerateDTO = oneSourceApiClient.retrieveRerate(eventUri);
-        return Optional.of(oneSourceMapper.toModel(rerateDTO));
+        if (rerateDTO != null) {
+            return oneSourceMapper.toModel(rerateDTO);
+        } else {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Transactional

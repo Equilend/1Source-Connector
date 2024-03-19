@@ -20,6 +20,7 @@ public enum EventType {
     RERATE_CANCEL,
     RERATE_DECLINE,
     RERATE_PENDING,
+    RERATE_APPLIED,
     RETURN,
     RETURN_CANCEL,
     SPLIT,
