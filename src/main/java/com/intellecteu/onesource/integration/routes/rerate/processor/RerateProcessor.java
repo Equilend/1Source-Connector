@@ -39,6 +39,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpClientErrorException;
 
 @Component
@@ -103,6 +104,7 @@ public class RerateProcessor {
         return rerateTradeList;
     }
 
+    @Transactional
     public RerateTrade matchBackOfficeRerateTradeWith1SourceRerate(RerateTrade rerateTrade) {
         LocalDate accrualDate = rerateTrade.getTradeOut().getAccrualDate().toLocalDate();
         Rerate rerate = rerateService.findUnmatchedRerate(rerateTrade.getRelatedContractId(),
