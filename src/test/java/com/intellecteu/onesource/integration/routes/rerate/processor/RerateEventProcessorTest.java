@@ -1,7 +1,11 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPLIED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -21,7 +25,6 @@ import com.intellecteu.onesource.integration.services.systemevent.CloudEventFact
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
 import java.util.Map;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -54,7 +57,7 @@ class RerateEventProcessorTest {
         event.setEventType(RERATE_PROPOSED);
         event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
         Rerate rerate = new Rerate();
-        doReturn(Optional.of(rerate)).when(oneSourceService).retrieveRerate(any());
+        doReturn(rerate).when(oneSourceService).retrieveRerate(any());
 
         rerateEventProcessor.processRerateProposedEvent(event);
 
@@ -68,7 +71,7 @@ class RerateEventProcessorTest {
         event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
         Rerate rerateUpdate = new Rerate();
         rerateUpdate.setRerateId("1");
-        doReturn(Optional.of(rerateUpdate)).when(oneSourceService).retrieveRerate(any());
+        doReturn(rerateUpdate).when(oneSourceService).retrieveRerate(any());
         Rerate rerate = new Rerate();
         rerate.setRerateId("1");
         rerate.setMatchingSpireTradeId(1l);
@@ -82,7 +85,33 @@ class RerateEventProcessorTest {
 
         rerateEventProcessor.processReratePendingEvent(event);
 
+        assertEquals(APPROVED, rerate.getProcessingStatus());
         verify(rerateService, times(1)).saveRerate(any());
         verify(rerateTradeService, times(1)).save(any(RerateTrade.class));
     }
+
+    @Test
+    void processRerateAppliedEvent_ReratePendingEvent_savedRerate() {
+        TradeEvent event = new TradeEvent();
+        event.setEventType(RERATE_APPLIED);
+        event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
+        Rerate rerateUpdate = new Rerate();
+        rerateUpdate.setRerateId("1");
+        doReturn(rerateUpdate).when(oneSourceService).retrieveRerate(any());
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("1");
+        rerate.setMatchingSpireTradeId(1l);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+        doCallRealMethod().when(rerateService).mergeRerate(any(), any());
+        doReturn(new CloudEventFactoryImpl(
+            Map.of(IntegrationProcess.RERATE, new RerateCloudEventBuilder("1", "http://integration.toolkit")))).when(
+            cloudEventRecordService).getFactory();
+
+        rerateEventProcessor.processRerateAppliedEvent(event);
+
+        assertEquals(APPLIED, rerate.getProcessingStatus());
+        verify(rerateService, times(1)).saveRerate(any());
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
 }

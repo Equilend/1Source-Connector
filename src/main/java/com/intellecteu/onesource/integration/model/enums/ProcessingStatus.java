@@ -36,7 +36,8 @@ public enum ProcessingStatus {
     SUBMITTED("SUBMITTED"),
     TO_VALIDATE("TO_VALIDATE"),
     SENT_FOR_APPROVAL("SENT_FOR_APPROVAL", true),
-    CONFIRMED("CONFIRMED");
+    CONFIRMED("CONFIRMED"),
+    APPLIED("APPLIED");
 
     private final String value;
     private boolean isTechnical;

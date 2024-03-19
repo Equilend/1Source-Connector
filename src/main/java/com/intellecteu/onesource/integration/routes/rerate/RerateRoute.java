@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
@@ -63,82 +64,85 @@ public class RerateRoute extends RouteBuilder {
 
         from("timer://eventTimer?period={{camel.newBackOfficeTradeEventTimer}}")
             .routeId("NewBackOfficeRerateTradeRoute")
-            .log(">>>>> Started fetching BackOffice Rerate Trades")
+            .log(">>> Started GET_NEW_TRADE_EVENTS_PENDING_CONFIRMATION for RerateTrades")
             .bean(rerateProcessor, "fetchNewRerateTrades")
             .split(body())
                 .to("direct:recordRerateTrade")
             .end()
-            .log("<<<<< Finished fetching BackOffice Rerate Trades");
+            .log("<<< Finished GET_NEW_TRADE_EVENTS_PENDING_CONFIRMATION for RerateTrades");
 
         from("direct:recordRerateTrade")
-            .log(">>>>> Started recording BackOffice Rerate Trades with tradeId ${body.tradeId}")
+            .log(">>> Started PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(rerateProcessor, "updateRerateTradeCreationDatetime")
             .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CREATED)")
             .bean(rerateProcessor, "saveRerateTrade")
             .to("direct:matchRerate")
-            .log(">>>>> Finished recording BackOffice Rerate Trades with tradeId ${body.tradeId}");
+            .log("<<< Finished PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CREATED]");
 
         from("direct:matchRerate")
-            .log(">>>>> Started matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate")
+            .log(">>> Started PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(rerateProcessor, "matchBackOfficeRerateTradeWith1SourceRerate")
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<<<< Finished matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate");
+            .log("<<< Finished PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: Rerate[MATCHED]");
 
         from(createUnmatchedRerateTradeSQLEndpoint(CREATED))
-            .log(">>>>> Started instruction BackOffice Rerate Trade with tradeId ${body.tradeId}")
+            .log(">>> Started POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
             .bean(rerateProcessor, "instructRerateTrade")
-            //Success instruction changes status to SUBMITTED
             .bean(rerateProcessor, "saveRerateTrade")
-            .log(">>>>> Finished instruction BackOffice Rerate Trade with tradeId ${body.tradeId}");
+            .log("<<< Finished POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[SUBMITTED]");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
-            .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
+            .log(">>> Started GET_RERATE_PROPOSAL for TradeEvent: ${body.eventId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateEventProcessor, "processRerateProposedEvent")
-            //1Source Rerate
-            .bean(rerateEventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
             .bean(rerateEventProcessor, "saveEvent")
-            .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
+            .log("<<< Finished GET_RERATE_PROPOSAL for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[PROPOSED]");
 
         from(createRerateSQLEndpoint(PROPOSED))
-            .log(">>>>> Started processing 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started MATCH_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateProcessor, "match1SourceRerateWithBackOfficeRerateTrade")
-             //Result status can be MATCHED, TO_VALIDATE or UNMATCHED
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished processing 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished MATCH_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[MATCHED, TO_VALIDATE, UNMATCHED]");
 
         from(createRerateSQLEndpoint(TO_VALIDATE))
-            .log(">>>>> Started validation 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateProcessor, "validate")
-            //Result status can be VALIDATED, DISCREPANCIES
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished validation 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[VALIDATED, DISCREPANCIES]");
 
         from(createRerateSQLEndpoint(VALIDATED))
-            .log(">>>>> Started approval 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateProcessor, "approve")
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished approval 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[SENT_FOR_APPROVAL]");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PENDING))
-            .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
+            .log(">>> Started GET_RERATE_APPROVED for TradeEvent: ${body.eventId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateEventProcessor, "processReratePendingEvent")
-            .bean(rerateEventProcessor, "updateEventStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
             .bean(rerateEventProcessor, "saveEvent")
-            .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
+            .log("<<< Finished GET_RERATE_APPROVED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPROVED], RerateTrade[PROPOSAL_APPROVED]");
 
         from(createRerateTradeSQLEndpoint(PROPOSAL_APPROVED))
-            .log(">>>>> Started confirmation BackOffice Rerate Trades with rerateId ${body.tradeId}")
+            .log(">>> Started POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
             .bean(rerateProcessor, "confirmRerateTrade")
-             //Success result status is CONFIRMED
             .bean(rerateProcessor, "saveRerateTrade")
-            .log(">>>>> Finished confirmation BackOffice Rerate Trades with rerateId ${body.tradeId}");
+            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_APPLIED))
+            .log(">>> Started PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processRerateAppliedEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPLIED]");
     }
     //@formatter:on
 
