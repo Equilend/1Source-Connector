@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_APPROVE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_CANCELED_POSITION_TRADE_AGREEMENT_MSG;
@@ -52,6 +53,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_CANCELED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_CANCELED_SUBMITTED_SUBJECT;
@@ -162,6 +164,8 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case LOAN_CONTRACT_PROPOSAL_CREATED -> loanContractProposalCreated(recorded, recordType);
             case LOAN_CONTRACT_PROPOSAL_DECLINED -> loanContractProposalDeclined(recorded, recordType, related);
             case LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION -> loanContractProposalMatchingEvent(recorded,
+                recordType, related);
+            case LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL -> loanContractProposalPendingApproved(recorded,
                 recordType, related);
             case LOAN_CONTRACT_PROPOSAL_UNMATCHED -> loanContractProposalUnmatched(recorded, recordType);
             case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
@@ -293,6 +297,22 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             CONTRACT_INITIATION,
             VALIDATE_LOAN_CONTRACT_PROPOSAL,
             createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+        );
+    }
+
+    private CloudEventBuildRequest loanContractProposalPendingApproved(String recorded,
+        RecordType recordType, String related) {
+        final String[] positionAndTradeRelated = related.split(",");
+        String positionRelatedId = positionAndTradeRelated[0];
+        String tradeRelatedId = positionAndTradeRelated[1];
+        String dataMessage = format(LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_MSG, recorded, positionRelatedId);
+        return createRecordRequest(
+            recordType,
+            format(LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT, positionRelatedId),
+            CONTRACT_INITIATION,
+            MATCH_LOAN_CONTRACT_PROPOSAL,
+            createEventData(
+                dataMessage, getContractRelatedToPositionWithTrade(recorded, positionRelatedId, tradeRelatedId))
         );
     }
 

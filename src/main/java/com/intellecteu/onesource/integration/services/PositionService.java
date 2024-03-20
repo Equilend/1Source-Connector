@@ -57,9 +57,14 @@ public class PositionService {
                 Collectors.toList());
     }
 
-    public Position getById(Long positionId) {
-        PositionEntity positionEntity = positionRepository.getById(positionId);
-        return backOfficeMapper.toModel(positionEntity);
+    public Optional<Position> getByPositionId(Long positionId) {
+        Optional<PositionEntity> positionEntity = positionRepository.getByPositionId(positionId);
+        return positionEntity.map(backOfficeMapper::toModel);
+    }
+
+    public Optional<Position> getNotMatchedByPositionId(Long positionId) {
+        Optional<PositionEntity> positionEntity = positionRepository.getNotMatchedByPositionId(positionId);
+        return positionEntity.map(backOfficeMapper::toModel);
     }
 
     public List<Position> saveAllPositions(List<Position> positions) {

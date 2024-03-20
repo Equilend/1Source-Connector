@@ -21,6 +21,7 @@ public class RecordMessageConstant {
             public static final String GET_POSITION_CONFIRMATION_EXCEPTION_SPIRE = """
                 Extract of new positions pending conf. - %s""";
             public static final String GET_SETTLEMENT_INSTR_EXCEPTION_SPIRE = "Position - %s";
+            public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVED = "Position - %s";
             public static final String GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE = """
                 Extract of new positions pending conf. - %s""";
@@ -95,6 +96,10 @@ public class RecordMessageConstant {
             public static final String GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG = """
                 The details of the trade agreement %s cannot be retrieved \
                 from 1Source for the following reason: %s""";
+
+            public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_MSG = """
+                “The loan contract proposal %s has been matched with a SPIRE position: %s \
+                and needs now to be approved by the counterparty.""";
 
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVE_MSG = """
                 The loan contract proposal %s matching with the \

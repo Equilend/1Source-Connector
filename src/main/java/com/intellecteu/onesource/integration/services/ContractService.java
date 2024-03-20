@@ -1,12 +1,10 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
@@ -96,20 +94,12 @@ public class ContractService {
         return contractRepository.findByContractId(contractId).map(oneSourceMapper::toModel);
     }
 
-    public Contract markContractAsMatched(Contract contract, Long positionId) {
-        contract.setMatchingSpirePositionId(positionId);
+    public Contract saveContractAsMatched(Contract contract, Position position) {
+        contract.setMatchingSpirePositionId(position.getPositionId());
+        contract.setMatchingSpireTradeId(position.getTradeId());
         contract.setProcessingStatus(MATCHED);
         contract.setLastUpdateDateTime(LocalDateTime.now());
-        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
-            String.valueOf(contract.getMatchingSpirePositionId()));
         return save(contract);
     }
-
-    private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
-        cloudEventRecordService.record(recordRequest);
-    }
-
 
 }
