@@ -167,7 +167,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
             case POSITION_UNMATCHED -> positionUnmatched(recorded, recordType);
             case POSITION_CANCELED -> positionCanceled(recorded, recordType);
-            case POSITION_CANCELED_SUBMITTED -> positionCanceledSubmitted(recorded, recordType, related);
+            case POSITION_CANCEL_SUBMITTED -> positionCanceledSubmitted(recorded, recordType, related);
             case POSITION_SUBMITTED -> positionSubmitted(recorded, recordType);
             case POSITION_UPDATE_SUBMITTED -> positionUpdateSubmitted(recorded, recordType);
             case TRADE_AGREEMENT_CREATED -> tradeAgreementCreationEvent(recorded, recordType);

@@ -7,7 +7,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CANCEL_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCELED_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
@@ -279,7 +279,7 @@ class UpdatePositionProcessorTest {
             new RelatedObject("33", POSITION),
             new RelatedObject("tradeId", SPIRE_TRADE));
 
-        assertEquals(POSITION_CANCELED_SUBMITTED, expectedEventRequest.getRecordType());
+        assertEquals(POSITION_CANCEL_SUBMITTED, expectedEventRequest.getRecordType());
         assertEquals("Position - 33", expectedEventRequest.getSubject());
         assertEquals(CONTRACT_INITIATION, expectedEventRequest.getRelatedProcess());
         assertEquals(CANCEL_LOAN_CONTRACT_PROPOSAL, expectedEventRequest.getRelatedSubProcess());

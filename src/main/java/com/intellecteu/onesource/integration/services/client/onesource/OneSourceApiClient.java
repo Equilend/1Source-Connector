@@ -37,7 +37,7 @@ public interface OneSourceApiClient {
 
     void cancelContract(Contract contract, String positionId);
 
-    void cancelContract(Contract contract);
+    Contract cancelContract(Contract contract);
 
     List<PartyDto> retrieveParties();
 

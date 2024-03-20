@@ -4,12 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum SpireTradeType {
-    CANCEL_BORROW("CANCEL BORROW"),
-    CANCEL_LOAN("CANCEL LOAN"),
-    RERATE("RERATE"),
-    RERATE_BORROW("RERATE BORROW"),
-    ROLL_BORROW("ROLL BORROW"),
-    ROLL_LOAN("ROLL LOAN");
+    CANCEL_BORROW("Cancel Borrow"),
+    CANCEL_LOAN("Cancel Loan"),
+    RERATE("Rerate"),
+    RERATE_BORROW("Rerate Borrow"),
+    ROLL_BORROW("Roll Borrow"),
+    ROLL_LOAN("Roll Loan");
 
     private final String value;
 
