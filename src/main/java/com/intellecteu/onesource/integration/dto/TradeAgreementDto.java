@@ -13,8 +13,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
@@ -46,7 +46,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("billingCurrency")
     private CurrencyCd billingCurrency;
     @JsonProperty("dividendRatePct")
-    private Integer dividendRatePct;
+    private Double dividendRatePct;
     @JsonProperty("tradeDate")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate tradeDate;
@@ -76,7 +76,7 @@ public class TradeAgreementDto implements Reconcilable {
         @JsonProperty("instrument") InstrumentDto instrument, @JsonProperty("rate") RateDto rate,
         @JsonProperty("quantity") Integer quantity,
         @JsonProperty("billingCurrency") CurrencyCd billingCurrency,
-        @JsonProperty("dividendRatePct") Integer dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
+        @JsonProperty("dividendRatePct") Double dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
         @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDate termDate,
         @JsonProperty("settlementDate") LocalDate settlementDate,
         @JsonProperty("settlementType") SettlementType settlementType,

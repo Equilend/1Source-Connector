@@ -98,7 +98,7 @@ public class DtoTestFactory {
             .rate(buildRateDto())
             .quantity(2)
             .billingCurrency(USD)
-            .dividendRatePct(2)
+            .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
             .termType(OPEN)
             .termDate(LocalDate.now())
@@ -227,13 +227,13 @@ public class DtoTestFactory {
 
     public static LoanBorrowDto buildLoanBorrowDto(TradeAgreementDto tradeAgreement) {
         return LoanBorrowDto.builder()
-            .taxWithholdingRate(tradeAgreement.getDividendRatePct().doubleValue())
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
             .build();
     }
 
     public static LoanBorrowDto buildLoanBorrowDto(TradeAgreement tradeAgreement) {
         return LoanBorrowDto.builder()
-            .taxWithholdingRate(tradeAgreement.getDividendRatePct().doubleValue())
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
             .build();
     }
 

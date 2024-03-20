@@ -31,7 +31,9 @@ public class RecordMessageConstant {
             public static final String LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT = "Loan contract proposal - %s";
             public static final String POSITION_CANCELED_SUBJECT = "Position - %s";
             public static final String POSITION_CANCELED_SUBMITTED_SUBJECT = "Position - %s";
+            public static final String POSITION_SUBMITTED_SUBJECT = "Position - %s";
             public static final String POSITION_UNMATCHED_SUBJECT = "Position - %s";
+            public static final String POSITION_UPDATE_SUBMITTED_SUBJECT = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
@@ -159,9 +161,15 @@ public class RecordMessageConstant {
                 the 1Source loan contract proposal %s generated \
                 from this position has been instructed to 1Source""";
 
+            public static final String POSITION_SUBMITTED_MSG = """
+                “A loan contract proposal has been generated from the position %s and posted to 1Source""";
+
             public static final String POSITION_UNMATCHED_MSG = """
                 A new position %s has been created \
                 but not yet matched with a loan contract proposal.""";
+
+            public static final String POSITION_UPDATE_SUBMITTED_MSG = """
+                “A loan contract proposal has been generated from the updated position %s and posted to 1Source""";
 
             public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
                 A new trade agreement %s has been captured""";

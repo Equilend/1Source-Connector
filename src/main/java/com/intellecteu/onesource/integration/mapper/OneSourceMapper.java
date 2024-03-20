@@ -2,6 +2,8 @@ package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
+import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
@@ -16,14 +18,18 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRebateRateRebateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRerateDTODTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfTradeAgreementRateDTODTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -93,6 +99,38 @@ public abstract class OneSourceMapper {
     public abstract List<Settlement> toModelList(List<SettlementEntity> settlement);
 
     public abstract TradeEvent toModel(TradeEventEntity tradeEventEntity);
+
+    public abstract ContractProposalDTO toRequestDto(ContractProposal contractProposal);
+
+    public abstract TradeAgreementDTO toRequestDto(TradeAgreement tradeAgreement);
+
+    public abstract ContractProposal toModel(ContractProposalDTO contractProposal);
+
+    public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
+
+    public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rateDTO) {
+        if (rateDTO.getRebate() != null) {
+            return toRequestDto(rateDTO.getRebate());
+        } else if (rateDTO.getFee() != null) {
+            return toRequestDto(rateDTO.getFee());
+        }
+        return null;
+    }
+
+    public abstract RebateRateDTO toRequestDto(RebateRate rebateRate);
+
+    public abstract FeeRateDTO toRequestDto(FeeRate feeRate);
+
+    public Rate toModel(OneOfTradeAgreementRateDTODTO rateDTO) {
+        if (rateDTO instanceof RebateRateDTO) {
+            return toModel((RebateRateDTO) rateDTO);
+        } else if (rateDTO instanceof FeeRateDTO) {
+            return toModel((FeeRateDTO) rateDTO);
+        }
+        return null;
+    }
+
+    public abstract PartySettlementInstructionDTO toRequestDto(Settlement settlement);
 
     public abstract TradeEventEntity toEntity(TradeEvent tradeEvent);
 

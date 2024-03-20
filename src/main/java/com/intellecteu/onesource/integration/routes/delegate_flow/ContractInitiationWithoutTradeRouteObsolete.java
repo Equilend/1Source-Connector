@@ -101,7 +101,7 @@ public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
         from("direct:instructLoanContractProposal")
                 .choice()
                     .when(method(IntegrationUtils.class, "isLender"))
-                        .bean(positionProcessor, "instructLoanContractProposal")
+                        .bean(positionProcessor, "instructLoanContractProposalObsolete")
                     .endChoice()
                 .end()
                 .bean(positionProcessor, "savePosition")

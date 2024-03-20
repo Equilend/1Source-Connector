@@ -303,7 +303,7 @@ class EventMapperTest {
                 },
                 "quantity": 0,
                 "billingCurrency": "USD",
-                "dividendRatePct": 0,
+                "dividendRatePct": 0.5,
                 "tradeDate": "2023-08-11",
                 "termType": "OPEN",
                 "termDate": "2023-08-11",

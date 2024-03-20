@@ -103,7 +103,7 @@ public class ModelTestFactory {
             .rate(buildRate())
             .quantity(2)
             .billingCurrency(USD)
-            .dividendRatePct(2)
+            .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
             .termType(TermType.OPEN)
             .termDate(LocalDate.now())

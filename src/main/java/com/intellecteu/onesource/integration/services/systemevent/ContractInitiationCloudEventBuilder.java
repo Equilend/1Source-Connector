@@ -23,7 +23,9 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_TRADE_AGREEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_CANCELED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_CANCELED_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_UNMATCHED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POSITION_UPDATE_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.POST_POSITION_UPDATE_EXCEPTION_MSG;
@@ -53,7 +55,9 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_CANCELED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_CANCELED_SUBMITTED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_SUBMITTED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_UNMATCHED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POSITION_UPDATE_SUBMITTED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_POSITION_UPDATE_EXCEPTION_SPIRE;
@@ -164,6 +168,8 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case POSITION_UNMATCHED -> positionUnmatched(recorded, recordType);
             case POSITION_CANCELED -> positionCanceled(recorded, recordType);
             case POSITION_CANCELED_SUBMITTED -> positionCanceledSubmitted(recorded, recordType, related);
+            case POSITION_SUBMITTED -> positionSubmitted(recorded, recordType);
+            case POSITION_UPDATE_SUBMITTED -> positionUpdateSubmitted(recorded, recordType);
             case TRADE_AGREEMENT_CREATED -> tradeAgreementCreationEvent(recorded, recordType);
             case TRADE_AGREEMENT_MATCHED_CANCELED_POSITION -> tradeAgreementMatchingCanceledPosition(recorded,
                 recordType, related);
@@ -336,6 +342,28 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             CONTRACT_INITIATION,
             CANCEL_LOAN_CONTRACT_PROPOSAL,
             createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, positionId, spireTradeId))
+        );
+    }
+
+    private CloudEventBuildRequest positionSubmitted(String recorded, RecordType recordType) {
+        String dataMessage = format(POSITION_SUBMITTED_MSG, recorded);
+        return createRecordRequest(
+            recordType,
+            format(POSITION_SUBMITTED_SUBJECT, recorded),
+            CONTRACT_INITIATION,
+            POST_LOAN_CONTRACT_PROPOSAL,
+            createEventData(dataMessage, getPositionRelated(recorded))
+        );
+    }
+
+    private CloudEventBuildRequest positionUpdateSubmitted(String recorded, RecordType recordType) {
+        String dataMessage = format(POSITION_UPDATE_SUBMITTED_MSG, recorded);
+        return createRecordRequest(
+            recordType,
+            format(POSITION_UPDATE_SUBMITTED_SUBJECT, recorded),
+            CONTRACT_INITIATION,
+            POST_LOAN_CONTRACT_PROPOSAL,
+            createEventData(dataMessage, getPositionRelated(recorded))
         );
     }
 

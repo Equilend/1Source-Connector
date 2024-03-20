@@ -33,6 +33,12 @@ public class PositionService {
         this.backOfficeMapper = backOfficeMapper;
     }
 
+    /**
+     * Save position and update the last update date time for it
+     *
+     * @param position Position model
+     * @return representation of persisted Position entity
+     */
     public Position savePosition(Position position) {
         position.setLastUpdateDateTime(LocalDateTime.now());
         PositionEntity positionEntity = positionRepository.save(backOfficeMapper.toEntity(position));

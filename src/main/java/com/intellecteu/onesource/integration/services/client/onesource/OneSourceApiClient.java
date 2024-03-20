@@ -16,7 +16,7 @@ import org.springframework.http.HttpEntity;
 
 public interface OneSourceApiClient {
 
-    void createContract(Agreement agreement, ContractProposal contractProposal, Position position);
+    boolean executeNewContractProposal(ContractProposal contractProposal, Position position);
 
     Optional<Agreement> findTradeAgreement(String agreementUri, EventType eventType);
 
