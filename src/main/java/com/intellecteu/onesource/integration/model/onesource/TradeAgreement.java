@@ -36,7 +36,7 @@ public class TradeAgreement implements Reconcilable {
     private Rate rate;
     private Integer quantity;
     private CurrencyCd billingCurrency;
-    private Integer dividendRatePct;
+    private Double dividendRatePct;
     private LocalDate tradeDate;
     private TermType termType;
     private LocalDate termDate;

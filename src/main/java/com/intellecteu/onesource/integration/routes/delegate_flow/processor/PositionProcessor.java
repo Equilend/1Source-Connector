@@ -4,27 +4,30 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.ContractNotFoundException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
-import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -41,6 +44,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpStatusCodeException;
 
@@ -55,7 +59,6 @@ public class PositionProcessor {
     private final ContractService contractService;
     private final OneSourceApiClient oneSourceApiClient;
     private final SettlementService settlementService;
-    private final SpireMapper spireMapper;
     private final CloudEventRecordService cloudEventRecordService;
     private final MatchingService matchingService;
 
@@ -74,6 +77,16 @@ public class PositionProcessor {
                 position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
                 agreementService.markAgreementAsMatched(agreement, String.valueOf(position.getPositionId()));
             });
+        return position;
+    }
+
+    public Position updatePositionForInstructedProposal(Position position) {
+        if (ProcessingStatus.CREATED == position.getProcessingStatus()) {
+            position.setProcessingStatus(SUBMITTED);
+        }
+        if (ProcessingStatus.UPDATED == position.getProcessingStatus()) {
+            position.setProcessingStatus(UPDATE_SUBMITTED);
+        }
         return position;
     }
 
@@ -146,6 +159,20 @@ public class PositionProcessor {
         return position;
     }
 
+    public void recordEventProposalInstructed(Position position) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        if (SUBMITTED == position.getProcessingStatus()) {
+            CloudEventBuildRequest recordRequest = eventBuilder.buildRequest(String.valueOf(position.getPositionId()),
+                POSITION_SUBMITTED);
+            cloudEventRecordService.record(recordRequest);
+        }
+        if (UPDATE_SUBMITTED == position.getProcessingStatus()) {
+            CloudEventBuildRequest recordRequest = eventBuilder.buildRequest(String.valueOf(position.getPositionId()),
+                POSITION_UPDATE_SUBMITTED);
+            cloudEventRecordService.record(recordRequest);
+        }
+    }
+
     public ProcessingStatus reconcileWithAgreement(Position position) {
         if (position.getMatching1SourceTradeAgreementId() == null || position.getProcessingStatus() != SI_FETCHED) {
             return position.getProcessingStatus();
@@ -167,26 +194,30 @@ public class PositionProcessor {
         return position.getProcessingStatus();
     }
 
-    public Position instructLoanContractProposal(Position position) {
+    /**
+     * Instruct new loan contract proposal
+     *
+     * @param proposal ContractProposal
+     * @param position Position
+     * @return true if successfully executed new loan contract proposal request
+     */
+    public boolean instructLoanContractProposal(@NonNull ContractProposal proposal, @NonNull Position position) {
+        return oneSourceApiClient.executeNewContractProposal(proposal, position);
+    }
+
+    @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
+    public Position instructLoanContractProposalObsolete(Position position) {
         if ((position.getMatching1SourceTradeAgreementId() != null
             && position.getProcessingStatus() == TRADE_RECONCILED)
             || (position.getMatching1SourceTradeAgreementId() == null
             && position.getProcessingStatus() == SI_FETCHED)) {
             List<Settlement> settlementList = settlementService.getSettlementByInstructionId(
                 position.getPositionId()); // we will not fetch Settlement instruction since 0.0.5-SNAPSHOT
-            ContractProposal contractProposal = buildLoanContractProposal(settlementList,
-                spireMapper.buildTradeAgreement(position));
-            oneSourceApiClient.createContract(null, contractProposal, position);
+//            ContractProposal contractProposal = buildLoanContractProposal(settlementList,
+//                spireMapper.buildTradeAgreement(position));
+//            oneSourceApiClient.createContract(null, contractProposal, position);
             log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
         }
         return position;
-    }
-
-    private ContractProposal buildLoanContractProposal(List<Settlement> settlements,
-        TradeAgreement tradeAgreement) {
-        return ContractProposal.builder()
-            .settlementList(settlements)
-            .trade(tradeAgreement)
-            .build();
     }
 }

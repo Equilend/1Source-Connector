@@ -46,6 +46,8 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.net.URLEncoder;
@@ -73,6 +75,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class OneSourceApiClientImpl implements OneSourceApiClient {
 
+    private final ContractsApi contractsApi;
     private final ContractRepository contractRepository;
     private final CloudEventRecordService cloudEventRecordService;
     private final RestTemplate restTemplate;
@@ -94,10 +97,11 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     @Value("${onesource.version}")
     private String version;
 
-    public OneSourceApiClientImpl(ContractRepository contractRepository,
+    public OneSourceApiClientImpl(ContractsApi contractsApi, ContractRepository contractRepository,
         CloudEventRecordService cloudEventRecordService,
         RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository,
         TradeEventRepository eventRepository, OneSourceMapper oneSourceMapper) {
+        this.contractsApi = contractsApi;
         this.contractRepository = contractRepository;
         this.cloudEventRecordService = cloudEventRecordService;
         this.restTemplate = restTemplate;
@@ -106,35 +110,37 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    /**
+     * Send new contract proposal request to OneSource for inclusion in the ledger
+     *
+     * @param contractProposal ContractProposal
+     * @param position Position
+     * @return true if HTTP response code is CREATED (201)
+     */
     @Override
-    public void createContract(Agreement agreement, ContractProposal contractProposal, Position position) {
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        HttpEntity<ContractProposal> request = new HttpEntity<>(contractProposal, headers);
-
-        executeCreateContractRequest(agreement, position, request);
+    public boolean executeNewContractProposal(ContractProposal contractProposal, Position position) {
+        final ContractProposalDTO requestDto = oneSourceMapper.toRequestDto(contractProposal);
+        return executeCreateContractRequest(requestDto, position);
     }
 
-    private void executeCreateContractRequest(Agreement agreement, Position position,
-        HttpEntity<ContractProposal> request) {
-        String agreementId = agreement == null ? null : agreement.getAgreementId();
+    private boolean executeCreateContractRequest(ContractProposalDTO requestDto,
+        Position position) {
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
         try {
-            restTemplate.exchange(
-                onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST, request, JsonNode.class);
+            final ResponseEntity<LedgerResponseDTO> response = contractsApi.ledgerContractsPost(requestDto);
+            return response.getStatusCode().value() == 201;
         } catch (HttpStatusCodeException e) {
-            log.warn(
-                "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: "
-                    + "{} (SPIRE Position: {}) for the following reason: {}",
-                agreementId, position.getPositionId(), e.getStatusCode());
-            final HttpStatusCode statusCode = e.getStatusCode();
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR)
-                .contains(HttpStatus.valueOf(statusCode.value()))) {
+            log.warn("""
+                The loan contract proposal instruction has not been processed by 1Source for the \
+                (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
+            final HttpStatusCode statusCode = HttpStatus.valueOf(e.getStatusCode().value());
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(statusCode)) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
                     String.valueOf(position.getPositionId()));
                 cloudEventRecordService.record(recordRequest);
             }
+            return false;
         }
     }
 

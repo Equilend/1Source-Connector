@@ -6,15 +6,18 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.contract.ContractProcessFlowStrategy;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.DeclineContractInstructionService;
+import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
@@ -40,6 +43,7 @@ public class ContractProcessor {
     private final OneSourceService oneSourceService;
     private final DeclineContractInstructionService declineContractInstructionService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final IntegrationDataTransformer dataTransformer;
 
     @Transactional
     public Contract getLoanContractDetails(TradeEvent event) {
@@ -66,6 +70,10 @@ public class ContractProcessor {
         contract.setCreateDateTime(LocalDateTime.now());
         contract.setLastUpdateDateTime(LocalDateTime.now());
         return contract;
+    }
+
+    public ContractProposal createProposalFromPosition(@NonNull Position position) {
+        return dataTransformer.toLenderContractProposal(position);
     }
 
     public Contract saveContract(@NonNull Contract contract) {

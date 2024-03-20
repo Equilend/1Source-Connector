@@ -256,7 +256,7 @@ CREATE TABLE IF NOT EXISTS trade
     rate_id         BIGINT       NULL,
     quantity        INT          NULL,
     currency        VARCHAR(255) NULL,
-    dividend_rate   INT          NULL,
+    dividend_rate   DOUBLE PRECISION NULL,
     trade_date      DATE         NULL,
     term_type       VARCHAR(255) NULL,
     term_date       DATE         NULL,

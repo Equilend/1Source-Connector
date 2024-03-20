@@ -86,6 +86,11 @@ public class Position implements Reconcilable {
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
 
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
+        log.debug("Processing status {} was set for positionId={}", processingStatus, positionId);
+        this.processingStatus = processingStatus;
+    }
+
     public String getCollateralType() {
         return positionCollateralType == null ? null : positionCollateralType.getCollateralType();
     }
