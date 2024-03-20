@@ -58,7 +58,6 @@ public class Position implements Reconcilable {
     private Boolean deliverFree;
     private Double amount;
     private Double price;
-    private Double contractValue;
     private Integer currencyId;
     private Long positionSecurityId;
     private ProcessingStatus processingStatus;
@@ -71,8 +70,6 @@ public class Position implements Reconcilable {
     private Currency currency;
     @JsonProperty("loanBorrowDTO")
     private LoanBorrow loanBorrow;
-    @JsonProperty("collateralTypeDTO")
-    private PositionCollateralType positionCollateralType;
     @JsonProperty("exposureDTO")
     private PositionExposure exposure;
     @JsonAlias({"positiontypeDTO", "positionTypeDTO"})
@@ -89,10 +86,6 @@ public class Position implements Reconcilable {
     public void setProcessingStatus(ProcessingStatus processingStatus) {
         log.debug("Processing status {} was set for positionId={}", processingStatus, positionId);
         this.processingStatus = processingStatus;
-    }
-
-    public String getCollateralType() {
-        return positionCollateralType == null ? null : positionCollateralType.getCollateralType();
     }
 
     public Double getCpHaircut() {

@@ -1,12 +1,7 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
@@ -39,7 +34,6 @@ import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -180,9 +174,9 @@ public class PositionProcessor {
     }
 
     public ProcessingStatus reconcileWithAgreement(Position position) {
-        if (position.getMatching1SourceTradeAgreementId() == null || position.getProcessingStatus() != SI_FETCHED) {
-            return position.getProcessingStatus();
-        }
+//        if (position.getMatching1SourceTradeAgreementId() == null || position.getProcessingStatus() != SI_FETCHED) {
+//            return position.getProcessingStatus();
+//        }
         return agreementService.findByAgreementId(position.getMatching1SourceTradeAgreementId())
             .map(agreement -> agreementService.reconcile(agreement, position))
             .map(agreementService::saveAgreement)
@@ -191,12 +185,12 @@ public class PositionProcessor {
     }
 
     private ProcessingStatus retrieveProcessingStatus(Position position, Agreement agreement) {
-        if (agreement.getProcessingStatus().equals(RECONCILED)) {
-            return TRADE_RECONCILED;
-        }
-        if (agreement.getProcessingStatus().equals(DISCREPANCIES)) {
-            return TRADE_DISCREPANCIES;
-        }
+//        if (agreement.getProcessingStatus().equals(RECONCILED)) {
+//            return TRADE_RECONCILED;
+//        }
+//        if (agreement.getProcessingStatus().equals(DISCREPANCIES)) {
+//            return TRADE_DISCREPANCIES;
+//        }
         return position.getProcessingStatus();
     }
 
@@ -209,22 +203,6 @@ public class PositionProcessor {
      */
     public boolean instructLoanContractProposal(@NonNull ContractProposal proposal, @NonNull Position position) {
         return oneSourceApiClient.executeNewContractProposal(proposal, position);
-    }
-
-    @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
-    public Position instructLoanContractProposalObsolete(Position position) {
-        if ((position.getMatching1SourceTradeAgreementId() != null
-            && position.getProcessingStatus() == TRADE_RECONCILED)
-            || (position.getMatching1SourceTradeAgreementId() == null
-            && position.getProcessingStatus() == SI_FETCHED)) {
-            List<Settlement> settlementList = settlementService.getSettlementByInstructionId(
-                position.getPositionId()); // we will not fetch Settlement instruction since 0.0.5-SNAPSHOT
-//            ContractProposal contractProposal = buildLoanContractProposal(settlementList,
-//                spireMapper.buildTradeAgreement(position));
-//            oneSourceApiClient.createContract(null, contractProposal, position);
-            log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
-        }
-        return position;
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

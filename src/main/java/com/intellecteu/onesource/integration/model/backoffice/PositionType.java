@@ -17,5 +17,6 @@ public class PositionType {
 
     private Integer positionTypeId;
     private String positionType;
+    private Boolean isCash;
 
 }

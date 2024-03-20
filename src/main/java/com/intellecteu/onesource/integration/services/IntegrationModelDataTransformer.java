@@ -108,10 +108,8 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     private Collateral buildCollateral(Position position) {
         return Collateral.builder()
             .contractPrice(position.getPrice())
-            .contractValue(position.getContractValue())
             .collateralValue(position.getAmount())
             .currency(position.getCurrency().getCurrencyKy())
-            .type(buildCollateralType(position.getCollateralType()))
             .margin(position.getCpHaircut()) // todo check if percentage format
             .roundingRule(position.getCpMarkRoundTo())
             .roundingMode(ALWAYSUP)

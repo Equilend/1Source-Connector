@@ -22,7 +22,6 @@ import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
-import com.intellecteu.onesource.integration.model.backoffice.PositionCollateralType;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -248,11 +247,9 @@ public class ModelTestFactory {
             .deliverFree(true)
             .amount(1.0d)
             .price(100.0d)
-            .contractValue(123.0d)
             .positionStatus(positionStatus)
-            .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(46, 0.05d, 10, 12))
-            .positionType(new PositionType(11, "CASH BORROW"))
+            .positionType(new PositionType(11, "CASH BORROW", true))
             .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", 123L, 123L))
             .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", 345L, 345L))
             .endDate(LocalDateTime.now())

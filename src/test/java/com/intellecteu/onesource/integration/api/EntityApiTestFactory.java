@@ -21,7 +21,6 @@ import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
-import com.intellecteu.onesource.integration.model.backoffice.PositionCollateralType;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -247,11 +246,9 @@ public class EntityApiTestFactory {
             .deliverFree(true)
             .amount(1.0d)
             .price(100.0d)
-            .contractValue(123.0d)
             .positionStatus(positionStatus)
-            .positionCollateralType(new PositionCollateralType("CASH"))
             .exposure(new PositionExposure(11, 0.05d, 10, 12))
-            .positionType(new PositionType(22, "CASH BORROW"))
+            .positionType(new PositionType(22, "CASH BORROW", true))
             .positionAccount(new PositionAccount(11L, 1L, "testLei", "testLeiName", 123L, 123L))
             .positionCpAccount(new PositionAccount(22L, 2L, "testCpLei", "testCpLeiName", 456L, 456L))
             .endDate(LocalDateTime.now())

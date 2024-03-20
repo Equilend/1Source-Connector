@@ -85,9 +85,6 @@ public class PositionEntity {
     @Column(name = "price")
     private Double price;
 
-    @Column(name = "contract_value")
-    private Double contractValue;
-
     @Column(name = "currency_id")
     private Integer currencyId;
 
@@ -129,13 +126,6 @@ public class PositionEntity {
         @AttributeOverride(name = "taxWithholdingRate", column = @Column(name = "tax_with_holding_rate"))
     })
     private LoanBorrowEntity loanBorrow;
-
-    @Embedded
-    @JsonProperty("collateralTypeDTO")
-    @AttributeOverrides({
-        @AttributeOverride(name = "collateralType", column = @Column(name = "collateral_type"))
-    })
-    private PositionCollateralTypeEntity positionCollateralType;
 
     @Embedded
     @JsonProperty("exposureDTO")

@@ -18,7 +18,6 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SPIRE_ISSUE;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.GET;
@@ -221,7 +220,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         } catch (HttpStatusCodeException e) {
             log.error(
                 format(POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG, contract.getContractId(), e.getStatusText()));
-            contract.setProcessingStatus(SPIRE_ISSUE);
+//            contract.setProcessingStatus(SPIRE_ISSUE);
             final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
@@ -294,7 +293,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             String positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusText()));
-            contract.setProcessingStatus(SPIRE_ISSUE);
+//            contract.setProcessingStatus(SPIRE_ISSUE);
             final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
@@ -420,7 +419,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private void saveStatusOnUnsuccessfulRequest(Contract contract, String response) {
         log.error("The loan contract : {} cannot be canceled for the following reason: {}",
             contract.getContractId(), response);
-        contract.setProcessingStatus(SPIRE_ISSUE);
+//        contract.setProcessingStatus(SPIRE_ISSUE);
         contractRepository.save(oneSourceMapper.toEntity(contract));
     }
 }
