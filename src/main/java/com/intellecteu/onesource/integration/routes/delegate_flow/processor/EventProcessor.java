@@ -109,7 +109,7 @@ public class EventProcessor {
 
         List<Position> positions = positionService.getByMatchingTradeAgreementId(agreementId);
         positions.forEach(position -> {
-            position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
+//            position.setProcessingStatus(ProcessingStatus.TRADE_CANCELED);
             positionService.savePosition(position);
             recordCloudEvent(agreementId, position, TRADE_AGREEMENT_CANCELED);
         });

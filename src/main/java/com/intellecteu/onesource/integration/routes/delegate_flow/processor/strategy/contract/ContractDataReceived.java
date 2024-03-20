@@ -9,11 +9,8 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
@@ -134,7 +131,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
     }
 
     private void processSettledContract(Contract contract) {
-        contract.setProcessingStatus(SETTLED);
+//        contract.setProcessingStatus(SETTLED);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_SETTLED,
             String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_SETTLEMENT);
@@ -161,7 +158,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
                 + "the SPIRE position (position identifier: {}) has been canceled",
             contract.getContractId(), spirePositionId);
         contract.setProcessingStatus(CANCELED);
-        savePositionStatus(position, PROPOSAL_CANCELED);
+//        savePositionStatus(position, PROPOSAL_CANCELED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED,
             String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
@@ -173,7 +170,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
                 + "the SPIRE position (position identifier: {}) has been approved",
             contract.getContractId(), spirePositionId);
         contract.setProcessingStatus(ProcessingStatus.APPROVED);
-        savePositionStatus(position, PROPOSAL_APPROVED);
+//        savePositionStatus(position, PROPOSAL_APPROVED);
         recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
             String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }

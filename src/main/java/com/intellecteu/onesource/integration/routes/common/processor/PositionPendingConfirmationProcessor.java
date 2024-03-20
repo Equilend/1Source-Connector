@@ -10,8 +10,6 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_SETTLED;
@@ -176,7 +174,7 @@ public class PositionPendingConfirmationProcessor {
                     position, partyRole,
                     position.getPositionAccount().getAccountId());
                 settlementOptional.ifPresent(s -> {
-                    position.setProcessingStatus(SI_FETCHED);
+//                    position.setProcessingStatus(SI_FETCHED);
                     positionService.savePosition(position);
                     settlementService.persistSettlement(s);
                 });
@@ -206,7 +204,7 @@ public class PositionPendingConfirmationProcessor {
                 positionDto.setProcessingStatus(CANCELED);
                 matchingCanceledPosition(positionDto.getCustomValue2());
             } else if (OPEN.getValue().equals(status)) {
-                positionDto.setProcessingStatus(SETTLED);
+//                positionDto.setProcessingStatus(SETTLED);
                 processSettledStatusForContract(positionDto);
             } else if (positionDto.getProcessingStatus() == null) {
                 positionDto.setProcessingStatus(CREATED);

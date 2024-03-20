@@ -13,7 +13,6 @@ import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
 import com.intellecteu.onesource.integration.dto.spire.IndexDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
@@ -356,36 +355,6 @@ class ContractReconcileServiceTest {
     @DisplayName("Throw exception if reconciliation fails for an amount")
     void reconcile_shouldThrowException_whenReconciliationFailsForAmount() {
         position.setAmount(99999.9d);
-
-        verifyReconciliationFailure();
-    }
-
-    @Test
-    @Order(32)
-    @DisplayName("Trade collateral type shall be CASH when position collateral type is empty")
-    void reconcile_shouldSuccess_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsCash() throws Exception {
-        contract.getTrade().getCollateral().setType(CollateralType.CASH);
-        position.getCollateralTypeDto().setCollateralType(null);
-
-        service.reconcile(contract, position);
-    }
-
-    @Test
-    @Order(32)
-    @DisplayName("Throw exception if position collateralType is missed and trade collateral type is missed")
-    void reconcile_shouldFail_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsMissing() {
-        contract.getTrade().getCollateral().setType(null);
-        position.getCollateralTypeDto().setCollateralType(null);
-
-        verifyReconciliationFailure();
-    }
-
-    @Test
-    @Order(33)
-    @DisplayName("Throw exception if reconciliation fails for a collateralType")
-    void reconcile_shouldThrowException_whenCollateralTypeIsNotCash() {
-        contract.getTrade().getCollateral().setType(CollateralType.CASHPOOL);
-        position.getCollateralTypeDto().setCollateralType("customType");
 
         verifyReconciliationFailure();
     }

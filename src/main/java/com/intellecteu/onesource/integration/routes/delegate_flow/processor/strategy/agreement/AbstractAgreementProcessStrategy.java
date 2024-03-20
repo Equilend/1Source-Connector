@@ -10,8 +10,6 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
@@ -92,7 +90,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.debug(
                 format(RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG, agreement.getAgreementId(), position.getPositionId()));
             agreement.getTrade().setProcessingStatus(RECONCILED);
-            position.setProcessingStatus(TRADE_RECONCILED);
+//            position.setProcessingStatus(TRADE_RECONCILED);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
@@ -102,7 +100,7 @@ public abstract class AbstractAgreementProcessStrategy implements AgreementProce
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
             agreement.getTrade().setProcessingStatus(DISCREPANCIES);
-            position.setProcessingStatus(TRADE_DISCREPANCIES);
+//            position.setProcessingStatus(TRADE_DISCREPANCIES);
             var eventBuilder = cloudEventRecordService.getFactory()
                 .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
