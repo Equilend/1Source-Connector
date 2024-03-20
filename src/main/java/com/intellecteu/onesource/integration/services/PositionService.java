@@ -42,7 +42,7 @@ public class PositionService {
     public Position savePosition(Position position) {
         position.setLastUpdateDateTime(LocalDateTime.now());
         PositionEntity positionEntity = positionRepository.save(backOfficeMapper.toEntity(position));
-        log.debug("Position with id={} was saved with status={}.",
+        log.debug("Position with id={} with processing status={} was saved.",
             positionEntity.getPositionId(), position.getProcessingStatus());
         return backOfficeMapper.toModel(positionEntity);
     }

@@ -42,9 +42,9 @@ import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
@@ -159,39 +159,45 @@ public class BackOfficeService {
     }
 
     public List<TradeOut> fetchUpdatesOnPositions(List<Position> positions) {
-        Long lastTradeIdRecorded = retrieveLatestTradeId(positions);
-        String commaSeparatedIdList = positions.stream()
-            .map(p -> String.valueOf(p.getPositionId()))
-            .collect(Collectors.joining(COMMA_DELIMITER));
-        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(
-            createTuplesGetUpdatePositionsByIdList(lastTradeIdRecorded, commaSeparatedIdList));
-        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
+        final NQueryRequest nQueryRequest = buildRequestForUpdates(positions);
         try {
             log.debug("Sending request with SPIRE API Client");
-            final ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(
-                nQueryRequest);
+            ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
             if (responseTradeHasData(response)) {
-                List<SGroupTradeOutDTO> responseGroups = response.getBody().getData().getGroups();
-                List<TradeOut> tradesWithUpdatedPositions = responseGroups.stream()
-                    .map(SGroupTradeOutDTO::getAvg)
-                    .map(backOfficeMapper::toModel)
-                    .toList();
-                log.debug("Found {} trades with updated positions", tradesWithUpdatedPositions.size());
-                return tradesWithUpdatedPositions;
+                return convertResponseToTrades(response.getBody().getData().getGroups());
             }
         } catch (RestClientException e) {
             log.warn("Rest client exception: {}", e.getMessage());
             if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatusCode statusCode = exception.getStatusCode();
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
+                final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(status)) {
                     log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, statusCode);
+                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, status.value());
                     recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
                         GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
                 }
             }
         }
         return List.of();
+    }
+
+    private List<TradeOut> convertResponseToTrades(List<SGroupTradeOutDTO> responseGroups) {
+        List<TradeOut> tradesWithUpdatedPositions = responseGroups.stream()
+            .map(SGroupTradeOutDTO::getAvg)
+            .map(backOfficeMapper::toModel)
+            .toList();
+        log.debug("Found {} trades with updated positions", tradesWithUpdatedPositions.size());
+        return tradesWithUpdatedPositions;
+    }
+
+    private NQueryRequest buildRequestForUpdates(List<Position> positions) {
+        Long lastTradeIdRecorded = retrieveLatestTradeId(positions);
+        String commaSeparatedIdList = positions.stream()
+            .map(p -> String.valueOf(p.getPositionId()))
+            .collect(Collectors.joining(COMMA_DELIMITER));
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(
+            createTuplesGetUpdatePositionsByIdList(lastTradeIdRecorded, commaSeparatedIdList));
+        return new NQueryRequest().nQuery(nQuery);
     }
 
     @Deprecated(since = "0.0.5-SNAPSHOT")

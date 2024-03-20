@@ -41,19 +41,24 @@ public class PositionConstant {
 
     public static class Request {
 
-        public static final String CANCEL_LOAN = "CANCEL LOAN";
-        public static final String CANCEL_NEW_BORROW = "CANCEL NEW BORROW";
+        public static final String CANCEL_LOAN = "Cancel Loan";
+        public static final String CANCEL_NEW_BORROW = "Cancel New Borrow";
         public static final String NEW_BORROW = "New Borrow";
         public static final String NEW_LOAN = "New Loan";
         public static final String POSITION_ID = "positionId";
         public static final String PENDING_ONESOURCE_CONFIRMATION = "PENDING ONESOURCE CONFIRMATION";
-        public static final String RERATE = "RERATE";
-        public static final String RERATE_BORROW = "RERATE BORROW";
-        public static final String ROLL_BORROW = "ROLL BORROW";
-        public static final String ROLL_LOAN = "ROLL LOAN";
+        public static final String RERATE = "Rerate";
+        public static final String RERATE_BORROW = "Rerate Borrow";
+        public static final String ROLL_BORROW = "Roll Borrow";
+        public static final String ROLL_LOAN = "Roll Loan";
         public static final String TRADE_ID = "tradeId";
         public static final String TRADE_STATUS = "status";
         public static final String TRADE_TYPE = "tradeType";
+    }
+
+    public static class Status {
+
+        public final static String PENDING_ONESOURCE_CONFIRMATION = "PENDING ONESOURCE CONFIRMATION";
     }
 
 }

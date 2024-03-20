@@ -6,7 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCELED_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static java.lang.String.valueOf;
 
 import com.intellecteu.onesource.integration.model.backoffice.Index;
@@ -108,31 +108,32 @@ public class UpdatePositionProcessor {
         return positionService.savePosition(position);
     }
 
-    public void executeCancelRequest(Position position) {
-        final Optional<Contract> contractOptional = contractService.findByPositionId(position.getPositionId());
-        contractOptional.ifPresent(contract -> {
-            final String matchedContractId = position.getMatching1SourceLoanContractId();
-            if (matchedContractId != null) {
-                executeCancelRequest(position.getPositionId(), contract, matchedContractId);
-            }
-        });
+    public Contract executeCancelRequest(Position position) {
+        return contractService.findByPositionId(position.getPositionId())
+            .map(contract -> {
+                final String matchedContractId = position.getMatching1SourceLoanContractId();
+                return executeCancelRequest(position.getPositionId(), contract, matchedContractId);
+            })
+            .orElse(null); // temporary solution until new flow will be implemented
     }
 
     public void cancelContractForCancelLoanTrade(Position position) {
         final Optional<Contract> contractOptional = contractService.findByPositionId(position.getPositionId());
         contractOptional.ifPresent(contract -> {
             final String matchedContractId = position.getMatching1SourceLoanContractId();
-            if (matchedContractId != null && contract.getProcessingStatus() != DECLINED
-                && matchedContractId.equals(contract.getContractId())) {
-                executeCancelRequest(position.getPositionId(), contract, matchedContractId);
-                recordPositionCancelSubmittedEvent(contract);
+            if (contract.getProcessingStatus() != DECLINED && matchedContractId.equals(contract.getContractId())) {
+                var canceledContract = executeCancelRequest(position.getPositionId(), contract, matchedContractId);
+                if (canceledContract != null) {
+                    recordPositionCancelSubmittedEvent(contract);
+                    contractService.save(contract);
+                }
             }
         });
     }
 
-    private void executeCancelRequest(Long positionId, Contract contract, String matchedContractId) {
+    private Contract executeCancelRequest(Long positionId, Contract contract, String matchedContractId) {
         log.debug("Sending cancel request for contract Id:{}, position Id:{}", matchedContractId, positionId);
-        oneSourceApiClient.cancelContract(contract); // todo will be reworked to use modern API
+        return oneSourceApiClient.cancelContract(contract); // todo will be reworked to use modern API
     }
 
     public void recordPositionCanceledSystemEvent(Position toCancelPosition) {
@@ -154,10 +155,10 @@ public class UpdatePositionProcessor {
     public void recordPositionCancelSubmittedEvent(Contract contract) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         String spirePositionId = String.valueOf(contract.getMatchingSpirePositionId());
-        // String spireTradeId = String.valueOf(contract.getMatchingSpireTradeId()); todo add the new field
-        String positionIdWithTradeId = String.join(",", spirePositionId, "tradeId");
+        String spireTradeId = String.valueOf(contract.getMatchingSpireTradeId());
+        String positionIdWithTradeId = String.join(",", spirePositionId, spireTradeId);
         var recordRequest = eventBuilder.buildRequest(String.valueOf(contract.getContractId()),
-            POSITION_CANCELED_SUBMITTED, positionIdWithTradeId);
+            POSITION_CANCEL_SUBMITTED, positionIdWithTradeId);
         cloudEventRecordService.record(recordRequest);
     }
 
@@ -200,7 +201,7 @@ public class UpdatePositionProcessor {
     private Contract updateCancelBorrowContract(Contract contract) {
         contract.setProcessingStatus(PROPOSED);
         contract.setMatchingSpirePositionId(null);
-        // contract.setMatchingSpireTradeId(null); todo add this field to a model
+        contract.setMatchingSpireTradeId(null);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         return contract;
     }

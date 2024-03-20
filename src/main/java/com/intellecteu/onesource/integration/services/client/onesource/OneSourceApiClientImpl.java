@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SPIRE_ISSUE;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
@@ -303,11 +304,13 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
-    public void cancelContract(Contract contract) {
+    public Contract cancelContract(Contract contract) {
         log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT);
         try {
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT, POST,
                 null, JsonNode.class, contract.getContractId());
+            contract.setProcessingStatus(CANCEL_SUBMITTED);
+            return contract;
         } catch (HttpStatusCodeException e) {
             final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
@@ -318,6 +321,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 cloudEventRecordService.record(recordRequest);
             }
         }
+        return null;
     }
 
     @Override

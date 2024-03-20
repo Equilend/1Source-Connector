@@ -41,6 +41,7 @@ public class ContractService {
 
     @Transactional
     public Contract save(Contract contract) {
+        contract.setLastUpdateDateTime(LocalDateTime.now());
         final ContractEntity contractEntity = oneSourceMapper.toEntity(contract);
         ContractEntity savedEntity = contractRepository.save(contractEntity);
         log.debug("Contract with id: {} was saved.", contract.getContractId());
