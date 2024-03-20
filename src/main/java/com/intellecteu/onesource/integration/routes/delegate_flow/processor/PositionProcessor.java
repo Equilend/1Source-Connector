@@ -9,6 +9,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TRADE_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.intellecteu.onesource.integration.exception.ContractNotFoundException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -95,7 +97,9 @@ public class PositionProcessor {
         Optional<Contract> contractOpt = contractService.findByVenueRefId(position.getVenueRefId());
         contractOpt.ifPresent(contract -> {
             position.setMatching1SourceLoanContractId(contract.getContractId());
-            contractService.markContractAsMatched(contract, position.getPositionId());
+            contractService.saveContractAsMatched(contract, position);
+            createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
+                String.valueOf(contract.getMatchingSpirePositionId()));
         });
         return position;
     }
@@ -106,7 +110,9 @@ public class PositionProcessor {
             log.debug("Matching position with contracts received ({})", unmatchedContracts.size());
             Contract matchedContract = retrieveMatchedContract(position, unmatchedContracts);
             updatePosition(matchedContract, position);
-            contractService.markContractAsMatched(matchedContract, position.getPositionId());
+            contractService.saveContractAsMatched(matchedContract, position);
+            createContractInitiationCloudEvent(matchedContract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
+                String.valueOf(matchedContract.getMatchingSpirePositionId()));
         } catch (ContractNotFoundException e) {
             log.debug("No matched contracts found for position Id={}", position.getPositionId());
             recordSystemEvent(position, POSITION_UNMATCHED);
@@ -219,5 +225,11 @@ public class PositionProcessor {
             log.debug("Loan contract proposal was created for position id: {}", position.getPositionId());
         }
         return position;
+    }
+
+    private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
+        cloudEventRecordService.record(recordRequest);
     }
 }
