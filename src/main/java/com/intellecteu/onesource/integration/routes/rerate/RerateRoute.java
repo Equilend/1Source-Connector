@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
@@ -159,6 +160,14 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateProcessor, "updateDeclineInstructionProcessingStatus(${body}, PROCESSED)")
             .bean(rerateProcessor, "saveDeclineInstruction")
             .log("<<< Finished DECLINE_RERATE_PROPOSAL for DeclineInstruction: ${body.declineInstructionId} with expected statuses: DeclineInstruction[PROCESSED], Rerate[DECLINE_SUBMITTED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_DECLINED))
+            .log(">>> Started PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processRerateDeclinedEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[DECLINED]");
     }
     //@formatter:on
 
