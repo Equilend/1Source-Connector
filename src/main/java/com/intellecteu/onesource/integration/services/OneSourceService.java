@@ -102,6 +102,11 @@ public class OneSourceService {
             contractId, rerateId);
     }
 
+    public void declineRerate(String contractId, String rerateId){
+        ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdDeclinePostWithHttpInfo(
+            contractId, rerateId);
+    }
+
     private RerateProposalDTO buildRerateProposal(RerateTrade rerateTrade) {
         RerateProposalDTO rerateProposalDTO = new RerateProposalDTO();
         RebateRateDTO rebateRate = new RebateRateDTO();

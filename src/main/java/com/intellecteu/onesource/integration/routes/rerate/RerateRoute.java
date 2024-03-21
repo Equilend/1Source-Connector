@@ -10,6 +10,7 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.RE
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -44,18 +45,25 @@ public class RerateRoute extends RouteBuilder {
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT r FROM RerateEntity r WHERE r.processingStatus = '%s'";
 
+    private static final String DECLINE_INSTRUCTION_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT d FROM DeclineInstructionEntity d WHERE d.relatedProposalType = 'RERATE' AND d.processingStatus IS NULL";
+
     private final RerateProcessor rerateProcessor;
     private final RerateEventProcessor rerateEventProcessor;
     private final OneSourceMapper oneSourceMapper;
     private final BackOfficeMapper backOfficeMapper;
+    private final DeclineInstructionMapper declineInstructionMapper;
 
     @Autowired
     public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
-        BackOfficeMapper backOfficeMapper) {
+        BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper) {
         this.rerateProcessor = rerateProcessor;
         this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
         this.backOfficeMapper = backOfficeMapper;
+        this.declineInstructionMapper = declineInstructionMapper;
     }
 
     @Override
@@ -143,6 +151,14 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
             .bean(rerateEventProcessor, "saveEvent")
             .log("<<< Finished PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPLIED]");
+
+        from(createUnprocessedDeclineInstructionSQLEndpoint())
+            .log(">>> Started DECLINE_RERATE_PROPOSAL for DeclineInstruction: ${body.declineInstructionId}")
+            .bean(declineInstructionMapper, "toModel")
+            .bean(rerateProcessor, "declineRerate")
+            .bean(rerateProcessor, "updateDeclineInstructionProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateProcessor, "saveDeclineInstruction")
+            .log("<<< Finished DECLINE_RERATE_PROPOSAL for DeclineInstruction: ${body.declineInstructionId} with expected statuses: DeclineInstruction[PROCESSED], Rerate[DECLINE_SUBMITTED]");
     }
     //@formatter:on
 
@@ -164,5 +180,9 @@ public class RerateRoute extends RouteBuilder {
 
     private String createRerateSQLEndpoint(ProcessingStatus status) {
         return String.format(RERATE_SQL_ENDPOINT, status);
+    }
+
+    private String createUnprocessedDeclineInstructionSQLEndpoint(){
+        return DECLINE_INSTRUCTION_SQL_ENDPOINT;
     }
 }

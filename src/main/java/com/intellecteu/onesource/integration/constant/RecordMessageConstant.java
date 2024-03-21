@@ -194,6 +194,7 @@ public class RecordMessageConstant {
             public static final String APPROVE_EXCEPTION_RERATE = "Trade - %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String CONFIRM_EXCEPTION_RERATE = "Trade - %s";
+            public static final String DECLINE_EXCEPTION_RERATE = "Trade - %s";
         }
 
         public static class DataMsg {
@@ -208,6 +209,7 @@ public class RecordMessageConstant {
             public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been approved but the rerate proposal has not been retrieved in the Integration toolkit";
             public static final String CONFIRM_EXCEPTION_RERATE_MSG = "The rerate trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source rerate is : %s. The reason is: %s";
+            public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";
 
         }
     }
