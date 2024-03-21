@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -52,17 +53,20 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
 
     private final BackOfficeMapper backOfficeMapper;
     private final OneSourceMapper oneSourceMapper;
+    private final DeclineInstructionMapper declineInstructionMapper;
     private final ContractProcessor contractProcessor;
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
 
     public ContractInitiationDelegateFlowRoute(
         @Value("${route.delegate-flow.update-position.timer}") long updateTimer, BackOfficeMapper backOfficeMapper,
-        OneSourceMapper oneSourceMapper, ContractProcessor contractProcessor, PositionProcessor positionProcessor,
+        OneSourceMapper oneSourceMapper, DeclineInstructionMapper declineInstructionMapper,
+        ContractProcessor contractProcessor, PositionProcessor positionProcessor,
         EventProcessor eventProcessor) {
         this.updateTimer = updateTimer;
         this.backOfficeMapper = backOfficeMapper;
         this.oneSourceMapper = oneSourceMapper;
+        this.declineInstructionMapper = declineInstructionMapper;
         this.contractProcessor = contractProcessor;
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
@@ -97,8 +101,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(positionProcessor, "savePosition")
             .bean(positionProcessor, "recordEventProposalInstructed")
             .log("<<< Finished POST_LOAN_CONTRACT_PROPOSAL subprocess "
-                + "with expected processing statuses: Position[SUBMITTED, UPDATE_SUBMITTED], "
-                + "system events might be captured: [POSITION_SUBMITTED, POSITION_UPDATE_SUBMITTED]")
+                + "with expected processing statuses: Position[SUBMITTED, UPDATE_SUBMITTED]")
         .end();
 
         from(buildGetPositionByStatusQuery(CREATED))
@@ -111,8 +114,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 .endChoice()
             .end()
             .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process"
-                + "with expected processing statuses: Contract[MATCHED], "
-                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, POSITION_UNMATCHED]")
+                + "with expected processing statuses: Contract[MATCHED]")
         .end();
 
         from(buildGetContractByStatusQuery(PROPOSED))
@@ -127,9 +129,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .end()
             .end()
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
-                + "with expected processing statuses: Contract[MATCHED, UNMATCHED], "
-                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL, "
-                + "LOAN_CONTRACT_PROPOSAL_MATCHED, LOAN_CONTRACT_PROPOSAL_UNMATCHED]")
+                + "with expected processing statuses: Contract[MATCHED, UNMATCHED]")
         .end();
 
         from(buildGetValidatedContractForBorrowerQuery(VALIDATED))
@@ -140,6 +140,29 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("Finished APPROVE_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[APPROVAL_SUBMITTED]")
         .end();
+
+        from(buildGetDeclineInstructionsQuery())
+            .routeId("DeclineLoanContractProposalAsBorrower")
+            .log(">>> Started DECLINE_LOAN_CONTRACT_PROPOSAL process.")
+            .bean(declineInstructionMapper, "toModel")
+            .setHeader("declineInstruction", body())
+            .bean(contractProcessor, "retrieveContractFromDeclineInstruction")
+            .filter(body().isNotNull())
+            .bean(contractProcessor, "instructDeclineLoanContractProposal(${body}, ${header.declineInstruction})")
+            .log("Finished DECLINE_LOAN_CONTRACT_PROPOSAL process"
+                + "with expected processing statuses: Contract[DECLINE_SUBMITTED], DeclineInstruction[PROCESSED]")
+            .end();
+    }
+
+    private String buildGetDeclineInstructionsQuery() {
+        String query = """
+            SELECT d FROM DeclineInstructionEntity d WHERE d.processingStatus IS NULL \
+            OR d.processingStatus = 'CREATED'""";
+        return String.format(CAMEL_JPA_CONFIG,
+            "com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity",
+            String.format("delay=%d", updateTimer),
+            query);
+
     }
 
     private String buildGetContractByStatusQuery(ProcessingStatus... statuses) {
@@ -148,7 +171,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
         return String.format(CAMEL_JPA_CONFIG,
             "com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity",
-            String.format("delay=%d&entityType=java.util.List", updateTimer),
+            String.format("delay=%d", updateTimer),
             query);
     }
 
@@ -160,7 +183,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
         return String.format(CAMEL_JPA_CONFIG,
             "com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity",
-            String.format("delay=%d&entityType=java.util.List", updateTimer),
+            String.format("delay=%d", updateTimer),
             query);
     }
 

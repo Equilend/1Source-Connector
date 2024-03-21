@@ -1,5 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
+import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
 import com.intellecteu.onesource.integration.repository.DeclineContractInstructionRepository;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import lombok.RequiredArgsConstructor;
@@ -14,11 +16,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class DeclineContractInstructionService {
 
     private final DeclineContractInstructionRepository declineContractInstructionRepository;
+    private final DeclineInstructionMapper mapper;
 
     @Transactional
     public DeclineInstructionEntity save(DeclineInstructionEntity declineInstructionEntity) {
         log.debug("Saving declineInstruction with id: {}", declineInstructionEntity.getDeclineInstructionId());
         return declineContractInstructionRepository.save(declineInstructionEntity);
+    }
+
+    public DeclineInstruction save(DeclineInstruction declineInstruction) {
+        DeclineInstructionEntity declineInstructionEntity = save(mapper.toEntity(declineInstruction));
+        return mapper.toModel(declineInstructionEntity);
     }
 
 }
