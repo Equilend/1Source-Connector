@@ -7,9 +7,11 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -19,6 +21,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventMetadata;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -69,6 +72,10 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
         List<ProcessExceptionDetails> exceptionData) {
+        return null;
+    }
+
+    public CloudEventBuildRequest buildRequest(RecordType recordType, Contract contract) {
         return null;
     }
 
@@ -165,6 +172,15 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
             .relatedProcess(buildRequest.getRelatedProcess().name())
             .relatedSubProcess(buildRequest.getRelatedSubProcess().name())
             .dataContentType(APPLICATION_JSON_VALUE)
+            .build();
+    }
+
+    protected FieldImpacted buildUnmatchedLoanProposalFieldImpacted(String fieldName, String fieldValue) {
+        return FieldImpacted.builder()
+            .fieldSource(ONE_SOURCE_LOAN_CONTRACT)
+            .fieldName(fieldName)
+            .fieldValue(fieldValue)
+            .fieldExceptionType(FieldExceptionType.UNMATCHED)
             .build();
     }
 

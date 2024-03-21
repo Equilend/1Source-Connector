@@ -1,9 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
-
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
@@ -92,14 +89,6 @@ public class ContractService {
 
     public Optional<Contract> findContractById(String contractId) {
         return contractRepository.findByContractId(contractId).map(oneSourceMapper::toModel);
-    }
-
-    public Contract saveContractAsMatched(Contract contract, Position position) {
-        contract.setMatchingSpirePositionId(position.getPositionId());
-        contract.setMatchingSpireTradeId(position.getTradeId());
-        contract.setProcessingStatus(MATCHED);
-        contract.setLastUpdateDateTime(LocalDateTime.now());
-        return save(contract);
     }
 
 }

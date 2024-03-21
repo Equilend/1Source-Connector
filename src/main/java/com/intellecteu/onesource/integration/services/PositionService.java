@@ -51,6 +51,10 @@ public class PositionService {
         return positionRepository.findByVenueRefId(venueRefId).map(backOfficeMapper::toModel);
     }
 
+    public Optional<Position> findByCustomValue2(String venueRefId) {
+        return positionRepository.findByCustomValue2(venueRefId).map(backOfficeMapper::toModel);
+    }
+
     public List<Position> getByMatchingTradeAgreementId(String agreementId) {
         return positionRepository.findByMatching1SourceTradeAgreementId(agreementId).stream()
             .map(backOfficeMapper::toModel).collect(
@@ -65,6 +69,11 @@ public class PositionService {
     public Optional<Position> getNotMatchedByPositionId(Long positionId) {
         Optional<PositionEntity> positionEntity = positionRepository.getNotMatchedByPositionId(positionId);
         return positionEntity.map(backOfficeMapper::toModel);
+    }
+
+    public Set<Position> getNotMatched() {
+        Optional<PositionEntity> positionList = positionRepository.getNotMatched();
+        return positionList.stream().map(backOfficeMapper::toModel).collect(Collectors.toSet());
     }
 
     public List<Position> saveAllPositions(List<Position> positions) {

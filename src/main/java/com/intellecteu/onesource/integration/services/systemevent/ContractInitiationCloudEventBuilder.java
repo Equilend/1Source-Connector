@@ -95,12 +95,16 @@ import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -167,7 +171,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
                 recordType, related);
             case LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL -> loanContractProposalPendingApproved(recorded,
                 recordType, related);
-            case LOAN_CONTRACT_PROPOSAL_UNMATCHED -> loanContractProposalUnmatched(recorded, recordType);
+
             case LOAN_CONTRACT_PROPOSAL_VALIDATED -> loanContractProposalValidated(recorded, recordType, related);
             case POSITION_UNMATCHED -> positionUnmatched(recorded, recordType);
             case POSITION_CANCELED -> positionCanceled(recorded, recordType);
@@ -180,8 +184,15 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case TRADE_AGREEMENT_RECONCILED -> tradeAgreementReconciledEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_MATCHED_POSITION -> tradeMatchedPositionEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_CANCELED -> tradeCancellationEvent(recorded, recordType, related);
-            case LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION ->
-                loanProposalMatchedPositionEvent(recorded, recordType, related);
+            case LOAN_CONTRACT_PROPOSAL_MATCHED -> loanProposalMatchedPositionEvent(recorded, recordType, related);
+            default -> null;
+        };
+    }
+
+    @Override
+    public CloudEventBuildRequest buildRequest(RecordType recordType, Contract contract) {
+        return switch (recordType) {
+            case LOAN_CONTRACT_PROPOSAL_UNMATCHED -> loanContractProposalUnmatched(recordType, contract);
             default -> null;
         };
     }
@@ -327,14 +338,22 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
-    private CloudEventBuildRequest loanContractProposalUnmatched(String recorded, RecordType recordType) {
-        String dataMessage = format(LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG, recorded);
+    private CloudEventBuildRequest loanContractProposalUnmatched(RecordType recordType, Contract contract) {
+        String dataMessage = format(LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG, contract.getContractId());
+        final List<FieldImpacted> fieldsImpacted = Stream.of(
+                buildUnmatchedLoanProposalFieldImpacted("CUSIP", contract.retrieveCusip()),
+                buildUnmatchedLoanProposalFieldImpacted("ISIN", contract.retrieveIsin()),
+                buildUnmatchedLoanProposalFieldImpacted("SEDOL", contract.retrieveSedol()),
+                buildUnmatchedLoanProposalFieldImpacted("Trade date", String.valueOf(contract.getTrade().getTradeDate())),
+                buildUnmatchedLoanProposalFieldImpacted("Quantity", String.valueOf(contract.getTrade().getQuantity())),
+                buildUnmatchedLoanProposalFieldImpacted("Lender", contract.retrievePartyId(PartyRole.LENDER)))
+            .toList();
         return createRecordRequest(
             recordType,
-            format(LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT, recorded),
+            format(LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT, contract.getContractId()),
             CONTRACT_INITIATION,
             MATCH_LOAN_CONTRACT_PROPOSAL,
-            createEventData(dataMessage, getLoanContractRelated(recorded))
+            createEventData(dataMessage, getLoanContractRelated(contract.getContractId()), fieldsImpacted)
         );
     }
 
@@ -457,13 +476,16 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     private CloudEventBuildRequest loanProposalMatchedPositionEvent(String recorded, RecordType recordType,
         String related) {
+        String[] relatedIds = related.split(",");
+        String positionId = relatedIds[0];
+        String tradeId = relatedIds[1];
         String dataMessage = format(MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG, recorded, related);
         return createRecordRequest(
             recordType,
             format(LOAN_CONTRACT_MATCHED_POSITION, related),
             CONTRACT_INITIATION,
-            GET_LOAN_CONTRACT_PROPOSAL,
-            createEventData(dataMessage, getLoanProposalRelatedToPosition(recorded, related))
+            MATCH_LOAN_CONTRACT_PROPOSAL, // todo check with GET_NEW_POSITIONS_PENDING_CONFIRMATION
+            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, positionId, tradeId))
         );
     }
 

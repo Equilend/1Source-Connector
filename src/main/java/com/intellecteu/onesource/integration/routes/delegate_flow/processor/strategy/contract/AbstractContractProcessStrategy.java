@@ -11,7 +11,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CREATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static java.lang.String.format;
@@ -119,7 +119,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         } else {
             contract.setProcessingStatus(MATCHED_POSITION);
             createContractInitiationEvent(contract.getContractId(),
-                LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, String.valueOf(contract.getMatchingSpirePositionId()));
+                LOAN_CONTRACT_PROPOSAL_MATCHED, String.valueOf(contract.getMatchingSpirePositionId()));
         }
 
         positionService.savePosition(spireMapper.toPosition(positionDto));

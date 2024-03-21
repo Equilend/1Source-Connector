@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
@@ -12,11 +11,8 @@ import static java.lang.String.valueOf;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
-import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.PositionService;
@@ -25,7 +21,6 @@ import com.intellecteu.onesource.integration.services.systemevent.CloudEventReco
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -167,35 +162,8 @@ public class UpdatePositionProcessor {
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildRequest(String.valueOf(contract.getContractId()),
                 LOAN_CONTRACT_PROPOSAL_UNMATCHED);
-            recordRequest.getData().setFieldsImpacted(createUnmatchedContractFieldsImpacted(contract));
             cloudEventRecordService.record(recordRequest);
         });
-    }
-
-    // todo move FieldImpacted creation to cloudEventBuilder when the requirements will be refined
-    /*
-     * The predefined list of fields that potentially can be unmatched to show to the end user.
-     */
-    private List<FieldImpacted> createUnmatchedContractFieldsImpacted(Contract contract) {
-        return Stream.of(
-                buildUnmatchedFieldImpacted("CUSIP", contract.retrieveCusip()),
-                buildUnmatchedFieldImpacted("ISIN", contract.retrieveIsin()),
-                buildUnmatchedFieldImpacted("SEDOL", contract.retrieveSedol()),
-                buildUnmatchedFieldImpacted("Trade date", String.valueOf(contract.getTrade().getTradeDate())),
-                buildUnmatchedFieldImpacted("Quantity", String.valueOf(contract.getTrade().getQuantity())),
-                buildUnmatchedFieldImpacted("Lender", contract.retrievePartyId(PartyRole.LENDER)))
-            .toList();
-
-    }
-
-    // todo move to cloud event builder
-    private FieldImpacted buildUnmatchedFieldImpacted(String fieldName, String fieldValue) {
-        return FieldImpacted.builder()
-            .fieldSource(ONE_SOURCE_LOAN_CONTRACT)
-            .fieldName(fieldName)
-            .fieldValue(fieldValue)
-            .fieldExceptionType(FieldExceptionType.UNMATCHED)
-            .build();
     }
 
     private Contract updateCancelBorrowContract(Contract contract) {
