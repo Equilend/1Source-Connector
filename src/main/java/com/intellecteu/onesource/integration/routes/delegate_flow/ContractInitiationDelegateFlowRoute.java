@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.delegate_flow;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -36,13 +37,13 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
 
     private static final String POSITION_SQL_ENDPOINT = """
         jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity\
-        ?entityType=java.util.List&consumeLockEntity=false&consumeDelete=false&%s\
+        ?consumeLockEntity=false&consumeDelete=false&%s\
         &sharedEntityManager=true&joinTransaction=false\
         &query=SELECT p FROM PositionEntity p WHERE p.processingStatus IN ('%s')""";
 
     private static final String NEW_TRADE_EVENT_SQL_ENDPOINT = """
         jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity\
-        ?entityType=java.util.List&consumeLockEntity=false&consumeDelete=false&%s\
+        ?consumeLockEntity=false&consumeDelete=false&%s\
         &sharedEntityManager=true&joinTransaction=false\
         &query=SELECT e FROM TradeEventEntity e WHERE e.eventType IN ('%s') \
         and e.processingStatus IS NULL OR e.processingStatus = 'CREATED'""";
@@ -74,7 +75,6 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_PROPOSED))
             .routeId("GetLoanContractDetails")
             .log(">>> Started GET_LOAN_CONTRACT_PROPOSAL subprocess")
-            .split(body())
             .bean(oneSourceMapper, "toModel")
             .setHeader("tradeEvent", body())
             .bean(contractProcessor, "getLoanContractDetails")
@@ -84,45 +84,26 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
             .log("<<< Finished GET_LOAN_CONTRACT_PROPOSAL subprocess with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
-            .end();
-
-        from(buildGetContractByStatusQuery(PROPOSED))
-            .routeId("MatchLoanContractProposal")
-            .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
-            .split(body())
-                .bean(oneSourceMapper, "toModel")
-                    .setHeader("currentContract", body())
-                .bean(contractProcessor, "matchLenderPosition")
-                .choice()
-                    .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
-                        .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
-                .end()
-            .end()
-            .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
-                + "with expected processing statuses: Contract[MATCHED, UNMATCHED], "
-                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL, "
-                + "LOAN_CONTRACT_PROPOSAL_MATCHED, LOAN_CONTRACT_PROPOSAL_UNMATCHED]")
         .end();
 
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
             .routeId("PostLoanContractProposal")
             .log(">>> Started POST_LOAN_CONTRACT_PROPOSAL subprocess")
-            .split(body())
-                    .bean(backOfficeMapper, "toModel")
-                    .setHeader("notMatchedPosition", body())
-                    .bean(contractProcessor, "createProposalFromPosition")
-                .filter(method(positionProcessor, "instructLoanContractProposal(${body}, ${header.notMatchedPosition})"))
-                    .bean(positionProcessor, "updatePositionForInstructedProposal(${header.notMatchedPosition})")
-                    .bean(positionProcessor, "savePosition")
-                    .bean(positionProcessor, "recordEventProposalInstructed")
+            .bean(backOfficeMapper, "toModel")
+            .setHeader("notMatchedPosition", body())
+            .bean(contractProcessor, "createProposalFromPosition")
+            .filter(method(positionProcessor, "instructLoanContractProposal(${body}, ${header.notMatchedPosition})"))
+            .bean(positionProcessor, "updatePositionForInstructedProposal(${header.notMatchedPosition})")
+            .bean(positionProcessor, "savePosition")
+            .bean(positionProcessor, "recordEventProposalInstructed")
             .log("<<< Finished POST_LOAN_CONTRACT_PROPOSAL subprocess "
                 + "with expected processing statuses: Position[SUBMITTED, UPDATE_SUBMITTED], "
                 + "system events might be captured: [POSITION_SUBMITTED, POSITION_UPDATE_SUBMITTED]")
         .end();
 
         from(buildGetPositionByStatusQuery(CREATED))
-            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process.")
             .routeId("MatchPositionWithContractProposal")
+            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process.")
             .bean(backOfficeMapper, "toModel")
                 .choice()
                     .when(method(IntegrationUtils.class, "isBorrower"))
@@ -132,6 +113,32 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process"
                 + "with expected processing statuses: Contract[MATCHED], "
                 + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION, POSITION_UNMATCHED]")
+        .end();
+
+        from(buildGetContractByStatusQuery(PROPOSED))
+            .routeId("MatchLoanContractProposal")
+            .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("currentContract", body())
+            .bean(contractProcessor, "matchLenderPosition")
+            .choice()
+            .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
+            .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
+            .end()
+            .end()
+            .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
+                + "with expected processing statuses: Contract[MATCHED, UNMATCHED], "
+                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL, "
+                + "LOAN_CONTRACT_PROPOSAL_MATCHED, LOAN_CONTRACT_PROPOSAL_UNMATCHED]")
+        .end();
+
+        from(buildGetValidatedContractForBorrowerQuery(VALIDATED))
+            .routeId("ApproveLoanContractProposalAsBorrower")
+            .log(">>> Started APPROVE_LOAN_CONTRACT_PROPOSAL process.")
+            .bean(oneSourceMapper, "toModel")
+            .bean(contractProcessor, "instructContractApprovalAsBorrower")
+            .log("Finished APPROVE_LOAN_CONTRACT_PROPOSAL process"
+                + "with expected processing statuses: Contract[APPROVAL_SUBMITTED]")
         .end();
     }
 
@@ -157,10 +164,23 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             query);
     }
 
-    private String buildGetPositionByStatusQuery(ProcessingStatus... status) {
+    private String buildGetPositionByStatusQuery(ProcessingStatus... statuses) {
         return String.format(POSITION_SQL_ENDPOINT,
             String.format("delay=%d", updateTimer),
-            Arrays.stream(status).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+    }
+
+    private String buildGetValidatedContractForBorrowerQuery(ProcessingStatus... statuses) {
+        String query = String.format("""
+            SELECT c FROM ContractEntity c \
+            JOIN PositionEntity p ON c.matchingSpirePositionId = p.positionId \
+            WHERE p.positionType.positionType = 'CASH BORROW' \
+            AND c.processingStatus IN ('%s')""",
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+        return String.format(CAMEL_JPA_CONFIG,
+            "com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity",
+            String.format("delay=%d", updateTimer),
+            query);
     }
 
     private String buildGetNotProcessedTradeEventQuery(EventType... eventTypes) {

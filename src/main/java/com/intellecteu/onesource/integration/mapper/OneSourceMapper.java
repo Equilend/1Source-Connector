@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.mapper;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
@@ -18,6 +19,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
@@ -101,6 +103,8 @@ public abstract class OneSourceMapper {
     public abstract TradeEvent toModel(TradeEventEntity tradeEventEntity);
 
     public abstract ContractProposalDTO toRequestDto(ContractProposal contractProposal);
+
+    public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);
 
     public abstract TradeAgreementDTO toRequestDto(TradeAgreement tradeAgreement);
 

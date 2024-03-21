@@ -38,7 +38,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CREATE_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.DECLINE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_AGREEMENT_EXCEPTION_1SOURCE;
@@ -542,7 +542,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         String message = format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, record, related, exception.getStatusText());
         return createRecordRequest(
             TECHNICAL_EXCEPTION_1SOURCE,
-            format(APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE, related),
+            format(APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT, related),
             CONTRACT_INITIATION,
             subProcess,
             createEventData(message, getLoanProposalRelatedToPosition(record, related))
