@@ -178,4 +178,67 @@ public class ContractsApi {
         return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
             contentType, authNames, returnType);
     }
+
+    /**
+     * Decline a contract in \&quot;proposed\&quot; state
+     *
+     * <p><b>200</b> - Operation was successful
+     * <p><b>400</b> - Bad request or more information needed
+     * <p><b>401</b> - Not authorized to do this operation
+     * <p><b>404</b> - Resource not found
+     * <p><b>500</b> - An error occurred
+     *
+     * @param contractId The unique identifier of a contract (required)
+     * @return LedgerResponseDTO
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public LedgerResponseDTO ledgerContractsContractIdDeclinePost(String contractId) throws RestClientException {
+        return ledgerContractsContractIdDeclinePostWithHttpInfo(contractId).getBody();
+    }
+
+    /**
+     * Decline a contract in \&quot;proposed\&quot; state
+     *
+     * <p><b>200</b> - Operation was successful
+     * <p><b>400</b> - Bad request or more information needed
+     * <p><b>401</b> - Not authorized to do this operation
+     * <p><b>404</b> - Resource not found
+     * <p><b>500</b> - An error occurred
+     *
+     * @param contractId The unique identifier of a contract (required)
+     * @return ResponseEntity&lt;LedgerResponseDTO&gt;
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public ResponseEntity<LedgerResponseDTO> ledgerContractsContractIdDeclinePostWithHttpInfo(String contractId)
+        throws RestClientException {
+        Object postBody = null;
+        // verify the required parameter 'contractId' is set
+        if (contractId == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                "Missing the required parameter 'contractId' when calling ledgerContractsContractIdDeclinePost");
+        }
+        // create path and map variables
+        final Map<String, Object> uriVariables = new HashMap<String, Object>();
+        uriVariables.put("contractId", contractId);
+        String path = UriComponentsBuilder.fromPath("/ledger/contracts/{contractId}/decline")
+            .buildAndExpand(uriVariables).toUriString();
+
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final HttpHeaders headerParams = new HttpHeaders();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+
+        final String[] accepts = {
+            "application/json"
+        };
+        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
+        final String[] contentTypes = {};
+        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
+
+        String[] authNames = new String[]{"stage_auth"};
+
+        ParameterizedTypeReference<LedgerResponseDTO> returnType = new ParameterizedTypeReference<LedgerResponseDTO>() {
+        };
+        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
+            contentType, authNames, returnType);
+    }
 }

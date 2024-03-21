@@ -34,6 +34,12 @@ public class ContractService {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    /**
+     * Update last update date time and persist a contract.
+     *
+     * @param contract Contract model
+     * @return Contract model
+     */
     @Transactional
     public Contract save(Contract contract) {
         contract.setLastUpdateDateTime(LocalDateTime.now());

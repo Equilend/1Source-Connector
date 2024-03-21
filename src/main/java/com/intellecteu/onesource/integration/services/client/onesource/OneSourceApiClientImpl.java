@@ -243,6 +243,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
+    @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
     public void declineContract(Contract contract) {
         try {
             String formattedEndpoint = CONTRACT_DECLINE_ENDPOINT.replace("{contractId}", contract.getContractId());

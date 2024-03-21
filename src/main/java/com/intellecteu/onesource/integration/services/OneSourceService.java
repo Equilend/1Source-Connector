@@ -4,7 +4,6 @@ import static com.intellecteu.onesource.integration.model.onesource.FixedRate.FI
 
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
@@ -147,7 +146,7 @@ public class OneSourceService {
      * @return true if HTTP response code is CREATED (201)
      * @throws RestClientException if response status is 4xx or 5xx
      */
-    public boolean instructLoanContractProposal(ContractProposal contractProposal, Position position)
+    public boolean instructLoanContractProposal(ContractProposal contractProposal)
         throws RestClientException {
         final ContractProposalDTO requestDto = oneSourceMapper.toRequestDto(contractProposal);
         log.debug("Sending a request to create a loan contract proposal.");
@@ -155,4 +154,9 @@ public class OneSourceService {
         return response.getStatusCode().value() == 201;
     }
 
+    public boolean instructDeclineLoanProposal(Contract contract) throws RestClientException {
+        log.debug("Sending request to decline a loan contract proposal with id = {}.", contract.getContractId());
+        contractsApi.ledgerContractsContractIdDeclinePost(contract.getContractId());
+        return true;
+    }
 }

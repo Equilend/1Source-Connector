@@ -207,7 +207,7 @@ public class PositionProcessor {
      */
     public boolean instructLoanContractProposal(@NonNull ContractProposal proposal, @NonNull Position position) {
         try {
-            return oneSourceService.instructLoanContractProposal(proposal, position);
+            return oneSourceService.instructLoanContractProposal(proposal);
         } catch (HttpStatusCodeException e) {
             log.warn("""
                 The loan contract proposal instruction has not been processed by 1Source for the \
