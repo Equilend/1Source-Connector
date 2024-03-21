@@ -1,3 +1,5 @@
+Prepared local migration data: V2024.03.20.12.00__EINT23-446_instruct_loan_proposal.sql
+
 1. Insert to the database test position and required data for this position:
 
 INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)

@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
@@ -9,7 +10,9 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -30,9 +33,9 @@ import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.MatchingService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.SettlementService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.time.LocalDateTime;
@@ -55,7 +58,7 @@ public class PositionProcessor {
     private final BackOfficeService lenderBackOfficeService;
     private final AgreementService agreementService;
     private final ContractService contractService;
-    private final OneSourceApiClient oneSourceApiClient;
+    private final OneSourceService oneSourceService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
     private final MatchingService matchingService;
@@ -203,7 +206,21 @@ public class PositionProcessor {
      * @return true if successfully executed new loan contract proposal request
      */
     public boolean instructLoanContractProposal(@NonNull ContractProposal proposal, @NonNull Position position) {
-        return oneSourceApiClient.executeNewContractProposal(proposal, position);
+        try {
+            return oneSourceService.instructLoanContractProposal(proposal, position);
+        } catch (HttpStatusCodeException e) {
+            log.warn("""
+                The loan contract proposal instruction has not been processed by 1Source for the \
+                (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
+            final HttpStatusCode statusCode = HttpStatus.valueOf(e.getStatusCode().value());
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(statusCode)) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
+                    String.valueOf(position.getPositionId()));
+                cloudEventRecordService.record(recordRequest);
+            }
+            return false;
+        }
     }
 
     private Contract saveContractAsMatched(Contract contract, Position position) {

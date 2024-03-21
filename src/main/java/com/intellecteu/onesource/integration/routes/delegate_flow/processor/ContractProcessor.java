@@ -1,22 +1,29 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
+import static java.lang.String.format;
+import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.InternalReference;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
@@ -134,6 +141,29 @@ public class ContractProcessor {
         return positionService.savePosition(position);
     }
 
+    public void instructContractApprovalAsBorrower(@NonNull Contract contract) {
+        Optional<Position> matchedPosition = positionService.getByPositionId(contract.getMatchingSpirePositionId());
+        matchedPosition.ifPresent(position -> instructContractApproval(contract, position));
+    }
+
+    private void instructContractApproval(@NonNull Contract contract, @NonNull Position position) {
+        final ContractProposalApproval borrowerContractProposalApproval = dataTransformer
+            .toBorrowerContractProposalApproval(contract, position);
+        try {
+            oneSourceService.executeContractProposalApproval(borrowerContractProposalApproval, contract);
+            contract.setProcessingStatus(ProcessingStatus.APPROVAL_SUBMITTED);
+            contractService.save(contract);
+        } catch (HttpStatusCodeException e) {
+            var positionId = String.valueOf(contract.getMatchingSpirePositionId());
+            log.debug(
+                format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
+            final HttpStatus httpStatus = HttpStatus.valueOf(e.getStatusCode().value());
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, CONFLICT, INTERNAL_SERVER_ERROR).contains(httpStatus)) {
+                recordTechnicalEvent(contract.getContractId(), e, APPROVE_LOAN_CONTRACT_PROPOSAL, positionId);
+            }
+        }
+    }
+
     private Optional<Position> retrieveRelatedLenderPosition(@NonNull Contract contract) {
         try {
             final TransactingParty lenderParty = retrieveLenderTransactingParty(contract);
@@ -232,6 +262,13 @@ public class ContractProcessor {
     private void recordLoanProposalUnmatchedSystemEvent(Contract contract) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(LOAN_CONTRACT_PROPOSAL_UNMATCHED, contract);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordTechnicalEvent(String recorded, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
         cloudEventRecordService.record(recordRequest);
     }
 

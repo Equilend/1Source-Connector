@@ -11,7 +11,7 @@ public class RecordMessageConstant {
 
         public static class Subject {
 
-            public static final String APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
+            public static final String APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT = "Position - %s";
             public static final String GET_AGREEMENT_EXCEPTION_1SOURCE = "1Source event id - %s";
             public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT = "Position - %s";
 

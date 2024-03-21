@@ -15,7 +15,9 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDe
 import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
@@ -30,6 +32,7 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
@@ -55,6 +58,27 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         return ContractProposal.builder()
             .trade(buildTradeFromPosition(position))
             .settlementList(List.of(createLenderSettlement(position)))
+            .build();
+    }
+
+    @Override
+    public ContractProposalApproval toBorrowerContractProposalApproval(Contract contract, Position position) {
+        return ContractProposalApproval.builder()
+            .internalRefId(String.valueOf(position.getPositionId()))
+            .settlement(buildBorrowSettlementFromPosition(position))
+            .build();
+    }
+
+    private SettlementInstructionUpdate buildBorrowSettlementFromPosition(Position position) {
+        return SettlementInstructionUpdate.builder()
+            .partyRole(BORROWER)
+            .instruction(buildBorrowerInstructionFromPosition(position))
+            .build();
+    }
+
+    private SettlementInstruction buildBorrowerInstructionFromPosition(Position position) {
+        return SettlementInstruction.builder()
+            .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }
 

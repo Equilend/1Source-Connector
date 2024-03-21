@@ -1,4 +1,4 @@
-Prepared local migration data: V2024.03.21__EINT23-448_match_loan_proposal_lender.sql
+Prepared local migration data: V2024.03.21.12.00__EINT23-448_match_loan_proposal_lender.sql
 
 LENDER participant test flow:
 1. Insert to the database test contract with PROPOSED processing status:
@@ -96,7 +96,7 @@ VALUES ('101', '101', '101', '0231101107', 'US02311011068',
 
 
 
-Prepared local migration data: V2024.03.22__EINT23-449_match_loan_proposal_borrower.sql
+Prepared local migration data: V2024.03.22.15.00__EINT23-449_match_loan_proposal_borrower.sql
 
 BORROWER participant test flow:
 1. Insert to the database test contract with PROPOSED processing status:

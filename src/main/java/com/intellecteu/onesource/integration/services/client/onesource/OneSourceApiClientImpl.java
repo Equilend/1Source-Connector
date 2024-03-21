@@ -14,7 +14,6 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_1SOURCE_EVENTS;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_PARTICIPANTS_LIST;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
@@ -34,11 +33,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -46,8 +43,6 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
-import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
-import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.net.URLEncoder;
@@ -108,40 +103,6 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         this.settlementUpdateRepository = settlementUpdateRepository;
         this.eventRepository = eventRepository;
         this.oneSourceMapper = oneSourceMapper;
-    }
-
-    /**
-     * Send new contract proposal request to OneSource for inclusion in the ledger
-     *
-     * @param contractProposal ContractProposal
-     * @param position Position
-     * @return true if HTTP response code is CREATED (201)
-     */
-    @Override
-    public boolean executeNewContractProposal(ContractProposal contractProposal, Position position) {
-        final ContractProposalDTO requestDto = oneSourceMapper.toRequestDto(contractProposal);
-        return executeCreateContractRequest(requestDto, position);
-    }
-
-    private boolean executeCreateContractRequest(ContractProposalDTO requestDto,
-        Position position) {
-        log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
-        try {
-            final ResponseEntity<LedgerResponseDTO> response = contractsApi.ledgerContractsPost(requestDto);
-            return response.getStatusCode().value() == 201;
-        } catch (HttpStatusCodeException e) {
-            log.warn("""
-                The loan contract proposal instruction has not been processed by 1Source for the \
-                (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
-            final HttpStatusCode statusCode = HttpStatus.valueOf(e.getStatusCode().value());
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(statusCode)) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
-                    String.valueOf(position.getPositionId()));
-                cloudEventRecordService.record(recordRequest);
-            }
-            return false;
-        }
     }
 
     @Override

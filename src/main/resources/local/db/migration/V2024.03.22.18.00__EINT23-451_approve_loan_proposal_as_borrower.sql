@@ -1,0 +1,75 @@
+-- Test APPROVE_LOAN_CONTRACT_PROPOSAL Borrower success flow data
+
+-- INSERT INTO internal_ref (id, broker, account_id, internal_id)
+-- VALUES (899, 'testLenderBroker', '899', '899'),
+--        (900, 'testBorrowerBroker', '900', '900');
+--
+-- INSERT INTO party (id, party_id, party_name, gleif_lei, internal_id)
+-- VALUES (899, 899, 'LENDER', '899', '899'),
+--        (900, 900, 'BORROWER', '900', '9007');
+--
+-- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code)
+-- VALUES  (899, '234', '0231899106', 'US02318991067', '2000019', '457'),
+--         (900, '234', '0231899107', 'US02318991068', '2000010', '457');
+--
+-- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
+-- VALUES (899, 0.05, 0, '9003-10-25 13:50:41.633000', '0'),
+--        (900, 0.05, 0, '9003-10-25 13:50:41.633000', '0');
+--
+-- INSERT INTO rebate (id, fixed)
+-- VALUES (899, 899), (900, 900);
+--
+-- INSERT INTO rate (id, rebate)
+-- VALUES  (899, 899), (900, 900);
+--
+-- INSERT INTO collateral (id, contract_price, collateral_value, currency,
+--                         type, margin, rounding_rule, rounding_mode)
+-- VALUES (899, 119.57, 179899.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
+--        (900, 119.57, 179899.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
+-- VALUES (899, '899', 'ONPLATFORM', 'testLenderVenueName', '899'),
+--        (900, '900', 'ONPLATFORM', 'testBorrowerVenueName', '900');
+--
+--
+-- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+--                    dividend_rate, trade_date, term_type, term_date, settlement_date,
+--                    settlement_type, collateral)
+-- VALUES  (900, 900, 900, 900, 11000.0, 'USD',
+--          85.0, '9004-02-21 13:50:41.633000', 'OPEN', '9004-02-21 13:50:41.633000', '9003-10-25 13:50:41.633000',
+--          'DVP', 900),
+--         (899, 899, 899, 899, 15000, 'USD',
+--          85.0, '9004-02-21 13:50:41.633000', 'OPEN', '9004-02-21 13:50:41.633000', '9003-10-25 13:50:41.633000',
+--          'DVP', 899);
+--
+-- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (899, '32b71278-9ad2-445a-bfb0-b5ada72f899', 'PENDING', 899, '899', 'CREATED'),
+--        (900, '32b71278-9ad2-445a-bfb0-b5ada72f900', 'PENDING', 900, '900', 'CREATED');
+--
+-- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
+-- VALUES (899, 'LENDER', 899, 899, 900);
+--
+-- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
+--                       matching_spire_position_id, matching_spire_trade_id)
+-- VALUES (900, '900', 'PROPOSED', 900, 'VALIDATED', 900, 900);
+--
+-- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
+-- VALUES (899, 899, 'lender_acc', '899', 899, 1),
+--        (900, 900, 'borrower_acc', '900', 900, 2);
+--
+-- INSERT INTO position (position_id, custom_value2, ticker, cusip, isin,
+--                       sedol, quick_code, price_factor, rate, end_date,
+--                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
+--                       settle_date, deliver_free, amount, price,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
+--                       index_id, index_name, spread, accrual_date,
+--                       matching_1source_loan_contract_id, trade_id)
+-- VALUES ('900', '900', '900', '0231899107', 'US02318991068',
+--         '2000010', '456', 0, 0.05, '9003-12-25 13:50:41.633000',
+--         11000.0, 'USD', 85.0, '9004-02-21 13:50:41.633000', 0,
+--         '9003-10-25 13:50:41.633000', false, 179899.5, 119.57,
+--         1.02, 0, 0, 'CASH BORROW',
+--         900, 899, '900', '899', 'MATCHED', null,
+--         333, 'EFFR', 0.2, '9003-10-25 13:50:41.633000',
+--         null, 900);
