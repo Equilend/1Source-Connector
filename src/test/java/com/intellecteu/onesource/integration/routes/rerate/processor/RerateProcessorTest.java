@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SENT_FOR_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
@@ -184,7 +184,7 @@ class RerateProcessorTest {
             .findUnmatchedRerateTrade(any(), any());
         doNothing().when(rerateReconcileService).reconcile(any(), any());
 
-        Rerate result = rerateProcessor.validate(rerate);
+        Rerate result = rerateProcessor.validateRerate(rerate);
 
         assertEquals(VALIDATED, result.getProcessingStatus());
     }
@@ -200,7 +200,7 @@ class RerateProcessorTest {
         doThrow(new ReconcileException(new ArrayList<>())).when(rerateReconcileService)
             .reconcile(any(), any());
 
-        Rerate result = rerateProcessor.validate(rerate);
+        Rerate result = rerateProcessor.validateRerate(rerate);
 
         assertEquals(DISCREPANCIES, result.getProcessingStatus());
     }
@@ -210,9 +210,9 @@ class RerateProcessorTest {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
 
-        Rerate result = rerateProcessor.approve(rerate);
+        Rerate result = rerateProcessor.approveRerate(rerate);
 
-        assertEquals(SENT_FOR_APPROVAL, result.getProcessingStatus());
+        assertEquals(APPROVAL_SUBMITTED, result.getProcessingStatus());
     }
 
     @Test
@@ -223,7 +223,7 @@ class RerateProcessorTest {
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService)
             .approveRerate(any(), any());
 
-        Rerate result = rerateProcessor.approve(rerate);
+        Rerate result = rerateProcessor.approveRerate(rerate);
 
         verify(cloudEventRecordService, times(1)).record(any());
     }

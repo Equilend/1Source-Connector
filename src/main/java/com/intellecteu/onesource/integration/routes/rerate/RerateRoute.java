@@ -99,7 +99,7 @@ public class RerateRoute extends RouteBuilder {
             .bean(backOfficeMapper, "toModel")
             .bean(rerateProcessor, "instructRerateTrade")
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<< Finished POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[SUBMITTED]");
+            .log("<<< Finished POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[SUBMITTED, WAITING_PROPOSAL]");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
             .log(">>> Started GET_RERATE_PROPOSAL for TradeEvent: ${body.eventId}")
@@ -119,16 +119,16 @@ public class RerateRoute extends RouteBuilder {
         from(createRerateSQLEndpoint(TO_VALIDATE))
             .log(">>> Started VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "validate")
+            .bean(rerateProcessor, "validateRerate")
             .bean(rerateProcessor, "saveRerate")
             .log(">>> Finished VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[VALIDATED, DISCREPANCIES]");
 
         from(createRerateSQLEndpoint(VALIDATED))
             .log(">>> Started APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "approve")
+            .bean(rerateProcessor, "approveRerate")
             .bean(rerateProcessor, "saveRerate")
-            .log(">>> Finished APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[SENT_FOR_APPROVAL]");
+            .log(">>> Finished APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[APPROVAL_SUBMITTED]");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PENDING))
             .log(">>> Started GET_RERATE_APPROVED for TradeEvent: ${body.eventId}")

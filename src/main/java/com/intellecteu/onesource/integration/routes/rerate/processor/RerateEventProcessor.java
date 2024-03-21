@@ -117,6 +117,7 @@ public class RerateEventProcessor {
                 recordHttpExceptionCloudEvent(GET_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE, resourceUri, e);
             }
         } catch (EntityNotFoundException e) {
+            log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
             recordRerateEntityNotFoundTechnicalException(GET_RERATE_APPROVED, TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT,
                 resourceUri);
         }
@@ -134,6 +135,7 @@ public class RerateEventProcessor {
             rerateService.saveRerate(rerate);
             recordRerateAppliedCloudEvent(rerate);
         } catch (EntityNotFoundException e) {
+            log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
             recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_APPLIED,
                 TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT, resourceUri);
         }
@@ -157,6 +159,7 @@ public class RerateEventProcessor {
             }
             recordRerateDeclinedCloudEvent(rerate);
         } catch (EntityNotFoundException e) {
+            log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
             recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_DECLINED,
                 TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT, resourceUri);
         }
