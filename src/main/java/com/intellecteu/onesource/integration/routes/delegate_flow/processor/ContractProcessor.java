@@ -2,7 +2,11 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -22,6 +26,7 @@ import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineIn
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.DeclineContractInstructionService;
 import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
+import com.intellecteu.onesource.integration.services.MatchingService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -51,6 +56,7 @@ public class ContractProcessor {
     private final CloudEventRecordService cloudEventRecordService;
     private final IntegrationDataTransformer dataTransformer;
     private final PositionService positionService;
+    private final MatchingService matchingService;
 
     @Transactional
     public Contract getLoanContractDetails(TradeEvent event) {
@@ -72,15 +78,60 @@ public class ContractProcessor {
         }
     }
 
-    public void matchLenderPosition(@NonNull Contract contract) {
+    public boolean matchLenderPosition(@NonNull Contract contract) {
         final Optional<Position> relatedPosition = retrieveRelatedLenderPosition(contract);
-        relatedPosition.ifPresent(position -> {
-            contractService.saveContractAsMatched(contract, position);
-            position.setMatching1SourceLoanContractId(contract.getContractId());
-            positionService.savePosition(position);
-            createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL,
-                String.format("%d,%d", position.getPositionId(), position.getTradeId()));
-        });
+        return relatedPosition.map(position -> {
+            final Position savedPosition = updateMatchedContractAndPosition(contract, position);
+            recordPendingApprovalSystemEvent(contract, savedPosition);
+            return true;
+        }).orElse(false);
+    }
+
+    public void matchBorrowerPosition(@NonNull Contract contract) {
+        final Set<Position> notMatchedPositions = positionService.getNotMatched();
+//        if (isNgtTradeContract(contract)) { todo waiting for story update if we still need this logic
+//            matchNgtTradeContractForBorrower(contract, notMatchedPositions);
+//        } else {
+        matchContractForBorrower(contract, notMatchedPositions);
+//        }
+    }
+
+    private void matchNgtTradeContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
+        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
+        notMatchedPositions.stream()
+            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
+            .findAny()
+            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
+    }
+
+    private void matchContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
+        matchingService.matchBorrowContractWithPositions(contract, notMatchedPositions)
+            .ifPresentOrElse(
+                position -> updateAndRecordMatchedSystemEventForBorrower(contract, position),
+                () -> updateAndRecordUnmatchedSystemEvent(contract));
+    }
+
+    private void updateAndRecordUnmatchedSystemEvent(Contract contract) {
+        contract.setProcessingStatus(UNMATCHED);
+        log.debug("Contract id={} was NOT matched with position any of positions.", contract.getContractId());
+        final Contract savedContract = contractService.save(contract);
+        recordLoanProposalUnmatchedSystemEvent(savedContract);
+    }
+
+    private void updateAndRecordMatchedSystemEventForBorrower(Contract contract, Position position) {
+        final Position savedPosition = updateMatchedContractAndPosition(contract, position);
+        recordLoanProposalMatchedSystemEvent(contract, savedPosition);
+        log.debug("Contract id={} was matched with position id={}", contract.getContractId(), position.getPositionId());
+    }
+
+    private static boolean isNgtTradeContract(Contract contract) {
+        return contract.getTrade().getVenue() != null && contract.getTrade().getVenue().getVenueRefKey() != null;
+    }
+
+    private Position updateMatchedContractAndPosition(Contract contract, Position position) {
+        saveContractAsMatched(contract, position);
+        position.setMatching1SourceLoanContractId(contract.getContractId());
+        return positionService.savePosition(position);
     }
 
     private Optional<Position> retrieveRelatedLenderPosition(@NonNull Contract contract) {
@@ -89,7 +140,7 @@ public class ContractProcessor {
             final Long relatedPositionId = retrieveContractRelatedPositionId(lenderParty, contract.getContractId());
             return positionService.getNotMatchedByPositionId(relatedPositionId);
         } catch (EntityNotFoundException | NumberFormatException e) {
-            log.warn("Couldn't retrieve related lender position id for contract:{}. Details:{}",
+            log.debug("No related lender position for contract:{}. Details:{}",
                 contract.getContractId(), e.getMessage());
             return Optional.empty();
         }
@@ -168,9 +219,34 @@ public class ContractProcessor {
         });
     }
 
+    private void recordPendingApprovalSystemEvent(Contract contract, Position savedPosition) {
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL,
+            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+    }
+
+    private void recordLoanProposalMatchedSystemEvent(Contract contract, Position savedPosition) {
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED,
+            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+    }
+
+    private void recordLoanProposalUnmatchedSystemEvent(Contract contract) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(LOAN_CONTRACT_PROPOSAL_UNMATCHED, contract);
+        cloudEventRecordService.record(recordRequest);
+    }
+
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
     }
+
+    private Contract saveContractAsMatched(Contract contract, Position position) {
+        contract.setMatchingSpirePositionId(position.getPositionId());
+        contract.setMatchingSpireTradeId(position.getTradeId());
+        contract.setProcessingStatus(MATCHED);
+        contract.setLastUpdateDateTime(LocalDateTime.now());
+        return contractService.save(contract);
+    }
+
 }

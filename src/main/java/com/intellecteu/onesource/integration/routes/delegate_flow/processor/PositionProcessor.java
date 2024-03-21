@@ -1,10 +1,11 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
@@ -34,6 +35,7 @@ import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -91,22 +93,21 @@ public class PositionProcessor {
         Optional<Contract> contractOpt = contractService.findByVenueRefId(position.getVenueRefId());
         contractOpt.ifPresent(contract -> {
             position.setMatching1SourceLoanContractId(contract.getContractId());
-            contractService.saveContractAsMatched(contract, position);
-            createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
+            saveContractAsMatched(contract, position);
+            createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED,
                 String.valueOf(contract.getMatchingSpirePositionId()));
         });
         return position;
     }
 
-    public void matchContractProposal(Position position) {
+    public void matchContractProposalAsBorrower(Position position) {
         try {
             Set<Contract> unmatchedContracts = findUnmatchedContracts();
             log.debug("Matching position with contracts received ({})", unmatchedContracts.size());
             Contract matchedContract = retrieveMatchedContract(position, unmatchedContracts);
             updatePosition(matchedContract, position);
-            contractService.saveContractAsMatched(matchedContract, position);
-            createContractInitiationCloudEvent(matchedContract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION,
-                String.valueOf(matchedContract.getMatchingSpirePositionId()));
+            saveContractAsMatched(matchedContract, position);
+            recordContractProposalMatched(matchedContract);
         } catch (ContractNotFoundException e) {
             log.debug("No matched contracts found for position Id={}", position.getPositionId());
             recordSystemEvent(position, POSITION_UNMATCHED);
@@ -203,6 +204,20 @@ public class PositionProcessor {
      */
     public boolean instructLoanContractProposal(@NonNull ContractProposal proposal, @NonNull Position position) {
         return oneSourceApiClient.executeNewContractProposal(proposal, position);
+    }
+
+    private Contract saveContractAsMatched(Contract contract, Position position) {
+        contract.setMatchingSpirePositionId(position.getPositionId());
+        contract.setMatchingSpireTradeId(position.getTradeId());
+        contract.setProcessingStatus(MATCHED);
+        contract.setLastUpdateDateTime(LocalDateTime.now());
+        return contractService.save(contract);
+    }
+
+    private void recordContractProposalMatched(Contract matchedContract) {
+        createContractInitiationCloudEvent(matchedContract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED,
+            String.format("%d,%d", matchedContract.getMatchingSpirePositionId(),
+                matchedContract.getMatchingSpireTradeId()));
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

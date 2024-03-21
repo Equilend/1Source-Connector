@@ -4,7 +4,6 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.DIVIDENT_RATE_PCT;
@@ -27,7 +26,6 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_COLLATERAL_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CONTRACT_VALUE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
@@ -70,7 +68,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.lang.NonNull;
@@ -152,13 +149,6 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
             checkEquality(collateral.getContractPrice(), CONTRACT_PRICE, position.getPrice(), POSITION_PRICE)
                 .ifPresent(failsLog::add);
         }
-        // temporary parseInt solution until position data structure will be clarified
-        // please take into account that mock data for Position.contractValue should be parseable to Integer
-        if (collateral.getContractValue() != null && position.getContractValue() != null) {
-            checkEquality(collateral.getContractValue(), CONTRACT_VALUE,
-                position.getContractValue(), POSITION_CONTRACT_VALUE)
-                .ifPresent(failsLog::add);
-        }
         if (collateral.getCollateralValue() != null) {
             checkEquality(collateral.getCollateralValue(), COLLATERAL_VALUE, position.getAmount(), POSITION_AMOUNT)
                 .ifPresent(failsLog::add);
@@ -174,7 +164,9 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
                 if (collateral.getType() != CollateralType.CASH) {
                     var msg = format("Reconciliation mismatch. OneSource %s must be %s when %s is empty",
                         COLLATERAL_TYPE, CollateralType.CASH, POSITION_COLLATERAL_TYPE);
-                    failsLog.add(new ProcessExceptionDetails(null, COLLATERAL_TYPE, String.valueOf(collateral.getType()), FieldExceptionType.DISCREPANCY));
+                    failsLog.add(
+                        new ProcessExceptionDetails(null, COLLATERAL_TYPE, String.valueOf(collateral.getType()),
+                            FieldExceptionType.DISCREPANCY));
                 }
             } else {
                 checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
@@ -359,7 +351,8 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         if (!Objects.equals(first, second)) {
             var msg = String.format(RECONCILE_MISMATCH, first, firstName, second, secondName);
             log.debug(msg);
-            return Optional.of(new ProcessExceptionDetails(null, firstName, String.valueOf(first), FieldExceptionType.DISCREPANCY));
+            return Optional.of(
+                new ProcessExceptionDetails(null, firstName, String.valueOf(first), FieldExceptionType.DISCREPANCY));
         }
         return Optional.empty();
     }

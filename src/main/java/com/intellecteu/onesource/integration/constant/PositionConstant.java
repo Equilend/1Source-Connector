@@ -14,7 +14,6 @@ public class PositionConstant {
         public static final String ACCOUNT_LEI = "Position.accountDTO.accountLei";
         public static final String POSITION_AMOUNT = "Position.amount";
         public static final String POSITION_COLLATERAL_TYPE = "Position.collateralTypeDTO.collateralType";
-        public static final String POSITION_CONTRACT_VALUE = "Position.contractValue";
         public static final String CP_LEI = "Position.counterPartyDTO.lei";
         public static final String POSITION_CURRENCY = "Position.currencyDTO.currencyKy";
         public static final String CUSTOM_VALUE_2 = "Position.customValue2";

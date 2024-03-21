@@ -23,11 +23,20 @@ public class MatchingService {
             .filter(c -> matchSecurityIdentifiers(c, position))
             .filter(c -> matchTradeDate(c, position))
             .filter(c -> matchQuantity(c, position))
-            .filter(c -> matchCounterParty(c, position))
+            .filter(c -> matchLenderCounterParty(c, position))
             .findAny(); //todo ask what to do if there are multiple matches
     }
 
-    private boolean matchCounterParty(Contract contract, Position position) {
+    public Optional<Position> matchBorrowContractWithPositions(Contract contract, Set<Position> positions) {
+        return positions.stream()
+            .filter(p -> matchSecurityIdentifiers(contract, p))
+            .filter(p -> matchTradeDate(contract, p))
+            .filter(p -> matchQuantity(contract, p))
+            .filter(p -> matchLenderCounterParty(contract, p))
+            .findAny();
+    }
+
+    private boolean matchLenderCounterParty(Contract contract, Position position) {
         final String oneSourceId = String.valueOf(position.getPositionCpAccount().getOneSourceId());
         final TradeAgreement trade = contract.getTrade();
         return trade.getTransactingParties().stream()

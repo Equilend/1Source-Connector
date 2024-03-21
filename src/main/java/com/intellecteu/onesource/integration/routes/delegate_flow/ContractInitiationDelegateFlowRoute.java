@@ -87,16 +87,22 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .end();
 
         from(buildGetContractByStatusQuery(PROPOSED))
-            .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
             .routeId("MatchLoanContractProposal")
+            .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
             .split(body())
-            .bean(oneSourceMapper, "toModel")
-            .bean(contractProcessor, "matchLenderPosition")
+                .bean(oneSourceMapper, "toModel")
+                    .setHeader("currentContract", body())
+                .bean(contractProcessor, "matchLenderPosition")
+                .choice()
+                    .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
+                        .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
+                .end()
             .end()
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
-                + "with expected processing statuses: Contract[MATCHED], "
-                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL]")
-            .end();
+                + "with expected processing statuses: Contract[MATCHED, UNMATCHED], "
+                + "system events might be captured: [LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL, "
+                + "LOAN_CONTRACT_PROPOSAL_MATCHED, LOAN_CONTRACT_PROPOSAL_UNMATCHED]")
+        .end();
 
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
             .routeId("PostLoanContractProposal")
@@ -120,7 +126,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(backOfficeMapper, "toModel")
                 .choice()
                     .when(method(IntegrationUtils.class, "isBorrower"))
-                        .bean(positionProcessor, "matchContractProposal")
+                        .bean(positionProcessor, "matchContractProposalAsBorrower")
                 .endChoice()
             .end()
             .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process"

@@ -156,7 +156,7 @@ public class RecordMessageConstant {
 
             public static final String MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG = """
                 The loan contract proposal %s has been matched \
-                with a SPIRE position %s""";
+                with a SPIRE position %s and needs now to be validated.""";
 
             public static final String POSITION_CANCELED_MSG = """
                 The position %s has been canceled""";
