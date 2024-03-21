@@ -7,7 +7,7 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import com.intellecteu.onesource.integration.routes.contract_initiation_without_trade.processor.strategy.contract.ContractProcessFlowStrategy;
 import com.intellecteu.onesource.integration.services.ContractService;
-import com.intellecteu.onesource.integration.services.DeclineContractInstructionService;
+import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import java.util.Map;
 import java.util.Optional;
@@ -24,7 +24,7 @@ public class ContractProcessor implements TradeDataProcessor {
     private final Map<FlowStatus, ContractProcessFlowStrategy> strategyByFlow;
     private final ContractService contractService;
     private final OneSourceApiClient oneSourceClient;
-    private final DeclineContractInstructionService declineContractInstructionService;
+    private final DeclineInstructionService declineContractInstructionService;
 
     @Override
     @Transactional

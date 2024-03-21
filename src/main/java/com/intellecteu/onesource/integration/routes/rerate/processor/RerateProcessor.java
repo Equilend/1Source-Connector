@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_TRADE_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SENT_FOR_APPROVAL;
@@ -23,9 +24,11 @@ import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
@@ -53,13 +56,15 @@ public class RerateProcessor {
     private final RerateTradeService rerateTradeService;
     private final RerateService rerateService;
     private final RerateReconcileService rerateReconcileService;
+    private final DeclineInstructionService declineInstructionService;
     private final CloudEventRecordService cloudEventRecordService;
 
     @Autowired
     public RerateProcessor(BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService,
         OneSourceService oneSourceService, ContractService contractService, RerateTradeService rerateTradeService,
         RerateService rerateService,
-        RerateReconcileService rerateReconcileService, CloudEventRecordService cloudEventRecordService) {
+        RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
+        CloudEventRecordService cloudEventRecordService) {
         this.lenderBackOfficeService = lenderBackOfficeService;
         this.borrowerBackOfficeService = borrowerBackOfficeService;
         this.oneSourceService = oneSourceService;
@@ -67,6 +72,7 @@ public class RerateProcessor {
         this.rerateTradeService = rerateTradeService;
         this.rerateService = rerateService;
         this.rerateReconcileService = rerateReconcileService;
+        this.declineInstructionService = declineInstructionService;
         this.cloudEventRecordService = cloudEventRecordService;
     }
 
@@ -92,6 +98,16 @@ public class RerateProcessor {
     public Rerate updateRerateProcessingStatus(Rerate rerate, ProcessingStatus processingStatus) {
         rerate.setProcessingStatus(processingStatus);
         return rerate;
+    }
+
+    public DeclineInstruction saveDeclineInstruction(DeclineInstruction declineInstruction) {
+        return declineInstructionService.save(declineInstruction);
+    }
+
+    public DeclineInstruction updateDeclineInstructionProcessingStatus(DeclineInstruction declineInstruction,
+        ProcessingStatus processingStatus) {
+        declineInstruction.setProcessingStatus(processingStatus);
+        return declineInstruction;
     }
 
     public List<RerateTrade> fetchNewRerateTrades() {
@@ -189,10 +205,22 @@ public class RerateProcessor {
         try {
             lenderBackOfficeService.confirmBackOfficeRerateTrade(rerateTrade);
             rerateTrade.setProcessingStatus(CONFIRMED);
-        }catch (HttpClientErrorException httpClientErrorException){
+        } catch (HttpClientErrorException httpClientErrorException) {
             recordConfirmationRerateTradeTechnicalException(httpClientErrorException, rerateTrade);
         }
         return rerateTrade;
+    }
+
+    public DeclineInstruction declineRerate(DeclineInstruction declineInstruction) {
+        Rerate rerate = rerateService.getByRerateId(declineInstruction.getRelatedProposalId());
+        try {
+            oneSourceService.declineRerate(rerate.getContractId(), rerate.getRerateId());
+            rerate.setProcessingStatus(DECLINE_SUBMITTED);
+            rerateService.saveRerate(rerate);
+        } catch (HttpClientErrorException httpClientErrorException) {
+            recordDeclineRerateTechnicalException(httpClientErrorException, rerate);
+        }
+        return declineInstruction;
     }
 
     private Optional<LocalDate> getRerateEffectiveDate(Rerate rerate) {
@@ -224,14 +252,26 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
+    private void recordDeclineRerateTechnicalException(HttpClientErrorException httpClientErrorException,
+        Rerate rerate) {
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(IntegrationProcess.RERATE);
+        var recordRequest = eventBuilder.buildExceptionRequest(rerate.getRerateId(),
+            httpClientErrorException,
+            POST_RERATE_TRADE_CONFIRMATION, String.valueOf(rerate.getMatchingSpireTradeId()));
+        cloudEventRecordService.record(recordRequest);
+    }
+
     private void recordConfirmationRerateTradeTechnicalException(HttpClientErrorException httpClientErrorException,
         RerateTrade rerateTrade) {
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(IntegrationProcess.RERATE);
-        var recordRequest = eventBuilder.buildExceptionRequest(rerateTrade.getMatchingRerateId(), httpClientErrorException,
+        var recordRequest = eventBuilder.buildExceptionRequest(rerateTrade.getMatchingRerateId(),
+            httpClientErrorException,
             POST_RERATE_TRADE_CONFIRMATION, String.valueOf(rerateTrade.getTradeId()));
         cloudEventRecordService.record(recordRequest);
     }
+
 
     private void recordRerateTradeSuccessMatched1SourceRerateCloudEvent(Rerate rerate) {
         var eventBuilder = cloudEventRecordService.getFactory()
