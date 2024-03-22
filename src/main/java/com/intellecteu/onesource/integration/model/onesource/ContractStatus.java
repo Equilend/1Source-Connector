@@ -4,11 +4,16 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ContractStatus {
-    PROPOSED("PROPOSED"),
     APPROVED("APPROVED"),
+    CANCEL_PENDING("CANCEL_PENDING"),
     CANCELED("CANCELED"),
+    CLOSED("CLOSED"),
     DECLINED("DECLINED"),
-    OPEN("OPEN");
+    OPEN("OPEN"),
+    PENDING("PENDING"),
+    PROPOSED("PROPOSED"),
+    SPLIT_DECLINED("SPLIT_DECLINED"),
+    SPLIT_PENDING("SPLIT_PENDING");
 
     private final String value;
 

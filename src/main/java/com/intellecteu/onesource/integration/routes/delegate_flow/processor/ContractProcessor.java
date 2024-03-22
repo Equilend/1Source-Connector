@@ -12,6 +12,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
@@ -57,7 +58,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpStatusCodeException;
 
 @Service
@@ -78,8 +78,8 @@ public class ContractProcessor {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
-            return oneSourceService.retrieveContract(resourceUri)
-                .orElseThrow(() -> new HttpClientErrorException(NOT_FOUND));
+            String contractId = parseContractId(resourceUri);
+            return oneSourceService.retrieveContractDetails(contractId);
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
             final HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
@@ -91,6 +91,29 @@ public class ContractProcessor {
             }
             return null;
         }
+    }
+
+    /**
+     * Find recorded contract and update with required contract details retrieved from third party
+     *
+     * @param contractDetails Contract
+     * @return updated Contract model
+     */
+    public Contract updateContractWithContractDetails(Contract contractDetails) {
+        final Optional<Contract> persistedContract = contractService.findContractById(contractDetails.getContractId());
+        return persistedContract.map(contract -> {
+            contract.setContractStatus(contractDetails.getContractStatus());
+            contract.setTrade(contractDetails.getTrade());
+            contract.setSettlement(contractDetails.getSettlement());
+            return contract;
+        }).orElse(null);
+    }
+
+    private String parseContractId(String resourceUri) {
+        if (resourceUri.endsWith("/")) {
+            resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
+        }
+        return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
     }
 
     public boolean matchLenderPosition(@NonNull Contract contract) {
@@ -234,9 +257,17 @@ public class ContractProcessor {
                 String.format("Contract %s does not have LENDER transacting party", contract.getContractId())));
     }
 
-    public Contract updateLoanContractStatus(@NonNull Contract contract, @NonNull ProcessingStatus processingStatus) {
+    public Contract updateContractProcessingStatusAndCreatedTime(@NonNull Contract contract,
+        @NonNull ProcessingStatus processingStatus) {
         contract.setProcessingStatus(processingStatus);
         contract.setCreateDateTime(LocalDateTime.now());
+        contract.setLastUpdateDateTime(LocalDateTime.now());
+        return contract;
+    }
+
+    public Contract updateContractProcessingStatus(@NonNull Contract contract,
+        @NonNull ProcessingStatus processingStatus) {
+        contract.setProcessingStatus(processingStatus);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         return contract;
     }
@@ -303,6 +334,12 @@ public class ContractProcessor {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
         var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    public void recordApprovedSystemEvent(@NonNull Contract contract) {
+        String related = String.format("%d,%d", contract.getMatchingSpirePositionId(),
+            contract.getMatchingSpireTradeId());
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
