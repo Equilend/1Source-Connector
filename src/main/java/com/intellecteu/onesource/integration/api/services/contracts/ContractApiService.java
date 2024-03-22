@@ -56,12 +56,7 @@ public class ContractApiService {
         }
         log.debug("Found {} contracts", contracts.getTotalElements());
         final Page<ContractDto> contractPage = contracts.map(mapper::toDto);
-        return PageResponse.<ContractDto>builder()
-            .totalItems(contractPage.getTotalElements())
-            .currentPage(contractPage.getPageable().getPageNumber())
-            .totalPages(contractPage.getTotalPages())
-            .items(contractPage.getContent())
-            .build();
+        return new PageResponse<>(contractPage);
     }
 
     public ContractDto getContractById(String id) {

@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.api.dto.PageResponse;
 import com.intellecteu.onesource.integration.api.services.cloudevents.CloudSystemEventService;
 import com.intellecteu.onesource.integration.api.services.contracts.ContractApiService;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.RelatedProposalType;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
@@ -71,7 +72,9 @@ class DeclineInstructionApiServiceImpl implements DeclineInstructionApiService {
         if (StringUtils.isBlank(declineInstructionDto.getDeclineInstructionId())) {
             throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Decline Instruction Id must be present.");
         }
-        validateDeclineInstructionCreation(declineInstructionDto);
+        if (RelatedProposalType.CONTRACT.equals(declineInstructionDto.getRelatedProposalType())) {
+            validateDeclineInstructionCreation(declineInstructionDto);
+        }
         return createInstruction(declineInstructionDto);
     }
 

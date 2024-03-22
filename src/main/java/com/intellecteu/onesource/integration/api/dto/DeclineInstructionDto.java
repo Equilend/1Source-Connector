@@ -3,7 +3,7 @@ package com.intellecteu.onesource.integration.api.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.enums.RelatedProposalType;
 import java.time.LocalDateTime;
-import javax.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
