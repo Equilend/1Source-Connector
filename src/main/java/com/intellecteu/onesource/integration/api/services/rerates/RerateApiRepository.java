@@ -1,11 +1,10 @@
 package com.intellecteu.onesource.integration.api.services.rerates;
 
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
-import java.util.Optional;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface RerateApiRepository extends JpaRepository<RerateEntity, String> {
+public interface RerateApiRepository extends PagingAndSortingRepository<RerateEntity, String>,
+    JpaSpecificationExecutor<RerateEntity> {
 
-    @Override
-    Optional<RerateEntity> findById(String id);
 }

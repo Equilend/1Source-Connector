@@ -132,6 +132,11 @@
             <artifactId>swagger-annotations-jakarta</artifactId>
             <version>2.2.20</version>
         </dependency>
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+            <version>2.4.0</version>
+        </dependency>
 
         <!-- Other-->
         <dependency>
@@ -230,7 +235,7 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>2.0.2</version>
+            <version>3.0.2</version>
         </dependency>
     </dependencies>
 
@@ -428,7 +433,7 @@
                 <configuration>
                     <language>java</language>
                     <library>resttemplate</library>
-                    <inputSpec>mockApi/1source-swagger/1source-ledger-api-1.0.4-openapi3.json</inputSpec>
+                    <inputSpec>src/main/resources/static/toolkit_openapi.yaml</inputSpec>
                     <output>${project.build.directory}/generated-sources/swagger</output>
                     <modelPackage>${project.groupId}.onesource.integration.services.client.onesource.dto</modelPackage>
                     <modelNameSuffix>DTO</modelNameSuffix>

@@ -1,9 +1,9 @@
 openapi: 3.0.1
 info:
   title: Equilend Integration API
-  version: '1.0.0'
+  version: '1.0.1'
 servers:
-  - url: 'https://api.integration.equilend.com/v1'
+  - url: '/v1'
 components:
   securitySchemes:
     JWTAuth:
@@ -19,6 +19,90 @@ components:
           schema:
             $ref: '#/components/schemas/DeclineInstruction'
   schemas:
+    Rerate:
+      type: object
+      properties:
+        rerateId:
+          type: string
+          description: Unique identifier of the rerate.
+        contractId:
+          type: string
+          description: Identifier of the contract associated with the rerate.
+        rerateStatus:
+          type: string
+          enum:
+            - PROPOSED
+            - PENDING
+            - CANCEL_PENDING
+            - CANCELED
+            - APPLIED
+          description: Status of the rerate.
+        processingStatus:
+          type: string
+          enum:
+            - APPROVED
+            - CANCELED
+            - CREATED
+            - DECLINED
+            - DISCREPANCIES
+            - PROPOSED
+            - MATCHED_CANCELED_POSITION
+            - MATCHED_POSITION
+            - NEW
+            - ONESOURCE_ISSUE
+            - PROCESSED
+            - PROPOSAL_APPROVED
+            - PROPOSAL_CANCELED
+            - PROPOSAL_DECLINED
+            - RECONCILED
+            - TRADE_DISCREPANCIES
+            - TRADE_RECONCILED
+            - TRADE_CANCELED
+            - SAVED
+            - SETTLED
+            - SI_FETCHED
+            - SPIRE_ISSUE
+            - SPIRE_POSITION_CANCELED
+            - TO_CANCEL
+            - TO_DECLINE
+            - UPDATED
+            - VALIDATED
+            - MATCHED
+            - UNMATCHED
+            - SUBMITTED
+            - WAITING_PROPOSAL
+            - TO_VALIDATE
+            - APPROVAL_SUBMITTED
+            - CONFIRMED
+            - APPLIED
+            - DECLINE_SUBMITTED
+          description: Processing status of the rerate.
+        matchingSpireTradeId:
+          type: string
+          description: Spire trade ID matched with the rerate.
+        relatedSpirePositionId:
+          type: string
+          description: Spire position ID related to the rerate.
+        createDatetime:
+          type: string
+          format: date-time
+          description: Created Time for rerate creation.
+        lastUpdateDatetime:
+          type: string
+          format: date-time
+          description: Last time of the update.
+        effectiveDate:
+          type: string
+          format: date-time
+          description: Effective Rebate date of the rerate.
+      required:
+        - rerateId
+        - contractId
+        - rerateStatus
+        - processingStatus
+        - createDatetime
+        - lastUpdateDatetime
+        - effectiveDate
     Benchmark:
       type: string
       enum:
@@ -133,27 +217,30 @@ components:
       properties:
         contractId:
           type: string
-        lastEvent:
-          $ref: '#/components/schemas/TradeEvent'
-        settlementStatus:
-          $ref: '#/components/schemas/SettlementStatus'
         contractStatus:
           $ref: '#/components/schemas/ContractStatus'
-        lastUpdatePartyId:
-          type: integer
+        createDateTime:
+          type: string
+          format: date-time
         lastUpdateDatetime:
           type: string
           format: date-time
-        trade:
-          $ref: '#/components/schemas/TradeAgreement'
-        settlement:
-          $ref: '#/components/schemas/Settlements'
+        lastUpdatePartyId:
+          type: string
+        matching1SourceTradeAgreementId:
+          type: string
+        matchingSpirePositionId:
+          type: number
+          format: int64
+        matchingSpireTradeId:
+          type: number
+          format: int64
         processingStatus:
           $ref: '#/components/schemas/ProcessingStatus'
-        eventType:
-          $ref: '#/components/schemas/EventType'
-        matchingSpirePositionId:
-          type: string
+        settlement:
+          $ref: '#/components/schemas/Settlements'
+        trade:
+          $ref: '#/components/schemas/TradeAgreement'
     ContractStatus:
       type: string
       enum:
@@ -363,6 +450,7 @@ components:
               - $ref: '#/components/schemas/CloudEvent'
               - $ref: '#/components/schemas/Contract'
               - $ref: '#/components/schemas/DeclineInstruction'
+              - $ref: '#/components/schemas/Rerate'
     Party:
       required:
         - gleifLei
@@ -989,11 +1077,149 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeclineInstruction'
-        '404':
-          description: The related cloud event or proposal is not found for the required decline instruction
+        '400':
+          description: Bad request. Check the response body
         '401':
           description: The access to the API is not authorized
-        '406':
-          description: The decline instruction is not acceptable
         '500':
-          description: The decline instruction cannot be processed due to a technical error
+          description: The API is not getting the data due to a technical error
+
+  /rerates:
+    get:
+      summary: Search for rerate objects
+      operationId: searchRerate
+      tags:
+        - Rerate
+      parameters:
+        - in: query
+          name: rerateId
+          schema:
+            type: string
+          description: Unique identifier of the rerate.
+        - in: query
+          name: contractId
+          schema:
+            type: string
+          description: Identifier of the contract associated with the rerate.
+        - in: query
+          name: rerateStatus
+          schema:
+            type: string
+            enum:
+              - PROPOSED
+              - PENDING
+              - CANCEL_PENDING
+              - CANCELED
+              - APPLIED
+          description: Status of the rerate.
+        - in: query
+          name: processingStatus
+          schema:
+            type: string
+            enum:
+              - APPROVED
+              - CANCELED
+              - CANCEL_SUBMITTED
+              - CREATED
+              - DECLINED
+              - DISCREPANCIES
+              - PROPOSED
+              - MATCHED
+              - MATCHED_CANCELED_POSITION
+              - MATCHED_POSITION
+              - NEW
+              - ONESOURCE_ISSUE
+              - PROCESSED
+              - PROPOSAL_APPROVED
+              - PROPOSAL_CANCELED
+              - PROPOSAL_DECLINED
+              - RECONCILED
+              - TRADE_DISCREPANCIES
+              - TRADE_RECONCILED
+              - TRADE_CANCELED
+              - SAVED
+              - SENT_FOR_APPROVAL
+              - SETTLED
+              - SI_FETCHED
+              - SPIRE_ISSUE
+              - SPIRE_POSITION_CANCELED
+              - SUBMITTED
+              - TO_CANCEL
+              - TO_DECLINE
+              - TO_VALIDATE
+              - UNMATCHED
+              - UPDATE_SUBMITTED
+              - UPDATED
+              - VALIDATED
+          description: Processing status of the rerate.
+        - in: query
+          name: matchingSpireTradeId
+          schema:
+            type: string
+          description: Spire trade ID matched with the rerate.
+        - in: query
+          name: relatedSpirePositionId
+          schema:
+            type: string
+          description: Spire position ID related to the rerate.
+        - in: query
+          name: createDatetimeFrom
+          schema:
+            type: string
+            format: date-time
+          description: Start datetime for rerate creation search range.
+        - in: query
+          name: createDatetimeTill
+          schema:
+            type: string
+            format: date-time
+          description: End datetime for rerate creation search range.
+        - in: query
+          name: lastUpdateDatetimeFrom
+          schema:
+            type: string
+            format: date-time
+          description: Start datetime for last update search range.
+        - in: query
+          name: lastUpdateDatetimeTill
+          schema:
+            type: string
+            format: date-time
+          description: End datetime for last update search range.
+        - in: query
+          name: effectiveDateFrom
+          schema:
+            type: string
+            format: date-time
+          description: Start datetime for effective date search range.
+        - in: query
+          name: effectiveDateTill
+          schema:
+            type: string
+            format: date-time
+          description: End datetime for effective date search range.
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+          description: Page number for paging results.
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          description: Number of items per page.
+      responses:
+        '200':
+          description: A list of rerate objects matching the criteria.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+        '400':
+          description: Invalid request parameters.
+        '401':
+          description: Unauthorized. Token is missing or invalid.
+        '500':
+          description: Internal server error.

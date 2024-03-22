@@ -29,10 +29,8 @@ spring:
     schemas: ${DB_SCHEMA:postgres}
     enabled: true
     default-schema: ${DB_SCHEMA:postgres}
-
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
-
   security:
     oauth2:
       resourceserver:
@@ -49,6 +47,11 @@ spring:
           keycloak:
             issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
             user-name-attribute: ${onesource.auth.principal-attribute}
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    url: /toolkit_openapi.yaml
 
 logging:
   level:

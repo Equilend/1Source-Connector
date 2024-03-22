@@ -62,7 +62,6 @@ public abstract class OneSourceMapper {
 
     public abstract RerateStatus mapStatus(RerateStatusDTO rerateStatusDTO);
 
-    @Mapping(target = "status", source = "rerateStatus")
     public abstract RerateEntity toEntity(Rerate rerate);
 
     public Rate toModel(OneOfRerateRateDTODTO rateDTO) {
