@@ -11,6 +11,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -19,6 +20,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.intellecteu.onesource.integration.exception.ContractNotFoundException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -32,6 +34,7 @@ import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
 import com.intellecteu.onesource.integration.services.MatchingService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
@@ -55,21 +58,29 @@ import org.springframework.web.client.HttpStatusCodeException;
 public class PositionProcessor {
 
     private final PositionService positionService;
-    private final BackOfficeService lenderBackOfficeService;
+    private final BackOfficeService backOfficeService;
     private final AgreementService agreementService;
     private final ContractService contractService;
     private final OneSourceService oneSourceService;
     private final SettlementService settlementService;
     private final CloudEventRecordService cloudEventRecordService;
     private final MatchingService matchingService;
+    private final IntegrationDataTransformer dataTransformer;
 
     public Position savePosition(Position position) {
         return positionService.savePosition(position);
     }
 
+    /**
+     * Update processing status and save position
+     *
+     * @param position Position
+     * @param processingStatus Processing status
+     * @return persisted position with updated processing status
+     */
     public Position updateProcessingStatus(Position position, ProcessingStatus processingStatus) {
         position.setProcessingStatus(processingStatus);
-        return position;
+        return positionService.savePosition(position);
     }
 
     public Position findByPositionId(Long positionId) {
@@ -105,6 +116,26 @@ public class PositionProcessor {
                 String.valueOf(contract.getMatchingSpirePositionId()));
         });
         return position;
+    }
+
+    public boolean instructUpdatePosition(Position position) {
+        try {
+            final PositionConfirmationRequest confirmationRequest = dataTransformer.toPositionConfirmationRequest(
+                position);
+            backOfficeService.instructUpdatePosition(confirmationRequest);
+            return true;
+        } catch (HttpStatusCodeException exception) {
+            final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
+            log.warn("SPIRE error response for request Instruction: " + statusCode);
+            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(statusCode)) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(
+                    position.getMatching1SourceLoanContractId(), exception,
+                    IntegrationSubProcess.CONFIRM_POSITION, String.valueOf(position.getPositionId()));
+                cloudEventRecordService.record(recordRequest);
+            }
+            return false;
+        }
     }
 
     public void matchContractProposalAsBorrower(Position position) {
@@ -143,7 +174,7 @@ public class PositionProcessor {
     public Position fetchSettlementInstruction(Position position) {
         PartyRole partyRole = IntegrationUtils.extractPartyRole(position).get();
         try {
-            Optional<Settlement> settlementInstructionOpt = lenderBackOfficeService.retrieveSettlementInstruction(
+            Optional<Settlement> settlementInstructionOpt = backOfficeService.retrieveSettlementInstruction(
                 position, partyRole, position.getPositionAccount().getAccountId());
             settlementInstructionOpt.ifPresent(settlementService::persistSettlement);
         } catch (InstructionRetrievementException e) {

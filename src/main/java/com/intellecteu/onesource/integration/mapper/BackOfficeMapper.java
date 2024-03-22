@@ -1,12 +1,18 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
+import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
+import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
 import java.util.List;
 import org.mapstruct.Builder;
 import org.mapstruct.Mapper;
@@ -70,6 +76,13 @@ public abstract class BackOfficeMapper {
     @Mapping(target = "positionAccount", source = "positionOutDTO.accountDTO")
     @Mapping(target = "positionCpAccount", source = "positionOutDTO.counterPartyDTO")
     public abstract Position toPositionModel(TradeOutDTO tradeOutDTO);
+
+    public abstract OneSourceConfimationDTO toRequestDto(PositionConfirmationRequest confirmationRequest);
+
+    @Mapping(target = "accountDTO", source = "account")
+    public abstract InstructionDTO toRequestDto(PositionInstruction positionInstruction);
+
+    public abstract AccountDTO toRequestDto(PositionAccount positionAccount);
 
 
 }

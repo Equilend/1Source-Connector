@@ -1,0 +1,28 @@
+Prepared local migration data: V2024.03.22.22.00__EINT23-456_post_position_update.sql
+
+1. Insert the test position to the database:
+    - processingStatus should be 'PROPOSAL_APPROVED'
+
+2. Prepare mock response for the path 'trades/onesource/confirmation'
+    - should return HTTP status 200
+
+Response body example:
+{
+    "data": {
+      "instructions": {
+        "accountDTO": {
+          "dtc": 333444
+        }
+      },
+      "ledgerID": 343434,
+      "positionId": 343434,
+      "tradeId": 343434,
+      "userId": 1,
+      "userName": "OneSource"
+    },
+    "errCode": "string",
+    "error": true,
+    "message": "string",
+    "status": "ERROR",
+    "success": true
+}

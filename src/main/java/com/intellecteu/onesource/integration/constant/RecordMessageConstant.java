@@ -12,6 +12,7 @@ public class RecordMessageConstant {
         public static class Subject {
 
             public static final String APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT = "Position - %s";
+            public static final String CONFIRM_POSITION_SUBJECT = "Position - %s";
             public static final String GET_AGREEMENT_EXCEPTION_1SOURCE = "1Source event id - %s";
             public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT = "Position - %s";
 
@@ -63,6 +64,10 @@ public class RecordMessageConstant {
             public static final String CANCEL_LOAN_PROPOSAL_MSG = """
                 The loan contract proposal %s (generated from the SPIRE Position: %s) \
                 cannot be canceled for the following reason: %s""";
+
+            public static final String CONFIRM_POSITION_MSG = """
+                The position %s have not been confirmed in SPIRE. The identifier \
+                of the confirmed 1Source contract is : %s. The reason is: %s""";
 
             public static final String CONTRACT_CANCEL_MSG = """
                 The loan contract proposal %s matching with the \

@@ -1170,6 +1170,59 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "c663b022-4c28-42ce-bdce-7e3951a86712",
+      "type": "http",
+      "documentation": "",
+      "method": "post",
+      "endpoint": "trades/onesource/confirmation",
+      "responses": [
+        {
+          "uuid": "09bc5825-c09b-4b52-9296-550fa075991d",
+          "body": "{\r\n    \"data\": {\r\n      \"instructions\": {\r\n        \"accountDTO\": {\r\n          \"dtc\": 333444\r\n        }\r\n      },\r\n      \"ledgerID\": 343434,\r\n      \"positionId\": 343434,\r\n      \"tradeId\": 343434,\r\n      \"userId\": 1,\r\n      \"userName\": \"OneSource\"\r\n    },\r\n    \"errCode\": \"string\",\r\n    \"error\": true,\r\n    \"message\": \"string\",\r\n    \"status\": \"ERROR\",\r\n    \"success\": true\r\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "AND",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "3b349d1d-5379-4d37-b8fd-0c227f2c3045",
+          "body": "{}",
+          "latency": 0,
+          "statusCode": 201,
+          "label": "",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1216,6 +1269,10 @@
     {
       "type": "route",
       "uuid": "b1dae1ec-2cc8-465b-9506-407ab0f8baa3"
+    },
+    {
+      "type": "route",
+      "uuid": "c663b022-4c28-42ce-bdce-7e3951a86712"
     }
   ],
   "proxyMode": false,

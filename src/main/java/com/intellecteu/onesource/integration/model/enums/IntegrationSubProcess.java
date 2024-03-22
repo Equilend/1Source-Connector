@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.model.enums;
 public enum IntegrationSubProcess {
     APPROVE_LOAN_CONTRACT_PROPOSAL,
     CANCEL_LOAN_CONTRACT_PROPOSAL,
+    CONFIRM_POSITION,
     DECLINE_LOAN_CONTRACT_PROPOSAL,
     GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION,
     GET_LOAN_CONTRACT_APPROVED,
