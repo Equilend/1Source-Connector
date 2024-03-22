@@ -11,7 +11,6 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
@@ -194,7 +193,7 @@ public class ContractProcessor {
 
     public Contract retrieveContractFromDeclineInstruction(DeclineInstruction declineInstruction) {
         return contractService.findContractById(declineInstruction.getRelatedProposalId())
-            .filter(contract -> Set.of(DISCREPANCIES, PROPOSED).contains(contract.getProcessingStatus()))
+            .filter(contract -> Set.of(DISCREPANCIES, UNMATCHED).contains(contract.getProcessingStatus()))
             .orElse(null);
     }
 
