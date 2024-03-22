@@ -74,4 +74,9 @@ public class GenericRecordCloudEventBuilder extends IntegrationCloudEventBuilder
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
         return null;
     }
+
+    @Override
+    public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
+        return null;
+    }
 }

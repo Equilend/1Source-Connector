@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_EVENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT_PROPOSAL;
@@ -53,6 +54,8 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     public abstract CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException e,
         IntegrationSubProcess subProcess);
+
+    public abstract CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess);
 
     public CloudEventBuildRequest buildExceptionRequest(String recorded, HttpStatusCodeException e,
         IntegrationSubProcess subProcess, String related) {
@@ -135,8 +138,8 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return List.of(tradeAgreement, relatedPosition, relatedTrade);
     }
 
-    protected List<RelatedObject> getContractRelatedToPositionWithTrade(String contractInfo, String relatedList) {
-        String[] relatedIds = relatedList.split(",");
+    protected List<RelatedObject> getContractRelatedToPositionWithTrade(String contractInfo, String relatedSequence) {
+        String[] relatedIds = relatedSequence.split(",");
         String positionId;
         String tradeId;
         try {
@@ -173,6 +176,10 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     protected List<RelatedObject> getPositionRelated(String positionId) {
         return List.of(new RelatedObject(positionId, POSITION));
+    }
+
+    protected List<RelatedObject> getContractRelated(String contractId) {
+        return List.of(new RelatedObject(contractId, ONESOURCE_CONTRACT));
     }
 
     protected CloudEventMetadata createMetadata(CloudEventBuildRequest buildRequest) {

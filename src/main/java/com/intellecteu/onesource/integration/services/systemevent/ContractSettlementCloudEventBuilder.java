@@ -58,6 +58,11 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     @Override
+    public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
+        return null;
+    }
+
+    @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
         return switch (recordType) {
             case LOAN_CONTRACT_SETTLED -> loanContractSettled(recorded, recordType, related);

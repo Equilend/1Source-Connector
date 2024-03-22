@@ -96,7 +96,6 @@ public class RerateRoute extends RouteBuilder {
             .bean(eventProcessor, "processRerateEvent")
             //1Source Rerate
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
 
         from(createRerateSQLEndpoint(PROPOSED))

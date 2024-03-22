@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
@@ -59,9 +60,16 @@ public class EventProcessor {
         return tradeEventService.saveTradeEvent(event);
     }
 
+    /**
+     * Update event status and persist event
+     *
+     * @param event TradeEvent
+     * @param status ProcessingStatus
+     * @return persisted TradeEvent model
+     */
     public TradeEvent updateEventStatus(TradeEvent event, ProcessingStatus status) {
         event.setProcessingStatus(status);
-        return event;
+        return tradeEventService.saveTradeEvent(event);
     }
 
     public void processTradeEvent(TradeEvent event) {
@@ -175,6 +183,12 @@ public class EventProcessor {
 //        contract.setFlowStatus(TRADE_DATA_RECEIVED);
 //        contract.setLastEvent(event);
         return contract;
+    }
+
+    public void recordContractDeclineIssue(TradeEvent event) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(event.getResourceUri(), GET_LOAN_CONTRACT_DECLINED);
+        cloudEventRecordService.record(recordRequest);
     }
 
     private void recordCloudEvent(String record) {

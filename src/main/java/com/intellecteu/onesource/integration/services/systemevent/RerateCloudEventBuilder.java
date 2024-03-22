@@ -97,7 +97,8 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         );
     }
 
-    private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(String recorded, HttpStatusCodeException exception,
+    private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(String recorded,
+        HttpStatusCodeException exception,
         IntegrationSubProcess subProcess, String related) {
         String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, recorded, related, exception.getStatusText());
         return createRecordRequest(
@@ -220,6 +221,11 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     @Override
     public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException exception,
         IntegrationSubProcess subProcess) {
+        return null;
+    }
+
+    @Override
+    public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
         return null;
     }
 }

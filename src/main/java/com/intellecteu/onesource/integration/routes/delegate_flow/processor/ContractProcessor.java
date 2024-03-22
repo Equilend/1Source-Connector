@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -13,9 +14,11 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -78,7 +81,7 @@ public class ContractProcessor {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
-            String contractId = parseContractId(resourceUri);
+            String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
             return oneSourceService.retrieveContractDetails(contractId);
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
@@ -91,6 +94,30 @@ public class ContractProcessor {
             }
             return null;
         }
+    }
+
+    public Contract declineCapturedContract(TradeEvent event) {
+        String contractId = parseContractIdFrom1SourceResourceUri(event.getResourceUri());
+        return contractService.findContractById(contractId)
+            .map(this::declineContract)
+            .orElse(null);
+    }
+
+
+    private Contract declineContract(Contract contract) {
+        if (contract.getMatchingSpirePositionId() != null) {
+            removeMatchingContractFromPosition(contract.getMatchingSpirePositionId());
+        }
+        contract.setProcessingStatus(DECLINED);
+        return contractService.save(contract);
+    }
+
+    private void removeMatchingContractFromPosition(Long positionId) {
+        positionService.getByPositionId(positionId)
+            .ifPresent(position -> {
+                position.setMatching1SourceLoanContractId(null);
+                positionService.savePosition(position);
+            });
     }
 
     /**
@@ -107,13 +134,6 @@ public class ContractProcessor {
             contract.setSettlement(contractDetails.getSettlement());
             return contract;
         }).orElse(null);
-    }
-
-    private String parseContractId(String resourceUri) {
-        if (resourceUri.endsWith("/")) {
-            resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
-        }
-        return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
     }
 
     public boolean matchLenderPosition(@NonNull Contract contract) {
@@ -340,6 +360,13 @@ public class ContractProcessor {
         String related = String.format("%d,%d", contract.getMatchingSpirePositionId(),
             contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
+    }
+
+    public void recordLoanProposalDeclinedSystemEvent(@NonNull Contract contract) {
+        String related = contract.getMatchingSpirePositionId() == null
+            ? null
+            : String.format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_DECLINED, related);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

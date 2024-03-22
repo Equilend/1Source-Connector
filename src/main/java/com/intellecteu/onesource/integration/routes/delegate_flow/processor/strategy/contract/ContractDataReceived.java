@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.contract;
 
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MSG;
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
@@ -20,7 +19,6 @@ import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LE
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractLenderOrBorrower;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
-import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -144,7 +142,7 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
 
     private void processDeclinedContract(Contract contract, PositionDto position) {
         String spirePositionId = position.getPositionId();
-        log.warn(format(CONTRACT_DECLINE_MSG, contract.getContractId(), spirePositionId));
+//        log.warn(format(CONTRACT_DECLINE_MSG, contract.getContractId(), spirePositionId));
         contract.setProcessingStatus(DECLINED);
         savePositionStatus(position, PROPOSAL_DECLINED);
         recordContractEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED,

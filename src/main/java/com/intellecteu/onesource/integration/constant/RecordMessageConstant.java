@@ -16,11 +16,13 @@ public class RecordMessageConstant {
             public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT = "Position - %s";
 
             public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CREATED = "Loan contract proposal - %s";
-            public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_DECLINED = "Position - %s";
             public static final String GET_LOAN_CONTRACT_PROPOSAL_DISCREPANCIES = "Position - %s";
             public static final String GET_POSITION_CONFIRMATION_EXCEPTION_SPIRE = """
                 Extract of new positions pending conf. - %s""";
             public static final String GET_SETTLEMENT_INSTR_EXCEPTION_SPIRE = "Position - %s";
+            public static final String LOAN_CONTRACT_MATCHED_POSITION = "Position - %s";
+            public static final String LOAN_CONTRACT_PROPOSAL_MATCHED_DECLINED_SUBJECT = "Position - %s";
+            public static final String LOAN_CONTRACT_PROPOSAL_NOT_MATCHED_DECLINED_SUBJECT = "Loan contract proposal - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVED = "Position - %s";
             public static final String GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE = """
@@ -39,6 +41,7 @@ public class RecordMessageConstant {
             public static final String POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT = "1Source Contract - %s";
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
             public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
             public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
@@ -46,7 +49,6 @@ public class RecordMessageConstant {
             public static final String TRADE_AGREEMENT_CANCELED_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_MATCHED_CANCELED_POSITION = "Position - %s";
-            public static final String LOAN_CONTRACT_MATCHED_POSITION = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED = "Position - %s";
@@ -70,10 +72,14 @@ public class RecordMessageConstant {
             public static final String CONTRACT_CREATE_MSG = """
                 The loan contract proposal %s has been created but not yet matched with a SPIRE position""";
 
-            public static final String CONTRACT_DECLINE_MSG = """
+            public static final String CONTRACT_DECLINE_MATCHED_MSG = """
                 The loan contract proposal %s matching with the \
                 SPIRE position %s has been declined by the Borrower \
-                for the following reason.""";
+                for the following reasons: ...""";
+
+            public static final String CONTRACT_DECLINE_NOT_MATCHED_MSG = """
+                The loan contract proposal %s has been declined by the Borrower \
+                for the following reasons: ...""";
 
             public static final String GET_COUNTERPARTY_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG = """
                 The counterparty settlement instruction for the loan contract %s \
@@ -175,6 +181,10 @@ public class RecordMessageConstant {
 
             public static final String POSITION_UPDATE_SUBMITTED_MSG = """
                 “A loan contract proposal has been generated from the updated position %s and posted to 1Source""";
+
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_MSG = """
+                The loan contract proposal %s has been declined in 1Source but the loan contract proposal \
+                has not been retrieved in the Integration toolkit.""";
 
             public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
                 A new trade agreement %s has been captured""";
