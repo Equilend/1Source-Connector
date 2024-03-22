@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -83,7 +84,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .setHeader("tradeEvent", body())
             .bean(contractProcessor, "getLoanContractDetails")
             .filter(body().isNotNull())
-            .bean(contractProcessor, "updateLoanContractStatus(${body}, PROPOSED)")
+            .bean(contractProcessor, "updateContractProcessingStatusAndCreatedTime")
             .bean(contractProcessor, "saveContract")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .bean(eventProcessor, "saveEvent")
@@ -151,7 +152,29 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(contractProcessor, "instructDeclineLoanContractProposal(${body}, ${header.declineInstruction})")
             .log("Finished DECLINE_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[DECLINE_SUBMITTED], DeclineInstruction[PROCESSED]")
-            .end();
+        .end();
+
+        from(buildGetNotProcessedTradeEventQuery(CONTRACT_PENDING))
+            .routeId("GetLoanContractApproved")
+            .log(">>> Started GET_LOAN_CONTRACT_APPROVED subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(contractProcessor, "getLoanContractDetails")
+            .bean(contractProcessor, "updateContractWithContractDetails")
+            .filter(body().isNotNull())
+            .bean(contractProcessor, "updateContractProcessingStatus(${body}, APPROVED)")
+            .bean(contractProcessor, "saveContract")
+            .setHeader("contract", body())
+            .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
+            .filter(body().isNotNull())
+            .bean(positionProcessor, "updateProcessingStatus(${body}, PROPOSAL_APPROVED)")
+            .bean(positionProcessor, "savePosition")
+            .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .bean(eventProcessor, "saveEvent")
+            .log("<<< Finished GET_LOAN_CONTRACT_APPROVED subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Contract[APPROVED], Position[PROPOSAL_APPROVED]")
+        .end();
     }
 
     private String buildGetDeclineInstructionsQuery() {

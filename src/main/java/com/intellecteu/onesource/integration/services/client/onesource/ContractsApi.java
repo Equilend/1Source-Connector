@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.services.client.onesource;
 
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
@@ -44,6 +45,66 @@ public class ContractsApi {
         this.apiClient = apiClient;
     }
 
+    /**
+     * Read a specific contract the user is authorized to access
+     *
+     * <p><b>200</b> - The contract corresponding to the provided \&quot;contractId\&quot;
+     * <p><b>401</b> - Not authorized to do this operation
+     * <p><b>404</b> - Resource not found
+     * <p><b>500</b> - An error occurred
+     *
+     * @param contractId The unique identifier of a contract (required)
+     * @return ContractDTO
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public ContractDTO ledgerContractsContractIdGet(String contractId) throws RestClientException {
+        return ledgerContractsContractIdGetWithHttpInfo(contractId).getBody();
+    }
+
+    /**
+     * Read a specific contract the user is authorized to access
+     *
+     * <p><b>200</b> - The contract corresponding to the provided \&quot;contractId\&quot;
+     * <p><b>401</b> - Not authorized to do this operation
+     * <p><b>404</b> - Resource not found
+     * <p><b>500</b> - An error occurred
+     *
+     * @param contractId The unique identifier of a contract (required)
+     * @return ResponseEntity&lt;ContractDTO&gt;
+     * @throws RestClientException if an error occurs while attempting to invoke the API
+     */
+    public ResponseEntity<ContractDTO> ledgerContractsContractIdGetWithHttpInfo(String contractId)
+        throws RestClientException {
+        Object postBody = null;
+        // verify the required parameter 'contractId' is set
+        if (contractId == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                "Missing the required parameter 'contractId' when calling ledgerContractsContractIdGet");
+        }
+        // create path and map variables
+        final Map<String, Object> uriVariables = new HashMap<String, Object>();
+        uriVariables.put("contractId", contractId);
+        String path = UriComponentsBuilder.fromPath("/ledger/contracts/{contractId}").buildAndExpand(uriVariables)
+            .toUriString();
+
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final HttpHeaders headerParams = new HttpHeaders();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+
+        final String[] accepts = {
+            "application/json"
+        };
+        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
+        final String[] contentTypes = {};
+        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
+
+        String[] authNames = new String[]{"stage_auth"};
+
+        ParameterizedTypeReference<ContractDTO> returnType = new ParameterizedTypeReference<ContractDTO>() {
+        };
+        return apiClient.invokeAPI(path, HttpMethod.GET, queryParams, postBody, headerParams, formParams, accept,
+            contentType, authNames, returnType);
+    }
 
     /**
      * Create a contract in \&quot;proposal\&quot; state. Normally done by the Lend side

@@ -260,7 +260,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             format(LOAN_CONTRACT_PROPOSAL_APPROVED, related),
             CONTRACT_INITIATION,
             GET_LOAN_CONTRACT_APPROVED,
-            createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, related))
         );
     }
 

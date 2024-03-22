@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
@@ -9,6 +10,7 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
@@ -19,6 +21,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
@@ -31,11 +34,16 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/*
+ * On mapping issues check the OneOf... interface in DTO and remove type or
+ * use JsonTypeInfo.Id.DEDUCTION and assign required @JsonSubTypes for OneOf... implementations
+ */
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class OneSourceMapper {
 
@@ -50,6 +58,14 @@ public abstract class OneSourceMapper {
     public abstract Rerate toModel(RerateEntity rerateEntity);
 
     public abstract Rerate toModel(RerateDTO rerateDTO);
+
+    public abstract ContractDetails toModel(ContractDTO contractDTO);
+
+    public abstract Settlement toModel(PartySettlementInstructionDTO settlementDto);
+
+    public abstract SettlementInstruction toModel(SettlementInstructionDTO instructionDto);
+
+    public abstract Contract toModel(ContractDetails contractDetails);
 
     public abstract RerateEntity toEntity(Rerate rerate);
 

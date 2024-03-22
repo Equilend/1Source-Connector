@@ -72,6 +72,10 @@ public class PositionProcessor {
         return position;
     }
 
+    public Position findByPositionId(Long positionId) {
+        return positionService.getByPositionId(positionId).orElse(null);
+    }
+
     public Position matchTradeAgreement(Position position) {
         agreementService.findByVenueRefId(position.getVenueRefId())
             .ifPresent(agreement -> {
@@ -105,7 +109,10 @@ public class PositionProcessor {
 
     public void matchContractProposalAsBorrower(Position position) {
         try {
-            Set<Contract> unmatchedContracts = findUnmatchedContracts();
+            Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(UNMATCHED);
+            if (unmatchedContracts.isEmpty()) {
+                throw new ContractNotFoundException(); // todo should we ignore such cases? A lot of system events will be created
+            }
             log.debug("Matching position with contracts received ({})", unmatchedContracts.size());
             Contract matchedContract = retrieveMatchedContract(position, unmatchedContracts);
             updatePosition(matchedContract, position);
@@ -115,14 +122,6 @@ public class PositionProcessor {
             log.debug("No matched contracts found for position Id={}", position.getPositionId());
             recordSystemEvent(position, POSITION_UNMATCHED);
         }
-    }
-
-    private Set<Contract> findUnmatchedContracts() {
-        final Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(UNMATCHED);
-        if (unmatchedContracts.isEmpty()) {
-            throw new ContractNotFoundException(); // todo should we ignore such cases? A lot of system events will be created
-        }
-        return unmatchedContracts;
     }
 
     private void recordSystemEvent(Position position, RecordType recordType) {

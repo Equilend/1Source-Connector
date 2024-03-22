@@ -13,7 +13,6 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_DECLINE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHING_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
@@ -171,8 +170,8 @@ public class ContractDataReceived extends AbstractContractProcessStrategy {
             contract.getContractId(), spirePositionId);
         contract.setProcessingStatus(ProcessingStatus.APPROVED);
 //        savePositionStatus(position, PROPOSAL_APPROVED);
-        recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
-            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
+//        recordContractEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED,
+//            String.valueOf(contract.getMatchingSpirePositionId()), CONTRACT_INITIATION);
     }
 
     private void processPositionAfterContractApproved(Contract contract, PositionDto position, PartyRole partyRole) {

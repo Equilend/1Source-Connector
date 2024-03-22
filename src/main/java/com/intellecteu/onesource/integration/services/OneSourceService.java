@@ -7,6 +7,7 @@ import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -16,6 +17,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.Contracts
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
@@ -80,8 +82,11 @@ public class OneSourceService {
             .toList();
     }
 
-    public Optional<Contract> retrieveContract(String eventUri) {
-        return oneSourceApiClient.retrieveContract(eventUri);
+    public Contract retrieveContractDetails(String contractId) {
+        log.debug("Sending HTTP request to get contract details for contract id = {}", contractId);
+        final ContractDTO contractDetailsResponse = contractsApi.ledgerContractsContractIdGet(contractId);
+        ContractDetails contractDetails = oneSourceMapper.toModel(contractDetailsResponse);
+        return oneSourceMapper.toModel(contractDetails);
     }
 
     public boolean executeContractProposalApproval(ContractProposalApproval approval, Contract contract)

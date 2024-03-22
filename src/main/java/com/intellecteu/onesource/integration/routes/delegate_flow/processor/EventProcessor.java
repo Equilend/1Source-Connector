@@ -80,11 +80,11 @@ public class EventProcessor {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
-            oneSourceService.retrieveContract(resourceUri)
-                .ifPresent(contract -> {
-                    Contract enrichedContract = enrichContract(contract, event);
-                    contractService.save(enrichedContract);
-                });
+//            oneSourceService.retrieveContractDetails(resourceUri)
+//                .ifPresent(contract -> {
+//                    Contract enrichedContract = enrichContract(contract, event);
+//                    contractService.save(enrichedContract);
+//                });
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not found. Details: {} ", resourceUri, e.getMessage());
             if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
