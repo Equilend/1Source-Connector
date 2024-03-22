@@ -195,8 +195,8 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
 
     private String buildGetDeclineInstructionsQuery() {
         String query = """
-            SELECT d FROM DeclineInstructionEntity d WHERE d.processingStatus IS NULL \
-            OR d.processingStatus = 'CREATED'""";
+            SELECT d FROM DeclineInstructionEntity d WHERE d.relatedProposalType = 'CONTRACT' \
+            AND (d.processingStatus IS NULL OR d.processingStatus = 'CREATED')""";
         return String.format(CAMEL_JPA_CONFIG,
             "com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity",
             String.format("delay=%d", updateTimer),
