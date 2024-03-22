@@ -48,7 +48,6 @@ public class ContractInitiationTradeStartedRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processTradeEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing TradeAgreementEvent with id ${body.eventId}");
 
         //Process one source events (steps 3-5 in business flow F1)

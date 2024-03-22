@@ -122,5 +122,22 @@ public class IntegrationUtils {
             .orElseThrow(() -> new NoRequiredPartyRoleException(
                 format(NO_PARTY_ROLE_EXCEPTION, positionId)));
     }
+
+    /**
+     * Retrieve contract id from the 1Source event resource Uri. Expected URI format:
+     * /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
+     *
+     * @param resourceUri String
+     * @return String contract id or the initial string if the format is unexpected
+     */
+    public static String parseContractIdFrom1SourceResourceUri(String resourceUri) {
+        if (!resourceUri.contains("/")) {
+            return resourceUri;
+        }
+        if (resourceUri.endsWith("/")) {
+            resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
+        }
+        return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
+    }
 }
 

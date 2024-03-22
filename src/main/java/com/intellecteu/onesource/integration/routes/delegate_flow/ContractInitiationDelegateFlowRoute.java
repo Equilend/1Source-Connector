@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 
@@ -87,7 +88,6 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(contractProcessor, "updateContractProcessingStatusAndCreatedTime")
             .bean(contractProcessor, "saveContract")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<< Finished GET_LOAN_CONTRACT_PROPOSAL subprocess with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
         .end();
 
@@ -171,9 +171,25 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(positionProcessor, "savePosition")
             .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<< Finished GET_LOAN_CONTRACT_APPROVED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[APPROVED], Position[PROPOSAL_APPROVED]")
+        .end();
+
+        from(buildGetNotProcessedTradeEventQuery(CONTRACT_DECLINED))
+            .routeId("GetLoanContractDeclined")
+            .log(">>> Started GET_LOAN_CONTRACT_DECLINED subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(contractProcessor, "declineCapturedContract")
+                .choice()
+                    .when(body().isNull())
+                        .bean(eventProcessor, "recordContractDeclineIssue(${header.tradeEvent})")
+                    .otherwise()
+                        .bean(contractProcessor, "recordLoanProposalDeclinedSystemEvent")
+                .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished GET_LOAN_CONTRACT_DECLINED subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Contract[DECLINED]")
         .end();
     }
 

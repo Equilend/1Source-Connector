@@ -112,7 +112,6 @@ public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processTradeCanceledEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing TradeCanceledEvent with id ${body.eventId}");
 
         //Process positions (steps 7a, 12a, 19a in business flow)
@@ -122,7 +121,6 @@ public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(eventProcessor, "processContractEvent")
             .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .bean(eventProcessor, "saveEvent")
             .log("<<<<< Finished processing ContractEvent with eventId ${body.eventId}")
             .end();
 
