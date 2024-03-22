@@ -109,7 +109,7 @@
       "responses": [
         {
           "uuid": "bcdd1f13-6bc2-4533-98be-2e74fba21175",
-          "body": "[\r\n    {\r\n        \"eventId\": 7,\r\n        \"eventType\": \"RERATE_DECLINED\",\r\n        \"eventDateTime\": \"2023-08-31T13:41:29.011Z\",\r\n        \"resourceUri\": \"/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006\"\r\n    }\r\n]",
+          "body": "[\r\n    {\r\n        \"eventId\": 4,\r\n        \"eventType\": \"RERATE_PROPOSED\",\r\n        \"eventDateTime\": \"2023-07-30T13:41:29.011Z\",\r\n        \"resourceUri\": \"/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006\"\r\n    }\r\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "Read collection of events. With no parameters returns events since start of current day.",
@@ -1621,7 +1621,7 @@
           "uuid": "1c14525c-6e2c-4c6e-bf1b-33c7665cba7c",
           "body": "{}",
           "latency": 0,
-          "statusCode": 201,
+          "statusCode": 500,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",
