@@ -2233,7 +2233,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Borrow : positionType, positionTypeName,  instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
+                        "description": "Values that can be edited on a Borrow : positionType, positionTypeName, instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
                         "required": false,
                         "schema": {
                             "originalRef": "BorrowTradeInputDTO",
@@ -2345,7 +2345,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Customer Billing : comments, exposureId  strategy ",
+                        "description": "Values that can be edited on a Customer Billing : comments, exposureId strategy ",
                         "required": false,
                         "schema": {
                             "originalRef": "CustomerBillingTradeInputDTO",
@@ -2401,7 +2401,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Loan : positionType, positionTypeName,  instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
+                        "description": "Values that can be edited on a Loan : positionType, positionTypeName, instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
                         "required": false,
                         "schema": {
                             "originalRef": "LoanTradeInputDTO",
@@ -2457,7 +2457,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Pay To Hold : positionType, positionTypeName,  instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
+                        "description": "Values that can be edited on a Pay To Hold : positionType, positionTypeName, instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
                         "required": false,
                         "schema": {
                             "originalRef": "PayToHoldTradeInputDTO",
@@ -2513,7 +2513,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Loan : positionType, positionTypeName,  instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber,  allInRate, strategy",
+                        "description": "Values that can be edited on a Loan : positionType, positionTypeName, instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, allInRate, strategy",
                         "required": false,
                         "schema": {
                             "originalRef": "LoanTradeInputDTO",
@@ -2569,7 +2569,7 @@
                     {
                         "in": "body",
                         "name": "input",
-                        "description": "Values that can be edited on a Reverse Repo : positionType, positionTypeName,  instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
+                        "description": "Values that can be edited on a Reverse Repo : positionType, positionTypeName, instructions, positionReferenceNumber, exposureId, comments, counterpartyAccountNumber, excludeFromAutoMark, nonMarkable, allInRate, strategy",
                         "required": false,
                         "schema": {
                             "originalRef": "ReverseRepoTradeInputDTO",
@@ -7957,7 +7957,7 @@
                     {
                         "in": "body",
                         "name": "nQueryRequest",
-                        "description": "Allowed keys in lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId, indexId, indexName, histDate, indexCategory, activeOnly, counterpartyGroupName, counterpartyGroupAccountNo,  counterpartyName, counterpartyAccountNo, counterpartydtcNo, accountNo2",
+                        "description": "Allowed keys in lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId, indexId, indexName, histDate, indexCategory, activeOnly, counterpartyGroupName, counterpartyGroupAccountNo, counterpartyName, counterpartyAccountNo, counterpartydtcNo, accountNo2",
                         "required": false,
                         "schema": {
                             "originalRef": "NQueryRequest",
@@ -8020,7 +8020,7 @@
                     {
                         "in": "body",
                         "name": "nQueryRequest",
-                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId,  tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2,  accountName, accountNo, accountNo2,  collateralName, collateralAccountNo, collateralAccountNo2, status,  groupType, depoGroup, depoKy, currencyKy, tradeType, productLine,  counterpartyGroupName, counterpartyGroupAccountNo, counterpartyGroupAccountNo2,   counterpartyName, counterpartyShortName, counterpartyAccountNo, counterpartyAccountNo2,  dtcNo, positionRef,  settleDate, postDate, positionType, settleStatus, userName, isStreetView, isLate,  baseCurrencyKy, secCountryKy",
+                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId, tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2, accountName, accountNo, accountNo2, collateralName, collateralAccountNo, collateralAccountNo2, status, groupType, depoGroup, depoKy, currencyKy, tradeType, productLine, counterpartyGroupName, counterpartyGroupAccountNo, counterpartyGroupAccountNo2, counterpartyName, counterpartyShortName, counterpartyAccountNo, counterpartyAccountNo2, dtcNo, positionRef, settleDate, postDate, positionType, settleStatus, userName, isStreetView, isLate, baseCurrencyKy, secCountryKy",
                         "required": false,
                         "schema": {
                             "originalRef": "NQueryRequest",
@@ -8131,7 +8131,7 @@
                     {
                         "in": "body",
                         "name": "nQueryRequest",
-                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId,  description, counterpartyGroupAccountNo, counterpartyGroupAccountNo2 , counterpartyGroupName,  counterpartyAccountNo, counterpartyAccountNo2, counterpartyShortName, counterpartyLegalName, dtcNo,  categoryName, positionType, collateralType, poolPositionId, positionId, settleDate,  depoGroup, depoKy, status, tradeDate, resetDate, endDate, matchGroupName,  accountGroupShortName, accountGroupLegalName, accountGroupAccountNo, accountGroupAccountNo2,  accountShortName, accountLegalName, accountNo, accountNo2,  collateralAccountNo2, collateralAccountNo, collateralShortName, collateralName,  indexName, rate, spread, currencyKy, positionRef,  userName, nonMarkable, strategy, isStreetView, baseCurrencyKy, secCountryKy",
+                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId, description, counterpartyGroupAccountNo, counterpartyGroupAccountNo2 , counterpartyGroupName, counterpartyAccountNo, counterpartyAccountNo2, counterpartyShortName, counterpartyLegalName, dtcNo, categoryName, positionType, collateralType, poolPositionId, positionId, settleDate, depoGroup, depoKy, status, tradeDate, resetDate, endDate, matchGroupName, accountGroupShortName, accountGroupLegalName, accountGroupAccountNo, accountGroupAccountNo2, accountShortName, accountLegalName, accountNo, accountNo2, collateralAccountNo2, collateralAccountNo, collateralShortName, collateralName, indexName, rate, spread, currencyKy, positionRef, userName, nonMarkable, strategy, isStreetView, baseCurrencyKy, secCountryKy",
                         "required": false,
                         "schema": {
                             "originalRef": "NQueryRequest",
@@ -8417,7 +8417,7 @@
                     {
                         "in": "body",
                         "name": "nQueryRequest",
-                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId,  tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2,  accountName, accountNo, accountNo2,  collateralName, collateralAccountNo, collateralAccountNo2, status,  groupType, depoGroup, depoKy, currencyKy, tradeType, productLine,  counterpartyGroupName, counterpartyGroupAccountNo, counterpartyGroupAccountNo2,   counterpartyName, counterpartyShortName, counterpartyAccountNo, counterpartyAccountNo2,  dtcNo, positionRef,  settleDate, postDate, positionType, settleStatus, userName, isStreetView, isLate,  baseCurrencyKy, secCountryKy",
+                        "description": "Allowed lValue of NQuery: sedol, isin, cusip, ticker, clientSecId, quickCode, primaryId, tradeId, positionId, accountGroupName, accountGroupAccountNo, accountGroupAccountNo2, accountName, accountNo, accountNo2, collateralName, collateralAccountNo, collateralAccountNo2, status, groupType, depoGroup, depoKy, currencyKy, tradeType, productLine, counterpartyGroupName, counterpartyGroupAccountNo, counterpartyGroupAccountNo2, counterpartyName, counterpartyShortName, counterpartyAccountNo, counterpartyAccountNo2, dtcNo, positionRef, settleDate, postDate, positionType, settleStatus, userName, isStreetView, isLate, baseCurrencyKy, secCountryKy",
                         "required": false,
                         "schema": {
                             "originalRef": "NQueryRequest",
@@ -10015,8 +10015,7 @@
                     "format": "int64"
                 },
                 "oneSourceId": {
-                    "type": "integer",
-                    "format": "int64"
+                    "type": "string"
                 },
                 "othIncomeFlg": {
                     "type": "string"
@@ -10893,7 +10892,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -11255,7 +11254,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -11358,7 +11357,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -11538,7 +11537,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -11665,6 +11664,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -11940,7 +11942,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -12285,7 +12287,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -12376,7 +12378,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -12541,7 +12543,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -12668,6 +12670,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -12824,7 +12829,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -12961,6 +12966,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -13021,7 +13029,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -13156,6 +13164,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -13371,7 +13382,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -13772,7 +13783,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -13882,7 +13893,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -14076,7 +14087,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -14203,6 +14214,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -14784,7 +14798,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -15207,7 +15221,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -15317,7 +15331,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -15506,7 +15520,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -15633,6 +15647,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -15979,7 +15996,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -16380,7 +16397,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -16490,7 +16507,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -16684,7 +16701,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -16811,6 +16828,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -17587,7 +17607,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -17991,7 +18011,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -18101,7 +18121,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -18295,7 +18315,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -18422,6 +18442,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -19287,7 +19310,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -19628,7 +19651,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -19719,7 +19742,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -21229,7 +21252,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -21356,6 +21379,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -22036,7 +22062,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -22437,7 +22463,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -22547,7 +22573,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -22741,7 +22767,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -22868,6 +22894,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -23197,7 +23226,7 @@
             "properties": {
                 "accountAllocations": {
                     "type": "array",
-                    "description": "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled",
+                    "description": "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled",
                     "items": {
                         "originalRef": "AccountAllocationDTO",
                         "$ref": "#/definitions/AccountAllocationDTO"
@@ -23559,7 +23588,7 @@
                 },
                 "nonMarkable": {
                     "type": "boolean",
-                    "description": "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold "
+                    "description": "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold "
                 },
                 "orderActionTs": {
                     "type": "string",
@@ -23662,7 +23691,7 @@
                 "quantity": {
                     "type": "number",
                     "format": "double",
-                    "description": "Required only when posting a position,  returning and increasing qty on Pay To Hold"
+                    "description": "Required only when posting a position, returning and increasing qty on Pay To Hold"
                 },
                 "rate": {
                     "type": "number",
@@ -23855,7 +23884,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -23982,6 +24011,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -27242,7 +27274,7 @@
                 },
                 "status": {
                     "type": "string",
-                    "description": "Allowed values for position and trade status:  OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED.  Allowed values for trade settled status:  NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID"
+                    "description": "Allowed values for position and trade status: OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED. Allowed values for trade settled status: NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID"
                 },
                 "statusId": {
                     "type": "integer",
@@ -27781,7 +27813,7 @@
             "properties": {
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -27845,6 +27877,9 @@
                     "type": "boolean"
                 },
                 "skipLimitCheckAndUpdate": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "source": {
@@ -28350,7 +28385,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -28487,6 +28522,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -28547,7 +28585,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -28684,6 +28722,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -28744,7 +28785,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -28881,6 +28922,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -28941,7 +28985,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -29078,6 +29122,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -29138,7 +29185,7 @@
                 },
                 "action": {
                     "type": "string",
-                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty"
+                    "description": "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty"
                 },
                 "allowTradeForNoCurrDaySecPrice": {
                     "type": "boolean"
@@ -29273,6 +29320,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {

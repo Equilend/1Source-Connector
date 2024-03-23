@@ -145,9 +145,8 @@ public class BackOfficeService {
             final ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(
                 nQueryRequest);
             if (responseTradeHasData(response)) {
-                List<SGroupTradeOutDTO> responseGroups = response.getBody().getData().getGroups();
+                List<TradeOutDTO> responseGroups = response.getBody().getData().getBeans();
                 return responseGroups.stream()
-                    .map(SGroupTradeOutDTO::getAvg)
                     .map(backOfficeMapper::toPositionModel)
                     .toList();
             }
@@ -172,7 +171,7 @@ public class BackOfficeService {
             log.debug("Sending request with SPIRE API Client");
             ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
             if (responseTradeHasData(response)) {
-                return convertResponseToTrades(response.getBody().getData().getGroups());
+                return convertResponseToTrades(response.getBody().getData().getBeans());
             }
         } catch (RestClientException e) {
             log.warn("Rest client exception: {}", e.getMessage());
@@ -189,9 +188,8 @@ public class BackOfficeService {
         return List.of();
     }
 
-    private List<TradeOut> convertResponseToTrades(List<SGroupTradeOutDTO> responseGroups) {
-        List<TradeOut> tradesWithUpdatedPositions = responseGroups.stream()
-            .map(SGroupTradeOutDTO::getAvg)
+    private List<TradeOut> convertResponseToTrades(List<TradeOutDTO> responseBeans) {
+        List<TradeOut> tradesWithUpdatedPositions = responseBeans.stream()
             .map(backOfficeMapper::toModel)
             .toList();
         log.debug("Found {} trades with updated positions", tradesWithUpdatedPositions.size());
@@ -254,7 +252,7 @@ public class BackOfficeService {
 
     private boolean responseTradeHasData(ResponseEntity<SResponseNQueryResponseTradeOutDTO> response) {
         return response != null && response.getBody() != null && response.getBody().getData() != null
-            && !response.getBody().getData().getGroups().isEmpty();
+            && !response.getBody().getData().getBeans().isEmpty();
     }
 
     private boolean responseHasData(ResponseEntity<SResponseNQueryResponsePositionOutDTO> response) {
