@@ -33,17 +33,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_APPROVED;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPROVED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
@@ -63,6 +53,11 @@ import org.springframework.web.client.HttpStatusCodeException;
 @Component
 public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
+    public static final String RERATE_ID = "rerateId";
+    public static final String TRADE_ID = "tradeId";
+    public static final String RESOURCE_URI = "resourceURI";
+    public static final String HTTP_STATUS_TEXT = "httpStatusText";
+
     public RerateCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
         @Value("${integration-toolkit.uri}") String integrationUri) {
@@ -72,69 +67,6 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     @Override
     public IntegrationProcess getVersion() {
         return RERATE;
-    }
-
-    @Override
-    public CloudEventBuildRequest buildExceptionRequest(String record, HttpStatusCodeException e,
-        IntegrationSubProcess subProcess, String related) {
-        return switch (subProcess) {
-            case APPROVE_RERATE_PROPOSAL -> createApproveRerateExceptionCloudRequest(record, e, subProcess, related);
-            case POST_RERATE_TRADE_CONFIRMATION ->
-                createConfirmRerateExceptionCloudRequest(record, e, subProcess, related);
-            case DECLINE_RERATE_PROPOSAL -> createDeclineRerateExceptionCloudRequest(record, e, subProcess, related);
-            default -> null;
-        };
-    }
-
-    /**
-     * @param recorded - spireId
-     * @param related - tradeId
-     */
-    private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(String recorded,
-        HttpStatusCodeException exception,
-        IntegrationSubProcess subProcess, String related) {
-        String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, recorded, related, exception.getStatusText());
-        return createRecordRequest(
-            TECHNICAL_EXCEPTION_1SOURCE,
-            format(APPROVE_EXCEPTION_RERATE, related),
-            RERATE,
-            subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
-        );
-    }
-
-    /**
-     * @param recorded - spireId
-     * @param related - tradeId
-     */
-    private CloudEventBuildRequest createConfirmRerateExceptionCloudRequest(String recorded,
-        HttpStatusCodeException exception,
-        IntegrationSubProcess subProcess, String related) {
-        String dataMessage = format(CONFIRM_EXCEPTION_RERATE_MSG, related, recorded, exception.getStatusText());
-        return createRecordRequest(
-            TECHNICAL_EXCEPTION_SPIRE,
-            format(CONFIRM_EXCEPTION_RERATE, related),
-            RERATE,
-            subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
-        );
-    }
-
-    /**
-     * @param recorded - spireId
-     * @param related - tradeId
-     */
-    private CloudEventBuildRequest createDeclineRerateExceptionCloudRequest(String recorded,
-        HttpStatusCodeException exception,
-        IntegrationSubProcess subProcess, String related) {
-        String dataMessage = format(DECLINE_EXCEPTION_RERATE_MSG, recorded, related, exception.getStatusText());
-        return createRecordRequest(
-            TECHNICAL_EXCEPTION_1SOURCE,
-            format(DECLINE_EXCEPTION_RERATE, related),
-            RERATE,
-            subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
-        );
     }
 
     @Override
@@ -175,24 +107,53 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
-        return switch (recordType) {
-            case RERATE_TRADE_CREATED -> createCreatedRerateRecordRequest(recorded);
-            case RERATE_PROPOSAL_MATCHED -> createMatchedRerateRecordRequest(recorded, related);
-            case RERATE_PROPOSAL_UNMATCHED -> createUnMatchedRerateRecordRequest(recorded);
-            case RERATE_PROPOSAL_PENDING_APPROVAL -> createMatchedAndPendingApprovalRecordRequest(recorded, related);
-            case RERATE_PROPOSAL_APPROVED -> createApprovedRecordRequest(recorded, related);
-            default -> null;
-        };
+        return null;
     }
 
     @Override
     public CloudEventBuildRequest buildRequest(IntegrationSubProcess subProcess, RecordType recordType,
         Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
         switch (subProcess) {
+            case PROCESS_RERATE_PENDING_CONFIRMATION: {
+                return switch (recordType) {
+                    case RERATE_PROPOSAL_MATCHED -> createMatchedRerateRecordRequest(subProcess, recordType, data);
+                    case RERATE_TRADE_CREATED -> createCreatedRerateRecordRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case MATCH_LOAN_RERATE_PROPOSAL: {
+                return switch (recordType) {
+                    case RERATE_PROPOSAL_UNMATCHED -> createUnMatchedRerateRecordRequest(subProcess, recordType, data);
+                    case RERATE_PROPOSAL_PENDING_APPROVAL ->
+                        createMatchedAndPendingApprovalRecordRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
             case POST_RERATE_PROPOSAL: {
                 return switch (recordType) {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
                         createPostHttpExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case APPROVE_RERATE_PROPOSAL: {
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_1SOURCE ->
+                        createApproveRerateExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case POST_RERATE_TRADE_CONFIRMATION: {
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_SPIRE ->
+                        createConfirmRerateExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case DECLINE_RERATE_PROPOSAL: {
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_1SOURCE ->
+                        createDeclineRerateExceptionCloudRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -215,6 +176,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                 return switch (recordType) {
                     case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
                         createApprovedTechnicalExceptionRecordRequest(subProcess, recordType, data);
+                    case RERATE_PROPOSAL_APPROVED -> createApprovedRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -230,59 +192,90 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         return null;
     }
 
-    /**
-     * @param recorded - onesource rerate id
-     * @param related - backoffice rerate id
-     * @return CloudEventBuildRequest build request object
-     */
-    private CloudEventBuildRequest createMatchedRerateRecordRequest(String recorded, String related) {
-        String dataMessage = format(MATCHED_RERATE_MSG, recorded, related);
+    private CloudEventBuildRequest createMatchedRerateRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(MATCHED_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID));
         return createRecordRequest(
-            RERATE_PROPOSAL_MATCHED,
-            format(MATCHED_RERATE, related),
+            recordType,
+            format(MATCHED_RERATE, data.get(TRADE_ID)),
             RERATE,
-            PROCESS_RERATE_PENDING_CONFIRMATION,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
 
-    /**
-     * @param recorded - onesource rerate id
-     * @param related - backoffice rerate tradeId
-     */
-    private CloudEventBuildRequest createMatchedAndPendingApprovalRecordRequest(String recorded, String related) {
-        String dataMessage = format(MATCHED_RERATE_MSG, recorded, related);
+    private CloudEventBuildRequest createMatchedAndPendingApprovalRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(MATCHED_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID));
         return createRecordRequest(
-            RERATE_PROPOSAL_PENDING_APPROVAL,
-            format(MATCHED_RERATE, related),
+            recordType,
+            format(MATCHED_RERATE, data.get(TRADE_ID)),
             RERATE,
-            MATCH_LOAN_RERATE_PROPOSAL,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
 
-    /**
-     * @param recorded - onesource rerate id
-     * @param related - backoffice rerate tradeId
-     */
-    private CloudEventBuildRequest createApprovedRecordRequest(String recorded, String related) {
-        String dataMessage = format(APPROVED_RERATE_MSG, recorded, related);
+    private CloudEventBuildRequest createApprovedRecordRequest(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(APPROVED_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID));
         return createRecordRequest(
-            RERATE_PROPOSAL_APPROVED,
-            format(APPROVED_RERATE, related),
+            recordType,
+            format(APPROVED_RERATE, data.get(TRADE_ID)),
             RERATE,
-            GET_RERATE_APPROVED,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
 
     private CloudEventBuildRequest createAppliedRecordRequest(IntegrationSubProcess subProcess, RecordType recordType,
         Map<String, String> data) {
-        String dataMessage = format(APPLIED_RERATE_MSG, data.get("rerateId"), data.get("tradeId"),
+        String dataMessage = format(APPLIED_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
             data.get("contractId"));
         return createRecordRequest(
             recordType,
-            format(APPLIED_RERATE, data.get("tradeId")),
+            format(APPLIED_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
+    private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
+            data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(APPROVE_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
+    private CloudEventBuildRequest createConfirmRerateExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CONFIRM_EXCEPTION_RERATE_MSG, data.get(TRADE_ID), data.get(RERATE_ID),
+            data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(CONFIRM_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
+    private CloudEventBuildRequest createDeclineRerateExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(DECLINE_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
+            data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(DECLINE_EXCEPTION_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -291,11 +284,11 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createPostHttpExceptionCloudRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(POST_RERATE_EXCEPTION_1SOURCE_MSG, data.get("resourceURI"),
-            data.get("httpStatusText"));
+        String dataMessage = format(POST_RERATE_EXCEPTION_1SOURCE_MSG, data.get(TRADE_ID),
+            data.get(HTTP_STATUS_TEXT));
         return createRecordRequest(
             recordType,
-            format(POST_RERATE_EXCEPTION_1SOURCE, data.get("resourceURI")),
+            format(POST_RERATE_EXCEPTION_1SOURCE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -304,11 +297,11 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createGetHttpExceptionCloudRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(GET_RERATE_EXCEPTION_1SOURCE_MSG, data.get("resourceURI"),
-            data.get("httpStatusText"));
+        String dataMessage = format(GET_RERATE_EXCEPTION_1SOURCE_MSG, data.get(RESOURCE_URI),
+            data.get(HTTP_STATUS_TEXT));
         return createRecordRequest(
             recordType,
-            format(GET_RERATE_EXCEPTION_1SOURCE, data.get("resourceURI")),
+            format(GET_RERATE_EXCEPTION_1SOURCE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -317,10 +310,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createApprovedTechnicalExceptionRecordRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG, data.get("resourceURI"));
+        String dataMessage = format(APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG, data.get(RESOURCE_URI));
         return createRecordRequest(
             recordType,
-            format(APPROVE_TECHNICAL_EXCEPTION_RERATE, data.get("resourceURI")),
+            format(APPROVE_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -329,10 +322,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createAppliedTechnicalExceptionRecordRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG, data.get("resourceURI"));
+        String dataMessage = format(APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG, data.get(RESOURCE_URI));
         return createRecordRequest(
             recordType,
-            format(APPLIED_TECHNICAL_EXCEPTION_RERATE, data.get("resourceURI")),
+            format(APPLIED_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -341,10 +334,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createDecliedRecordRequest(IntegrationSubProcess subProcess, RecordType recordType,
         Map<String, String> data) {
-        String dataMessage = format(DECLIED_RERATE_MSG, data.get("rerateId"));
+        String dataMessage = format(DECLIED_RERATE_MSG, data.get(RERATE_ID));
         return createRecordRequest(
             recordType,
-            format(DECLIED_RERATE, data.get("rerateId")),
+            format(DECLIED_RERATE, data.get(RERATE_ID)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
@@ -353,42 +346,36 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createDeclineTechnicalExceptionRecordRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG, data.get("resourceURI"));
+        String dataMessage = format(DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG, data.get(RESOURCE_URI));
         return createRecordRequest(
             recordType,
-            format(DECLINE_TECHNICAL_EXCEPTION_RERATE, data.get("resourceURI")),
+            format(DECLINE_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
 
-
-    /**
-     * @param recorded - backoffice rerate tradeId
-     */
-    private CloudEventBuildRequest createCreatedRerateRecordRequest(String recorded) {
-        String dataMessage = format(CREATED_RERATE_MSG, recorded);
+    private CloudEventBuildRequest createCreatedRerateRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CREATED_RERATE_MSG, data.get(TRADE_ID));
         return createRecordRequest(
-            RERATE_TRADE_CREATED,
-            format(CREATED_RERATE, recorded),
+            recordType,
+            format(CREATED_RERATE, data.get(TRADE_ID)),
             RERATE,
-            PROCESS_RERATE_PENDING_CONFIRMATION,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }
 
-    /**
-     * @param recorded - onesource rerate id
-     * @return CloudEventBuildRequest build request object
-     */
-    private CloudEventBuildRequest createUnMatchedRerateRecordRequest(String recorded) {
-        String dataMessage = format(UNMATCHED_RERATE_MSG, recorded);
+    private CloudEventBuildRequest createUnMatchedRerateRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(UNMATCHED_RERATE_MSG, data.get(RERATE_ID));
         return createRecordRequest(
-            RERATE_PROPOSAL_UNMATCHED,
-            format(UNMATCHED_RERATE, recorded),
+            recordType,
+            format(UNMATCHED_RERATE, data.get(RERATE_ID)),
             RERATE,
-            MATCH_LOAN_RERATE_PROPOSAL,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
         );
     }

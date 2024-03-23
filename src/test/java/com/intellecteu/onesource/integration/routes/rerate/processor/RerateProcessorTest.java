@@ -38,6 +38,7 @@ import com.intellecteu.onesource.integration.services.reconciliation.RerateRecon
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -55,8 +56,6 @@ class RerateProcessorTest {
     private BackOfficeService lenderBackOfficeService;
     @Mock
     private BackOfficeService borrowerBackOfficeService;
-    @Mock
-    private ContractService contractService;
     @Mock
     private RerateTradeService rerateTradeService;
     @Mock
@@ -76,11 +75,10 @@ class RerateProcessorTest {
     void setUp() {
         openMocks(this);
         CloudEventFactory cloudEventFactory = mock(CloudEventFactory.class);
-        IntegrationCloudEventBuilder cloudEventBuildRequest = mock(IntegrationCloudEventBuilder.class);
+        RerateCloudEventBuilder cloudEventBuildRequest = mock(RerateCloudEventBuilder.class);
         doReturn(cloudEventBuildRequest).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         rerateProcessor = new RerateProcessor(lenderBackOfficeService, borrowerBackOfficeService, oneSourceService,
-            contractService,
             rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
             cloudEventRecordService);
     }

@@ -3,7 +3,6 @@ package com.intellecteu.onesource.integration.routes.rerate.processor;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_APPLIED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPLIED;
@@ -15,6 +14,10 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RESOURCE_URI;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -30,14 +33,13 @@ import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +56,7 @@ public class RerateEventProcessor {
     private final RerateService rerateService;
     private final RerateTradeService rerateTradeService;
     private final CloudEventRecordService cloudEventRecordService;
-    private final IntegrationCloudEventBuilder eventBuilder;
+    private final RerateCloudEventBuilder eventBuilder;
 
     @Autowired
     public RerateEventProcessor(OneSourceService oneSourceService, TradeEventService tradeEventService,
@@ -65,7 +67,7 @@ public class RerateEventProcessor {
         this.rerateService = rerateService;
         this.rerateTradeService = rerateTradeService;
         this.cloudEventRecordService = cloudEventRecordService;
-        this.eventBuilder = cloudEventRecordService.getFactory().eventBuilder(RERATE);
+        this.eventBuilder = (RerateCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RERATE);
     }
 
     public TradeEvent saveEvent(TradeEvent event) {
@@ -89,7 +91,7 @@ public class RerateEventProcessor {
         } catch (HttpStatusCodeException e) {
             log.debug("Rerate {} was not found. Details: {} ", resourceUri, e.getMessage());
             if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-                recordHttpExceptionCloudEvent(POST_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE, resourceUri, e);
+                recordHttpExceptionCloudEvent(GET_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE, resourceUri, e);
             }
         }
         return event;
@@ -183,23 +185,26 @@ public class RerateEventProcessor {
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         String resourceUri, HttpStatusCodeException e) {
         Map<String, String> data = new HashMap<>();
-        data.put("httpStatusText", e.getStatusText());
-        data.put("resourceURI", resourceUri);
+        data.put(HTTP_STATUS_TEXT, e.getStatusText());
+        data.put(RESOURCE_URI, resourceUri);
         var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
             data, List.of());
         cloudEventRecordService.record(recordRequest);
     }
 
     private void recordRerateApprovedCloudEvent(Rerate rerate) {
-        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
-            RERATE_PROPOSAL_APPROVED, String.valueOf(rerate.getMatchingSpireTradeId()));
+        Map<String, String> data = new HashMap<>();
+        data.put(RERATE_ID, rerate.getRerateId());
+        data.put(TRADE_ID, String.valueOf(rerate.getMatchingSpireTradeId()));
+        var recordRequest = eventBuilder.buildRequest(GET_RERATE_APPROVED, RERATE_PROPOSAL_APPROVED,
+            data, List.of());
         cloudEventRecordService.record(recordRequest);
     }
 
     private void recordRerateAppliedCloudEvent(Rerate rerate) {
         var data = new HashMap<String, String>();
-        data.put("rerateId", rerate.getRerateId());
-        data.put("tradeId", String.valueOf(rerate.getMatchingSpireTradeId()));
+        data.put(RERATE_ID, rerate.getRerateId());
+        data.put(TRADE_ID, String.valueOf(rerate.getMatchingSpireTradeId()));
         data.put("contractId", rerate.getContractId());
         var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_APPLIED, RERATE_PROPOSAL_APPLIED, data, List.of());
         cloudEventRecordService.record(recordRequest);
@@ -207,7 +212,7 @@ public class RerateEventProcessor {
 
     private void recordRerateDeclinedCloudEvent(Rerate rerate) {
         var data = new HashMap<String, String>();
-        data.put("rerateId", rerate.getRerateId());
+        data.put(RERATE_ID, rerate.getRerateId());
         var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_DECLINED, RERATE_PROPOSAL_DECLINED, data,
             List.of());
         cloudEventRecordService.record(recordRequest);
