@@ -173,6 +173,7 @@ public class AppConfig {
         var messageConverters = new ArrayList<HttpMessageConverter<?>>();
         var converter = new MappingJackson2HttpMessageConverter();
         converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+        converter.setObjectMapper(objectMapper());
         messageConverters.add(converter);
         return messageConverters;
     }

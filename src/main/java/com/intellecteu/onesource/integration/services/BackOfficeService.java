@@ -13,6 +13,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Re
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
@@ -283,6 +284,33 @@ public class BackOfficeService {
             }
         }
         return List.of();
+    }
+
+    public List<Position> retrieveUpdatedOpenedPositions(List<Position> capturedPositions) {
+        NQueryRequest nQueryRequest = buildRetrieveOpenedPositionsRequest(capturedPositions);
+        final ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
+            .getPositions(nQueryRequest);
+        if (responseHasData(response)) {
+            List<PositionOutDTO> updatedPositions = response.getBody().getData().getBeans();
+            return updatedPositions.stream().map(backOfficeMapper::toModel).toList();
+        }
+        return List.of();
+    }
+
+    private NQueryRequest buildRetrieveOpenedPositionsRequest(List<Position> positionList) {
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
+            .tuples(createTuplesGetOpenedPositions(positionList));
+        return new NQueryRequest().nQuery(nQuery);
+    }
+
+    private List<NQueryTuple> createTuplesGetOpenedPositions(List<Position> positionList) {
+        String idListSequence = positionList.stream()
+            .map(position -> String.valueOf(position.getPositionId()))
+            .collect(Collectors.joining(","));
+        return List.of(
+            buildTuple(POSITION_ID, IN, idListSequence),
+            buildTuple(STATUS, EQUALS, OPEN.name())
+        );
     }
 
     public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeId) {

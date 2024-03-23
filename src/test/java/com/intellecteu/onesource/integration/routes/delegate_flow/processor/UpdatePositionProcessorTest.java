@@ -268,7 +268,7 @@ class UpdatePositionProcessorTest {
         var argumentCaptor = ArgumentCaptor.forClass(CloudEventBuildRequest.class);
 
         String expectedCapturedMessage = """
-            “The position 33 has been canceled and the cancellation of \
+            The position 33 has been canceled and the cancellation of \
             the 1Source loan contract proposal 1111-2222-3333-4444 generated \
             from this position has been instructed to 1Source""";
 

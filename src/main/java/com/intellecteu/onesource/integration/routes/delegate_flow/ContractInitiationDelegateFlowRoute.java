@@ -115,7 +115,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                         .bean(positionProcessor, "matchContractProposalAsBorrower")
                 .endChoice()
             .end()
-            .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process"
+            .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process "
                 + "with expected processing statuses: Contract[MATCHED]")
         .end();
 
@@ -202,6 +202,15 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("<<< Finished GET_LOAN_CONTRACT_DECLINED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[DECLINED]")
         .end();
+
+        from(String.format("timer://eventTimer?period=%d", updateTimer))
+            .routeId("UpdateLoanContractSettlementStatus")
+            .log(">>> Started UPDATE_LOAN_CONTRACT_SETTL_STATUS process.")
+            .bean(positionProcessor, "getAllByPositionStatus(FUTURE)")
+            .bean(positionProcessor, "updateCapturedPositions")
+            .log("Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
+                + "with expected processing statuses: Contract_Settlement[SETTLED]")
+            .end();
     }
 
     private String buildGetDeclineInstructionsQuery() {

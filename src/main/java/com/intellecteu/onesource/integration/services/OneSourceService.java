@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.model.onesource.FixedRate.FI
 
 import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
@@ -12,6 +13,8 @@ import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
+import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.client.onesource.ContractsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
@@ -28,6 +31,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Ledge
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -163,5 +167,14 @@ public class OneSourceService {
         log.debug("Sending request to decline a loan contract proposal with id = {}.", contract.getContractId());
         contractsApi.ledgerContractsContractIdDeclinePost(contract.getContractId());
         return true;
+    }
+
+    public void instructUpdateSettlementStatus(Position position, SettlementStatus settlementStatus) {
+        String contractId = position.getMatching1SourceLoanContractId();
+        log.debug("Sending request to update contract={} with settlement status={}.",
+            contractId, settlementStatus.name());
+        SettlementStatusUpdate settlementStatusUpdate = new SettlementStatusUpdate(settlementStatus);
+        final SettlementStatusUpdateDTO requestDto = oneSourceMapper.toRequestDto(settlementStatusUpdate);
+        contractsApi.ledgerContractsContractIdPatch(contractId, requestDto);
     }
 }

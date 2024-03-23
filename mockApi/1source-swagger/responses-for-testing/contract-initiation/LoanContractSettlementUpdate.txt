@@ -1,0 +1,318 @@
+Prepared local migration data: V2024.03.23.10.00__EINT23-457_contract_settlement_update.sql
+
+1. Insert to the database test position and required data for this position:
+    - position status should be 'FUTURE'
+
+2. Configure mock response for POST endpoint to '/trades/search/position/query'
+    - should return position status 'OPEN'
+
+{
+    "data": {
+        "beans": [
+            {
+				"__qualifiedName": "1",
+				"accountDTO": {
+					"__qualifiedName": "string",
+					"accountId": 35,
+					"dtc": 1,
+					"lei": "35",
+					"oneSourceId": 35,
+					"shortName": "lender_acc"
+				},
+				"accountId": 7373,
+				"amount": 17935.5,
+				"collateralTypeDTO": {
+					"__qualifiedName": "string",
+					"categoryId": 0,
+					"collateralType": "CASH",
+					"collateralTypeId": 0,
+					"extCollateralType": "string",
+					"minRatingValue": 0,
+					"profileNo": "string",
+					"statusId": 0,
+					"tripartyAgentCode": "string"
+				},
+				"contractValue": 17935.5,
+				"counterPartyDTO": {
+					"__qualifiedName": "string",
+					"accountId": 2828,
+					"dtc": 2,
+					"lei": "35",
+					"oneSourceId": 46,
+					"shortName": "borrower_acc"
+				},
+				"currencyDTO": {
+					"basisId": 0,
+					"bojCurrencyCode": 102,
+					"countryId": 0,
+					"currencyId": 51,
+					"currencyKy": "USD",
+					"currencyName": "US Dollar",
+					"currencySymbol": "$"
+				},
+				"customValue2": "35",
+				"depoId": 0,
+				"endDate": "2023-10-25T13:50:41.633Z",
+				"exposureDTO": {
+					"__qualifiedName": "string",
+					"accountId": 35,
+					"counterpartyId": 46,
+					"cpHaircut": 1.02,
+					"cpMarkRoundTo": 0,
+					"currencyId": 0,
+					"depoId": 0,
+					"exposureId": 1111,
+					"initMarkRoundTo": 0,
+					"positionTypeId": 50,
+					"xpHaircut": 0
+				},
+				"exposureId": 0,
+				"indexDTO": {
+					"__qualifiedName": "string",
+					"indexId": 0,
+					"indexName": "string",
+					"isActive": true,
+					"lookBack": 0,
+					"parentIndexId": 0,
+					"spread": 0
+				},
+				"indexId": 0,
+				"loanBorrowDTO": {
+					"__qualifiedName": "string",
+					"allInRate": 0,
+					"collateralCalendarId": 0,
+					"collateralIndexId": 0,
+					"collateralLookback": 0,
+					"collateralRate": 0,
+					"collateralSpread": 0,
+					"currentAllInRate": 0,
+					"currentTaxWithholdingRate": 0,
+					"dividend": 0,
+					"dividendCurrencyId": 0,
+					"endDate": "2023-10-25T13:50:41.633Z",
+					"positionId": 9999,
+					"startDate": "2023-10-25T13:50:41.633Z",
+					"taxWithholdingRate": 85
+				},
+				"positionId": 7373,
+				"positionRef": "string",
+				"positionTypeId": 0,
+				"positiontypeDTO": {
+					"positionType": "CASH LOAN",
+					"positionTypeId": 0
+				},
+				"price": 119.57,
+				"quantity": 15000,
+				"rate": 0.05,
+				"securityDetailDTO": {
+					"__qualifiedName": "string",
+					"baseFeeRate": 0,
+					"bloombergId": "string",
+					"cusip": "023135106",
+					"factor": 0,
+					"fxRate": 0,
+					"isin": "US0231351067",
+					"issueDate": "2023-10-25T13:50:41.633Z",
+					"lastAccrualDate": "2023-10-25T13:50:41.633Z",
+					"lastModTs": "2023-10-25T13:50:41.633Z",
+					"price": 0,
+					"priceDTO": {
+						"__qualifiedName": "string",
+						"askPrice": 0,
+						"bidPrice": 0,
+						"cleanPrice": 0,
+						"comments": "string",
+						"defaultPrice": 0,
+						"dirtyPrice": 0,
+						"id": {
+							"__qualifiedName": "string",
+							"currencyId": 0,
+							"priceDate": "2023-10-25T13:50:41.633Z",
+							"refId": 0,
+							"securityId": 0
+						},
+						"isDirty": 0,
+						"lastModTs": "2023-10-25T13:50:41.633Z",
+						"lastModUserId": 0,
+						"lastPrice": 0,
+						"price": 0
+					},
+					"priceFactor": 0,
+					"quickCode": "457",
+					"rate": 0,
+					"securityId": 314937,
+					"sedol": "2000019",
+					"spread": 0,
+					"ticker": "222"
+				},
+				"securityId": 1,
+				"seqNo": "string",
+				"settleDate": "2023-10-25T13:50:41.633Z",
+				"settledQuantity": 0,
+				"shellCusip": "string",
+				"spread": 0,
+				"statusDTO": {
+					"__qualifiedName": "string",
+					"status": "OPEN",
+					"statusId": 0
+				},
+				"targetPrice": 0,
+				"termId": 0,
+				"tradeDate": "2023-10-25T13:50:41.633Z"
+
+            },
+            {
+				"__qualifiedName": "2",
+				"accountDTO": {
+					"__qualifiedName": "string",
+					"accountId": 4141,
+					"dtc": 1,
+					"lei": "4141",
+					"oneSourceId": 4141,
+					"shortName": "lender_acc"
+				},
+				"accountId": 4141,
+				"amount": 17935.5,
+				"collateralTypeDTO": {
+					"__qualifiedName": "string",
+					"categoryId": 0,
+					"collateralType": "CASH",
+					"collateralTypeId": 0,
+					"extCollateralType": "string",
+					"minRatingValue": 0,
+					"profileNo": "string",
+					"statusId": 0,
+					"tripartyAgentCode": "string"
+				},
+				"contractValue": 17935.5,
+				"counterPartyDTO": {
+					"__qualifiedName": "string",
+					"accountId": 1212,
+					"dtc": 2,
+					"lei": "35",
+					"oneSourceId": 1212,
+					"shortName": "borrower_acc"
+				},
+				"currencyDTO": {
+					"basisId": 0,
+					"bojCurrencyCode": 102,
+					"countryId": 0,
+					"currencyId": 51,
+					"currencyKy": "USD",
+					"currencyName": "US Dollar",
+					"currencySymbol": "$"
+				},
+				"customValue2": "35",
+				"depoId": 0,
+				"endDate": "2023-10-25T13:50:41.633Z",
+				"exposureDTO": {
+					"__qualifiedName": "string",
+					"accountId": 35,
+					"counterpartyId": 46,
+					"cpHaircut": 1.02,
+					"cpMarkRoundTo": 0,
+					"currencyId": 0,
+					"depoId": 0,
+					"exposureId": 1111,
+					"initMarkRoundTo": 0,
+					"positionTypeId": 50,
+					"xpHaircut": 0
+				},
+				"exposureId": 0,
+				"indexDTO": {
+					"__qualifiedName": "string",
+					"indexId": 0,
+					"indexName": "string",
+					"isActive": true,
+					"lookBack": 0,
+					"parentIndexId": 0,
+					"spread": 0
+				},
+				"indexId": 0,
+				"loanBorrowDTO": {
+					"__qualifiedName": "string",
+					"allInRate": 0,
+					"collateralCalendarId": 0,
+					"collateralIndexId": 0,
+					"collateralLookback": 0,
+					"collateralRate": 0,
+					"collateralSpread": 0,
+					"currentAllInRate": 0,
+					"currentTaxWithholdingRate": 0,
+					"dividend": 0,
+					"dividendCurrencyId": 0,
+					"endDate": "2023-10-25T13:50:41.633Z",
+					"positionId": 9999,
+					"startDate": "2023-10-25T13:50:41.633Z",
+					"taxWithholdingRate": 85
+				},
+				"positionId": 4141,
+				"positionRef": "string",
+				"positionTypeId": 0,
+				"positiontypeDTO": {
+					"positionType": "CASH LOAN",
+					"positionTypeId": 0
+				},
+				"price": 119.57,
+				"quantity": 15000,
+				"rate": 0.05,
+				"securityDetailDTO": {
+					"__qualifiedName": "string",
+					"baseFeeRate": 0,
+					"bloombergId": "string",
+					"cusip": "023135106",
+					"factor": 0,
+					"fxRate": 0,
+					"isin": "US0231351067",
+					"issueDate": "2023-10-25T13:50:41.633Z",
+					"lastAccrualDate": "2023-10-25T13:50:41.633Z",
+					"lastModTs": "2023-10-25T13:50:41.633Z",
+					"price": 0,
+					"priceDTO": {
+						"__qualifiedName": "string",
+						"askPrice": 0,
+						"bidPrice": 0,
+						"cleanPrice": 0,
+						"comments": "string",
+						"defaultPrice": 0,
+						"dirtyPrice": 0,
+						"id": {
+							"__qualifiedName": "string",
+							"currencyId": 0,
+							"priceDate": "2023-10-25T13:50:41.633Z",
+							"refId": 0,
+							"securityId": 0
+						},
+						"isDirty": 0,
+						"lastModTs": "2023-10-25T13:50:41.633Z",
+						"lastModUserId": 0,
+						"lastPrice": 0,
+						"price": 0
+					},
+					"priceFactor": 0,
+					"quickCode": "457",
+					"rate": 0,
+					"securityId": 314937,
+					"sedol": "2000019",
+					"spread": 0,
+					"ticker": "222"
+				},
+				"securityId": 1,
+				"seqNo": "string",
+				"settleDate": "2023-10-25T13:50:41.633Z",
+				"settledQuantity": 0,
+				"shellCusip": "string",
+				"spread": 0,
+				"statusDTO": {
+					"__qualifiedName": "string",
+					"status": "OPEN",
+					"statusId": 0
+				},
+				"targetPrice": 0,
+				"termId": 0,
+				"tradeDate": "2023-10-25T13:50:41.633Z"
+            }
+        ],
+        "totalRows": 2
+    }
+}
