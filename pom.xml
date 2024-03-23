@@ -433,7 +433,7 @@
                 <configuration>
                     <language>java</language>
                     <library>resttemplate</library>
-                    <inputSpec>src/main/resources/static/toolkit_openapi.yaml</inputSpec>
+                    <inputSpec>mockApi/1source-swagger/1source-ledger-api-1.0.4-openapi3.json</inputSpec>
                     <output>${project.build.directory}/generated-sources/swagger</output>
                     <modelPackage>${project.groupId}.onesource.integration.services.client.onesource.dto</modelPackage>
                     <modelNameSuffix>DTO</modelNameSuffix>
