@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
@@ -168,11 +169,21 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
             .filter(body().isNotNull())
             .bean(positionProcessor, "updateProcessingStatus(${body}, PROPOSAL_APPROVED)")
-            .bean(positionProcessor, "savePosition")
             .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_LOAN_CONTRACT_APPROVED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[APPROVED], Position[PROPOSAL_APPROVED]")
+        .end();
+
+        from(buildGetPositionByStatusQuery(PROPOSAL_APPROVED))
+            .routeId("PostPositionUpdate")
+            .log(">>> Started POST_POSITION_UPDATE subprocess")
+            .bean(backOfficeMapper, "toModel")
+            .setHeader("position", body())
+            .bean(positionProcessor, "instructUpdatePosition")
+            .filter(simple("${body} == true"))
+                .bean(positionProcessor, "updateProcessingStatus(${header.position}, CONFIRMED)")
+            .log("<<< Finished POST_POSITION_UPDATE subprocess with expected processing statuses: Position[CONFIRMED]")
         .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_DECLINED))

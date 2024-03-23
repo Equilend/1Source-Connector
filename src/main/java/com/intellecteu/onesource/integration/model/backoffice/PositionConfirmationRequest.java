@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.model.backoffice;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,14 +16,13 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PositionAccount {
+public class PositionConfirmationRequest {
 
-    @JsonIgnore
-    private Long id;
-    private Long accountId;
-    private String shortName;
-    private String lei;
-    private Long oneSourceId;
-    private Long dtc;
+    private Integer userId;
+    private String userName;
+    private Long positionId;
+    private Long tradeId;
+    private String ledgerId;
+    private PositionInstruction instructions;
 
 }

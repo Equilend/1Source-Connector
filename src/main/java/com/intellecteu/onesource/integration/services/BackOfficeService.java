@@ -38,6 +38,7 @@ import com.intellecteu.onesource.integration.exception.PositionRetrievementExcep
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -56,6 +57,7 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.NQuery;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum;
+import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SGroupTradeOutDTO;
@@ -124,6 +126,12 @@ public class BackOfficeService {
             }
         }
         return List.of();
+    }
+
+    public void instructUpdatePosition(PositionConfirmationRequest confirmationRequest) {
+        final OneSourceConfimationDTO confirmationDto = backOfficeMapper.toRequestDto(confirmationRequest);
+        log.debug("Sending confirmation request to SPIRE for position: {} ", confirmationRequest.getPositionId());
+        tradeSpireApiClient.confirmAndBatchPendingPositionsUsingPOST(null, confirmationDto);
     }
 
     public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {

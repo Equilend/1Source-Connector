@@ -83,7 +83,6 @@ public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
         from("direct:fetchSettlementInstruction")
                 .bean(positionProcessor, "fetchSettlementInstruction")
                 .bean(positionProcessor, "updateProcessingStatus(${body}, SI_FETCHED)")
-                .bean(positionProcessor, "savePosition")
                 .log("Finished step 3 for position with id ${body.positionId}")
                 .to("direct:reconcileWithAgreement");
 
@@ -93,7 +92,6 @@ public class ContractInitiationWithoutTradeRouteObsolete extends RouteBuilder {
                 .bean(positionProcessor, "reconcileWithAgreement")
                 //possible statuses in body: SI_FETCHED, TRADE_RECONCILED, TRADE_DISCREPANCIES
                 .bean(positionProcessor, "updateProcessingStatus(${header.position}, ${body})")
-                .bean(positionProcessor, "savePosition")
                 .log("Finished step 4 for position with id ${body.positionId}")
                 .to("direct:instructLoanContractProposal");
 

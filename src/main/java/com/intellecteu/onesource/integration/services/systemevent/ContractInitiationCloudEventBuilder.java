@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CANCEL_LOAN_PROPOSAL_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONFIRM_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_CANCEL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_CREATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MATCHED_MSG;
@@ -42,6 +43,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.CONFIRM_POSITION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.DECLINE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_AGREEMENT_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT;
@@ -152,6 +154,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         IntegrationSubProcess subProcess, String related) {
         return switch (subProcess) {
             case GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION -> getCpSI(record, exception, subProcess, related);
+            case CONFIRM_POSITION -> confirmPositionExceptionEventRequest(record, exception, subProcess, related);
             case GET_TRADE_AGREEMENT -> tradeAgreementExceptionRequest(exception, record, related);
             case GET_NEW_POSITIONS_PENDING_CONFIRMATION -> newPositionsPendingConfirmationExceptionEvent(exception);
             case GET_UPDATED_POSITIONS_PENDING_CONFIRMATION ->
@@ -240,6 +243,18 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         return createRecordRequest(
             TECHNICAL_EXCEPTION_SPIRE,
             format(GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT, related),
+            CONTRACT_INITIATION,
+            subProcess,
+            createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related)));
+    }
+
+    private CloudEventBuildRequest confirmPositionExceptionEventRequest(String recorded,
+        HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related) {
+        String dataMessage = format(CONFIRM_POSITION_MSG, related, recorded, exception.getStatusText());
+        return createRecordRequest(
+            TECHNICAL_EXCEPTION_SPIRE,
+            format(CONFIRM_POSITION_SUBJECT, related),
             CONTRACT_INITIATION,
             subProcess,
             createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related)));

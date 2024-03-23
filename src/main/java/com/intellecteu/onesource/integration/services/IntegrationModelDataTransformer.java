@@ -11,6 +11,9 @@ import static com.intellecteu.onesource.integration.model.onesource.TermType.TER
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
+import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
+import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
@@ -66,6 +69,32 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         return ContractProposalApproval.builder()
             .internalRefId(String.valueOf(position.getPositionId()))
             .settlement(buildBorrowSettlementFromPosition(position))
+            .build();
+    }
+
+    @Override
+    public PositionConfirmationRequest toPositionConfirmationRequest(Position position) {
+        return PositionConfirmationRequest.builder()
+            .userName("1Source")
+            .positionId(position.getPositionId())
+            .tradeId(position.getTradeId())
+            .ledgerId(position.getMatching1SourceLoanContractId())
+            .instructions(buildPositionInstructions(position))
+            .build();
+    }
+
+    private PositionInstruction buildPositionInstructions(Position position) {
+        return PositionInstruction.builder()
+            .account(buildPositionAccount(position.getPositionAccount()))
+            .build();
+    }
+
+    private PositionAccount buildPositionAccount(PositionAccount positionAccount) {
+        if (positionAccount == null) {
+            return null;
+        }
+        return PositionAccount.builder()
+            .dtc(positionAccount.getDtc())
             .build();
     }
 
