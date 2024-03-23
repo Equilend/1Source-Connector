@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 
@@ -210,7 +211,18 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(positionProcessor, "updateCapturedPositions")
             .log("Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
                 + "with expected processing statuses: Contract_Settlement[SETTLED]")
-            .end();
+        .end();
+
+        from(buildGetNotProcessedTradeEventQuery(CONTRACT_OPENED))
+            .routeId("CaptureLoanContractSettled")
+            .log(">>> Started GET_LOAN_CONTRACT_SETTLED subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(contractProcessor, "updateSettledContract")
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished GET_LOAN_CONTRACT_SETTLED subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Contract[SETTLED]")
+        .end();
     }
 
     private String buildGetDeclineInstructionsQuery() {

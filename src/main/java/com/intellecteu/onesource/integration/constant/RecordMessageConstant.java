@@ -43,6 +43,7 @@ public class RecordMessageConstant {
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT = "1Source Contract - %s";
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT = "1Source Contract - %s";
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
             public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
             public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
@@ -222,8 +223,12 @@ public class RecordMessageConstant {
             public static final String CAPTURE_POSITION_SETTLEMENT_EXCEPTION_MSG = """
                 Settled positions cannot be captured from SPIRE for the following reason: %s""";
 
+            public static final String GET_LOAN_CONTRACT_SETTLED_ISSUE_MSG = """
+                The loan contract pending settlement %s has been marked as settled in 1Source \
+                but the loan contract pending settlement has not been retrieved in the Integration toolkit.""";
+
             public static final String LOAN_CONTRACT_SETTLED_MSG = """
-                The 1Source loan contract: %s has been updated as settled.""";
+                The 1Source loan contract %s related to the position %s has been updated as settled.""";
 
             public static final String POSITION_SETTLED_SUBMITTED_MSG = """
                 The position %s related to 1Source loan contract %s is settled.""";
