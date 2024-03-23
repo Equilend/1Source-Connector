@@ -13,18 +13,16 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 
 /**
  * SResponse
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
 public class SResponse {
   @JsonProperty("data")
   private Object data = null;
@@ -43,7 +41,7 @@ public class SResponse {
    */
   public enum StatusEnum {
     ERROR("ERROR"),
-
+    
     SUCCESS("SUCCESS");
 
     private String value;
@@ -215,7 +213,7 @@ public class SResponse {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class SResponse {\n");
-
+    
     sb.append("    data: ").append(toIndentedString(data)).append("\n");
     sb.append("    errCode: ").append(toIndentedString(errCode)).append("\n");
     sb.append("    error: ").append(toIndentedString(error)).append("\n");

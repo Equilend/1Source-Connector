@@ -13,25 +13,17 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositionlimitusedDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.ReverseRepoDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeEvent;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * ReverseRepoTradeInputDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
 public class ReverseRepoTradeInputDTO {
   @JsonProperty("accrualAmount")
   private Double accrualAmount = null;
@@ -147,6 +139,9 @@ public class ReverseRepoTradeInputDTO {
   @JsonProperty("skipMinSpreadCheck")
   private Boolean skipMinSpreadCheck = null;
 
+  @JsonProperty("skipOneSource")
+  private Boolean skipOneSource = null;
+
   @JsonProperty("skipSecChillCheck")
   private Boolean skipSecChillCheck = null;
 
@@ -219,10 +214,10 @@ public class ReverseRepoTradeInputDTO {
   }
 
    /**
-   * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan,  &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold,  &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold,  &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold Qty,  &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
+   * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan, &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold, &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold, &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold Qty, &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
    * @return action
   **/
-  @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty")
+  @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty")
   public String getAction() {
     return action;
   }
@@ -885,6 +880,24 @@ public class ReverseRepoTradeInputDTO {
     this.skipMinSpreadCheck = skipMinSpreadCheck;
   }
 
+  public ReverseRepoTradeInputDTO skipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+    return this;
+  }
+
+   /**
+   * Get skipOneSource
+   * @return skipOneSource
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSkipOneSource() {
+    return skipOneSource;
+  }
+
+  public void setSkipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+  }
+
   public ReverseRepoTradeInputDTO skipSecChillCheck(Boolean skipSecChillCheck) {
     this.skipSecChillCheck = skipSecChillCheck;
     return this;
@@ -1113,6 +1126,7 @@ public class ReverseRepoTradeInputDTO {
         Objects.equals(this.skipInventoryCheckAndUpdate, reverseRepoTradeInputDTO.skipInventoryCheckAndUpdate) &&
         Objects.equals(this.skipLimitCheckAndUpdate, reverseRepoTradeInputDTO.skipLimitCheckAndUpdate) &&
         Objects.equals(this.skipMinSpreadCheck, reverseRepoTradeInputDTO.skipMinSpreadCheck) &&
+        Objects.equals(this.skipOneSource, reverseRepoTradeInputDTO.skipOneSource) &&
         Objects.equals(this.skipSecChillCheck, reverseRepoTradeInputDTO.skipSecChillCheck) &&
         Objects.equals(this.source, reverseRepoTradeInputDTO.source) &&
         Objects.equals(this.startDate, reverseRepoTradeInputDTO.startDate) &&
@@ -1127,7 +1141,7 @@ public class ReverseRepoTradeInputDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice, asOfEndDate, asOfStartDate, autoRecall, autoReturn, avpoPostId, byPassLimits, bypassRTI, cancelFail, cancelMarks, chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade, doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef, includeCouponInterest, msgId, orderId, originalTrade, position, positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipMinSpreadCheck, skipSecChillCheck, source, startDate, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
+    return Objects.hash(accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice, asOfEndDate, asOfStartDate, autoRecall, autoReturn, avpoPostId, byPassLimits, bypassRTI, cancelFail, cancelMarks, chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade, doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef, includeCouponInterest, msgId, orderId, originalTrade, position, positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipMinSpreadCheck, skipOneSource, skipSecChillCheck, source, startDate, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
   }
 
 
@@ -1174,6 +1188,7 @@ public class ReverseRepoTradeInputDTO {
     sb.append("    skipInventoryCheckAndUpdate: ").append(toIndentedString(skipInventoryCheckAndUpdate)).append("\n");
     sb.append("    skipLimitCheckAndUpdate: ").append(toIndentedString(skipLimitCheckAndUpdate)).append("\n");
     sb.append("    skipMinSpreadCheck: ").append(toIndentedString(skipMinSpreadCheck)).append("\n");
+    sb.append("    skipOneSource: ").append(toIndentedString(skipOneSource)).append("\n");
     sb.append("    skipSecChillCheck: ").append(toIndentedString(skipSecChillCheck)).append("\n");
     sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");

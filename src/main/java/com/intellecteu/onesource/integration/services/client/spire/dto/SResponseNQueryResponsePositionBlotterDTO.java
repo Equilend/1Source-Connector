@@ -13,19 +13,16 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryResponsePositionBlotterDTO;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.Objects;
 
 /**
  * SResponseNQueryResponsePositionBlotterDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
 public class SResponseNQueryResponsePositionBlotterDTO {
   @JsonProperty("data")
   private NQueryResponsePositionBlotterDTO data = null;

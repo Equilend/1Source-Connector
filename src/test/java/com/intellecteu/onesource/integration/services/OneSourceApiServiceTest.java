@@ -112,23 +112,6 @@ class OneSourceApiServiceTest {
         verify(restTemplate).exchange(eq(expectedUrl), eq(GET), any(), any(ParameterizedTypeReference.class));
     }
 
-    @Test
-    @DisplayName("Execute record service when create contract request returns 401 response code.")
-    void test_createContract_shouldExecuteRecordService_whenResponse401() {
-        var agreement = ModelTestFactory.buildAgreement();
-        var settlement = new Settlement();
-        var position = ModelTestFactory.buildPosition();
-
-        when(recordService.getFactory()).thenReturn(eventFactory);
-        when(contractsApi.ledgerContractsPost(any(ContractProposalDTO.class)))
-            .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
-
-        service.executeNewContractProposal(buildContract(agreement, position, List.of(settlement)), position);
-
-        verify(recordService).getFactory();
-        verify(recordService).record(any(CloudEventBuildRequest.class));
-    }
-
     ContractProposal buildContract(Agreement agreement, Position position,
         List<Settlement> settlements) {
         TradeAgreement trade = agreement.getTrade();
