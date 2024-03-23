@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
+import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
@@ -35,6 +36,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Party
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
 import org.mapstruct.Mapper;
@@ -149,6 +151,8 @@ public abstract class OneSourceMapper {
         }
         return null;
     }
+
+    public abstract SettlementStatusUpdateDTO toRequestDto(SettlementStatusUpdate feeRate);
 
     public abstract PartySettlementInstructionDTO toRequestDto(Settlement settlement);
 

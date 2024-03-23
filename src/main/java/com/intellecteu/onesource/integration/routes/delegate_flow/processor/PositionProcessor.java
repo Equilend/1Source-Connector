@@ -1,12 +1,18 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SETTLED_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
@@ -31,6 +37,7 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
+import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
@@ -42,15 +49,20 @@ import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 
 @Slf4j
 @Service
@@ -85,6 +97,60 @@ public class PositionProcessor {
 
     public Position findByPositionId(Long positionId) {
         return positionService.getByPositionId(positionId).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Position> getAllByPositionStatus(String status) {
+        return positionService.getAllByPositionStatus(status);
+    }
+
+    @Transactional
+    public void updateCapturedPositions(List<Position> persistedPositions) {
+        final List<Position> updatedPositions = requestUpdatesFromBackoffice(persistedPositions);
+        if (CollectionUtils.isNotEmpty(updatedPositions)) {
+            Set<Long> updatedIds = updatedPositions.stream().map(Position::getPositionId).collect(Collectors.toSet());
+            persistedPositions.stream()
+                .filter(persistedPosition -> updatedIds.contains(persistedPosition.getPositionId()))
+                .map(this::updateToSettled)
+                .forEach(position -> {
+                    if (instructUpdateLoanContractSettlementStatus(position, SettlementStatus.SETTLED)) {
+                        createContractSettlementCloudEvent(position.getMatching1SourceLoanContractId(),
+                            POSITION_SETTLED_SUBMITTED, String.valueOf(position.getPositionId()));
+                    }
+                });
+        }
+    }
+
+    private Position updateToSettled(Position position) {
+        position.getPositionStatus().setStatus(OPEN.name());
+        position.setProcessingStatus(SETTLED);
+        return savePosition(position);
+    }
+
+    public boolean instructUpdateLoanContractSettlementStatus(Position position, SettlementStatus settlementStatus) {
+        try {
+            oneSourceService.instructUpdateSettlementStatus(position, settlementStatus);
+            return true;
+        } catch (HttpStatusCodeException e) {
+            log.debug("Exception on instruct update loan contract settlement status. Details: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    private List<Position> requestUpdatesFromBackoffice(List<Position> capturedPositions) {
+        try {
+            return backOfficeService.retrieveUpdatedOpenedPositions(capturedPositions);
+        } catch (RestClientException e) {
+            if (e instanceof HttpStatusCodeException exception) {
+                final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(statusCode)) {
+                    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
+                    var recordRequest = eventBuilder.buildExceptionRequest(exception, CAPTURE_POSITION_SETTLEMENT);
+                    cloudEventRecordService.record(recordRequest);
+                }
+            }
+            return List.of();
+        }
     }
 
     public Position matchTradeAgreement(Position position) {
@@ -168,7 +234,7 @@ public class PositionProcessor {
 
     private void updatePosition(Contract contract, Position position) {
         position.setMatching1SourceLoanContractId(contract.getContractId());
-        positionService.savePosition(position);
+        savePosition(position);
     }
 
     public Position fetchSettlementInstruction(Position position) {
@@ -268,7 +334,15 @@ public class PositionProcessor {
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        createCloudEvent(recordData, recordType, relatedData, IntegrationProcess.CONTRACT_INITIATION);
+    }
+
+    private void createContractSettlementCloudEvent(String recordData, RecordType recordType, String relatedData) {
+        createCloudEvent(recordData, recordType, relatedData, IntegrationProcess.CONTRACT_SETTLEMENT);
+    }
+
+    private void createCloudEvent(String recordData, RecordType recordType, String relatedData, IntegrationProcess iP) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(iP);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
     }

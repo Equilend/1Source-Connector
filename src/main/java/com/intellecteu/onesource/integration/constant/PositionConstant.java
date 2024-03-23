@@ -50,6 +50,7 @@ public class PositionConstant {
         public static final String RERATE_BORROW = "Rerate Borrow";
         public static final String ROLL_BORROW = "Roll Borrow";
         public static final String ROLL_LOAN = "Roll Loan";
+        public static final String STATUS = "Status";
         public static final String TRADE_ID = "tradeId";
         public static final String TRADE_STATUS = "status";
         public static final String TRADE_TYPE = "tradeType";

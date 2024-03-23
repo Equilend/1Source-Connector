@@ -109,7 +109,7 @@ public class RecordMessageConstant {
                 from 1Source for the following reason: %s""";
 
             public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_MSG = """
-                “The loan contract proposal %s has been matched with a SPIRE position: %s \
+                The loan contract proposal %s has been matched with a SPIRE position: %s \
                 and needs now to be approved by the counterparty.""";
 
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVE_MSG = """
@@ -173,19 +173,19 @@ public class RecordMessageConstant {
                 The position %s has been canceled""";
 
             public static final String POSITION_CANCELED_SUBMITTED_MSG = """
-                “The position %s has been canceled and the cancellation of \
+                The position %s has been canceled and the cancellation of \
                 the 1Source loan contract proposal %s generated \
                 from this position has been instructed to 1Source""";
 
             public static final String POSITION_SUBMITTED_MSG = """
-                “A loan contract proposal has been generated from the position %s and posted to 1Source""";
+                A loan contract proposal has been generated from the position %s and posted to 1Source""";
 
             public static final String POSITION_UNMATCHED_MSG = """
                 A new position %s has been created \
                 but not yet matched with a loan contract proposal.""";
 
             public static final String POSITION_UPDATE_SUBMITTED_MSG = """
-                “A loan contract proposal has been generated from the updated position %s and posted to 1Source""";
+                A loan contract proposal has been generated from the updated position %s and posted to 1Source""";
 
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_MSG = """
                 The loan contract proposal %s has been declined in 1Source but the loan contract proposal \
@@ -210,16 +210,23 @@ public class RecordMessageConstant {
 
         public static class Subject {
 
-            public static final String LOAN_CONTRACT_SETTLED = "Position - %s";
-
+            public static final String CAPTURE_POSITION_SETTLEMENT_EXCEPTION_SPIRE = "Capture of settled positions - %s";
             public static final String GET_POSITION_SETTLEMENT_EXCEPTION_SPIRE = "Position - %s";
+            public static final String LOAN_CONTRACT_SETTLED = "Position - %s";
+            public static final String POSITION_SETTLED_SUBMITTED_SUBJECT = "Position - %s";
             public static final String POST_LOAN_CONTRACT_UPDATE_EXCEPTION = "Position - %s";
         }
 
         public static class DataMsg {
 
+            public static final String CAPTURE_POSITION_SETTLEMENT_EXCEPTION_MSG = """
+                Settled positions cannot be captured from SPIRE for the following reason: %s""";
+
             public static final String LOAN_CONTRACT_SETTLED_MSG = """
                 The 1Source loan contract: %s has been updated as settled.""";
+
+            public static final String POSITION_SETTLED_SUBMITTED_MSG = """
+                The position %s related to 1Source loan contract %s is settled.""";
 
             public static final String POST_LOAN_CONTRACT_UPDATE_EXCEPTION_MSG = """
                 The settlement status of the loan contract: %s (SPIRE position: %s) \

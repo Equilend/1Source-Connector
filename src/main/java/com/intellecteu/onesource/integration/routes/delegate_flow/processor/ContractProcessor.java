@@ -102,7 +102,6 @@ public class ContractProcessor {
             .orElse(null);
     }
 
-
     private Contract declineContract(Contract contract) {
         if (contract.getMatchingSpirePositionId() != null) {
             removeMatchingContractFromPosition(contract.getMatchingSpirePositionId());
@@ -369,7 +368,15 @@ public class ContractProcessor {
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+        createCloudEvent(recordData, recordType, relatedData, IntegrationProcess.CONTRACT_INITIATION);
+    }
+
+    private void createContractSettlementCloudEvent(String recordData, RecordType recordType, String relatedData) {
+        createCloudEvent(recordData, recordType, relatedData, IntegrationProcess.CONTRACT_SETTLEMENT);
+    }
+
+    private void createCloudEvent(String recordData, RecordType recordType, String relatedData, IntegrationProcess ip) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(ip);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
     }

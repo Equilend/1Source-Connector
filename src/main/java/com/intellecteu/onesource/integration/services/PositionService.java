@@ -106,4 +106,9 @@ public class PositionService {
         return positionRepository.findAllByProcessingStatus(status).stream()
             .map(backOfficeMapper::toModel).toList();
     }
+
+    public List<Position> getAllByPositionStatus(String status) {
+        return positionRepository.findAllByPositionStatus(status).stream()
+            .map(backOfficeMapper::toModel).toList();
+    }
 }

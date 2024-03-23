@@ -31,5 +31,9 @@ public interface PositionRepository extends JpaRepository<PositionEntity, Long> 
 
     List<PositionEntity> findAllByProcessingStatus(ProcessingStatus processingStatus);
 
+    @Query("select p from PositionEntity p where p.positionStatus.status = :positionStatus")
+    List<PositionEntity> findAllByPositionStatus(String positionStatus);
+
     List<PositionEntity> findByMatching1SourceTradeAgreementId(String agreementId);
+
 }
