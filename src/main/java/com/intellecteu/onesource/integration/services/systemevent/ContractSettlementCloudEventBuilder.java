@@ -1,6 +1,8 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.CAPTURE_POSITION_SETTLEMENT_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.GET_LOAN_CONTRACT_SETTLED_ISSUE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.LOAN_CONTRACT_SETTLED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.POSITION_SETTLED_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractSettlement.DataMsg.POST_LOAN_CONTRACT_UPDATE_EXCEPTION_MSG;
@@ -13,6 +15,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.UPDATE_LOAN_CONTRACT_SETTL_STATUS;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -90,17 +93,31 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
 
     @Override
     public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
-        return null;
+        return switch (subProcess) {
+            case GET_LOAN_CONTRACT_SETTLED -> buildGetLoanContractSettledIssueRequest(recorded, subProcess);
+            default -> null;
+        };
+    }
+
+    private CloudEventBuildRequest buildGetLoanContractSettledIssueRequest(String recorded,
+        IntegrationSubProcess subProcess) {
+        String dataMessage = format(GET_LOAN_CONTRACT_SETTLED_ISSUE_MSG, recorded);
+        return createRecordRequest(
+            TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
+            format(TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT, recorded),
+            CONTRACT_SETTLEMENT,
+            subProcess,
+            createEventData(dataMessage, getContractRelated(recorded)));
     }
 
     private CloudEventBuildRequest loanContractSettled(String recorded, RecordType recordType, String related) {
-        String dataMessage = format(LOAN_CONTRACT_SETTLED_MSG, recorded);
+        String dataMessage = format(LOAN_CONTRACT_SETTLED_MSG, recorded, related);
         return createRecordRequest(
             recordType,
             format(LOAN_CONTRACT_SETTLED, related),
             CONTRACT_SETTLEMENT,
             GET_LOAN_CONTRACT_SETTLED,
-            createEventData(dataMessage, getLoanProposalRelatedToPosition(recorded, related))
+            createEventData(dataMessage, getLoanContractRelatedToPosition(recorded, related))
         );
     }
 

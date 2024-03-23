@@ -5,7 +5,6 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
@@ -17,7 +16,6 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -143,7 +141,7 @@ public class PositionProcessor {
         } catch (RestClientException e) {
             if (e instanceof HttpStatusCodeException exception) {
                 final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(statusCode)) {
+                if (Set.of(HttpStatus.CREATED, UNAUTHORIZED, FORBIDDEN).contains(statusCode)) {
                     var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
                     var recordRequest = eventBuilder.buildExceptionRequest(exception, CAPTURE_POSITION_SETTLEMENT);
                     cloudEventRecordService.record(recordRequest);
@@ -193,7 +191,7 @@ public class PositionProcessor {
         } catch (HttpStatusCodeException exception) {
             final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
             log.warn("SPIRE error response for request Instruction: " + statusCode);
-            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(statusCode)) {
+            if (Set.of(HttpStatus.CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(statusCode)) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(
                     position.getMatching1SourceLoanContractId(), exception,

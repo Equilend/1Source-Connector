@@ -3,20 +3,24 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -93,6 +97,33 @@ public class ContractProcessor {
             }
             return null;
         }
+    }
+
+    public void updateSettledContract(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        final Optional<Contract> contractOptional = contractService.findContractById(contractId);
+        contractOptional.ifPresentOrElse(
+            this::updateAndRecordSystemEvent,
+            () -> recordToolkitIssueEvent(event)
+        );
+    }
+
+    private void updateAndRecordSystemEvent(Contract contract) {
+        updateContractStatuses(SETTLED, contract, OPEN);
+        recordSettledSystemEvent(contract);
+    }
+
+    /*
+     * Update Processing status and Contract status for the contract and save it.
+     * Return persisted Contract model.
+     */
+    private Contract updateContractStatuses(ProcessingStatus processingStatus, Contract contract,
+        ContractStatus contractStatus) {
+        contract.setProcessingStatus(processingStatus);
+        contract.setContractStatus(contractStatus);
+        return saveContract(contract);
     }
 
     public Contract declineCapturedContract(TradeEvent event) {
@@ -360,6 +391,11 @@ public class ContractProcessor {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
     }
 
+    public void recordSettledSystemEvent(@NonNull Contract contract) {
+        String related = String.valueOf(contract.getMatchingSpirePositionId());
+        createContractSettlementCloudEvent(contract.getContractId(), RecordType.LOAN_CONTRACT_SETTLED, related);
+    }
+
     public void recordLoanProposalDeclinedSystemEvent(@NonNull Contract contract) {
         String related = contract.getMatchingSpirePositionId() == null
             ? null
@@ -378,6 +414,12 @@ public class ContractProcessor {
     private void createCloudEvent(String recordData, RecordType recordType, String relatedData, IntegrationProcess ip) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(ip);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordToolkitIssueEvent(TradeEvent event) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(event.getResourceUri(), GET_LOAN_CONTRACT_SETTLED);
         cloudEventRecordService.record(recordRequest);
     }
 
