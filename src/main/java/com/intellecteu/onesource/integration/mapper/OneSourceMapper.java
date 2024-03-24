@@ -6,6 +6,7 @@ import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
+import com.intellecteu.onesource.integration.model.onesource.Instrument;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
@@ -17,6 +18,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
@@ -40,6 +42,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Settl
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 /*
@@ -54,6 +57,12 @@ public abstract class OneSourceMapper {
     public abstract AgreementEntity toEntity(Agreement agreement);
 
     public abstract TradeAgreement toModel(TradeAgreementEntity tradeAgreementEntity);
+
+    @Mapping(target = "quickCode", source = "quick")
+    public abstract Instrument toModel(InstrumentEntity instrumentEntity);
+
+    @Mapping(target = "quick", source = "quickCode")
+    public abstract InstrumentEntity toEntity(Instrument tradeAgreement);
 
     public abstract TradeAgreementEntity toEntity(TradeAgreement tradeAgreement);
 

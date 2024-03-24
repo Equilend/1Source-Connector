@@ -1,15 +1,12 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.FlowStatus;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.AgreementStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -41,7 +38,7 @@ public class AgreementDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(trade, TRADE);
-        trade.validateForReconciliation();
+//        throwIfFieldMissedException(trade, TRADE);
+//        trade.validateForReconciliation();
     }
 }

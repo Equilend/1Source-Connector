@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
@@ -90,7 +91,8 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(contractProcessor, "updateContractProcessingStatusAndCreatedTime")
             .bean(contractProcessor, "saveContract")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
-            .log("<<< Finished GET_LOAN_CONTRACT_PROPOSAL subprocess with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
+            .log("<<< Finished GET_LOAN_CONTRACT_PROPOSAL subprocess "
+                + "with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
         .end();
 
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
@@ -134,6 +136,28 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[MATCHED, UNMATCHED]")
         .end();
+
+        from(buildContractQueryByParticipantAndProcessingStatuses("CASH BORROW", MATCHED))
+            .routeId("ValidateLoanContractProposalWithMatchedPosition")
+            .log(">>> Started VALIDATE_LOAN_CONTRACT_PROPOSAL process for matched position.")
+            .bean(oneSourceMapper, "toModel")
+            .bean(contractProcessor, "validate")
+            .filter(body().isNotNull())
+            .bean(contractProcessor, "recordContractProposalValidatedEvent")
+            .log("Finished VALIDATE_LOAN_CONTRACT_PROPOSAL process for matched position "
+                + "with expected processing statuses: Contract[VALIDATED, DISCREPANCIES]")
+        .end();
+
+        from(buildDiscrepanciesContractQuery())
+            .routeId("ValidateLoanContractProposalWithDiscrepancies")
+            .log(">>> Started VALIDATE_LOAN_CONTRACT_PROPOSAL process for contracts in DISCREPANCIES.")
+            .bean(oneSourceMapper, "toModel")
+            .bean(contractProcessor, "validate")
+            .filter(body().isNotNull())
+            .bean(contractProcessor, "recordContractProposalValidatedEvent")
+            .log("Finished VALIDATE_LOAN_CONTRACT_PROPOSAL process for contract in DISCREPANCIES "
+                + "with expected processing statuses: Contract[VALIDATED, DISCREPANCIES]")
+            .end();
 
         from(buildGetValidatedContractForBorrowerQuery(VALIDATED))
             .routeId("ApproveLoanContractProposalAsBorrower")
@@ -224,6 +248,19 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "TradeEvent[PROCESSED], Contract[SETTLED]")
         .end();
     }
+    private String buildDiscrepanciesContractQuery() {
+        String query = """
+            SELECT c FROM ContractEntity c \
+            JOIN PositionEntity p ON c.matchingSpirePositionId = p.positionId \
+            WHERE c.processingStatus = 'DISCREPANCIES' \
+            AND p.processingStatus = 'UPDATED' \
+            AND p.positionType.positionType = 'CASH BORROW' \
+            AND c.lastUpdateDateTime < p.lastUpdateDateTime""";
+        return String.format(CAMEL_JPA_CONFIG,
+            "com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity",
+            String.format("delay=%d", updateTimer),
+            query);
+    }
 
     private String buildGetDeclineInstructionsQuery() {
         String query = """
@@ -239,6 +276,21 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
     private String buildGetContractByStatusQuery(ProcessingStatus... statuses) {
         String query = String.format("""
             SELECT c FROM ContractEntity c WHERE c.processingStatus IN ('%s')""",
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+        return String.format(CAMEL_JPA_CONFIG,
+            "com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity",
+            String.format("delay=%d", updateTimer),
+            query);
+    }
+
+    private String buildContractQueryByParticipantAndProcessingStatuses(String participantPositionType,
+        ProcessingStatus... statuses) {
+        String query = String.format("""
+            SELECT c FROM ContractEntity c \
+            JOIN PositionEntity p ON c.matchingSpirePositionId = p.positionId \
+            WHERE p.positionType.positionType = '%s' \
+            AND c.processingStatus IN ('%s')""",
+            participantPositionType,
             Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
         return String.format(CAMEL_JPA_CONFIG,
             "com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity",

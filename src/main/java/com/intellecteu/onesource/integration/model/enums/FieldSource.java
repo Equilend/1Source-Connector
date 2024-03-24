@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum FieldSource {
     ONE_SOURCE_LOAN_CONTRACT("1sourceLoanContract"),
     ONE_SOURCE_RERATE("1sourceRerate"),
+    BACKOFFICE_POSITION("Position"),
     BACKOFFICE_RERATE("BackOficeRerate");
 
     private final String value;

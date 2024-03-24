@@ -51,6 +51,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -96,7 +97,7 @@ public class DtoTestFactory {
             .executionVenue(buildVenueDto())
             .instrument(buildInstrumentDto())
             .rate(buildRateDto())
-            .quantity(2)
+            .quantity(BigDecimal.valueOf(2L))
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())

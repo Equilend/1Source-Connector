@@ -7,12 +7,11 @@ import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.dto.spire.CurrencyDto;
-import com.intellecteu.onesource.integration.dto.spire.IndexDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.model.backoffice.Currency;
+import com.intellecteu.onesource.integration.model.backoffice.Index;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
@@ -40,15 +39,15 @@ import org.junit.jupiter.api.TestMethodOrder;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class ContractReconcileServiceTest {
 
-    private ReconcileService<Contract, PositionDto> service;
+    private ReconcileService<Contract, Position> service;
     private Contract contract;
-    private PositionDto position;
+    private Position position;
 
     @BeforeEach
     void setUp() {
         service = new ContractReconcileService();
         contract = ModelTestFactory.buildContract();
-        position = DtoTestFactory.buildPositionDtoFromTradeAgreement(contract.getTrade());
+        position = ModelTestFactory.buildPositionFromTradeAgreement(contract.getTrade());
     }
 
     @Test
@@ -71,12 +70,12 @@ class ContractReconcileServiceTest {
     @Order(3)
     @DisplayName("Throw exception if security identifiers are missed")
     void reconcile_shouldThrowException_whenMissedSecurityIdentifiers() {
-        position.getSecurityDetailDto().setTicker(null);
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setTicker(null);
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -85,12 +84,12 @@ class ContractReconcileServiceTest {
     @Order(4)
     @DisplayName("Throw exception if reconciliation fails for a ticker security identifier")
     void reconcile_shouldThrowException_whenReconciliationFailsForTicker() {
-        position.getSecurityDetailDto().setTicker("customValue");
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setTicker("customValue");
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -99,12 +98,12 @@ class ContractReconcileServiceTest {
     @Order(5)
     @DisplayName("Throw exception if reconciliation fails for a cusip security identifier")
     void reconcile_shouldThrowException_whenReconciliationFailsForCusip() {
-        position.getSecurityDetailDto().setCusip("customValue");
-        position.getSecurityDetailDto().setTicker(null);
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setCusip("customValue");
+        position.getPositionSecurityDetail().setTicker(null);
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -113,12 +112,12 @@ class ContractReconcileServiceTest {
     @Order(6)
     @DisplayName("Throw exception if reconciliation fails for a isin security identifier")
     void reconcile_shouldThrowException_whenReconciliationFailsForIsin() {
-        position.getSecurityDetailDto().setIsin("customValue");
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setTicker(null);
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setIsin("customValue");
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setTicker(null);
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -127,12 +126,12 @@ class ContractReconcileServiceTest {
     @Order(7)
     @DisplayName("Throw exception if reconciliation fails for a sedol security identifier")
     void reconcile_shouldThrowException_whenReconciliationFailsForSedol() {
-        position.getSecurityDetailDto().setSedol("customValue");
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setTicker(null);
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setSedol("customValue");
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setTicker(null);
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -141,12 +140,12 @@ class ContractReconcileServiceTest {
     @Order(8)
     @DisplayName("Throw exception if reconciliation fails for a quickCode security identifier")
     void reconcile_shouldThrowException_whenReconciliationFailsForQuickCode() {
-        position.getSecurityDetailDto().setQuickCode("customValue");
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setTicker(null);
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setQuickCode("customValue");
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setTicker(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
     }
@@ -157,12 +156,12 @@ class ContractReconcileServiceTest {
     @Deprecated(since = "1.0.4", forRemoval = true)
     @DisplayName("Should reconcile if bloombergId security is not matched.")
     void reconcile_shouldReconcile_whenBloombergIdNotMatched() throws Exception {
-        position.getSecurityDetailDto().setBloombergId("customValue");
-        position.getSecurityDetailDto().setQuickCode(null);
-        position.getSecurityDetailDto().setSedol(null);
-        position.getSecurityDetailDto().setIsin(null);
-        position.getSecurityDetailDto().setCusip(null);
-        position.getSecurityDetailDto().setTicker(null);
+        position.getPositionSecurityDetail().setBloombergId("customValue");
+        position.getPositionSecurityDetail().setQuickCode(null);
+        position.getPositionSecurityDetail().setSedol(null);
+        position.getPositionSecurityDetail().setIsin(null);
+        position.getPositionSecurityDetail().setCusip(null);
+        position.getPositionSecurityDetail().setTicker(null);
 
         service.reconcile(contract, position);
     }
@@ -216,7 +215,7 @@ class ContractReconcileServiceTest {
     @Order(15)
     @DisplayName("Throw exception if reconciliation fails for a currency")
     void reconcile_shouldThrowException_whenReconciliationFailsForCurrency() {
-        position.setCurrency(new CurrencyDto("EUR"));
+        position.setCurrency(new Currency("EUR"));
 
         verifyReconciliationFailure();
     }
@@ -225,7 +224,7 @@ class ContractReconcileServiceTest {
     @Order(16)
     @DisplayName("Reconcile even tax with holding rate is missed.")
     void reconcile_shouldSuccess_whenTaxWithHoldingRateIsMissed() throws Exception {
-        position.getLoanBorrowDto().setTaxWithholdingRate(null);
+        position.getLoanBorrow().setTaxWithholdingRate(null);
         service.reconcile(contract, position);
     }
 
@@ -233,7 +232,7 @@ class ContractReconcileServiceTest {
     @Order(17)
     @DisplayName("Throw exception if reconciliation fails for a TaxWithHoldingRate")
     void reconcile_shouldThrowException_whenReconciliationFailsForTaxWithHoldingRate() {
-        position.getLoanBorrowDto().setTaxWithholdingRate(999.9d);
+        position.getLoanBorrow().setTaxWithholdingRate(999.9d);
 
         verifyReconciliationFailure();
     }
@@ -324,24 +323,6 @@ class ContractReconcileServiceTest {
     }
 
     @Test
-    @Order(28)
-    @DisplayName("Ignore reconciliation if contractValue is missed")
-    void reconcile_shouldSuccess_whenContractValueIsMissed() throws Exception {
-        position.setContractValue(null);
-
-        service.reconcile(contract, position);
-    }
-
-    @Test
-    @Order(29)
-    @DisplayName("Throw exception if reconciliation fails for a contractValue")
-    void reconcile_shouldThrowException_whenReconciliationFailsForContractValue() {
-        position.setContractValue(9999.0);
-
-        verifyReconciliationFailure();
-    }
-
-    @Test
     @Order(30)
     @DisplayName("Throw exception if amount is missed")
     void reconcile_shouldThrowException_whenAmountIsMissed() {
@@ -363,7 +344,7 @@ class ContractReconcileServiceTest {
     @Order(34)
     @DisplayName("Throw exception if cpHaircut is missed")
     void reconcile_shouldThrowException_whenCpHaircutIsMissed() {
-        position.getExposureDto().setCpHaircut(null);
+        position.getExposure().setCpHaircut(null);
 
         verifyReconciliationFailure();
     }
@@ -372,7 +353,7 @@ class ContractReconcileServiceTest {
     @Order(35)
     @DisplayName("Throw exception if reconciliation fails for a cpHaircut")
     void reconcile_shouldThrowException_whenReconciliationFailsForCpHaircut() {
-        position.getExposureDto().setCpHaircut(99999.9d);
+        position.getExposure().setCpHaircut(99999.9d);
 
         verifyReconciliationFailure();
     }
@@ -381,7 +362,7 @@ class ContractReconcileServiceTest {
     @Order(36)
     @DisplayName("Ignore reconciliation if cpMarkRoundTo is missed")
     void reconcile_shouldThrowException_whenCpMarkRoundToIsMissed() throws Exception {
-        position.getExposureDto().setCpMarkRoundTo(null);
+        position.getExposure().setCpMarkRoundTo(null);
 
         service.reconcile(contract, position);
     }
@@ -390,7 +371,7 @@ class ContractReconcileServiceTest {
     @Order(37)
     @DisplayName("Ignore reconciliation for cpMarkRoundTo")
     void reconcile_shouldSuccess_whenCpMarkRoundToHasMismatch() throws Exception {
-        position.getExposureDto().setCpMarkRoundTo(99999);
+        position.getExposure().setCpMarkRoundTo(99999);
 
         service.reconcile(contract, position);
     }
@@ -408,7 +389,7 @@ class ContractReconcileServiceTest {
     @Order(39)
     @DisplayName("Throw exception if account lei is missed")
     void reconcile_shouldThrowException_whenAccountLeiIsMissed() {
-        position.getAccountDto().setLei(null);
+        position.getPositionAccount().setLei(null);
         verifyReconciliationFailure();
     }
 
@@ -416,7 +397,7 @@ class ContractReconcileServiceTest {
     @Order(40)
     @DisplayName("Throw exception if counterparty lei is missed")
     void reconcile_shouldThrowException_whenCounterPartyLeiIsMissed() {
-        position.getCpDto().setLei(null);
+        position.getPositionCpAccount().setLei(null);
         verifyReconciliationFailure();
     }
 
@@ -424,8 +405,8 @@ class ContractReconcileServiceTest {
     @Order(41)
     @DisplayName("Throw exception if reconciliation fails for Lei")
     void reconcile_shouldThrowException_whenReconciliationFailsForLei() {
-        position.getAccountDto().setLei("randomAccountLei");
-        position.getCpDto().setLei("randomCpLei");
+        position.getPositionAccount().setLei("randomAccountLei");
+        position.getPositionCpAccount().setLei("randomCpLei");
 
         verifyReconciliationFailure();
     }
@@ -436,8 +417,8 @@ class ContractReconcileServiceTest {
     void reconcile_shouldReconcile_whenOneOfTwoLeiMatches() throws Exception {
         var firstParty = contract.getTrade().getTransactingParties().get(0);
         firstParty.getParty().setGleifLei("theSameLeiAsForAccount");
-        position.getAccountDto().setLei("theSameLeiAsForAccount");
-        position.getCpDto().setLei("randomCpLei");
+        position.getPositionAccount().setLei("theSameLeiAsForAccount");
+        position.getPositionCpAccount().setLei("randomCpLei");
 
         service.reconcile(contract, position);
     }
@@ -530,15 +511,6 @@ class ContractReconcileServiceTest {
     }
 
     @Test
-    @Order(51)
-    @DisplayName("Ignore reconciliation when position contract value is missed")
-    void reconcile_shouldSuccess_whenPositionContractValueIsMissed() throws Exception {
-        position.setContractValue(null);
-
-        service.reconcile(contract, position);
-    }
-
-    @Test
     @Order(52)
     @DisplayName("Throw exception if trade contract collateral value is missed")
     void reconcile_shouldThrowException_whenCollateralValueIsMissed() {
@@ -622,7 +594,7 @@ class ContractReconcileServiceTest {
     @DisplayName("Reconcile success on margin and hairCut diff types of values")
     void reconcile_shouldSuccess_whenTradeMarginHasDifferentTypeThanSpireHaircut() throws Exception {
         contract.getTrade().getCollateral().setMargin(103.0);
-        position.getExposureDto().setCpHaircut(1.03);
+        position.getExposure().setCpHaircut(1.03);
         service.reconcile(contract, position);
     }
 
@@ -630,7 +602,7 @@ class ContractReconcileServiceTest {
     @Order(61)
     @DisplayName("Reconcile success when position.securityDTO.bloombergId is missed")
     void reconcile_shouldSuccess_whenPositionBloombergIdIsMissed() throws Exception {
-        position.getSecurityDetailDto().setBloombergId(null);
+        position.getPositionSecurityDetail().setBloombergId(null);
         service.reconcile(contract, position);
     }
 
@@ -648,7 +620,7 @@ class ContractReconcileServiceTest {
         + "trade.instrument.price.unit is not SHARE")
     void reconcile_shouldThrowException_whenPriceFactorIsNotShare() {
         contract.getTrade().getInstrument().setPrice(new Price(PriceUnit.LOT));
-        position.getSecurityDetailDto().setPriceFactor(1);
+        position.getPositionSecurityDetail().setPriceFactor(1);
 
         verifyReconciliationFailure();
     }
@@ -659,7 +631,7 @@ class ContractReconcileServiceTest {
         + "trade.instrument.price.unit is not LOT")
     void reconcile_shouldThrowException_whenPriceFactorIsNotLot() {
         contract.getTrade().getInstrument().setPrice(new Price(PriceUnit.SHARE));
-        position.getSecurityDetailDto().setPriceFactor(2);
+        position.getPositionSecurityDetail().setPriceFactor(2);
 
         verifyReconciliationFailure();
     }
@@ -723,12 +695,12 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(70)
-    @DisplayName("Throw exception if trade.rate.rebate.floating.spread is not matched with position.indexDTO.spread")
+    @DisplayName("Throw exception if trade.rate.rebate.floating.spread is not matched with position.Index.spread")
     void reconcile_shouldThrowException_whenRateRebateFloatingSpreadIsNotMatched() {
         var floating = FloatingRate.builder().spread(1.0d).build();
         contract.getTrade().getRate().getRebate().setFixed(null);
         contract.getTrade().getRate().getRebate().setFloating(floating);
-        position.setIndexDto(new IndexDto("testName", 2.0d));
+        position.setIndex(new Index(11, "testName", 2.0d));
 
         verifyReconciliationFailure();
     }
@@ -743,7 +715,7 @@ class ContractReconcileServiceTest {
             .build();
         contract.getTrade().getRate().getRebate().setFixed(null);
         contract.getTrade().getRate().getRebate().setFloating(floating);
-        position.setIndexDto(new IndexDto("testName", 1.0d));
+        position.setIndex(new Index(11, "testName", 1.0d));
 
         service.reconcile(contract, position);
     }

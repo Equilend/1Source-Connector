@@ -15,11 +15,14 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
@@ -29,6 +32,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
@@ -50,6 +54,7 @@ import com.intellecteu.onesource.integration.services.IntegrationDataTransformer
 import com.intellecteu.onesource.integration.services.MatchingService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -78,6 +83,7 @@ public class ContractProcessor {
     private final IntegrationDataTransformer dataTransformer;
     private final PositionService positionService;
     private final MatchingService matchingService;
+    private final ReconcileService<Contract, Position> reconcileService;
 
     @Transactional
     public Contract getLoanContractDetails(TradeEvent event) {
@@ -97,6 +103,36 @@ public class ContractProcessor {
             }
             return null;
         }
+    }
+
+    public Contract validate(@NonNull Contract contractProposal) {
+        return positionService.getByPositionId(contractProposal.getMatchingSpirePositionId())
+            .map(position -> reconcileProposalWithPosition(contractProposal, position))
+            .orElse(null);
+    }
+
+    private Contract reconcileProposalWithPosition(@NonNull Contract contractProposal, @NonNull Position position) {
+        try {
+            reconcileService.reconcile(contractProposal, position);
+            contractProposal.setProcessingStatus(VALIDATED);
+            return saveContract(contractProposal);
+        } catch (ReconcileException e) {
+            log.debug("Reconciliation exception: {}", e.getMessage());
+            contractProposal.setProcessingStatus(DISCREPANCIES);
+            createFailedReconciliationEvent(contractProposal, e);
+            saveContract(contractProposal);
+            return null;
+        }
+    }
+
+    private void createFailedReconciliationEvent(Contract contractProposal, ReconcileException e) {
+        String relatedSequence = String.format("%d,%d", contractProposal.getMatchingSpirePositionId(),
+            contractProposal.getMatchingSpireTradeId());
+        var eventBuilder = cloudEventRecordService.getFactory()
+            .eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildRequest(contractProposal.getContractId(),
+            LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, relatedSequence, e.getErrorList());
+        cloudEventRecordService.record(recordRequest);
     }
 
     public void updateSettledContract(TradeEvent event) {
@@ -401,6 +437,12 @@ public class ContractProcessor {
             ? null
             : String.format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_DECLINED, related);
+    }
+
+    public void recordContractProposalValidatedEvent(@NonNull Contract contract) {
+        String relatedSequence = String.format("%d,%d", contract.getMatchingSpirePositionId(),
+            contract.getMatchingSpireTradeId());
+        createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED, relatedSequence);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

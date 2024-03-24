@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration.services.reconciliation;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
@@ -20,13 +19,12 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TERM_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.VENUE_REF_ID;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.VENUE_REF_KEY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CUSTOM_VALUE_2;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_COLLATERAL_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY_KY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
@@ -45,15 +43,13 @@ import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.LO
 import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.SHARE;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
-import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
-import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
-import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
 import com.intellecteu.onesource.integration.model.onesource.Price;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
@@ -75,6 +71,7 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
+@Deprecated(since = "0.0.5-SNAPSHOT")
 public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R extends Reconcilable>
     implements ReconcileService<T, R> {
 
@@ -107,24 +104,24 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
     }
 
 
-    List<ProcessExceptionDetails> reconcileTrade(TradeAgreement trade, PositionDto positionDto) {
+    List<ProcessExceptionDetails> reconcileTrade(TradeAgreement trade, Position position) {
         var failedList = new ArrayList<ProcessExceptionDetails>();
-        reconcileVenue(trade, positionDto).ifPresent(failedList::add);
-        failedList.addAll(reconcileRate(trade.getRate(), positionDto));
-        failedList.addAll(reconcileInstrument(trade.getInstrument(), positionDto));
-        reconcileQuantity(trade, positionDto).ifPresent(failedList::add);
-        reconcileDividendRate(trade, positionDto).ifPresent(failedList::add);
-        reconcileTradeDate(trade, positionDto).ifPresent(failedList::add);
-        reconcileSettlementDate(trade, positionDto).ifPresent(failedList::add);
-        reconcileTermType(trade.getTermType(), positionDto.getTermId()).ifPresent(failedList::add);
-        reconcileSettlementType(trade.getSettlementType(), positionDto).ifPresent(failedList::add);
-        failedList.addAll(reconcileCollateral(trade.getCollateral(), positionDto));
-        reconcileLei(trade.getTransactingParties(), positionDto).ifPresent(failedList::add);
+//        reconcileVenue(trade, position).ifPresent(failedList::add);
+//        failedList.addAll(reconcileRate(trade.getRate(), position));
+//        failedList.addAll(reconcileInstrument(trade.getInstrument(), position));
+//        reconcileQuantity(trade, position).ifPresent(failedList::add);
+//        reconcileDividendRate(trade, position).ifPresent(failedList::add);
+//        reconcileTradeDate(trade, position).ifPresent(failedList::add);
+//        reconcileSettlementDate(trade, position).ifPresent(failedList::add);
+//        reconcileTermType(trade.getTermType(), position.getTermId()).ifPresent(failedList::add);
+//        reconcileSettlementType(trade.getSettlementType(), position).ifPresent(failedList::add);
+//        failedList.addAll(reconcileCollateral(trade.getCollateral(), position));
+//        reconcileLei(trade.getTransactingParties(), position).ifPresent(failedList::add);
         return failedList;
     }
 
     private Optional<ProcessExceptionDetails> reconcileLei(List<TransactingParty> transactionParties,
-        PositionDto position) {
+        Position position) {
         var positionAccountLei = position.getAccountLei();
         var positionCpLei = position.getCpLei();
 
@@ -143,7 +140,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.of(exceptionDto);
     }
 
-    private List<ProcessExceptionDetails> reconcileCollateral(Collateral collateral, PositionDto position) {
+    private List<ProcessExceptionDetails> reconcileCollateral(Collateral collateral, Position position) {
         List<ProcessExceptionDetails> failsLog = new ArrayList<>();
         if (collateral.getContractPrice() != null) {
             checkEquality(collateral.getContractPrice(), CONTRACT_PRICE, position.getPrice(), POSITION_PRICE)
@@ -156,24 +153,24 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         if (collateral.getCurrency() != null && position.getCurrency() != null
             && position.getCurrency().getCurrencyKy() != null) {
             final String currencyKy = position.getCurrency().getCurrencyKy();
-            checkEquality(collateral.getCurrency(), CURRENCY, currencyKy, POSITION_CURRENCY)
+            checkEquality(collateral.getCurrency(), CURRENCY, currencyKy, POSITION_CURRENCY_KY)
                 .ifPresent(failsLog::add);
         }
-        if (collateral.getType() != null && position.getCollateralType() != null) {
-            if (position.getCollateralType().isEmpty()) {
-                if (collateral.getType() != CollateralType.CASH) {
-                    var msg = format("Reconciliation mismatch. OneSource %s must be %s when %s is empty",
-                        COLLATERAL_TYPE, CollateralType.CASH, POSITION_COLLATERAL_TYPE);
-                    failsLog.add(
-                        new ProcessExceptionDetails(null, COLLATERAL_TYPE, String.valueOf(collateral.getType()),
-                            FieldExceptionType.DISCREPANCY));
-                }
-            } else {
-                checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
-                    position.getCollateralType(), POSITION_COLLATERAL_TYPE)
-                    .ifPresent(failsLog::add);
-            }
-        }
+//        if (collateral.getType() != null && position.getCollateralType() != null) {
+//            if (position.getCollateralType().isEmpty()) {
+//                if (collateral.getType() != CollateralType.CASH) {
+//                    var msg = format("Reconciliation mismatch. OneSource %s must be %s when %s is empty",
+//                        COLLATERAL_TYPE, CollateralType.CASH, POSITION_COLLATERAL_TYPE);
+//                    failsLog.add(
+//                        new ProcessExceptionDetails(null, COLLATERAL_TYPE, String.valueOf(collateral.getType()),
+//                            FieldExceptionType.DISCREPANCY));
+//                }
+//            } else {
+//                checkEquality(collateral.getType().name(), COLLATERAL_TYPE,
+//                    position.getCollateralType(), POSITION_COLLATERAL_TYPE)
+//                    .ifPresent(failsLog::add);
+//            }
+//        }
         if (collateral.getMargin() != null && position.getCpHaircut() != null) {
             // currently we have different value types for margin 1source and cpHaircut SPIRE 102 vs 1.02
             // the question is can we have values like: 102.0457 and 1.020457
@@ -191,7 +188,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
      * If the SettlementType is DVP then the deliverFree must be True
      */
     private Optional<ProcessExceptionDetails> reconcileSettlementType(SettlementType settlementType,
-        PositionDto position) {
+        Position position) {
         if (settlementType != null && position.getDeliverFree() != null) {
             if ((settlementType == DVP && position.getDeliverFree())
                 || (settlementType == FOP && !position.getDeliverFree())) {
@@ -207,34 +204,34 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
 
     /*
      * Must reconcile if present. At least one security identifier must be present
-     * ('At least one' presence is checked inside PositionDto domain model logic)
+     * ('At least one' presence is checked inside Position domain model logic)
      */
     private List<ProcessExceptionDetails> checkEqualityOfSecurityIdentifiers(Instrument instrument,
-        PositionDto position) {
+        Position position) {
         List<ProcessExceptionDetails> failsLog = new ArrayList<>();
-        var securityDetailDto = position.getSecurityDetailDto();
-        if (securityDetailDto != null) {
-            if (securityDetailDto.getCusip() != null) {
-                checkEquality(instrument.getCusip(), CUSIP, securityDetailDto.getCusip(), POSITION_CUSIP)
+        var securityDetail = position.getPositionSecurityDetail();
+        if (securityDetail != null) {
+            if (securityDetail.getCusip() != null) {
+                checkEquality(instrument.getCusip(), CUSIP, securityDetail.getCusip(), POSITION_CUSIP)
                     .ifPresent(failsLog::add);
             }
-            if (securityDetailDto.getIsin() != null) {
-                checkEquality(instrument.getIsin(), ISIN, securityDetailDto.getIsin(), POSITION_ISIN)
+            if (securityDetail.getIsin() != null) {
+                checkEquality(instrument.getIsin(), ISIN, securityDetail.getIsin(), POSITION_ISIN)
                     .ifPresent(failsLog::add);
             }
-            if (securityDetailDto.getSedol() != null) {
-                checkEquality(instrument.getSedol(), SEDOL, securityDetailDto.getSedol(), POSITION_SEDOL)
+            if (securityDetail.getSedol() != null) {
+                checkEquality(instrument.getSedol(), SEDOL, securityDetail.getSedol(), POSITION_SEDOL)
                     .ifPresent(failsLog::add);
             }
-            if (securityDetailDto.getQuickCode() != null) {
-                checkEquality(instrument.getQuickCode(), QUICK, securityDetailDto.getQuickCode(), POSITION_QUICK)
+            if (securityDetail.getQuickCode() != null) {
+                checkEquality(instrument.getQuickCode(), QUICK, securityDetail.getQuickCode(), POSITION_QUICK)
                     .ifPresent(failsLog::add);
             }
         }
         return failsLog;
     }
 
-    private Optional<ProcessExceptionDetails> reconcileSettlementDate(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileSettlementDate(TradeAgreement trade, Position positionDto) {
         if (trade.getSettlementDate() != null && positionDto.getSettleDate() != null) {
             return checkEquality(trade.getSettlementDate(), SETTLEMENT_DATE,
                 positionDto.getSettleDate().toLocalDate(), SETTLE_DATE);
@@ -242,7 +239,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ProcessExceptionDetails> reconcileTradeDate(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileTradeDate(TradeAgreement trade, Position positionDto) {
         if (trade.getTradeDate() != null && positionDto.getTradeDate() != null) {
             return checkEquality(trade.getTradeDate(), TRADE_DATE,
                 positionDto.getTradeDate().toLocalDate(), POSITION_TRADE_DATE);
@@ -250,16 +247,16 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ProcessExceptionDetails> reconcileDividendRate(TradeAgreement trade, PositionDto positionDto) {
-        if (positionDto.getLoanBorrowDto() != null && positionDto.getLoanBorrowDto().getTaxWithholdingRate() != null
+    private Optional<ProcessExceptionDetails> reconcileDividendRate(TradeAgreement trade, Position positionDto) {
+        if (positionDto.getLoanBorrow() != null && positionDto.getLoanBorrow().getTaxWithholdingRate() != null
             && trade.getDividendRatePct() != null) {
             return checkEquality(trade.getDividendRatePct().doubleValue(), DIVIDENT_RATE_PCT,
-                positionDto.getLoanBorrowDto().getTaxWithholdingRate(), TAX_WITH_HOLDING_RATE);
+                positionDto.getLoanBorrow().getTaxWithholdingRate(), TAX_WITH_HOLDING_RATE);
         }
         return Optional.empty();
     }
 
-    private Optional<ProcessExceptionDetails> reconcileQuantity(TradeAgreement trade, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileQuantity(TradeAgreement trade, Position positionDto) {
         if (trade.getQuantity() != null) {
             return checkEquality(trade.getQuantity().doubleValue(), QUANTITY,
                 positionDto.getQuantity(), POSITION_QUANTITY);
@@ -267,12 +264,12 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ProcessExceptionDetails> reconcileVenue(TradeAgreement trade, PositionDto positionDto) {
-        return checkEquality(trade.getVenue().getVenueRefKey(), VENUE_REF_ID,
+    private Optional<ProcessExceptionDetails> reconcileVenue(TradeAgreement trade, Position positionDto) {
+        return checkEquality(trade.getVenue().getVenueRefKey(), VENUE_REF_KEY,
             positionDto.getCustomValue2(), CUSTOM_VALUE_2);
     }
 
-    private List<ProcessExceptionDetails> reconcileRate(Rate rate, PositionDto positionDto) {
+    private List<ProcessExceptionDetails> reconcileRate(Rate rate, Position positionDto) {
         List<ProcessExceptionDetails> failsLog = new ArrayList<>();
 
         if (rate != null && positionDto != null) {
@@ -287,7 +284,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return failsLog;
     }
 
-    private Optional<ProcessExceptionDetails> reconcileFixedRebate(RebateRate rebate, PositionDto positionDto) {
+    private Optional<ProcessExceptionDetails> reconcileFixedRebate(RebateRate rebate, Position positionDto) {
         if (rebate != null && rebate.getFixed() != null) {
             final LocalDate effectiveDate = rebate.getFixed().getEffectiveDate();
             final LocalDateTime settleDate = positionDto.getSettleDate();
@@ -299,10 +296,10 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private Optional<ProcessExceptionDetails> reconcileFloatingRebate(RebateRate rebate, PositionDto positionDto) {
-        if (rebate != null && rebate.getFloating() != null && positionDto.getIndexDto() != null) {
+    private Optional<ProcessExceptionDetails> reconcileFloatingRebate(RebateRate rebate, Position positionDto) {
+        if (rebate != null && rebate.getFloating() != null && positionDto.getIndex() != null) {
             final Double spread = rebate.getFloating().getSpread();
-            final Double positionSpread = positionDto.getIndexDto().getSpread();
+            final Double positionSpread = positionDto.getIndex().getSpread();
             if (spread != null && positionSpread != null) {
                 return checkEquality(spread, REBATE_FLOATING_SPREAD, positionSpread, POSITION_SPREAD);
             }
@@ -324,16 +321,16 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
         return Optional.empty();
     }
 
-    private List<ProcessExceptionDetails> reconcileInstrument(Instrument instrument, PositionDto positionDto) {
+    private List<ProcessExceptionDetails> reconcileInstrument(Instrument instrument, Position positionDto) {
         var failsList = checkEqualityOfSecurityIdentifiers(instrument, positionDto);
-        failsList.addAll(checkInstrumentUnit(instrument.getPrice(), positionDto.getSecurityDetailDto()));
+        failsList.addAll(checkInstrumentUnit(instrument.getPrice(), positionDto.getPositionSecurityDetail()));
         return failsList;
     }
 
-    private List<ProcessExceptionDetails> checkInstrumentUnit(Price price, SecurityDetailDto securityDetailDto) {
+    private List<ProcessExceptionDetails> checkInstrumentUnit(Price price, PositionSecurityDetail securityDetail) {
         List<ProcessExceptionDetails> failsLog = new ArrayList<>();
-        if (price != null && securityDetailDto != null && securityDetailDto.getPriceFactor() != null) {
-            final Integer priceFactor = securityDetailDto.getPriceFactor();
+        if (price != null && securityDetail != null && securityDetail.getPriceFactor() != null) {
+            final Integer priceFactor = securityDetail.getPriceFactor();
             if ((priceFactor.equals(1) && price.getUnit() != SHARE)
                 || (!priceFactor.equals(1) && price.getUnit() != LOT)) {
                 var exceptionDto = new ProcessExceptionDetails();

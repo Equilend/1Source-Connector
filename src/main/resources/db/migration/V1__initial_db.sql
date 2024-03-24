@@ -253,7 +253,7 @@ CREATE TABLE IF NOT EXISTS trade
     venue_id        BIGINT       NULL,
     instrument_id   BIGINT       NULL,
     rate_id         BIGINT       NULL,
-    quantity        INT          NULL,
+    quantity        DOUBLE PRECISION    NULL,
     currency        VARCHAR(255) NULL,
     dividend_rate   DOUBLE PRECISION NULL,
     trade_date      DATE         NULL,

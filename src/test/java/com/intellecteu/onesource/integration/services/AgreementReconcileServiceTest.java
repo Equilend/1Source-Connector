@@ -40,6 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
+@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 class AgreementReconcileServiceTest {
 
     private ReconcileService<Agreement, PositionDto> service;

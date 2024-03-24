@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -52,7 +53,7 @@ public class TradeAgreementEntity {
     @JoinColumn(name = "rate_id")
     private RateEntity rate;
     @Column(name = "quantity")
-    private Integer quantity;
+    private BigDecimal quantity;
     @Column(name = "currency")
     @Enumerated(value = EnumType.STRING)
     private CurrencyCd billingCurrency;

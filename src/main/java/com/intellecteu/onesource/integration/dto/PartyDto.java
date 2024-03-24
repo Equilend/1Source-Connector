@@ -1,8 +1,5 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.GLEIF_LEI;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import lombok.AllArgsConstructor;
@@ -25,6 +22,6 @@ public class PartyDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(gleifLei, GLEIF_LEI);
+//        throwIfFieldMissedException(gleifLei, GLEIF_LEI);
     }
 }

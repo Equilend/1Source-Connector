@@ -48,15 +48,18 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
+import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -100,7 +103,7 @@ public class ModelTestFactory {
             .venue(buildVenue())
             .instrument(buildInstrument())
             .rate(buildRate())
-            .quantity(2)
+            .quantity(BigDecimal.valueOf(2L))
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
@@ -221,6 +224,90 @@ public class ModelTestFactory {
             .status("testStatus")
             .statusId(66)
             .position(buildPosition())
+            .build();
+    }
+
+    public static Position buildPositionFromTradeAgreement(TradeAgreement tradeAgreement) {
+        return Position.builder()
+            .positionId(9L)
+            .customValue2(tradeAgreement.getVenue().getVenueRefKey())
+            .positionSecurityDetail(buildPositionSecurityDetail(tradeAgreement))
+            .rate(tradeAgreement.getRate().getFee().getBaseRate())
+            .quantity(tradeAgreement.getQuantity().doubleValue())
+            .currency(buildCurrency(tradeAgreement))
+            .loanBorrow(buildLoanBorrow(tradeAgreement))
+            .tradeDate(LocalDateTime.of(tradeAgreement.getTradeDate(), LocalTime.now()))
+            .settleDate(LocalDateTime.of(tradeAgreement.getSettlementDate(), LocalTime.now()))
+            .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
+            .amount(tradeAgreement.getCollateral().getCollateralValue())
+            .price(tradeAgreement.getCollateral().getContractPrice())
+            .exposure(buildPositionExposure(tradeAgreement))
+            .positionType(buildPositionType(tradeAgreement))
+            .positionAccount(buildAccount(tradeAgreement.getTransactingParties().get(0)))
+            .positionCpAccount(buildAccount(tradeAgreement.getTransactingParties().get(1)))
+            .build();
+    }
+
+    public static PositionAccount buildAccount(TransactingParty party) {
+        PositionAccount account = new PositionAccount();
+        account.setLei(retrieveLei(party));
+        return account;
+    }
+
+    private static String retrieveLei(TransactingParty party) {
+        return party.getParty().getGleifLei();
+    }
+
+    public static PositionType buildPositionType(TradeAgreement tradeAgreement) {
+        return PositionType.builder()
+            .positionType(retrievePositionType(tradeAgreement.getTransactingParties()))
+            .isCash(true)
+            .build();
+    }
+
+    private static String retrievePositionType(List<TransactingParty> parties) {
+        boolean isCashLoan = parties.stream().anyMatch(p -> p.getPartyRole() == LENDER);
+        if (isCashLoan) {
+            return "CASH LOAN";
+        }
+        boolean isCashBorrow = parties.stream().anyMatch(p -> p.getPartyRole() == BORROWER);
+        if (isCashBorrow) {
+            return "CASH BORROW";
+        }
+        return null;
+    }
+
+    public static PositionExposure buildPositionExposure(TradeAgreement tradeAgreement) {
+        return PositionExposure.builder()
+            .cpHaircut(tradeAgreement.getCollateral().getMargin() / 100.0)
+            .cpMarkRoundTo(tradeAgreement.getCollateral().getRoundingRule())
+            .build();
+    }
+
+    private static Boolean translateDeliverFree(SettlementType settlementType) {
+        return settlementType != DVP;
+    }
+
+    public static LoanBorrow buildLoanBorrow(TradeAgreement tradeAgreement) {
+        return LoanBorrow.builder()
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
+            .build();
+    }
+
+    public static Currency buildCurrency(TradeAgreement tradeAgreement) {
+        return Currency.builder()
+            .currencyKy(tradeAgreement.getBillingCurrency().name())
+            .build();
+    }
+
+    public static PositionSecurityDetail buildPositionSecurityDetail(TradeAgreement tradeAgreement) {
+        return PositionSecurityDetail.builder()
+            .ticker(tradeAgreement.getInstrument().getTicker())
+            .cusip(tradeAgreement.getInstrument().getCusip())
+            .isin(tradeAgreement.getInstrument().getIsin())
+            .sedol(tradeAgreement.getInstrument().getSedol())
+            .quickCode(tradeAgreement.getInstrument().getQuickCode())
+            .bloombergId(tradeAgreement.getInstrument().getFigi())
             .build();
     }
 
