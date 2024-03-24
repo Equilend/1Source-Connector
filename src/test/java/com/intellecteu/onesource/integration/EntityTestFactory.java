@@ -51,6 +51,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Transac
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenuePartyEntity;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -94,7 +95,7 @@ public class EntityTestFactory {
             .venue(buildVenueEntity())
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
-            .quantity(2)
+            .quantity(BigDecimal.valueOf(2L))
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())

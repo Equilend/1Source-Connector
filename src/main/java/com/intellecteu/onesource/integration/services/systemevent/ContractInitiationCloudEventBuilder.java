@@ -19,8 +19,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_APPROVE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.LOAN_CONTRACT_PROPOSAL_VALIDATED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_CANCELED_POSITION_TRADE_AGREEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.MATCHED_POSITION_TRADE_AGREEMENT_MSG;
@@ -205,6 +205,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         };
     }
 
+
     @Override
     public CloudEventBuildRequest buildRequest(RecordType recordType, Contract contract) {
         return switch (recordType) {
@@ -260,19 +261,35 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related)));
     }
 
+    /*
+     * RelatedSequence String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
+     */
     private CloudEventBuildRequest loanContractProposalDiscrepancies(String recorded, RecordType recordType,
-        String related, List<ProcessExceptionDetails> exceptionData) {
-        final String formattedExceptions = exceptionData.stream()
-            .map(d -> "- " + d.getFieldValue())
-            .collect(Collectors.joining("\n"));
-        String dataMessage = format(RECONCILE_LOAN_CONTRACT_DISCREPANCIES_MSG, recorded, related, formattedExceptions);
+        String relatedSequence, List<ProcessExceptionDetails> exceptionData) {
+        String positionId = relatedSequence.substring(0, relatedSequence.indexOf(","));
+        String dataMessage = format(RECONCILE_LOAN_CONTRACT_DISCREPANCIES_MSG, recorded, positionId);
+        final List<FieldImpacted> fieldsImpacted = buildDiscrepanciesFieldsImpacted(exceptionData);
         return createRecordRequest(
             recordType,
-            format(GET_LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, related),
+            format(GET_LOAN_CONTRACT_PROPOSAL_DISCREPANCIES, positionId),
             CONTRACT_INITIATION,
             VALIDATE_LOAN_CONTRACT_PROPOSAL,
-            createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+            createEventData(
+                dataMessage,
+                getContractRelatedToPositionWithTrade(recorded, relatedSequence),
+                fieldsImpacted)
         );
+    }
+
+    private List<FieldImpacted> buildDiscrepanciesFieldsImpacted(List<ProcessExceptionDetails> exceptionData) {
+        return exceptionData.stream()
+            .map(detail -> FieldImpacted.builder()
+                .fieldSource(detail.getSource())
+                .fieldName(detail.getFieldName())
+                .fieldValue(detail.getFieldValue())
+                .fieldExceptionType(detail.getFieldExceptionType())
+                .build())
+            .toList();
     }
 
     private CloudEventBuildRequest tradeAgreementDiscrepancies(String recorded, RecordType recordType,
@@ -421,18 +438,18 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     /*
-     * Related String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
+     * RelatedSequence String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
      */
-    private CloudEventBuildRequest positionCanceledSubmitted(String recorded, RecordType recordType, String related) {
-        String positionId = related.substring(0, related.indexOf(","));
-        String spireTradeId = related.substring(related.indexOf(",") + 1);
+    private CloudEventBuildRequest positionCanceledSubmitted(String recorded, RecordType recordType,
+        String relatedSequence) {
+        String positionId = relatedSequence.substring(0, relatedSequence.indexOf(","));
         String dataMessage = format(POSITION_CANCELED_SUBMITTED_MSG, positionId, recorded);
         return createRecordRequest(
             recordType,
             format(POSITION_CANCELED_SUBMITTED_SUBJECT, positionId),
             CONTRACT_INITIATION,
             CANCEL_LOAN_CONTRACT_PROPOSAL,
-            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, positionId, spireTradeId))
+            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, relatedSequence))
         );
     }
 
@@ -470,15 +487,19 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
+    /*
+     * RelatedSequence String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
+     */
     private CloudEventBuildRequest loanContractProposalValidated(String recorded, RecordType recordType,
-        String related) {
-        String dataMessage = format(LOAN_CONTRACT_PROPOSAL_RECONCILIATION_MSG, recorded, related);
+        String relatedSequence) {
+        String positionId = relatedSequence.substring(0, relatedSequence.indexOf(","));
+        String dataMessage = format(LOAN_CONTRACT_PROPOSAL_VALIDATED_MSG, recorded, positionId);
         return createRecordRequest(
             recordType,
-            format(VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED, related),
+            format(VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED, positionId),
             CONTRACT_INITIATION,
             VALIDATE_LOAN_CONTRACT_PROPOSAL,
-            createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, relatedSequence))
         );
     }
 
@@ -526,18 +547,19 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
+    /*
+     * RelatedSequence String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
+     */
     private CloudEventBuildRequest loanProposalMatchedPositionEvent(String recorded, RecordType recordType,
-        String related) {
-        String[] relatedIds = related.split(",");
-        String positionId = relatedIds[0];
-        String tradeId = relatedIds[1];
-        String dataMessage = format(MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG, recorded, related);
+        String relatedSequence) {
+        String positionId = relatedSequence.substring(0, relatedSequence.indexOf(","));
+        String dataMessage = format(MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG, recorded, positionId);
         return createRecordRequest(
             recordType,
-            format(LOAN_CONTRACT_MATCHED_POSITION, related),
+            format(LOAN_CONTRACT_MATCHED_POSITION, positionId),
             CONTRACT_INITIATION,
-            MATCH_LOAN_CONTRACT_PROPOSAL, // todo check with GET_NEW_POSITIONS_PENDING_CONFIRMATION
-            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, positionId, tradeId))
+            MATCH_LOAN_CONTRACT_PROPOSAL,
+            createEventData(dataMessage, getContractRelatedToPositionWithTrade(recorded, relatedSequence))
         );
     }
 

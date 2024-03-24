@@ -1,0 +1,76 @@
+-- Test VALIDATE_LOAN_CONTRACT_PROPOSAL success flow data contract matched position
+
+-- INSERT INTO internal_ref (id, broker, account_id, internal_id)
+-- VALUES (9411, 'testLenderBroker', '9411', '9411'),
+--        (6532, 'testBorrowerBroker', '6532', '6532');
+--
+-- INSERT INTO party (id, party_id, party_name, gleif_lei, internal_id)
+-- VALUES (9411, 9411, 'LENDER', '9411', '9411'),
+--        (6532, 6532, 'BORROWER', '6532', '65327');
+--
+-- INSERT INTO price (id, unit)
+-- VALUES (9411, 'LOT'), (6532, 'LOT');
+--
+-- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code, price_id)
+-- VALUES  (9411, '234', '02319411106', 'US023194111067', '2000019', '457', 9411),
+--         (6532, '234', '02319411107', 'US023194111068', '2000010', '458', 6532);
+--
+-- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
+-- VALUES (9411, 0.05, 0, '2023-10-25 13:50:41.633000', '0'),
+--        (6532, 0.05, 0, '2023-10-25 13:50:41.633000', '0');
+--
+-- INSERT INTO rebate (id, fixed)
+-- VALUES (9411, 9411), (6532, 6532);
+--
+-- INSERT INTO rate (id, rebate)
+-- VALUES  (9411, 9411), (6532, 6532);
+--
+-- INSERT INTO collateral (id, contract_price, collateral_value, currency,
+--                         type, margin, rounding_rule, rounding_mode)
+-- VALUES (9411, 119.57, 1799411.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
+--        (6532, 119.57, 1799411.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
+-- VALUES (9411, '9411', 'ONPLATFORM', 'testLenderVenueName', '9411'),
+--        (6532, '6532', 'ONPLATFORM', 'testBorrowerVenueName', '6532');
+--
+-- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+--                    dividend_rate, trade_date, term_type, term_date, settlement_date,
+--                    settlement_type, collateral)
+-- VALUES  (6532, 6532, 6532, 6532, 6532.0, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 6532),
+--         (9411, 9411, 9411, 9411, 15000, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 9411);
+--
+-- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (9411, '32b71278-9ad2-445a-bfb0-b5ada72f9411', 'PENDING', 9411, '9411', 'CREATED'),
+--        (6532, '32b71278-9ad2-445a-bfb0-b5ada72f6532', 'PENDING', 6532, '6532', 'CREATED');
+--
+-- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
+-- VALUES (9411, 'LENDER', 9411, 9411, 9411), (6532, 'LENDER', 6532, 6532, 6532);
+--
+-- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
+--                       matching_spire_position_id, matching_spire_trade_id, last_update_datetime)
+-- VALUES (6532, '32b71278-9ad2-445a-bfb0-b5ada72f6532', 'PROPOSED',
+-- 6532, 'MATCHED', 6532, 6532, '2024-03-24 12:50:41.633000');
+--
+-- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
+-- VALUES (9411, 9411, 'lender_acc', '9411', 123, 1),
+--        (6532, 6532, 'borrower_acc', '6532', 789, 2);
+--
+-- INSERT INTO position (position_id, custom_value2, ticker, cusip, isin,
+--                       sedol, quick_code, price_factor, rate, end_date,
+--                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
+--                       settle_date, deliver_free, amount, price,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type, last_update_datetime,
+--                       account_id, cp_id, account_lei, cp_lei, processing_status, status, is_cash,
+--                       index_id, index_name, spread, accrual_date, matching_1source_loan_contract_id)
+-- VALUES ('6532', '6532', '234', '02319411107', 'US023194111068',
+--         '2000010', '458', 0, 0.05, '2024-02-21 13:50:41.633000',
+--         6532.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 1,
+--         '2023-10-25 13:50:41.633000', false, 1799411.5, 119.57,
+--         1.02, 0, 0, 'CASH BORROW', '2024-03-24 13:50:41.633000',
+--         6532, 9411, '4141', '1212', 'UPDATED', 'FUTURE', true,
+--         12, 'Fixed Rate', 11.0, '2023-10-25 13:50:41.633000', '32b71278-9ad2-445a-bfb0-b5ada72f6532');

@@ -1,12 +1,5 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.onesource.CollateralDescription;
@@ -47,11 +40,11 @@ public class CollateralDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(contractPrice, CONTRACT_PRICE);
-        throwIfFieldMissedException(collateralValue, COLLATERAL_VALUE);
-        throwIfFieldMissedException(currency, CURRENCY);
-        throwIfFieldMissedException(type, COLLATERAL_TYPE);
-        throwIfFieldMissedException(margin, COLLATERAL_MARGIN);
+//        throwIfFieldMissedException(contractPrice, CONTRACT_PRICE);
+//        throwIfFieldMissedException(collateralValue, COLLATERAL_VALUE);
+//        throwIfFieldMissedException(currency, CURRENCY);
+//        throwIfFieldMissedException(type, COLLATERAL_TYPE);
+//        throwIfFieldMissedException(margin, COLLATERAL_MARGIN);
     }
 
 }

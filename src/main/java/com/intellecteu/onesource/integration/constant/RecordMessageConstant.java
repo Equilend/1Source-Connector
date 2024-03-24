@@ -121,6 +121,10 @@ public class RecordMessageConstant {
                 The Lender’s loan contract proposal %s has been successfully reconciled \
                 with the position %s""";
 
+            public static final String LOAN_CONTRACT_PROPOSAL_VALIDATED_MSG = """
+                The Lender’s loan contract proposal %s has been successfully reconciled \
+                with the position %s and needs now to be approved.""";
+
             public static final String GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_MSG = """
                 Updated positions pending confirmation cannot be extracted from SPIRE for the following reason: %s""";
 
@@ -141,9 +145,7 @@ public class RecordMessageConstant {
 
             public static final String RECONCILE_LOAN_CONTRACT_DISCREPANCIES_MSG = """
                 Discrepancies have been found between the Lender's loan contract proposal %s \
-                and the matched SPIRE position %s. \n
-                List of discrepancies:
-                %s""";
+                and the matched SPIRE position %s.""";
 
             public static final String RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG = """
                 The trade agreement %s is in discrepancies with the position %s in SPIRE.

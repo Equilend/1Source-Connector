@@ -21,6 +21,7 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.ContractMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -50,12 +51,12 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
     SettlementTempRepository settlementTempRepository;
     SettlementService settlementService;
     CloudEventRecordService cloudEventRecordService;
-    ReconcileService<Contract, PositionDto> reconcileService;
+    ReconcileService<Contract, Position> reconcileService;
     SpireMapper spireMapper;
     ContractMapper contractMapper;
 
-    Optional<PositionDto> retrievePositionByVenue(String venueRefId) {
-        return positionService.findByVenueRefId(venueRefId).map(spireMapper::toPositionDto);
+    Optional<Position> retrievePositionByVenue(String venueRefId) {
+        return positionService.findByVenueRefId(venueRefId);
     }
 
     void saveContractWithStage(Contract contract, FlowStatus status) {
@@ -64,7 +65,7 @@ public abstract class AbstractContractProcessStrategy implements ContractProcess
         log.debug("Contract id: {} was saved with flow status: {}", contract.getContractId(), status);
     }
 
-    void reconcile(Contract contract, PositionDto positionDto) {
+    void reconcile(Contract contract, Position positionDto) {
         try {
             var processingStatus = contract.getTrade().getProcessingStatus();
             if (processingStatus != null && SKIP_RECONCILIATION_STATUSES.contains(processingStatus)) {

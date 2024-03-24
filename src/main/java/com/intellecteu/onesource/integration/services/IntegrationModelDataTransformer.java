@@ -45,6 +45,7 @@ import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.model.onesource.VenueType;
 import io.micrometer.common.util.StringUtils;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -116,7 +117,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .venue(buildExecutionVenueFromPosition(position))
             .instrument(buildInstrumentFromPosition(position))
             .rate(buildRebateRateFromPosition(position))
-            .quantity(position.getQuantity().intValue()) // todo rework to BigDecimal
+            .quantity(BigDecimal.valueOf(position.getQuantity()))
             .billingCurrency(CurrencyCd.fromValue(position.getCurrency().getCurrencyKy()))
             .dividendRatePct(position.getLoanBorrow().getTaxWithholdingRate())
             .tradeDate(position.getTradeDate().toLocalDate())

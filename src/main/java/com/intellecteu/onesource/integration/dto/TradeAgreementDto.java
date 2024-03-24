@@ -1,13 +1,5 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -18,6 +10,7 @@ import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -42,7 +35,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("rate")
     private RateDto rate;
     @JsonProperty("quantity")
-    private Integer quantity;
+    private BigDecimal quantity;
     @JsonProperty("billingCurrency")
     private CurrencyCd billingCurrency;
     @JsonProperty("dividendRatePct")
@@ -74,7 +67,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonCreator
     public TradeAgreementDto(@JsonProperty("executionVenue") VenueDto executionVenue,
         @JsonProperty("instrument") InstrumentDto instrument, @JsonProperty("rate") RateDto rate,
-        @JsonProperty("quantity") Integer quantity,
+        @JsonProperty("quantity") BigDecimal quantity,
         @JsonProperty("billingCurrency") CurrencyCd billingCurrency,
         @JsonProperty("dividendRatePct") Double dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
         @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDate termDate,
@@ -104,16 +97,16 @@ public class TradeAgreementDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(instrument, INSTRUMENT);
-        throwIfFieldMissedException(quantity, QUANTITY);
-        throwIfFieldMissedException(tradeDate, TRADE_DATE);
-        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE);
-        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE);
-        throwIfFieldMissedException(collateral, COLLATERAL);
-        rate.validateForReconciliation();
-        collateral.validateForReconciliation();
-        instrument.validateForReconciliation();
-        validateParties();
+//        throwIfFieldMissedException(instrument, INSTRUMENT);
+//        throwIfFieldMissedException(quantity, QUANTITY);
+//        throwIfFieldMissedException(tradeDate, TRADE_DATE);
+//        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE);
+//        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE);
+//        throwIfFieldMissedException(collateral, COLLATERAL);
+//        rate.validateForReconciliation();
+//        collateral.validateForReconciliation();
+//        instrument.validateForReconciliation();
+//        validateParties();
     }
 
     public String retrieveVenueName() {

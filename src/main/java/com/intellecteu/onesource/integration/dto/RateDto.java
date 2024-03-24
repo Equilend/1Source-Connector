@@ -1,8 +1,5 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
@@ -26,7 +23,7 @@ public class RateDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(getRebateRate(), REBATE);
+//        throwIfFieldMissedException(getRebateRate(), REBATE);
     }
 
     public Double retrieveRateBps() {
