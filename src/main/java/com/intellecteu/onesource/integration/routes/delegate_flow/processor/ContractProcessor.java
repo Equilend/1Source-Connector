@@ -174,6 +174,7 @@ public class ContractProcessor {
             removeMatchingContractFromPosition(contract.getMatchingSpirePositionId());
         }
         contract.setProcessingStatus(DECLINED);
+        contract.setContractStatus(ContractStatus.DECLINED);
         return contractService.save(contract);
     }
 
