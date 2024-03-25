@@ -1621,7 +1621,7 @@
           "uuid": "1c14525c-6e2c-4c6e-bf1b-33c7665cba7c",
           "body": "{}",
           "latency": 0,
-          "statusCode": 500,
+          "statusCode": 200,
           "label": "",
           "headers": [],
           "bodyType": "INLINE",

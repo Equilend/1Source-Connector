@@ -49,7 +49,8 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
     private Collection<? extends ProcessExceptionDetails> reconcileRerate(Rerate onesourceRerate,
         RerateTrade backofficeRerate) {
         var failedList = new ArrayList<ProcessExceptionDetails>();
-        if (backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName().equals(FIXED_INDEX_NAME)) {
+        if (backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName().equals(FIXED_INDEX_NAME) ||
+            backofficeRerate.getTradeOut().getPosition().getIndex().getIndexId().equals(12)) {
             if (onesourceRerate.getRerate() != null && onesourceRerate.getRerate().getRebate() != null
                 && onesourceRerate.getRerate().getRebate().getFixed() != null
                 && backofficeRerate.getTradeOut() != null) {
