@@ -42,6 +42,7 @@ public class RecordMessageConstant {
             public static final String POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_1SOURCE = "Position - %s";
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT = "1Source Contract - %s";
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
@@ -190,6 +191,10 @@ public class RecordMessageConstant {
             public static final String POSITION_UPDATE_SUBMITTED_MSG = """
                 A loan contract proposal has been generated from the updated position %s and posted to 1Source""";
 
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_MSG = """
+                The loan contract proposal %s has been approved in 1Source but the loan contract proposal \
+                has not been retrieved in the Integration toolkit.""";
+
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_MSG = """
                 The loan contract proposal %s has been declined in 1Source but the loan contract proposal \
                 has not been retrieved in the Integration toolkit.""";
@@ -217,6 +222,7 @@ public class RecordMessageConstant {
             public static final String GET_POSITION_SETTLEMENT_EXCEPTION_SPIRE = "Position - %s";
             public static final String LOAN_CONTRACT_SETTLED = "Position - %s";
             public static final String POSITION_SETTLED_SUBMITTED_SUBJECT = "Position - %s";
+            public static final String PROCESS_POSITION_SETTLED_SUBJECT = "Position - %s";
             public static final String POST_LOAN_CONTRACT_UPDATE_EXCEPTION = "Position - %s";
         }
 

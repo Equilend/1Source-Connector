@@ -10,6 +10,7 @@ import static java.lang.String.valueOf;
 
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
@@ -48,21 +49,51 @@ public class UpdatePositionProcessor {
         return initialPositions.stream()
             .filter(p -> updateRequestPosition.getPositionId().equals(p.getPositionId()))
             .findAny()
-            .map(p -> updateInitialPosition(p, updateRequestPosition))
+            .map(p -> updateInitialPositionForRerate(p, tradeOut))
             .orElse(null);
     }
 
-    private Position updateInitialPosition(Position initialPosition, Position updateRequestPosition) {
-        initialPosition.setRate(updateRequestPosition.getRate());
-        initialPosition.setAccrualDate(updateRequestPosition.getAccrualDate());
-        final Index initialIndex = initialPosition.getIndex();
-        final Index updateRequestIndex = updateRequestPosition.getIndex();
-        if (initialIndex != null && updateRequestIndex != null) {
-            initialIndex.setIndexId(updateRequestIndex.getIndexId());
-            initialIndex.setIndexName(updateRequestIndex.getIndexName());
-            initialIndex.setSpread(updateRequestIndex.getSpread());
-        }
+    private Position updateInitialPositionForRerate(Position initialPosition, TradeOut tradeUpdateRequest) {
+        updateFixedRate(initialPosition, tradeUpdateRequest);
+        updateNotFixedRate(initialPosition, tradeUpdateRequest);
         return initialPosition;
+    }
+
+    private static void updateFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
+        Position updateRequestPosition = tradeUpdateRequest.getPosition();
+        final Index indexUpdateRequest = updateRequestPosition.getIndex();
+        final Index initialIndex = initialPosition.getIndex();
+        if (indexUpdateRequest != null && initialIndex != null) {
+            final String updateRequestIndexName = indexUpdateRequest.getIndexName();
+            final String initialIndexName = initialIndex.getIndexName();
+            if ("Fixed Rate".equals(updateRequestIndexName)) {
+                initialPosition.setRate(tradeUpdateRequest.getRateOrSpread());
+                initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate());
+
+                if (!updateRequestIndexName.equals(initialIndexName)) {
+                    initialIndex.setIndexId(indexUpdateRequest.getIndexId());
+                    initialIndex.setIndexName(indexUpdateRequest.getIndexName());
+                    initialIndex.setSpread(null);
+                }
+            }
+        }
+    }
+
+    private static void updateNotFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
+        Position updateRequestPosition = tradeUpdateRequest.getPosition();
+        final Index indexUpdateRequest = updateRequestPosition.getIndex();
+        final Index initialIndex = initialPosition.getIndex();
+        if (indexUpdateRequest != null && initialIndex != null) {
+            final String updateRequestIndexName = indexUpdateRequest.getIndexName();
+            final String initialIndexName = initialIndex.getIndexName();
+            if (!"Fixed Rate".equals(updateRequestIndexName)) {
+                initialPosition.setRate(null);
+                initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate());
+                initialIndex.setIndexId(indexUpdateRequest.getIndexId());
+                initialIndex.setIndexName(indexUpdateRequest.getIndexName());
+                initialIndex.setSpread(indexUpdateRequest.getSpread());
+            }
+        }
     }
 
     public Position getPositionToUpdateById(Long positionIdToUpdate, List<Position> initialPositions) {
@@ -95,6 +126,15 @@ public class UpdatePositionProcessor {
 
     public Position updatePositionProcessingStatus(Position position, ProcessingStatus processingStatus) {
         position.setProcessingStatus(processingStatus);
+        position.setLastUpdateDateTime(LocalDateTime.now());
+        return position;
+    }
+
+    public Position updatePositionStatus(Position position, String positionStatus) {
+        if (position.getPositionStatus() == null) {
+            position.setPositionStatus(new PositionStatus());
+        }
+        position.getPositionStatus().setStatus(positionStatus);
         position.setLastUpdateDateTime(LocalDateTime.now());
         return position;
     }

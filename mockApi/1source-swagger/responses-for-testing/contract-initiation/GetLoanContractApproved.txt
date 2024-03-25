@@ -9,7 +9,7 @@ Prepared local migration data: V2024.03.22.20.00__EINT23-455_get_loan_contract_p
 {
   "contractId": "32b71278-9ad2-445a-bfb0-b5ada72f3456",
   "lastEvent": null,
-  "contractStatus": "APPROVED",
+  "contractStatus": "PENDING",
   "settlementStatus": "NONE",
   "lastUpdatePartyId": "string",
   "lastUpdateDatetime": "2024-03-22T11:22:46.245",

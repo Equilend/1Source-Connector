@@ -52,8 +52,8 @@
 --
 -- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
 --                       matching_spire_position_id, matching_spire_trade_id)
--- VALUES (101, '101', 'PROPOSED', 101, 'UNMATCHED', 101, 101),
---        (202, '202', 'PROPOSED', 202, 'UNMATCHED', 202, 202);
+-- VALUES (101, '101', 'PROPOSED', 101, 'PROPOSED', 101, 101),
+--        (202, '202', 'PROPOSED', 202, 'PROPOSED', 202, 202);
 --
 -- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
 -- VALUES (101, 101, 'lender_acc', '101', 101, 1),

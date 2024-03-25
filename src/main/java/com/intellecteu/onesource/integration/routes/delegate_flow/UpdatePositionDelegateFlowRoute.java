@@ -101,6 +101,7 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
             .setBody(simple("${body.position}"))
             .bean(updatePositionProcessor, "getPositionToUpdateById(${body.positionId}, ${headers.initialPositions})")
             .filter(body().isNotNull())
+            .bean(updatePositionProcessor, "updatePositionStatus(${body}, CANCELLED)")
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, CANCELED)")
             .bean(updatePositionProcessor, "savePosition")
             .filter(simple("${body.matching1SourceLoanContractId} != null"))
@@ -113,6 +114,7 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
             .bean(updatePositionProcessor,
                 "getPositionToUpdateById(${body.positionId}, ${headers.initialPositions})")
             .filter(body().isNotNull())
+            .bean(updatePositionProcessor, "updatePositionStatus(${body}, CANCELLED)")
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, CANCELED)")
             .bean(updatePositionProcessor, "savePosition")
             .bean(updatePositionProcessor, "recordPositionCanceledSystemEvent")
