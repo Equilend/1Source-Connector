@@ -142,7 +142,7 @@ public class ContractProcessor {
         final Optional<Contract> contractOptional = contractService.findContractById(contractId);
         contractOptional.ifPresentOrElse(
             this::updateAndRecordSystemEvent,
-            () -> recordToolkitIssueEvent(event)
+            () -> recordToolkitIssueEvent(CONTRACT_SETTLEMENT, event.getResourceUri(), GET_LOAN_CONTRACT_SETTLED)
         );
     }
 
@@ -460,9 +460,20 @@ public class ContractProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordToolkitIssueEvent(TradeEvent event) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
-        var recordRequest = eventBuilder.buildToolkitIssueRequest(event.getResourceUri(), GET_LOAN_CONTRACT_SETTLED);
+    /**
+     * Record Integration Issue System Event for defined integration sub process
+     *
+     * @param event TradeEvent details to be recorded
+     * @param subProcess IntegrationSubProcess of the integration process
+     */
+    public void recordIntegrationIssueEvent(TradeEvent event, IntegrationSubProcess subProcess) {
+        recordToolkitIssueEvent(CONTRACT_INITIATION, event.getResourceUri(), subProcess);
+    }
+
+    private void recordToolkitIssueEvent(IntegrationProcess process, String record,
+        IntegrationSubProcess subProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
     }
 

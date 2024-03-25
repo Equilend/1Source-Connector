@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
@@ -187,15 +188,20 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .setHeader("tradeEvent", body())
             .bean(contractProcessor, "getLoanContractDetails")
             .bean(contractProcessor, "updateContractWithContractDetails")
-            .filter(body().isNotNull())
-            .bean(contractProcessor, "updateContractProcessingStatus(${body}, APPROVED)")
-            .bean(contractProcessor, "saveContract")
-            .setHeader("contract", body())
-            .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
-            .filter(body().isNotNull())
-            .bean(positionProcessor, "updateProcessingStatus(${body}, PROPOSAL_APPROVED)")
-            .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
-            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .choice()
+                .when(simple("${body} == null"))
+                    .bean(contractProcessor, String.format("recordIntegrationIssueEvent(${header.tradeEvent}, %s)", GET_LOAN_CONTRACT_APPROVED))
+                    .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+                .otherwise()
+                    .bean(contractProcessor, "updateContractProcessingStatus(${body}, APPROVED)")
+                    .bean(contractProcessor, "saveContract")
+                    .setHeader("contract", body())
+                    .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
+                    .filter(body().isNotNull())
+                    .bean(positionProcessor, "updateProcessingStatus(${body}, PROPOSAL_APPROVED)")
+                    .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
+                    .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .end()
             .log("<<< Finished GET_LOAN_CONTRACT_APPROVED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[APPROVED], Position[PROPOSAL_APPROVED]")
         .end();
