@@ -180,8 +180,7 @@ public class RerateProcessor {
                         rerate.getRerateId(), rerate.getMatchingSpireTradeId());
                     return rerate;
                 }
-                if (CREATED.equals(rerateTrade.getProcessingStatus()) || UPDATED.equals(
-                    rerateTrade.getProcessingStatus())) {
+                if (WAITING_PROPOSAL.equals(rerateTrade.getProcessingStatus())) {
                     //Receiver
                     rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
                     rerateTradeService.markRerateTradeAsMatchedWithRerate(rerateTrade, rerate);
