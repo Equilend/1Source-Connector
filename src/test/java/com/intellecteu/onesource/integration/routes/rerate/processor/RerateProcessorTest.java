@@ -1,5 +1,14 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -21,12 +30,15 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.DeclineInstructionService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
@@ -34,6 +46,7 @@ import com.intellecteu.onesource.integration.services.reconciliation.RerateRecon
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.IntegrationCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,6 +75,8 @@ class RerateProcessorTest {
     @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
+    private DeclineInstructionService declineInstructionService;
+    @Mock
     private OneSourceService oneSourceService;
 
     RerateProcessor rerateProcessor;
@@ -70,12 +85,12 @@ class RerateProcessorTest {
     void setUp() {
         openMocks(this);
         CloudEventFactory cloudEventFactory = mock(CloudEventFactory.class);
-        IntegrationCloudEventBuilder cloudEventBuildRequest = mock(IntegrationCloudEventBuilder.class);
+        RerateCloudEventBuilder cloudEventBuildRequest = mock(RerateCloudEventBuilder.class);
         doReturn(cloudEventBuildRequest).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         rerateProcessor = new RerateProcessor(lenderBackOfficeService, borrowerBackOfficeService, oneSourceService,
-            contractService,
-            rerateTradeService, rerateService, rerateReconcileService, cloudEventRecordService);
+            contractService, rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
+            cloudEventRecordService);
     }
 
     @Test
@@ -91,7 +106,7 @@ class RerateProcessorTest {
     }
 
     @Test
-    void instructRerateTrade_OkResponse_SubmittedStatus(){
+    void instructRerateTrade_OkResponse_SubmittedStatus() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setProcessingStatus(CREATED);
 
@@ -101,7 +116,7 @@ class RerateProcessorTest {
     }
 
     @Test
-    void instructRerateTrade_Not400Response_RecordTechnicalExceptionEvent(){
+    void instructRerateTrade_Not400Response_RecordTechnicalExceptionEvent() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setProcessingStatus(CREATED);
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).instructRerate(any());
@@ -177,7 +192,7 @@ class RerateProcessorTest {
             .findUnmatchedRerateTrade(any(), any());
         doNothing().when(rerateReconcileService).reconcile(any(), any());
 
-        Rerate result = rerateProcessor.validate(rerate);
+        Rerate result = rerateProcessor.validateRerate(rerate);
 
         assertEquals(VALIDATED, result.getProcessingStatus());
     }
@@ -193,29 +208,79 @@ class RerateProcessorTest {
         doThrow(new ReconcileException(new ArrayList<>())).when(rerateReconcileService)
             .reconcile(any(), any());
 
-        Rerate result = rerateProcessor.validate(rerate);
+        Rerate result = rerateProcessor.validateRerate(rerate);
 
         assertEquals(DISCREPANCIES, result.getProcessingStatus());
     }
 
     @Test
-    void approve_OkResponse_SENTFORAPPROVALStatus(){
+    void approve_OkResponse_SENTFORAPPROVALStatus() {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
 
-        Rerate result = rerateProcessor.approve(rerate);
+        Rerate result = rerateProcessor.approveRerate(rerate);
 
-        assertEquals(SENT_FOR_APPROVAL, result.getProcessingStatus());
+        assertEquals(APPROVAL_SUBMITTED, result.getProcessingStatus());
     }
 
     @Test
-    void approve_NotOkResponse_RecordTechnicalExceptionEvent(){
+    void approve_NotOkResponse_RecordTechnicalExceptionEvent() {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
 
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).approveRerate(any(), any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService)
+            .approveRerate(any(), any());
 
-        Rerate result = rerateProcessor.approve(rerate);
+        Rerate result = rerateProcessor.approveRerate(rerate);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void confirmRerateTrade_OkResponse_SENTFORAPPROVALStatus() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(1l);
+
+        RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
+
+        assertEquals(CONFIRMED, result.getProcessingStatus());
+    }
+
+    @Test
+    void confirmRerateTrade_NotOkResponse_RecordTechnicalExceptionEvent() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(1l);
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(lenderBackOfficeService)
+            .confirmBackOfficeRerateTrade(any());
+
+        RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void declineRerate_OkResponse_DECLINESUBMITTEDStatus() {
+        DeclineInstruction declineInstruction = new DeclineInstruction();
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("id");
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+
+        DeclineInstruction result = rerateProcessor.declineRerate(declineInstruction);
+
+        verify(oneSourceService, times(1)).declineRerate(any(), any());
+        assertEquals(DECLINE_SUBMITTED, rerate.getProcessingStatus());
+    }
+
+    @Test
+    void declineRerate_NotOkResponse_RecordTechnicalExceptionEvent() {
+        DeclineInstruction declineInstruction = new DeclineInstruction();
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("id");
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService)
+            .declineRerate(any(), any());
+
+        DeclineInstruction result = rerateProcessor.declineRerate(declineInstruction);
 
         verify(cloudEventRecordService, times(1)).record(any());
     }

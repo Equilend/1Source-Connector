@@ -1,15 +1,25 @@
 package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_DECLINED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.routes.rerate.processor.RerateEventProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
@@ -41,18 +51,25 @@ public class RerateRoute extends RouteBuilder {
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT r FROM RerateEntity r WHERE r.processingStatus = '%s'";
 
+    private static final String DECLINE_INSTRUCTION_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT d FROM DeclineInstructionEntity d WHERE d.relatedProposalType = 'RERATE' AND d.processingStatus IS NULL";
+
     private final RerateProcessor rerateProcessor;
-    private final EventProcessor eventProcessor;
+    private final RerateEventProcessor rerateEventProcessor;
     private final OneSourceMapper oneSourceMapper;
     private final BackOfficeMapper backOfficeMapper;
+    private final DeclineInstructionMapper declineInstructionMapper;
 
     @Autowired
-    public RerateRoute(RerateProcessor rerateProcessor, EventProcessor eventProcessor, OneSourceMapper oneSourceMapper,
-        BackOfficeMapper backOfficeMapper) {
+    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
+        BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper) {
         this.rerateProcessor = rerateProcessor;
-        this.eventProcessor = eventProcessor;
+        this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
         this.backOfficeMapper = backOfficeMapper;
+        this.declineInstructionMapper = declineInstructionMapper;
     }
 
     @Override
@@ -61,65 +78,101 @@ public class RerateRoute extends RouteBuilder {
 
         from("timer://eventTimer?period={{camel.newBackOfficeTradeEventTimer}}")
             .routeId("NewBackOfficeRerateTradeRoute")
-            .log(">>>>> Started fetching BackOffice Rerate Trades")
+            .log(">>> Started GET_NEW_TRADE_EVENTS_PENDING_CONFIRMATION for RerateTrades")
             .bean(rerateProcessor, "fetchNewRerateTrades")
             .split(body())
                 .to("direct:recordRerateTrade")
             .end()
-            .log("<<<<< Finished fetching BackOffice Rerate Trades");
+            .log("<<< Finished GET_NEW_TRADE_EVENTS_PENDING_CONFIRMATION for RerateTrades");
 
         from("direct:recordRerateTrade")
-            .log(">>>>> Started recording BackOffice Rerate Trades with tradeId ${body.tradeId}")
+            .log(">>> Started PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(rerateProcessor, "updateRerateTradeCreationDatetime")
             .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CREATED)")
             .bean(rerateProcessor, "saveRerateTrade")
             .to("direct:matchRerate")
-            .log(">>>>> Finished recording BackOffice Rerate Trades with tradeId ${body.tradeId}");
+            .log("<<< Finished PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CREATED]");
 
         from("direct:matchRerate")
-            .log(">>>>> Started matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate")
+            .log(">>> Started PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(rerateProcessor, "matchBackOfficeRerateTradeWith1SourceRerate")
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<<<< Finished matching BackOffice Rerate Trade with tradeId ${body.tradeId} with 1Source Rerate");
+            .log("<<< Finished PROCESS_RERATE_PENDING_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: Rerate[MATCHED]");
 
         from(createUnmatchedRerateTradeSQLEndpoint(CREATED))
-            .log(">>>>> Started instruction BackOffice Rerate Trade with tradeId ${body.tradeId}")
+            .log(">>> Started POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
             .bean(rerateProcessor, "instructRerateTrade")
-            //Success instruction changes status to SUBMITTED
             .bean(rerateProcessor, "saveRerateTrade")
-            .log(">>>>> Finished instruction BackOffice Rerate Trade with tradeId ${body.tradeId}");
+            .log("<<< Finished POST_RERATE_PROPOSAL for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[SUBMITTED, WAITING_PROPOSAL]");
 
         from(createTradeEventSQLEndpoint(CREATED, RERATE_PROPOSED))
-            .log(">>>>> Started processing RerateEvent with eventId ${body.eventId}")
+            .log(">>> Started GET_RERATE_PROPOSAL for TradeEvent: ${body.eventId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(eventProcessor, "processRerateEvent")
-            //1Source Rerate
-            .bean(eventProcessor, "updateEventStatus(${body}, PROCESSED)")
-            .log("<<<<< Finished processing RerateEvent with eventId ${body.eventId}");
+            .bean(rerateEventProcessor, "processRerateProposedEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished GET_RERATE_PROPOSAL for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[PROPOSED]");
 
         from(createRerateSQLEndpoint(PROPOSED))
-            .log(">>>>> Started processing 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started MATCH_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
             .bean(rerateProcessor, "match1SourceRerateWithBackOfficeRerateTrade")
-             //Result status can be MATCHED, TO_VALIDATE or UNMATCHED
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished processing 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished MATCH_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[MATCHED, TO_VALIDATE, UNMATCHED]");
 
         from(createRerateSQLEndpoint(TO_VALIDATE))
-            .log(">>>>> Started validation 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "validate")
-            //Result status can be VALIDATED, DISCREPANCIES
+            .bean(rerateProcessor, "validateRerate")
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished validation 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished VALIDATE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[VALIDATED, DISCREPANCIES]");
 
         from(createRerateSQLEndpoint(VALIDATED))
-            .log(">>>>> Started approval 1Source Rerate with rerateId ${body.rerateId}")
+            .log(">>> Started APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId}")
             .bean(oneSourceMapper, "toModel")
-            .bean(rerateProcessor, "approve")
+            .bean(rerateProcessor, "approveRerate")
             .bean(rerateProcessor, "saveRerate")
-            .log(">>>>> Finished approval 1Source Rerate with rerateId ${body.rerateId}");
+            .log(">>> Finished APPROVE_RERATE_PROPOSAL for Rerate: ${body.rerateId} with expected statuses: Rerate[APPROVAL_SUBMITTED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_PENDING))
+            .log(">>> Started GET_RERATE_APPROVED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processReratePendingEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished GET_RERATE_APPROVED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPROVED], RerateTrade[PROPOSAL_APPROVED]");
+
+        from(createRerateTradeSQLEndpoint(PROPOSAL_APPROVED))
+            .log(">>> Started POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId}")
+            .bean(backOfficeMapper, "toModel")
+            .bean(rerateProcessor, "confirmRerateTrade")
+            .bean(rerateProcessor, "saveRerateTrade")
+            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_APPLIED))
+            .log(">>> Started PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processRerateAppliedEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPLIED]");
+
+        from(createUnprocessedDeclineInstructionSQLEndpoint())
+            .log(">>> Started DECLINE_RERATE_PROPOSAL for DeclineInstruction: ${body.declineInstructionId}")
+            .bean(declineInstructionMapper, "toModel")
+            .bean(rerateProcessor, "declineRerate")
+            .bean(rerateProcessor, "updateDeclineInstructionProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateProcessor, "saveDeclineInstruction")
+            .log("<<< Finished DECLINE_RERATE_PROPOSAL for DeclineInstruction: ${body.declineInstructionId} with expected statuses: DeclineInstruction[PROCESSED], Rerate[DECLINE_SUBMITTED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_DECLINED))
+            .log(">>> Started PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processRerateDeclinedEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[DECLINED]");
     }
     //@formatter:on
 
@@ -128,11 +181,10 @@ public class RerateRoute extends RouteBuilder {
             Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
     }
 
-    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status) {
-        var unmatchedRerateTradeSQLEndpoint =
-            "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
-                + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-                + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
+    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status){
+        var unmatchedRerateTradeSQLEndpoint = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
         return String.format(unmatchedRerateTradeSQLEndpoint, status);
     }
 
@@ -142,5 +194,9 @@ public class RerateRoute extends RouteBuilder {
 
     private String createRerateSQLEndpoint(ProcessingStatus status) {
         return String.format(RERATE_SQL_ENDPOINT, status);
+    }
+
+    private String createUnprocessedDeclineInstructionSQLEndpoint(){
+        return DECLINE_INSTRUCTION_SQL_ENDPOINT;
     }
 }

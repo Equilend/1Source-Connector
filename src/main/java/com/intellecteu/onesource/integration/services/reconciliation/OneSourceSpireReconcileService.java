@@ -44,10 +44,14 @@ import static com.intellecteu.onesource.integration.model.onesource.PriceUnit.SH
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
 
+import com.intellecteu.onesource.integration.dto.spire.PositionDto;
+import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
@@ -64,6 +68,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.lang.NonNull;

@@ -1,5 +1,7 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -31,8 +33,20 @@ public class RerateService {
         return oneSourceMapper.toModel(rerateEntity);
     }
 
+    public Rerate getByRerateId(String rerateId){
+        RerateEntity rerateEntity = rerateRepository.getReferenceById(rerateId);
+        return oneSourceMapper.toModel(rerateEntity);
+    }
+
+    public Rerate mergeRerate(Rerate rerate, Rerate rerateUpdate){
+        rerate.setRerate(rerateUpdate.getRerate());
+        rerate.setRate(rerateUpdate.getRate());
+        rerate.setRerateStatus(rerateUpdate.getRerateStatus());
+        return rerate;
+    }
+
     public Optional<Rerate> findUnmatchedRerate(String contractId, LocalDate effectiveDate) {
-        List<Rerate> rerateList = rerateRepository.findByContractId(contractId).stream().map(oneSourceMapper::toModel)
+        List<Rerate> rerateList = rerateRepository.findByContractIdAndProcessingStatus(contractId,  UNMATCHED).stream().map(oneSourceMapper::toModel)
             .collect(Collectors.toList());
         Optional<Rerate> rerateOptional = rerateList.stream().filter(rerate ->
             compareEffectiveDate(rerate, effectiveDate)).findFirst();

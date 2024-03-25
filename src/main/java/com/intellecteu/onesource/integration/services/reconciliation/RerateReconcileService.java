@@ -49,17 +49,18 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
     private Collection<? extends ProcessExceptionDetails> reconcileRerate(Rerate onesourceRerate,
         RerateTrade backofficeRerate) {
         var failedList = new ArrayList<ProcessExceptionDetails>();
-        if (backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName().equals(FIXED_INDEX_NAME)) {
+        if (backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName().equals(FIXED_INDEX_NAME) ||
+            backofficeRerate.getTradeOut().getPosition().getIndex().getIndexId().equals(12)) {
             if (onesourceRerate.getRerate() != null && onesourceRerate.getRerate().getRebate() != null
                 && onesourceRerate.getRerate().getRebate().getFixed() != null
                 && backofficeRerate.getTradeOut() != null) {
 
                 if (onesourceRerate.getRerate().getRebate().getFixed().getBaseRate() != null
-                    && backofficeRerate.getTradeOut().getPosition().getRate() != null) {
+                    && backofficeRerate.getTradeOut().getRateOrSpread() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFixed().getBaseRate(),
                         "baseRate",
-                        backofficeRerate.getTradeOut().getPosition().getRate(),
-                        "rate").ifPresent(failedList::add);
+                        backofficeRerate.getTradeOut().getRateOrSpread(),
+                        "rateOrSpread").ifPresent(failedList::add);
                 }
 
                 if (onesourceRerate.getRerate().getRebate().getFixed().getEffectiveDate() != null
@@ -85,27 +86,19 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 }
 
                 if (onesourceRerate.getRerate().getRebate().getFloating().getSpread() != null
-                    && backofficeRerate.getTradeOut().getPosition().getIndex().getSpread() != null) {
+                    && backofficeRerate.getTradeOut().getRateOrSpread() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getSpread(),
                         "spread",
-                        backofficeRerate.getTradeOut().getPosition().getIndex().getSpread(),
-                        "spread").ifPresent(failedList::add);
-                }
-
-                if (onesourceRerate.getRerate().getRebate().getFloating().getEffectiveRate() != null
-                    && backofficeRerate.getTradeOut().getPosition().getRate() != null) {
-                    checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getEffectiveRate(),
-                        "effectiveRate",
-                        backofficeRerate.getTradeOut().getPosition().getRate(),
-                        "rate").ifPresent(failedList::add);
+                        backofficeRerate.getTradeOut().getRateOrSpread(),
+                        "rateOrSpread").ifPresent(failedList::add);
                 }
 
                 if (onesourceRerate.getRerate().getRebate().getFloating().getEffectiveDate() != null
                     && backofficeRerate.getTradeOut().getPosition().getSettleDate() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getEffectiveDate(),
                         "effectiveDate",
-                        backofficeRerate.getTradeOut().getPosition().getSettleDate(),
-                        "settleDate").ifPresent(failedList::add);
+                        backofficeRerate.getTradeOut().getAccrualDate().toLocalDate(),
+                        "accrualDate").ifPresent(failedList::add);
                 }
             }
         }

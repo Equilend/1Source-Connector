@@ -7,6 +7,13 @@ import static com.intellecteu.onesource.integration.model.enums.PositionStatusEn
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.CANCEL;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FAILED;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.FUTURE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;

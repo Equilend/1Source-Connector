@@ -10,6 +10,7 @@ import com.intellecteu.onesource.integration.model.onesource.Instrument;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -37,11 +38,14 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateStatusDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
@@ -68,6 +72,7 @@ public abstract class OneSourceMapper {
 
     public abstract Rerate toModel(RerateEntity rerateEntity);
 
+    @Mapping(target = "rerateStatus", source = "status")
     public abstract Rerate toModel(RerateDTO rerateDTO);
 
     public abstract ContractDetails toModel(ContractDTO contractDTO);
@@ -77,6 +82,8 @@ public abstract class OneSourceMapper {
     public abstract SettlementInstruction toModel(SettlementInstructionDTO instructionDto);
 
     public abstract Contract toModel(ContractDetails contractDetails);
+
+    public abstract RerateStatus mapStatus(RerateStatusDTO rerateStatusDTO);
 
     public abstract RerateEntity toEntity(Rerate rerate);
 

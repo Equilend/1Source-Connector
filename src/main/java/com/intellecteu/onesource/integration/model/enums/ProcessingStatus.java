@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ProcessingStatus {
+    APPLIED("APPLIED"),
     APPROVAL_SUBMITTED("APPROVAL_SUBMITTED"),
     APPROVED("APPROVED"),
     CANCELED("CANCELED"),
@@ -34,7 +35,8 @@ public enum ProcessingStatus {
     UNMATCHED("UNMATCHED"),
     UPDATE_SUBMITTED("UPDATE_SUBMITTED"),
     UPDATED("UPDATED"),
-    VALIDATED("VALIDATED");
+    VALIDATED("VALIDATED"),
+    WAITING_PROPOSAL("WAITING_PROPOSAL");
 
     private final String value;
     private boolean isTechnical;

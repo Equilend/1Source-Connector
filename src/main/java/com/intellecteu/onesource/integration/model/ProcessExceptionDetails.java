@@ -17,4 +17,5 @@ public class ProcessExceptionDetails {
     private String fieldName;
     private String fieldValue;
     private FieldExceptionType fieldExceptionType;
+
 }

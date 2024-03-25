@@ -13,6 +13,7 @@ import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
 
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
@@ -26,6 +27,7 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -73,6 +75,11 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     public abstract CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related);
 
+    public CloudEventBuildRequest buildRequest(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
+        return null;
+    }
+
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related,
         List<ProcessExceptionDetails> exceptionData) {
         return null;
@@ -89,6 +96,15 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
             .message(message)
             .fieldsImpacted(fieldsImpacted)
             .relatedObjects(relatedObjects)
+            .build();
+    }
+
+    protected SystemEventData createEventData(String message, List<RelatedObject> relatedObjects,
+        List<FieldImpacted> fieldImpacteds) {
+        return SystemEventData.builder()
+            .message(message)
+            .relatedObjects(relatedObjects)
+            .fieldsImpacted(fieldImpacteds)
             .build();
     }
 

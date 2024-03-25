@@ -79,6 +79,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -98,6 +99,8 @@ public class BackOfficeService {
     private final PositionSpireApiClient positionSpireApiClient;
     private final TradeSpireApiClient tradeSpireApiClient;
     private final InstructionSpireApiClient instructionClient;
+    private final Integer userId;
+    private final String userName;
     private final SpireMapper spireMapper;
     private final BackOfficeMapper backOfficeMapper;
     private final CloudEventRecordService cloudEventRecordService;
@@ -337,6 +340,16 @@ public class BackOfficeService {
             }
         }
         return List.of();
+    }
+
+    public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade){
+        OneSourceConfimationDTO body = new OneSourceConfimationDTO();
+        body.setTradeId(rerateTrade.getTradeId());
+        body.setPositionId(rerateTrade.getRelatedPositionId());
+        body.setLedgerId(rerateTrade.getMatchingRerateId());
+        body.userId(userId);
+        body.setUserName(userName);
+        tradeSpireApiClient.confirmTrade(body);
     }
 
     public Optional<Settlement> retrieveSettlementInstruction(Position position,

@@ -9,9 +9,15 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.isLender;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -23,16 +29,15 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -53,7 +58,6 @@ public class EventProcessor {
     private final AgreementService agreementService;
     private final ContractService contractService;
     private final PositionService positionService;
-    private final RerateService rerateService;
     private final CloudEventRecordService cloudEventRecordService;
 
     public TradeEvent saveEvent(TradeEvent event) {
@@ -121,27 +125,6 @@ public class EventProcessor {
             positionService.savePosition(position);
             recordCloudEvent(agreementId, position, TRADE_AGREEMENT_CANCELED);
         });
-    }
-
-    public void processRerateEvent(TradeEvent event) {
-        // expected format for resourceUri: /v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006
-        String resourceUri = event.getResourceUri();
-        try {
-            oneSourceService.retrieveRerate(resourceUri)
-                .ifPresent(rerate -> {
-                    rerate.setCreateUpdateDatetime(LocalDateTime.now());
-                    rerate.setLastUpdateDatetime(LocalDateTime.now());
-                    rerate.setProcessingStatus(ProcessingStatus.PROPOSED);
-                    rerateService.saveRerate(rerate);
-                });
-        } catch (HttpStatusCodeException e) {
-            log.debug("Rerate {} was not found. Details: {} ", resourceUri, e.getMessage());
-            if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(RERATE);
-                var recordRequest = eventBuilder.buildExceptionRequest(e, GET_RERATE_PROPOSAL, resourceUri);
-                cloudEventRecordService.record(recordRequest);
-            }
-        }
     }
 
     public void cancelContract() {

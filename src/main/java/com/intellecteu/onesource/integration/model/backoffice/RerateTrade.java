@@ -4,6 +4,12 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
+
+import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
@@ -29,8 +35,8 @@ public class RerateTrade implements Reconcilable {
     public void validateForReconciliation() throws ValidationException {
         var missedFields = new LinkedList<String>();
         if (tradeOut != null && tradeOut.getPosition() != null) {
-            if (tradeOut.getPosition().getRate() == null) {
-                missedFields.add("rate");
+            if (tradeOut.getRateOrSpread() == null) {
+                missedFields.add("rateOrSpread");
             }
             if (tradeOut.getAccrualDate() == null) {
                 missedFields.add("accrualDate");
@@ -40,7 +46,7 @@ public class RerateTrade implements Reconcilable {
             }
         }
         if (!missedFields.isEmpty()) {
-            throwFieldMissedException(String.join(COMMA_DELIMITER, missedFields), FieldSource.ONE_SOURCE_RERATE);
+            throwFieldMissedException(String.join(COMMA_DELIMITER, missedFields));
         }
     }
 }

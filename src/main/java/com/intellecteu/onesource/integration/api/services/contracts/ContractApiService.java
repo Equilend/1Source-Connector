@@ -24,6 +24,7 @@ import static com.intellecteu.onesource.integration.api.services.contracts.OneSo
 
 import com.intellecteu.onesource.integration.api.dto.ContractDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
@@ -55,17 +56,17 @@ public class ContractApiService {
         }
         log.debug("Found {} contracts", contracts.getTotalElements());
         final Page<ContractDto> contractPage = contracts.map(mapper::toDto);
-        return PageResponse.<ContractDto>builder()
-            .totalItems(contractPage.getTotalElements())
-            .currentPage(contractPage.getPageable().getPageNumber())
-            .totalPages(contractPage.getTotalPages())
-            .items(contractPage.getContent())
-            .build();
+        return new PageResponse<>(contractPage);
     }
 
     public ContractDto getContractById(String id) {
         Optional<ContractEntity> contract = contractRepository.getByContractId(id);
         return contract.map(mapper::toDto).orElseThrow(EntityNotFoundException::new);
+    }
+
+    public Optional<ProcessingStatus> getProcessingStatusByContractId(String contractId) {
+        return contractRepository.getProcessingStatusByContractId(contractId)
+            .map(ProcessingStatusDbResponse::getProcessingStatus);
     }
 
     private Specification<ContractEntity> createSpecificationForContract(MultiValueMap<String, String> parameters) {

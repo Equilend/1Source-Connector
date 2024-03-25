@@ -124,6 +124,7 @@ spire:
   baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_LOCAL:http://localhost:8083/lender}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT_LOCAL:http://localhost:8083/borrower}
+  userId: ${SPIRE_USERID_LOCAL:-1}
   username: ${SPIRE_USERNAME_LOCAL:test-user}
   password: ${SPIRE_PASSWORD_LOCAL:12345}
 

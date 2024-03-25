@@ -2,9 +2,9 @@ package com.intellecteu.onesource.integration.services.reconciliation;
 
 import static java.lang.String.format;
 
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
-import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import java.util.ArrayList;
 import lombok.extern.slf4j.Slf4j;

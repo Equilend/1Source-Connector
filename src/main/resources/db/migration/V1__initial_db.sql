@@ -404,6 +404,7 @@ CREATE TABLE IF NOT EXISTS rerate
     processing_status         VARCHAR(255),
     related_spire_position_id BIGINT,
     "status"                    VARCHAR(255),
+    rerate_status             VARCHAR(255),
     venue_id                  BIGINT,
     rate_rate_id              BIGINT,
     rerate_rate_id            BIGINT,

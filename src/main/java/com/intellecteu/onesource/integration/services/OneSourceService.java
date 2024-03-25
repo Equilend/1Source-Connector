@@ -6,6 +6,7 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
@@ -20,6 +21,15 @@ import com.intellecteu.onesource.integration.services.client.onesource.Contracts
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDefDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDefDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
@@ -31,6 +41,11 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Ledge
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartiesDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -38,10 +53,14 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
 
 @Service
 @Slf4j
@@ -101,9 +120,13 @@ public class OneSourceService {
         return true;
     }
 
-    public Optional<Rerate> retrieveRerate(String eventUri) {
+    public Rerate retrieveRerate(String eventUri) {
         RerateDTO rerateDTO = oneSourceApiClient.retrieveRerate(eventUri);
-        return Optional.of(oneSourceMapper.toModel(rerateDTO));
+        if (rerateDTO != null) {
+            return oneSourceMapper.toModel(rerateDTO);
+        } else {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Transactional
@@ -113,12 +136,17 @@ public class OneSourceService {
 
     public void instructRerate(RerateTrade rerateTrade) {
         RerateProposalDTO body = buildRerateProposal(rerateTrade);
-        ResponseEntity<Void> voidResponseEntity = reratesApi.ledgerContractsContractIdReratesPostWithHttpInfo(body,
+        reratesApi.ledgerContractsContractIdReratesPost(body,
             rerateTrade.getRelatedContractId());
     }
 
     public void approveRerate(String contractId, String rerateId) {
         ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdApprovePostWithHttpInfo(
+            contractId, rerateId);
+    }
+
+    public void declineRerate(String contractId, String rerateId){
+        ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdDeclinePostWithHttpInfo(
             contractId, rerateId);
     }
 
@@ -142,10 +170,13 @@ public class OneSourceService {
             );
             rebateRate.rebate(rebate);
         }
+        VenuePartiesDTO venuePartyDTOS = new VenuePartiesDTO();
+        venuePartyDTOS.add(new VenuePartyDTO().partyRole(PartyRoleDTO.LENDER));
+        venuePartyDTOS.add(new VenuePartyDTO().partyRole(PartyRoleDTO.BORROWER));
+        rerateProposalDTO.executionVenue(new VenueDTO().type(VenueTypeDTO.OFFPLATFORM).venueParties(venuePartyDTOS));
         rerateProposalDTO.rate(rebateRate);
         return rerateProposalDTO;
     }
-
 
     /**
      * Send new contract proposal request to OneSource for inclusion in the ledger
