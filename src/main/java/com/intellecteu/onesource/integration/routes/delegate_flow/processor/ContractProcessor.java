@@ -206,7 +206,7 @@ public class ContractProcessor {
         final Optional<Position> relatedPosition = retrieveRelatedLenderPosition(contract);
         return relatedPosition.map(position -> {
             final Position savedPosition = updateMatchedContractAndPosition(contract, position);
-            recordPendingApprovalSystemEvent(contract, savedPosition);
+            recordLoanProposalMatchedSystemEvent(contract, savedPosition);
             return true;
         }).orElse(false);
     }

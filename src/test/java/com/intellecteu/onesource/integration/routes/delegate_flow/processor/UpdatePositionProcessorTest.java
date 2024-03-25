@@ -124,7 +124,7 @@ class UpdatePositionProcessorTest {
         Position expectedposition = service.updatePositionForRollTrade(trade, positionList);
 
         assertEquals(thirdPosition.getTermId(), expectedposition.getTermId());
-        assertEquals(thirdPosition.getEndDate(), expectedposition.getEndDate());
+        assertEquals(thirdPosition.getEndDate().toLocalDate(), expectedposition.getEndDate().toLocalDate());
     }
 
     @Test

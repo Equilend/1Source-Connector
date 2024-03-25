@@ -65,11 +65,11 @@
 --                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
 --                       index_id, index_name, spread, accrual_date,
 --                       matching_1source_loan_contract_id, trade_id)
--- VALUES ('202', '202', '202', '0231101107', 'US02311011068',
+-- VALUES ('101', '101', '101', '0231101107', 'US02311011068',
 --         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
 --         11000.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 179101.5, 119.57,
---         1.02, 0, 0, 'CASH BORROW',
---         202, 101, '202', '101', 'CREATED', null,
+--         1.02, 0, 0, 'CASH LOAN',
+--         202, 101, '101', '101', 'UPDATED', null,
 --         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000',
 --         null, 202);

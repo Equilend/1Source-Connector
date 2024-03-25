@@ -89,7 +89,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .setHeader("tradeEvent", body())
             .bean(contractProcessor, "getLoanContractDetails")
             .filter(body().isNotNull())
-            .bean(contractProcessor, "updateContractProcessingStatusAndCreatedTime")
+            .bean(contractProcessor, "updateContractProcessingStatusAndCreatedTime(${body}, PROPOSED)")
             .bean(contractProcessor, "saveContract")
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_LOAN_CONTRACT_PROPOSAL subprocess "
