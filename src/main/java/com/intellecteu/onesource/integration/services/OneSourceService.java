@@ -18,9 +18,14 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Fixed
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDefDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartiesDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -127,6 +132,10 @@ public class OneSourceService {
             );
             rebateRate.rebate(rebate);
         }
+        VenuePartiesDTO venuePartyDTOS = new VenuePartiesDTO();
+        venuePartyDTOS.add(new VenuePartyDTO().partyRole(PartyRoleDTO.LENDER));
+        venuePartyDTOS.add(new VenuePartyDTO().partyRole(PartyRoleDTO.BORROWER));
+        rerateProposalDTO.executionVenue(new VenueDTO().type(VenueTypeDTO.OFFPLATFORM).venueParties(venuePartyDTOS));
         rerateProposalDTO.rate(rebateRate);
         return rerateProposalDTO;
     }
