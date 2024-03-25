@@ -61,7 +61,6 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTup
 import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.SGroupTradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponsePositionOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
@@ -178,7 +177,7 @@ public class BackOfficeService {
             log.warn("Rest client exception: {}", e.getMessage());
             if (e instanceof HttpStatusCodeException exception) {
                 final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(status)) {
+                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(status)) {
                     log.warn("SPIRE error response for {} subprocess. Details: {}",
                         GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, status.value());
                     recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
