@@ -1,13 +1,9 @@
-Event required:
-[
-    {
-        "eventId": 7,
-        "eventType": "CONTRACT_PROPOSED",
-        "eventDateTime": "2024-07-30T13:41:29.011Z",
-        "resourceUri": "/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7777"
-    }
-]
+Prepared local migration data:  V2024.03.19.11.00__EINT23-447_get_contract_details.sql
 
+1. Insert to the database event with 'CONTRACT_PROPOSED' eventType and
+resourceUri: ''/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7777'
+
+2. Add response for the `contracts/32b71278-9ad2-445a-bfb0-b5ada72f7777`
 Contract response
 {
     "contractId": "32b71278-9ad2-445a-bfb0-b5ada72f7777",
