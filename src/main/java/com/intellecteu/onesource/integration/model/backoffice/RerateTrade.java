@@ -28,8 +28,8 @@ public class RerateTrade implements Reconcilable {
     public void validateForReconciliation() throws ValidationException {
         var missedFields = new LinkedList<String>();
         if (tradeOut != null && tradeOut.getPosition() != null) {
-            if (tradeOut.getPosition().getRate() == null) {
-                missedFields.add("rate");
+            if (tradeOut.getRateOrSpread() == null) {
+                missedFields.add("rateOrSpread");
             }
             if (tradeOut.getAccrualDate() == null) {
                 missedFields.add("accrualDate");
