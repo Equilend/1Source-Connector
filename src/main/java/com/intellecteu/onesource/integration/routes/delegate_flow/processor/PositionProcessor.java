@@ -25,6 +25,7 @@ import com.intellecteu.onesource.integration.exception.ContractNotFoundException
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
+import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -91,6 +92,14 @@ public class PositionProcessor {
     public Position updateProcessingStatus(Position position, ProcessingStatus processingStatus) {
         position.setProcessingStatus(processingStatus);
         return positionService.savePosition(position);
+    }
+
+    public Position updatePositionStatus(Position position, String positionStatus) {
+        if (position.getPositionStatus() == null) {
+            position.setPositionStatus(new PositionStatus());
+        }
+        position.getPositionStatus().setStatus(positionStatus);
+        return position;
     }
 
     public Position findByPositionId(Long positionId) {

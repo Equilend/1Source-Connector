@@ -213,7 +213,8 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .setHeader("position", body())
             .bean(positionProcessor, "instructUpdatePosition")
             .filter(simple("${body} == true"))
-                .bean(positionProcessor, "updateProcessingStatus(${header.position}, CONFIRMED)")
+                .bean(positionProcessor, "updatePositionStatus(${header.position}, FUTURE)")
+                .bean(positionProcessor, "updateProcessingStatus(${body}, CONFIRMED)")
             .log("<<< Finished POST_POSITION_UPDATE subprocess with expected processing statuses: Position[CONFIRMED]")
         .end();
 
