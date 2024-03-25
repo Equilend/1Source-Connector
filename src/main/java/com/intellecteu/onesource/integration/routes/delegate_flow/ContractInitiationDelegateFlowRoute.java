@@ -164,7 +164,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log(">>> Started APPROVE_LOAN_CONTRACT_PROPOSAL process.")
             .bean(oneSourceMapper, "toModel")
             .bean(contractProcessor, "instructContractApprovalAsBorrower")
-            .log("Finished APPROVE_LOAN_CONTRACT_PROPOSAL process"
+            .log("Finished APPROVE_LOAN_CONTRACT_PROPOSAL process "
                 + "with expected processing statuses: Contract[APPROVAL_SUBMITTED]")
         .end();
 
