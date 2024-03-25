@@ -4,11 +4,6 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_RERATE_DISCREPANCIES_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.RERATE_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
-import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.BACKOFFICE_RERATE;
-import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_RERATE_DISCREPANCIES_MSG;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.RERATE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPLIED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVED_RERATE_MSG;
@@ -29,7 +24,6 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CONFIRM_EXCEPTION_RERATE;
-import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.DECLIED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.DECLINE_EXCEPTION_RERATE;
@@ -39,14 +33,6 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
 import static java.lang.String.format;
 
@@ -59,7 +45,6 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -182,14 +167,14 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case PROCESS_RERATE_APPLIED: {
                 return switch (recordType) {
                     case RERATE_PROPOSAL_APPLIED -> createAppliedRecordRequest(subProcess, recordType, data);
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createAppliedTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
             case GET_RERATE_APPROVED: {
                 return switch (recordType) {
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createApprovedTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     case RERATE_PROPOSAL_APPROVED -> createApprovedRecordRequest(subProcess, recordType, data);
                     default -> null;
@@ -198,7 +183,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case PROCESS_RERATE_DECLINED: {
                 return switch (recordType) {
                     case RERATE_PROPOSAL_DECLINED -> createDecliedRecordRequest(subProcess, recordType, data);
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createDeclineTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };

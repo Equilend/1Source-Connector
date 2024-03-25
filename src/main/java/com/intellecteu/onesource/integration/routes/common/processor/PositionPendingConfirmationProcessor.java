@@ -16,13 +16,6 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_CANCELED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SI_FETCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.extractPartyRole;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;

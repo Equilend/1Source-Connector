@@ -4,12 +4,6 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
-
-import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
@@ -46,7 +40,7 @@ public class RerateTrade implements Reconcilable {
             }
         }
         if (!missedFields.isEmpty()) {
-            throwFieldMissedException(String.join(COMMA_DELIMITER, missedFields));
+            throwFieldMissedException(String.join(COMMA_DELIMITER, missedFields), FieldSource.ONE_SOURCE_RERATE);
         }
     }
 }

@@ -188,6 +188,15 @@ public class TradeSpireApiClient {
         return sResponseOneSourceConfimationDTOResponseEntity.getBody();
     }
 
+    public ResponseEntity<SResponseOneSourceConfimationDTO> confirmTrade(OneSourceConfimationDTO input) {
+        ResponseEntity<SResponseOneSourceConfimationDTO> response = confirmAndBatchPendingPositionsUsingPOSTWithHttpInfo(
+            null, input);
+        if (HttpStatus.CREATED.equals(response.getStatusCode())) {
+            throw new HttpClientErrorException(HttpStatus.CREATED);
+        }
+        return response;
+    }
+
     /**
      * confirmAndBatchPendingPositions
      *
@@ -206,7 +215,13 @@ public class TradeSpireApiClient {
         String accessToken, OneSourceConfimationDTO input) throws RestClientException {
         Object postBody = input;
 
-        String path = UriComponentsBuilder.fromPath("/trades/oneSource/confirmation").build().toUriString();
+        // verify the required parameter 'input' is set
+        if (input == null) {
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST,
+                "Missing the required parameter 'input' when calling confirmAndBatchPendingPositionsUsingPOST");
+        }
+
+        String path = UriComponentsBuilder.fromPath("/trades/oneSource/comfirmation").build().toUriString();
 
         final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
         final HttpHeaders headerParams = new HttpHeaders();
@@ -231,61 +246,6 @@ public class TradeSpireApiClient {
         };
         return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
             contentType, authNames, returnType);
-    }
-
-
-    public ResponseEntity<SResponseOneSourceConfimationDTO> confirmTrade(OneSourceConfimationDTO input){
-        ResponseEntity<SResponseOneSourceConfimationDTO> response = confirmAndBatchPendingPositionsUsingPOSTWithHttpInfo(
-            null, input);
-        if (HttpStatus.CREATED.equals(response.getStatusCode())) {
-            throw new HttpClientErrorException(HttpStatus.CREATED);
-        }
-        return response;
-    }
-
-    /**
-     * confirmAndBatchPendingPositions
-     *
-     * <p><b>200</b> - OK
-     * <p><b>201</b> - Created
-     * <p><b>401</b> - Unauthorized
-     * <p><b>403</b> - Forbidden
-     * <p><b>404</b> - Not Found
-     * @param accessToken Access token generated during user authentication (required)
-     * @param input input (required)
-     * @return ResponseEntity&lt;SResponseOneSourceConfimationDTO&gt;
-     * @throws RestClientException if an error occurs while attempting to invoke the API
-     */
-    public ResponseEntity<SResponseOneSourceConfimationDTO> confirmAndBatchPendingPositionsUsingPOSTWithHttpInfo(String accessToken, OneSourceConfimationDTO input) throws RestClientException {
-        Object postBody = input;
-
-        // verify the required parameter 'input' is set
-        if (input == null) {
-            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Missing the required parameter 'input' when calling confirmAndBatchPendingPositionsUsingPOST");
-        }
-
-        String path = UriComponentsBuilder.fromPath("/trades/oneSource/comfirmation").build().toUriString();
-
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
-        final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
-
-        if (accessToken != null)
-            headerParams.add("access_token", apiClient.parameterToString(accessToken));
-
-        final String[] accepts = {
-            "application/json"
-        };
-        final List<MediaType> accept = apiClient.selectHeaderAccept(accepts);
-        final String[] contentTypes = {
-            "application/json"
-        };
-        final MediaType contentType = apiClient.selectHeaderContentType(contentTypes);
-
-        String[] authNames = new String[] {  };
-
-        ParameterizedTypeReference<SResponseOneSourceConfimationDTO> returnType = new ParameterizedTypeReference<SResponseOneSourceConfimationDTO>() {};
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept, contentType, authNames, returnType);
     }
 
 }

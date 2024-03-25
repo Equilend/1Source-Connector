@@ -79,7 +79,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -342,7 +341,7 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade){
+    public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade) {
         OneSourceConfimationDTO body = new OneSourceConfimationDTO();
         body.setTradeId(rerateTrade.getTradeId());
         body.setPositionId(rerateTrade.getRelatedPositionId());
@@ -597,11 +596,13 @@ public class BackOfficeService {
     }
 
     public BackOfficeService(PositionSpireApiClient positionSpireApiClient, TradeSpireApiClient tradeSpireApiClient,
-        InstructionSpireApiClient instructionClient, SpireMapper spireMapper, BackOfficeMapper backOfficeMapper,
-        CloudEventRecordService cloudEventRecordService) {
+        InstructionSpireApiClient instructionClient, Integer userId, String userName, SpireMapper spireMapper,
+        BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         this.positionSpireApiClient = positionSpireApiClient;
         this.tradeSpireApiClient = tradeSpireApiClient;
         this.instructionClient = instructionClient;
+        this.userId = userId;
+        this.userName = userName;
         this.spireMapper = spireMapper;
         this.backOfficeMapper = backOfficeMapper;
         this.cloudEventRecordService = cloudEventRecordService;

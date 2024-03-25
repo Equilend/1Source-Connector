@@ -13,7 +13,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RESOURCE_URI;
@@ -120,7 +120,7 @@ public class RerateEventProcessor {
             }
         } catch (EntityNotFoundException e) {
             log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
-            recordRerateEntityNotFoundTechnicalException(GET_RERATE_APPROVED, TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT,
+            recordRerateEntityNotFoundTechnicalException(GET_RERATE_APPROVED, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
                 resourceUri);
         }
         return event;
@@ -139,7 +139,7 @@ public class RerateEventProcessor {
         } catch (EntityNotFoundException e) {
             log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
             recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_APPLIED,
-                TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT, resourceUri);
+                TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri);
         }
         return event;
     }
@@ -163,7 +163,7 @@ public class RerateEventProcessor {
         } catch (EntityNotFoundException e) {
             log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
             recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_DECLINED,
-                TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT, resourceUri);
+                TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri);
         }
         return event;
     }

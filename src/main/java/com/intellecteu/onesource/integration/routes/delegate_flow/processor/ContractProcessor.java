@@ -49,7 +49,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
 import com.intellecteu.onesource.integration.services.ContractService;
-import com.intellecteu.onesource.integration.services.DeclineContractInstructionService;
+import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
 import com.intellecteu.onesource.integration.services.MatchingService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
@@ -78,7 +78,7 @@ public class ContractProcessor {
 
     private final ContractService contractService;
     private final OneSourceService oneSourceService;
-    private final DeclineContractInstructionService declineContractInstructionService;
+    private final DeclineInstructionService declineInstructionService;
     private final CloudEventRecordService cloudEventRecordService;
     private final IntegrationDataTransformer dataTransformer;
     private final PositionService positionService;
@@ -270,7 +270,7 @@ public class ContractProcessor {
             contract.setProcessingStatus(DECLINE_SUBMITTED);
             contractService.save(contract);
             declineInstruction.setProcessingStatus(PROCESSED);
-            declineContractInstructionService.save(declineInstruction);
+            declineInstructionService.save(declineInstruction);
         } catch (HttpStatusCodeException e) {
             String positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.debug(
@@ -395,7 +395,7 @@ public class ContractProcessor {
             contract.setProcessingStatus(ProcessingStatus.DECLINED);
             contractService.save(contract);
             declineInstruction.setProcessingStatus(ProcessingStatus.PROCESSED);
-            declineContractInstructionService.save(declineInstruction);
+            declineInstructionService.save(declineInstruction);
         });
     }
 

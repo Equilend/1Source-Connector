@@ -9,20 +9,14 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.WAITING_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SENT_FOR_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
@@ -33,14 +27,6 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -48,13 +34,10 @@ import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
-import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.DeclineInstructionService;
-import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
@@ -73,7 +56,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.HttpClientErrorException;
 
 @Component
 @Slf4j
@@ -309,29 +291,4 @@ public class RerateProcessor {
             RERATE_PROPOSAL_DISCREPANCIES, String.valueOf(rerate.getMatchingSpireTradeId()), e.getErrorList());
         cloudEventRecordService.record(recordRequest);
     }
-
-    private void recordReceiver1SourceRerateSuccessMatchedCloudEvent(Rerate rerate) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.RERATE);
-        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
-            RERATE_PROPOSAL_MATCHED, String.valueOf(rerate.getMatchingSpireTradeId()));
-        cloudEventRecordService.record(recordRequest);
-    }
-
-    private void record1SourceRerateSuccessUnMatchedRerateTradeCloudEvent(Rerate rerate) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.RERATE);
-        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
-            RERATE_PROPOSAL_UNMATCHED, String.valueOf(rerate.getMatchingSpireTradeId()));
-        cloudEventRecordService.record(recordRequest);
-    }
-
-    private void createFailedReconciliationEvent(Rerate rerate, ReconcileException e) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.RERATE);
-        var recordRequest = eventBuilder.buildRequest(rerate.getRerateId(),
-            RERATE_PROPOSAL_DISCREPANCIES, String.valueOf(rerate.getMatchingSpireTradeId()), e.getErrorList());
-        cloudEventRecordService.record(recordRequest);
-    }
-
 }

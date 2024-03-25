@@ -1,8 +1,5 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED_POSITION;
-
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;

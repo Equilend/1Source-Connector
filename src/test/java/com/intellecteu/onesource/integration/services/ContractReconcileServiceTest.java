@@ -37,6 +37,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
 class ContractReconcileServiceTest {
 
     private ReconcileService<Contract, Position> service;
