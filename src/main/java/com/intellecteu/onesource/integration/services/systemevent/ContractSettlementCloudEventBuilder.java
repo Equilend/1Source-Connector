@@ -54,6 +54,17 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     @Override
+    public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException e, IntegrationSubProcess subProcess) {
+        return buildExceptionRequest(null, e, subProcess, null);
+    }
+
+    @Override
+    public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException e, IntegrationSubProcess subProcess,
+        String recorded) {
+        return buildExceptionRequest(recorded, e, subProcess, null);
+    }
+
+    @Override
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
         return switch (recordType) {
             case LOAN_CONTRACT_SETTLED -> loanContractSettled(recorded, recordType, related);
@@ -86,10 +97,6 @@ public class ContractSettlementCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
-    @Override
-    public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException e, IntegrationSubProcess subProcess) {
-        return buildExceptionRequest(null, e, subProcess, null);
-    }
 
     @Override
     public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {

@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
@@ -138,8 +139,17 @@ public class PositionProcessor {
         try {
             oneSourceService.instructUpdateSettlementStatus(position, settlementStatus);
             return true;
-        } catch (HttpStatusCodeException e) {
-            log.debug("Exception on instruct update loan contract settlement status. Details: {}", e.getMessage());
+        } catch (RestClientException e) {
+            if (e instanceof HttpStatusCodeException exception) {
+                final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
+                log.debug("Exception on instruct update loan contract settlement status. Details: {}", e.getMessage());
+                if (Set.of(HttpStatus.CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(statusCode)) {
+                    var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
+                    var recordRequest = eventBuilder.buildExceptionRequest(position.getMatching1SourceLoanContractId(),
+                        exception, POST_LOAN_CONTRACT_UPDATE, String.valueOf(position.getPositionId()));
+                    cloudEventRecordService.record(recordRequest);
+                }
+            }
             return false;
         }
     }
@@ -150,7 +160,7 @@ public class PositionProcessor {
         } catch (RestClientException e) {
             if (e instanceof HttpStatusCodeException exception) {
                 final HttpStatusCode statusCode = HttpStatus.valueOf(exception.getStatusCode().value());
-                if (Set.of(HttpStatus.CREATED, UNAUTHORIZED, FORBIDDEN).contains(statusCode)) {
+                if (Set.of(HttpStatus.CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(statusCode)) {
                     var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
                     var recordRequest = eventBuilder.buildExceptionRequest(exception, CAPTURE_POSITION_SETTLEMENT);
                     cloudEventRecordService.record(recordRequest);
