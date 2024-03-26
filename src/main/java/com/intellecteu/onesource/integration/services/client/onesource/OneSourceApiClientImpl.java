@@ -49,6 +49,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -338,7 +339,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     @Override
     public List<TradeEvent> retrieveEvents(LocalDateTime timeStamp) {
         var encodedTimestamp = URLEncoder.encode(
-            timeStamp.atZone(ZoneOffset.UTC).toString(), StandardCharsets.US_ASCII);
+            timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString(), StandardCharsets.US_ASCII);
         String url = UriComponentsBuilder
             .fromHttpUrl(onesourceBaseEndpoint + version + EVENTS_ENDPOINT)
             .queryParam("since", encodedTimestamp)
