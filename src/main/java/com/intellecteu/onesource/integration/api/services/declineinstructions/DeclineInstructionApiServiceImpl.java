@@ -10,6 +10,8 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 
 import com.intellecteu.onesource.integration.api.dto.CloudSystemEventDto;
 import com.intellecteu.onesource.integration.api.dto.DeclineInstructionDto;
@@ -24,7 +26,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -134,8 +136,8 @@ class DeclineInstructionApiServiceImpl implements DeclineInstructionApiService {
     }
 
     private void validateSystemEventType(String capturedType) {
-        if (Objects.equals(LOAN_CONTRACT_PROPOSAL_DISCREPANCIES.name(), capturedType)
-            || (Objects.equals(LOAN_CONTRACT_PROPOSAL_UNMATCHED.name(), capturedType))) {
+        if (Set.of(LOAN_CONTRACT_PROPOSAL_DISCREPANCIES.name(), LOAN_CONTRACT_PROPOSAL_UNMATCHED.name(),
+            RERATE_PROPOSAL_UNMATCHED.name(), RERATE_PROPOSAL_DISCREPANCIES.name()).contains(capturedType)) {
             return;
         }
         throw new DeclineInstructionCreationException("CloudEvent not eligible to trigger a proposal decline");
