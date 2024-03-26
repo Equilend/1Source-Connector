@@ -201,7 +201,7 @@ public class ModelTestFactory {
 
     public static TradeEvent buildTradeEvent() {
         return TradeEvent.builder()
-            .eventId(1L)
+            .eventId("1L")
             .build();
     }
 
