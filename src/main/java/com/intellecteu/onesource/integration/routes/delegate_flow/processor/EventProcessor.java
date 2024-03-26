@@ -102,7 +102,7 @@ public class EventProcessor {
             if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(e.getStatusCode())) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
                 var recordRequest = eventBuilder.buildExceptionRequest(resourceUri,
-                    e, GET_LOAN_CONTRACT_PROPOSAL, String.valueOf(event.getEventId()));
+                    e, GET_LOAN_CONTRACT_PROPOSAL, event.getEventId());
                 cloudEventRecordService.record(recordRequest);
             }
         }

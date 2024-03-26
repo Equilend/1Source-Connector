@@ -17,7 +17,7 @@ public class TradeEventDto {
 
     private Long id;
     @JsonProperty("eventId")
-    private Long eventId;
+    private String eventId;
     @JsonProperty("eventType")
     private EventType eventType;
     @JsonProperty("eventDateTime")
