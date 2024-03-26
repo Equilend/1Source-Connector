@@ -88,7 +88,7 @@ public class DtoTestFactory {
 
     public static TradeEventDto buildTradeEventDto() {
         return TradeEventDto.builder()
-            .eventId(1L)
+            .eventId("1L")
             .build();
     }
 
