@@ -8,6 +8,10 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -16,6 +20,7 @@ import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateEventProcessor;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -26,7 +31,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConditionalOnProperty(
-    value="integration-toolkit.route.rerate.enable",
+    value = "route.rerate.enable",
     havingValue = "true",
     matchIfMissing = true)
 public class RerateRoute extends RouteBuilder {

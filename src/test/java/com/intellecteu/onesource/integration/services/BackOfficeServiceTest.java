@@ -89,7 +89,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositions(Optional.empty());
+        service.getNewSpirePositionsObsolete(Optional.empty());
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }
@@ -112,7 +112,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositions(Optional.empty());
+        service.getNewSpirePositionsObsolete(Optional.empty());
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }
@@ -122,9 +122,9 @@ class BackOfficeServiceTest {
         SResponseNQueryResponseTradeOutDTO responseNQueryResponseTradeOutDTO = new SResponseNQueryResponseTradeOutDTO();
         NQueryResponseTradeOutDTO data = new NQueryResponseTradeOutDTO();
         PositionOutDTO positionOutDTO = new PositionOutDTO();
-        positionOutDTO.setPositionId(1l);
+        positionOutDTO.setPositionId(1L);
         TradeOutDTO tradeOutDTO = new TradeOutDTO();
-        Long tradeId = 1l;
+        Long tradeId = 1L;
         tradeOutDTO.setTradeId(tradeId);
         tradeOutDTO.setPositionOutDTO(positionOutDTO);
         List<TradeOutDTO> beans = List.of(tradeOutDTO);

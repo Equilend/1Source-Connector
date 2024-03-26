@@ -1,10 +1,10 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_MARGIN;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -37,11 +37,10 @@ public class Collateral implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(contractPrice, CONTRACT_PRICE);
-        throwIfFieldMissedException(collateralValue, COLLATERAL_VALUE);
-        throwIfFieldMissedException(currency, CURRENCY);
-        throwIfFieldMissedException(type, COLLATERAL_TYPE);
-        throwIfFieldMissedException(margin, COLLATERAL_MARGIN);
+        throwIfFieldMissedException(contractPrice, CONTRACT_PRICE, ONE_SOURCE_LOAN_CONTRACT);
+        throwIfFieldMissedException(collateralValue, COLLATERAL_VALUE, ONE_SOURCE_LOAN_CONTRACT);
+        throwIfFieldMissedException(currency, CURRENCY, ONE_SOURCE_LOAN_CONTRACT);
+        throwIfFieldMissedException(type, COLLATERAL_TYPE, ONE_SOURCE_LOAN_CONTRACT);
     }
 
 }

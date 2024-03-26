@@ -1,8 +1,29 @@
+starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
+route:
+  rerate:
+    enable: ${RERATE_ROUTE_LOCAL:true}
+  bilateral-flow:
+    contract-initiation:
+      enable: ${CI_BILATERAL_FLOW_ENABLE_LOCAL:true}
+      timer: ${CI_BILATERAL_FLOW_TIMER_LOCAL:60000}
+  delegate-flow:
+    contract-initiation:
+      enable: ${CI_DELEGATE_FLOW_ENABLE_LOCAL:true}
+      timer: ${CI_DELEGATE_FLOW_TIMER_LOCAL:60000}
+    update-position:
+      enable: ${UP_DELEGATE_FLOW_ENABLE_LOCAL:true}
+      timer: ${UP_DELEGATE_FLOW_TIMER_LOCAL:10000}
+  position-listener:
+    enable: ${POSITION_LISTENER_ENABLE_LOCAL:true}
+    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER_LOCAL:60000}
+    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER_LOCAL:60000}
+integration-toolkit-uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
+
 camel:
-  timer: ${CAMEL_TIMER_LOCAL:9000}
-  newPositionTimer: ${CAMEL_TIMER_LOCAL:9000}
-  positionTimer: ${CAMEL_TIMER_LOCAL:9000}
-  newBackOfficeTradeEventTimer: ${CAMEL_TIMER:9000}
+  timer: ${CAMEL_TIMER_LOCAL:60000}
+  newPositionTimer: ${CAMEL_TIMER_LOCAL:60000}
+  positionTimer: ${CAMEL_TIMER_LOCAL:60000}
+  newBackOfficeTradeEventTimer: ${CAMEL_TIMER:60000}
   partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
   timestamp: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
   route:
@@ -30,8 +51,10 @@ spring:
     schemas: ${DB_SCHEMA_LOCAL:postgres}
     enabled: true
     default-schema: ${DB_SCHEMA_LOCAL:postgres}
+
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+
   security:
     oauth2:
       resourceserver:
@@ -68,19 +91,19 @@ logging:
       #          descriptor:
       #            sql:
       #              BasicBinder: TRACE
-      apache:
-        kafka: WARN
-        camel:
-          spi:
-            ExceptionHandler: ERROR
-      springframework:
-        #        orm:
-        #          jpa:  DEBUG
-        #        transaction:
-        #          interceptor: DEBUG
-        web:
-          client:
-            RestTemplate: INFO
+      #      apache:
+      #        kafka: WARN
+      #        camel:
+      #          spi:
+      #            ExceptionHandler: ERROR
+      #      springframework:
+      #        orm:
+      #          jpa:  DEBUG
+      #        transaction:
+      #          interceptor: DEBUG
+      web:
+        client:
+          RestTemplate: INFO
     root: INFO
 
 onesource:
@@ -98,7 +121,7 @@ onesource:
       secret: ${1SOURCE_AUTH_CLIENT_SECRET_LOCAL:secret}
 
 spire:
-  baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083/lender}
+  baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083}
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_LOCAL:http://localhost:8083/lender}
   borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT_LOCAL:http://localhost:8083/borrower}
   userId: ${SPIRE_USERID_LOCAL:-1}
@@ -107,17 +130,6 @@ spire:
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}
-
-integration-toolkit:
-  starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
-  route:
-    rerate:
-      enable: ${RERATE_ROUTE_LOCAL:true}
-    contract-initiation-trade-started:
-      enable: ${CI_WITH_TRADE_ROUTE_LOCAL:true}
-    contract-initiation-without-trade-route:
-      enable: ${CI_WITHOUT_TRADE_ROUTE_LOCAL:true}
-  uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
 
 notification:
   enable: ${NOTIFICATION_ENABLE_LOCAL:false}

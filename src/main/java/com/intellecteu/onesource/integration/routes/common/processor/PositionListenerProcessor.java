@@ -5,7 +5,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
@@ -17,27 +17,23 @@ import org.springframework.stereotype.Service;
 public class PositionListenerProcessor {
 
     private final PositionService positionService;
-    private final BackOfficeService borrowerBackOfficeService;
-    private final BackOfficeService lenderBackOfficeService;
+    private final BackOfficeService backOfficeService;
 
     @Autowired
-    public PositionListenerProcessor(PositionService positionService, BackOfficeService borrowerBackOfficeService,
-        BackOfficeService lenderBackOfficeService) {
+    public PositionListenerProcessor(PositionService positionService, BackOfficeService backOfficeService) {
         this.positionService = positionService;
-        this.borrowerBackOfficeService = borrowerBackOfficeService;
-        this.lenderBackOfficeService = lenderBackOfficeService;
+        this.backOfficeService = backOfficeService;
     }
 
     public void fetchNewPositions() {
         Optional<String> maxPositionId = positionService.getMaxPositionId();
-        List<Position> newSpirePositions = new ArrayList<>();
-        newSpirePositions.addAll(borrowerBackOfficeService.getNewSpirePositions(maxPositionId));
-        newSpirePositions.addAll(lenderBackOfficeService.getNewSpirePositions(maxPositionId));
+        List<Position> newSpirePositions = backOfficeService.getNewSpirePositions(maxPositionId);
         newSpirePositions.forEach(position -> {
             position.setVenueRefId(position.getCustomValue2());
+            position.setCreationDatetime(LocalDateTime.now());
             position.setProcessingStatus(CREATED);
         });
-        positionService.savePositions(newSpirePositions);
+        positionService.saveAllPositions(newSpirePositions);
     }
 
 }

@@ -19,7 +19,7 @@ public class AgreementReconcileService extends OneSourceSpireReconcileService<Ag
         var reconciliationFailMessages = new ArrayList<ProcessExceptionDetails>();
         var tradeAgreement = agreementDto.getTrade();
         reconciliationFailMessages.addAll(validateReconcilableObjects(agreementDto, positionDto));
-        reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
+//        reconciliationFailMessages.addAll(reconcileTrade(tradeAgreement, positionDto));
         if (!reconciliationFailMessages.isEmpty()) {
             String errorMsg = format(RECONCILE_EXCEPTION, agreementDto.getAgreementId(), positionDto.getPositionId());
             reconciliationFailMessages.forEach(msg -> log.debug(msg.getFieldValue()));

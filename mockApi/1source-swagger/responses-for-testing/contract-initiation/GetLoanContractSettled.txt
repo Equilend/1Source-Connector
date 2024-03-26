@@ -1,0 +1,8 @@
+Prepared local migration data: V2024.03.23.21.00__EINT23-458_get_loan_contract_settled.sql
+
+1. Insert to the database event
+    - eventType = 'CONTRACT_OPENED';
+    - resourceUri should contain the id of the persisted contract
+
+2. Insert to the database the loan contract
+

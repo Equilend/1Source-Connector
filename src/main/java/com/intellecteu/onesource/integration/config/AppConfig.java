@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
@@ -16,8 +13,6 @@ import com.intellecteu.onesource.integration.services.client.spire.PositionSpire
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +22,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -74,7 +68,8 @@ public class AppConfig {
         return apiClient;
     }
 
-    @Bean("lenderApiClient") // todo rework to use only one client
+    @Bean("lenderApiClient")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient lenderApiClient(RestTemplate restTemplate,
         @Value("${spire.lenderEndpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
@@ -82,7 +77,8 @@ public class AppConfig {
         return apiClient;
     }
 
-    @Bean("borrowerApiClient") // todo rework to use only one client
+    @Bean("borrowerApiClient")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient borrowerApiClient(RestTemplate restTemplate,
         @Value("${spire.borrowerEndpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
@@ -90,31 +86,57 @@ public class AppConfig {
         return apiClient;
     }
 
+    @Bean
+    public PositionSpireApiClient spirePositionApiClient(ApiClient spireApiClient,
+        @Value("${spire.username}") String clientId) {
+        return new PositionSpireApiClient(spireApiClient, clientId);
+    }
+
     @Bean("lenderPositionSpireApiClient")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public PositionSpireApiClient lenderPositionSpireApiClient(ApiClient lenderApiClient,
         @Value("${spire.username}") String clientId) {
         return new PositionSpireApiClient(lenderApiClient, clientId);
     }
 
     @Bean("borrowerPositionSpireApiClient")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public PositionSpireApiClient borrowerPositionSpireApiClient(ApiClient borrowerApiClient,
         @Value("${spire.username}") String clientId) {
         return new PositionSpireApiClient(borrowerApiClient, clientId);
     }
 
     @Bean
+    public TradeSpireApiClient tradeSpireApiClient(ApiClient spireApiClient,
+        @Value("${spire.username}") String clientId) {
+        return new TradeSpireApiClient(spireApiClient, clientId);
+    }
+
+    @Bean
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public TradeSpireApiClient lenderTradeSpireApiClient(ApiClient lenderApiClient,
         @Value("${spire.username}") String clientId) {
         return new TradeSpireApiClient(lenderApiClient, clientId);
     }
 
     @Bean
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public TradeSpireApiClient borrowerTradeSpireApiClient(ApiClient borrowerApiClient,
         @Value("${spire.username}") String clientId) {
         return new TradeSpireApiClient(borrowerApiClient, clientId);
     }
 
-    @Bean("lenderBackOfficeService") // todo rework to use only one backoffice
+    @Bean
+    public BackOfficeService backOfficeService(PositionSpireApiClient spirePositionApiClient,
+        TradeSpireApiClient tradeSpireApiClient, InstructionSpireApiClient instructionClient,
+        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
+        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
+        return new BackOfficeService(spirePositionApiClient, tradeSpireApiClient, instructionClient, userId,
+            userName, spireMapper, backOfficeMapper, cloudEventRecordService);
+    }
+
+    @Bean("lenderBackOfficeService")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
         TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
         @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
@@ -123,7 +145,8 @@ public class AppConfig {
             userName, spireMapper, backOfficeMapper, cloudEventRecordService);
     }
 
-    @Bean("borrowerBackOfficeService") // todo rework to use only one backoffice
+    @Bean("borrowerBackOfficeService")
+    @Deprecated(since = "0.0.5-SNAPSHOT")
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
         TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
         @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,

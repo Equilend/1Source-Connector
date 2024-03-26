@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUICK;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SEDOL;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -25,28 +26,30 @@ import lombok.extern.slf4j.Slf4j;
 public class Instrument implements Reconcilable {
 
     @JsonIgnore
-    private Long id;
+    private Integer id;
+    private Long securityId;
     private String ticker;
     private String cusip;
     private String isin;
     private String sedol;
-    private String quick;
+    private String quickCode;
     private String figi;
     private String description;
     private Price price;
+    private Integer priceFactor;
 
     @Override
     public void validateForReconciliation() throws ValidationException {
         String failedValidationFields = getFailedValidationFields();
         if (!failedValidationFields.isEmpty()) {
-            throwFieldMissedException(failedValidationFields);
+            throwFieldMissedException(failedValidationFields, ONE_SOURCE_LOAN_CONTRACT);
         }
     }
 
     private String getFailedValidationFields() {
-        var isAtLeastOneInstrumentPresent = Stream.of(cusip, isin, sedol, quick)
-            .anyMatch(Objects::nonNull);
-        if (!isAtLeastOneInstrumentPresent) {
+        var requiredFieldsNull = Stream.of(cusip, isin, sedol, quickCode)
+            .allMatch(Objects::isNull);
+        if (requiredFieldsNull) {
             return String.join(", ", CUSIP, ISIN, SEDOL, QUICK);
         }
         return "";

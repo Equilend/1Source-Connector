@@ -8,8 +8,9 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.dto.AgreementDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.TradeEventDto;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
@@ -43,8 +44,6 @@ import org.springframework.web.client.RestTemplate;
 @Disabled
 public class TradeEventServiceIT extends AbstractTest {
 
-    //    @Autowired
-//    TradeEventService tradeEventService;
     @Autowired
     TradeEventRepository tradeEventRepository;
     @Autowired
@@ -98,7 +97,7 @@ public class TradeEventServiceIT extends AbstractTest {
 
         File contractFile = new File(getClass().getResource
             ("/contracts.json").getFile());
-        ContractDto contract = mapper.readValue(contractFile, ContractDto.class);
+        Contract contract = mapper.readValue(contractFile, Contract.class);
         mockServer.expect(ExpectedCount.once(),
                 requestTo(new URI(baseEndpoint.concat("ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7195"))))
             .andExpect(method(HttpMethod.GET))
@@ -117,7 +116,7 @@ public class TradeEventServiceIT extends AbstractTest {
         Assertions.assertEquals(contracts.get(0).getContractId(), "32b71278-9ad2-445a-bfb0-b5ada72f7195");
         Assertions.assertEquals(contracts.get(0).getContractStatus(), ContractStatus.PROPOSED);
         Assertions.assertEquals(contracts.get(0).getProcessingStatus(), ProcessingStatus.PROCESSED);
-        Assertions.assertEquals(contracts.get(0).getLastUpdateDatetime(),
+        Assertions.assertEquals(contracts.get(0).getLastUpdateDateTime(),
             LocalDateTime.parse("2023-07-27T17:22:46.245"));
     }
 

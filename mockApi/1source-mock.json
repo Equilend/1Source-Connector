@@ -109,7 +109,7 @@
       "responses": [
         {
           "uuid": "bcdd1f13-6bc2-4533-98be-2e74fba21175",
-          "body": "[\r\n    {\r\n        \"eventId\": 4,\r\n        \"eventType\": \"RERATE_PROPOSED\",\r\n        \"eventDateTime\": \"2023-07-30T13:41:29.011Z\",\r\n        \"resourceUri\": \"/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006\"\r\n    }\r\n]",
+          "body": "[\r\n\r\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "Read collection of events. With no parameters returns events since start of current day.",
@@ -1585,7 +1585,7 @@
       "responses": [
         {
           "uuid": "c5a7bf47-33a5-475b-8512-1b1d9567529a",
-          "body": "{\r\n  \"rerateId\": \"string\",\r\n  \"contractId\": \"7777\",\r\n  \"status\": \"PROPOSED\",\r\n  \"executionVenue\": {\r\n    \"partyId\": \"string\",\r\n    \"type\": \"ONPLATFORM\",\r\n    \"venueName\": \"string\",\r\n    \"venueRefKey\": \"string\",\r\n    \"transactionDatetime\": \"2024-01-29T08:38:43.574Z\",\r\n    \"venueParties\": [\r\n      {\r\n        \"partyRole\": \"BORROWER\",\r\n        \"venuePartyRefKey\": \"string\"\r\n      }\r\n    ],\r\n    \"localVenueFields\": [\r\n      {\r\n        \"localFieldName\": \"string\",\r\n        \"localFieldValue\": \"string\"\r\n      }\r\n    ]\r\n  },\r\n  \"rate\": {\r\n    \"rebate\": {\r\n      \"fixed\": {\r\n        \"baseRate\": 1,\r\n        \"effectiveRate\": 0,\r\n        \"effectiveDate\": \"2024-01-29\",\r\n        \"cutoffTime\": \"22:01\"\r\n      }\r\n    }\r\n  },\r\n  \"rerate\": {\r\n    \"rebate\": {\r\n      \"fixed\": {\r\n        \"baseRate\": 1,\r\n        \"effectiveRate\": 0,\r\n        \"effectiveDate\": \"2024-01-29\",\r\n        \"cutoffTime\": \"21:00\"\r\n      }\r\n    }\r\n  },\r\n  \"lastUpdateDatetime\": \"2024-01-29T08:38:43.575Z\"\r\n}",
+          "body": "{\r\n  \"rerateId\": \"string\",\r\n  \"contractId\": \"7777\",\r\n  \"status\": \"PROPOSED\",\r\n  \"executionVenue\": {\r\n    \"partyId\": \"string\",\r\n    \"type\": \"ONPLATFORM\",\r\n    \"venueName\": \"string\",\r\n    \"venueRefKey\": \"string\",\r\n    \"transactionDatetime\": \"2024-01-29T08:38:43.574Z\",\r\n    \"venueParties\": [\r\n      {\r\n        \"partyRole\": \"BORROWER\",\r\n        \"venuePartyRefKey\": \"string\"\r\n      }\r\n    ],\r\n    \"localVenueFields\": [\r\n      {\r\n        \"localFieldName\": \"string\",\r\n        \"localFieldValue\": \"string\"\r\n      }\r\n    ]\r\n  },\r\n  \"rate\": {\r\n    \"rebate\": {\r\n      \"fixed\": {\r\n        \"baseRate\": 0,\r\n        \"effectiveRate\": 0,\r\n        \"effectiveDate\": \"2024-01-29\",\r\n        \"cutoffTime\": \"22:01\"\r\n      }\r\n    }\r\n  },\r\n  \"rerate\": {\r\n    \"rebate\": {\r\n      \"fixed\": {\r\n        \"baseRate\": 0,\r\n        \"effectiveRate\": 0,\r\n        \"effectiveDate\": \"2024-01-29\",\r\n        \"cutoffTime\": \"21:00\"\r\n      }\r\n    }\r\n  },\r\n  \"lastUpdateDatetime\": \"2024-01-29T08:38:43.575Z\"\r\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "Rerate proposed details",
@@ -1699,35 +1699,6 @@
         }
       ],
       "responseMode": null
-    },
-    {
-      "uuid": "663f078b-1c0d-4575-8f6d-51ffcc0b29e7",
-      "type": "http",
-      "documentation": "",
-      "method": "post",
-      "endpoint": "contracts/:contractId/rerates/:rerateId/decline",
-      "responses": [
-        {
-          "uuid": "b9e2a8ac-1e75-43b9-a94b-2b36f0b977ca",
-          "body": "{}",
-          "latency": 0,
-          "statusCode": 200,
-          "label": "",
-          "headers": [],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        }
-      ],
-      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1810,10 +1781,6 @@
     {
       "type": "route",
       "uuid": "0bed89e3-9785-41bd-bb62-afe170ef5ecc"
-    },
-    {
-      "type": "route",
-      "uuid": "663f078b-1c0d-4575-8f6d-51ffcc0b29e7"
     }
   ],
   "proxyMode": false,

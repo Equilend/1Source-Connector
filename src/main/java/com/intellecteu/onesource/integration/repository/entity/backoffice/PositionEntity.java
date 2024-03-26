@@ -1,5 +1,9 @@
 package com.intellecteu.onesource.integration.repository.entity.backoffice;
 
+import static jakarta.persistence.CascadeType.MERGE;
+import static jakarta.persistence.CascadeType.PERSIST;
+import static jakarta.persistence.CascadeType.REFRESH;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import jakarta.persistence.AttributeOverride;
@@ -9,7 +13,10 @@ import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -30,8 +37,14 @@ import lombok.ToString;
 public class PositionEntity {
 
     @Id
-    @Column(name = "spire_position_id")
-    private String positionId;
+    @Column(name = "position_id")
+    private Long positionId;
+
+    @Column(name = "trade_id")
+    private Long tradeId;
+
+    @Column(name = "creation_datetime")
+    private LocalDateTime creationDatetime;
 
     @Column(name = "venue_ref_id")
     private String venueRefId;
@@ -60,6 +73,9 @@ public class PositionEntity {
     @Column(name = "settle_date")
     private LocalDateTime settleDate;
 
+    @Column(name = "accrual_date")
+    private LocalDateTime accrualDate;
+
     @Column(name = "deliver_free")
     private Boolean deliverFree;
 
@@ -69,14 +85,11 @@ public class PositionEntity {
     @Column(name = "price")
     private Double price;
 
-    @Column(name = "contract_value")
-    private Double contractValue;
-
     @Column(name = "currency_id")
     private Integer currencyId;
 
-    @Column(name = "security_id")
-    private Long securityId;
+    @Column(name = "position_security_id")
+    private Long positionSecurityId;
 
     @Column(name = "processing_status")
     @Enumerated(value = EnumType.STRING)
@@ -91,16 +104,12 @@ public class PositionEntity {
     @Column(name = "matching_1source_loan_contract_id")
     private String matching1SourceLoanContractId;
 
-    @Column(name = "applicable_instruction_id")
-    private Long applicableInstructionId;
-
     @Embedded
     @JsonProperty("securityDetailDTO")
     @AttributeOverrides({
         @AttributeOverride(name = "bloombergId", column = @Column(name = "bloomberg_id")),
         @AttributeOverride(name = "quickCode", column = @Column(name = "quick_code")),
-        @AttributeOverride(name = "priceFactor", column = @Column(name = "price_factor")),
-        @AttributeOverride(name = "baseRebateRate", column = @Column(name = "base_rebate_rate"))
+        @AttributeOverride(name = "priceFactor", column = @Column(name = "price_factor"))
     })
     private PositionSecurityDetailEntity positionSecurityDetail;
 
@@ -117,13 +126,6 @@ public class PositionEntity {
         @AttributeOverride(name = "taxWithholdingRate", column = @Column(name = "tax_with_holding_rate"))
     })
     private LoanBorrowEntity loanBorrow;
-
-    @Embedded
-    @JsonProperty("collateralTypeDTO")
-    @AttributeOverrides({
-        @AttributeOverride(name = "collateralType", column = @Column(name = "collateral_type"))
-    })
-    private PositionCollateralTypeEntity positionCollateralType;
 
     @Embedded
     @JsonProperty("exposureDTO")
@@ -150,28 +152,27 @@ public class PositionEntity {
     })
     private IndexEntity index;
 
-    @Embedded
-    @JsonProperty("accountDTO")
-    @AttributeOverrides({
-        @AttributeOverride(name = "lei", column = @Column(name = "account_lei")),
-        @AttributeOverride(name = "shortName", column = @Column(name = "short_name")),
-        @AttributeOverride(name = "accountId", column = @Column(name = "account_id")),
-        @AttributeOverride(name = "info", column = @Column(name = "info", insertable = false, updatable = false))
-    })
-    private PositionAccountEntity positionAccount;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {PERSIST, MERGE, REFRESH})
+    @JoinColumn(name = "account_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private PositionAccountEntity account;
 
-    @Embedded
-    @JsonProperty("counterPartyDTO")
-    @AttributeOverrides({
-        @AttributeOverride(name = "lei", column = @Column(name = "cp_lei")),
-        @AttributeOverride(name = "accountId", column = @Column(name = "cp_account_id")),
-        @AttributeOverride(name = "shortName", column = @Column(name = "short_name", insertable = false, updatable = false))
-    })
-    private PositionAccountEntity positionCpAccount;
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {PERSIST, MERGE, REFRESH})
+    @JoinColumn(name = "cp_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private PositionAccountEntity counterParty;
 
     @Embedded
     @JsonProperty("statusDTO")
     private PositionStatusEntity positionStatus;
 
+    public void setAccount(PositionAccountEntity account) {
+        this.account = account;
+        account.getPositionsAccount().add(this);
+    }
 
+    public void setCounterParty(PositionAccountEntity counterParty) {
+        this.counterParty = counterParty;
+        counterParty.getPositionsAccount().add(this);
+    }
 }

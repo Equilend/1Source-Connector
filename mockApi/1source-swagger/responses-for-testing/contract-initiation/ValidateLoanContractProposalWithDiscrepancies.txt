@@ -1,0 +1,12 @@
+Prepared local migration data: V2024.03.24.18.00__EINT23-450_validate_loan_contract_proposal_with_discrepancies_status.sql
+
+1. Insert to the database contract
+    - processingStatus should be 'DISCREPANCIES'
+    - `matchingSpirePositionId` field should match with the position in the database
+
+2. Insert to the database position
+    - should have `positionType` in 'CASH BORROW'
+    - should have `processingStatus` in 'UPDATED'
+    - should have `lastUpdateTime` after the contract's `lastUpdateTime`
+    - should have all required fields for the reconciliation and these fields should match with the contract
+

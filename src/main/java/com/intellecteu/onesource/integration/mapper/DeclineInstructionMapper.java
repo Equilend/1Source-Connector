@@ -10,4 +10,5 @@ public abstract class DeclineInstructionMapper {
     public abstract DeclineInstruction toModel(DeclineInstructionEntity declineInstructionEntity);
 
     public abstract DeclineInstructionEntity toEntity(DeclineInstruction declineInstruction);
+
 }

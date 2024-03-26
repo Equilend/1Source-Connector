@@ -8,6 +8,7 @@ public class IntegrationConstant {
     public static class DomainObjects {
 
         public static final String ONESOURCE_EVENT = "1Source event";
+        public static final String ONESOURCE_CONTRACT = "1SrceContract";
         public static final String ONESOURCE_LOAN_CONTRACT = "1SrceLoanContract";
         public static final String ONESOURCE_LOAN_CONTRACT_PROPOSAL = "1SrceLoanContractProposal";
         public static final String ONESOURCE_LOAN_PROPOSAL = "1SrceLoanProposal";
@@ -16,5 +17,6 @@ public class IntegrationConstant {
         public static final String ONESOURCE_RERATE = "1SorceRerate";
         public static final String BACKOFFICE_RERATE = "BackOfficeRerate";
         public static final String POSITION = "Position";
+        public static final String SPIRE_TRADE = "Trade";
     }
 }

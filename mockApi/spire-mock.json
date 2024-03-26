@@ -1002,23 +1002,16 @@
           "rules": [
             {
               "target": "body",
-              "modifier": "nquery.tuples.1.rvalue1",
+              "modifier": "nQuery.tuples.1.tradeId",
               "value": "2",
               "invert": true,
               "operator": "equals"
-            },
-            {
-              "target": "body",
-              "modifier": "nquery.tuples.1.lvalue",
-              "value": "tradeId",
-              "invert": false,
-              "operator": "equals"
             }
           ],
-          "rulesOperator": "AND",
+          "rulesOperator": "OR",
           "disableTemplating": false,
           "fallbackTo404": false,
-          "default": false,
+          "default": true,
           "crudKey": "id",
           "callbacks": []
         },
@@ -1088,11 +1081,11 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "lender/trades/oneSource/comfirmation",
+      "endpoint": "trades/oneSource/comfirmation",
       "responses": [
         {
           "uuid": "43c90b73-89ed-4297-939d-43102f0c99df",
-          "body": "{}",
+          "body": "{\r\n    \"data\": {\r\n      \"instructions\": {\r\n        \"accountDTO\": {\r\n          \"dtc\": 333444\r\n        }\r\n      },\r\n      \"ledgerID\": 343434,\r\n      \"positionId\": 343434,\r\n      \"tradeId\": 343434,\r\n      \"userId\": 1,\r\n      \"userName\": \"OneSource\"\r\n    },\r\n    \"errCode\": \"string\",\r\n    \"error\": true,\r\n    \"message\": \"string\",\r\n    \"status\": \"ERROR\",\r\n    \"success\": true\r\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "",

@@ -1,3 +1,24 @@
+starting-trade-event-datetime: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
+route:
+  rerate:
+    enable: ${RERATE_ROUTE:true}
+  bilateral-flow:
+    contract-initiation:
+      enable: ${CI_BILATERAL_FLOW_ENABLE:true}
+      timer: ${CI_BILATERAL_FLOW_TIMER:60000}
+  delegate-flow:
+    contract-initiation:
+      enable: ${CI_DELEGATE_FLOW_ENABLE:true}
+      timer: ${CI_DELEGATE_FLOW_TIMER:60000}
+    update-position:
+      enable: ${UP_DELEGATE_FLOW_ENABLE:true}
+      timer: ${UP_DELEGATE_FLOW_TIMER:60000}
+  position-listener:
+    enable: ${POSITION_LISTENER_ENABLE:true}
+    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER:60000}
+    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER:60000}
+integration-toolkit-uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
+
 camel:
   timer: ${CAMEL_TIMER:100000}
   newPositionTimer: ${CAMEL_TIMER:600000}
@@ -29,8 +50,10 @@ spring:
     schemas: ${DB_SCHEMA:postgres}
     enabled: true
     default-schema: ${DB_SCHEMA:postgres}
+
   jackson:
     date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+
   security:
     oauth2:
       resourceserver:
@@ -92,17 +115,6 @@ spire:
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
-
-integration-toolkit:
-  starting-trade-event-datetime: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
-  route:
-    rerate:
-      enable: ${RERATE_ROUTE:true}
-    contract-initiation-trade-started:
-      enable: ${CI_WITH_TRADE_ROUTE:true}
-    contract-initiation-without-trade-route:
-      enable: ${CI_WITHOUT_TRADE_ROUTE:true}
-  uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
 
 notification:
   enable: ${NOTIFICATION_ENABLE:false}

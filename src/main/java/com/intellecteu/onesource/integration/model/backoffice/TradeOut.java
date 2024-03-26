@@ -1,11 +1,15 @@
 package com.intellecteu.onesource.integration.model.backoffice;
 
 import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TradeOut {
 
     private Long tradeId;

@@ -1,32 +1,28 @@
 package com.intellecteu.onesource.integration.model.backoffice;
 
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.ACCOUNT_LEI;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_HAIRCUT;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_LEI;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ACCOUNT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CP_ACCOUNT;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_INDEX;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUANTITY;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SECURITY;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SEDOL;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TRADE_DATE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.RATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.BACKOFFICE_POSITION;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
-import java.util.Objects;
-import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -41,7 +37,9 @@ import lombok.extern.slf4j.Slf4j;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Position implements Reconcilable {
 
-    private String positionId;
+    private Long positionId;
+    private Long tradeId;
+    private LocalDateTime creationDatetime;
     private String venueRefId;
     private String customValue2;
     private String positionRef;
@@ -51,28 +49,25 @@ public class Position implements Reconcilable {
     private Integer termId;
     private LocalDateTime endDate;
     private LocalDateTime settleDate;
+    private LocalDateTime accrualDate;
     private Boolean deliverFree;
     private Double amount;
     private Double price;
-    private Double contractValue;
     private Integer currencyId;
-    private Long securityId;
+    private Long positionSecurityId;
     private ProcessingStatus processingStatus;
     private LocalDateTime lastUpdateDateTime;
     private String matching1SourceTradeAgreementId;
     private String matching1SourceLoanContractId;
-    private Long applicableInstructionId;
     @JsonProperty("securityDetailDTO")
     private PositionSecurityDetail positionSecurityDetail;
     @JsonProperty("currencyDTO")
     private Currency currency;
     @JsonProperty("loanBorrowDTO")
     private LoanBorrow loanBorrow;
-    @JsonProperty("collateralTypeDTO")
-    private PositionCollateralType positionCollateralType;
     @JsonProperty("exposureDTO")
     private PositionExposure exposure;
-    @JsonProperty("positiontypeDTO")
+    @JsonAlias({"positiontypeDTO", "positionTypeDTO"})
     private PositionType positionType;
     @JsonProperty("indexDTO")
     private Index index;
@@ -83,8 +78,9 @@ public class Position implements Reconcilable {
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
 
-    public String getCollateralType() {
-        return positionCollateralType == null ? null : positionCollateralType.getCollateralType();
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
+        log.debug("Processing status {} was set for positionId={}", processingStatus, positionId);
+        this.processingStatus = processingStatus;
     }
 
     public Double getCpHaircut() {
@@ -127,68 +123,26 @@ public class Position implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        var sb = new StringBuilder();
-        if (rate == null) {
-            sb.append(RATE).append(COMMA_DELIMITER);
-        }
-        if (quantity == null) {
-            sb.append(POSITION_QUANTITY).append(COMMA_DELIMITER);
-        }
-        if (tradeDate == null) {
-            sb.append(POSITION_TRADE_DATE).append(COMMA_DELIMITER);
-        }
-        if (settleDate == null) {
-            sb.append(SETTLE_DATE).append(COMMA_DELIMITER);
-        }
-        if (price == null) {
-            sb.append(POSITION_PRICE).append(COMMA_DELIMITER);
-        }
-        if (amount == null) {
-            sb.append(POSITION_AMOUNT).append(COMMA_DELIMITER);
-        }
-        if (currency == null || currency.getCurrencyKy() == null) {
-            sb.append(POSITION_CURRENCY).append(COMMA_DELIMITER);
-        }
-        if (exposure == null || exposure.getCpHaircut() == null) {
-            sb.append(CP_HAIRCUT).append(COMMA_DELIMITER);
-        }
-        if (positionAccount == null || positionAccount.getLei() == null) {
-            sb.append(ACCOUNT_LEI).append(COMMA_DELIMITER);
-        }
-        if (positionCpAccount == null || positionCpAccount.getLei() == null) {
-            sb.append(CP_LEI).append(COMMA_DELIMITER);
-        }
-        if (positionSecurityDetail == null) {
-            sb.append(POSITION_SECURITY).append(COMMA_DELIMITER);
-        }
-        if (deliverFree == null) {
-            sb.append(DELIVER_FREE).append(COMMA_DELIMITER);
-        }
-        final String failedIdentifiers = getSecurityIdentifiersOnFailedValidation();
-        if (!failedIdentifiers.isEmpty()) {
-            sb.append(failedIdentifiers);
-        }
-        if (!sb.isEmpty()) {
-            throwFieldMissedException(sb.toString());
-        }
-    }
+        throwIfFieldMissedException(positionSecurityDetail, POSITION_SECURITY, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(rate, RATE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(index, POSITION_INDEX, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(quantity, POSITION_QUANTITY, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(currency, POSITION_CURRENCY, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(tradeDate, POSITION_TRADE_DATE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(settleDate, SETTLE_DATE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(deliverFree, DELIVER_FREE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(price, POSITION_PRICE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(amount, POSITION_AMOUNT, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(positionType, POSITION_TYPE, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(positionCpAccount, POSITION_CP_ACCOUNT, BACKOFFICE_POSITION);
+        throwIfFieldMissedException(positionAccount, POSITION_ACCOUNT, BACKOFFICE_POSITION);
 
-    /*
-     * Return a String with security identifiers that are null.
-     * Return empty String if validation success and at least one identifier is present.
-     */
-    private String getSecurityIdentifiersOnFailedValidation() {
-        if (positionSecurityDetail != null) {
-            var isAtLeastOneSecurityFieldPresent = Stream
-                .of(positionSecurityDetail.getCusip(), positionSecurityDetail.getIsin(),
-                    positionSecurityDetail.getSedol(), positionSecurityDetail.getQuickCode())
-                .anyMatch(Objects::nonNull);
-            if (!isAtLeastOneSecurityFieldPresent) {
-                log.debug("Validation failed. At least one security field must be present!");
-                return String.format("%s, %s, %s, %s", POSITION_CUSIP, POSITION_ISIN, POSITION_SEDOL, POSITION_QUICK);
-            }
-        }
+        positionSecurityDetail.validateForReconciliation();
+        index.validateForReconciliation();
+        currency.validateForReconciliation();
+        positionType.validateForReconciliation();
+        positionCpAccount.validateForReconciliation();
+        positionAccount.validateForReconciliation();
 
-        return "";
     }
 }

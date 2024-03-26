@@ -13,35 +13,15 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.AccrualBalanceDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.BasisDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.Character;
-import com.intellecteu.onesource.integration.services.client.spire.dto.CollateralTypeDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.CurrencyDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.DepositoryDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.ExposureDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.IndexDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.LoanBorrowDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositiontypeDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.SecurityDetailDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.StatusDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.StrategyDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradingdeskDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.UserDTO;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * PositionOutDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
 public class PositionOutDTO {
   @JsonProperty("account2DTO")
   private AccountDTO account2DTO = null;

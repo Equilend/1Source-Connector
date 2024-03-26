@@ -16,6 +16,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class PositionStatusEntity {
 
+    private Integer statusId;
     private String status;
 
 }

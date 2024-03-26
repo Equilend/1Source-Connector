@@ -60,7 +60,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     public RerateCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit.uri}") String integrationUri) {
+        @Value("${integration-toolkit-uri}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 
@@ -167,14 +167,14 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case PROCESS_RERATE_APPLIED: {
                 return switch (recordType) {
                     case RERATE_PROPOSAL_APPLIED -> createAppliedRecordRequest(subProcess, recordType, data);
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createAppliedTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
             case GET_RERATE_APPROVED: {
                 return switch (recordType) {
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createApprovedTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     case RERATE_PROPOSAL_APPROVED -> createApprovedRecordRequest(subProcess, recordType, data);
                     default -> null;
@@ -183,7 +183,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case PROCESS_RERATE_DECLINED: {
                 return switch (recordType) {
                     case RERATE_PROPOSAL_DECLINED -> createDecliedRecordRequest(subProcess, recordType, data);
-                    case TECHNICAL_EXCEPTION_INTEGRATION_TOOLKIT ->
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createDeclineTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };
@@ -383,6 +383,11 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     @Override
     public CloudEventBuildRequest buildExceptionRequest(HttpStatusCodeException exception,
         IntegrationSubProcess subProcess) {
+        return null;
+    }
+
+    @Override
+    public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
         return null;
     }
 }

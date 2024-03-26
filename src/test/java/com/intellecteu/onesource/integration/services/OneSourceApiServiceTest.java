@@ -8,11 +8,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapperImpl;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
@@ -26,7 +23,9 @@ import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.repository.ContractRepository;
 import com.intellecteu.onesource.integration.repository.SettlementUpdateRepository;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
+import com.intellecteu.onesource.integration.services.client.onesource.ContractsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClientImpl;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -64,6 +63,9 @@ class OneSourceApiServiceTest {
     private SettlementUpdateRepository settlementUpdateRepository;
 
     @Mock
+    private ContractsApi contractsApi;
+
+    @Mock
     private ContractRepository contractRepository;
 
     @Mock
@@ -75,9 +77,6 @@ class OneSourceApiServiceTest {
     @Mock
     private TradeEventRepository eventRepository;
 
-    @Mock
-    private EventMapper eventMapper;
-
     private CloudEventFactory<IntegrationCloudEvent> eventFactory;
 
     private OneSourceApiClientImpl service;
@@ -86,8 +85,8 @@ class OneSourceApiServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new OneSourceApiClientImpl(contractRepository, recordService, restTemplate,
-            settlementUpdateRepository, eventMapper, eventRepository, oneSourceMapper);
+        service = new OneSourceApiClientImpl(contractsApi, contractRepository, recordService, restTemplate,
+            settlementUpdateRepository, eventRepository, oneSourceMapper);
         ReflectionTestUtils.setField(service, ENDPOINT_FIELD_INJECT, TEST_ENDPOINT);
         ReflectionTestUtils.setField(service, VERSION_FIELD_INJECT, TEST_API_VERSION);
         var builderMap = new HashMap<IntegrationProcess, IntegrationCloudEventBuilder>();
@@ -111,26 +110,6 @@ class OneSourceApiServiceTest {
         service.retrieveEvents(localDateTime);
 
         verify(restTemplate).exchange(eq(expectedUrl), eq(GET), any(), any(ParameterizedTypeReference.class));
-    }
-
-    @Test
-    @DisplayName("Execute record service when create contract request returns 401 response code.")
-    void test_createContract_shouldExecuteRecordService_whenResponse401() {
-        var agreement = ModelTestFactory.buildAgreement();
-        var settlement = new Settlement();
-        var position = ModelTestFactory.buildPosition();
-
-        var expectedUrl = TEST_ENDPOINT + TEST_API_VERSION + TEST_CREATE_CONTRACT_ENDPOINT;
-
-        when(recordService.getFactory()).thenReturn(eventFactory);
-        when(restTemplate.exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class)))
-            .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
-
-        service.createContract(agreement, buildContract(agreement, position, List.of(settlement)), position);
-
-        verify(restTemplate).exchange(eq(expectedUrl), eq(POST), any(), eq(JsonNode.class));
-        verify(recordService).getFactory();
-        verify(recordService).record(any(CloudEventBuildRequest.class));
     }
 
     ContractProposal buildContract(Agreement agreement, Position position,

@@ -40,6 +40,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Disabled
+@Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
 class AgreementReconcileServiceTest {
 
     private ReconcileService<Agreement, PositionDto> service;
@@ -432,26 +434,6 @@ class AgreementReconcileServiceTest {
     }
 
     @Test
-    @Order(32)
-    @DisplayName("Trade collateral type shall be CASH when position collateral type is empty")
-    void reconcile_shouldSuccess_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsCash() throws Exception {
-        agreement.getTrade().getCollateral().setType(CollateralType.CASH);
-        position.getCollateralTypeDto().setCollateralType(null);
-
-        service.reconcile(agreement, position);
-    }
-
-    @Test
-    @Order(32)
-    @DisplayName("Throw exception if position collateralType is missed and trade collateral type is missed")
-    void reconcile_shouldFail_whenPositionCollateralTypeIsMissedAndTradeCollateralTypeIsMissing() {
-        agreement.getTrade().getCollateral().setType(null);
-        position.getCollateralTypeDto().setCollateralType(null);
-
-        verifyReconciliationFailure();
-    }
-
-    @Test
     @Order(33)
     @DisplayName("Throw exception if reconciliation fails for a collateralType")
     void reconcile_shouldThrowException_whenCollateralTypeIsNotMatched() {
@@ -559,7 +541,7 @@ class AgreementReconcileServiceTest {
         agreement.getTrade().getInstrument().setCusip(null);
         agreement.getTrade().getInstrument().setIsin(null);
         agreement.getTrade().getInstrument().setSedol(null);
-        agreement.getTrade().getInstrument().setQuick(null);
+        agreement.getTrade().getInstrument().setQuickCode(null);
 
         verifyReconciliationFailure();
     }

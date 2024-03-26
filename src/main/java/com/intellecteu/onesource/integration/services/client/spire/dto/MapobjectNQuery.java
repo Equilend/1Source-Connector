@@ -13,16 +13,13 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.intellecteu.onesource.integration.services.client.spire.dto.NQuery;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Objects;
 
 /**
  * MapobjectNQuery
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
 public class MapobjectNQuery extends HashMap<String, NQuery> {
 
   @Override

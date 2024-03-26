@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.repository.entity.onesource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
@@ -19,6 +20,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -52,12 +54,12 @@ public class TradeAgreementEntity {
     @JoinColumn(name = "rate_id")
     private RateEntity rate;
     @Column(name = "quantity")
-    private Integer quantity;
+    private BigDecimal quantity;
     @Column(name = "currency")
     @Enumerated(value = EnumType.STRING)
     private CurrencyCd billingCurrency;
     @Column(name = "dividend_rate")
-    private Integer dividendRatePct;
+    private Double dividendRatePct;
     @Column(name = "trade_date", columnDefinition = "DATE")
     private LocalDate tradeDate;
     @Column(name = "term_type")
@@ -77,7 +79,7 @@ public class TradeAgreementEntity {
     @JoinColumn(name = "transacting_party_id")
     private List<TransactingPartyEntity> transactingParties;
     @Column(name = "event_id")
-    private Long eventId;
+    private String eventId;
     @Column(name = "resource_uri")
     private String resourceUri;
     @Column(name = "processing_status")

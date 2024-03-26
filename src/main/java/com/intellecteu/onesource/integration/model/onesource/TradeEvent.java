@@ -19,7 +19,7 @@ public class TradeEvent {
 
     @JsonIgnore
     private Long id;
-    private Long eventId;
+    private String eventId;
     private EventType eventType;
     @JsonProperty("eventDateTime")
     private LocalDateTime eventDateTime;

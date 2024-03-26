@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.GLEIF_LEI;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -28,7 +29,7 @@ public class Party implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(gleifLei, GLEIF_LEI);
+        throwIfFieldMissedException(gleifLei, GLEIF_LEI, ONE_SOURCE_LOAN_CONTRACT);
     }
 
 }

@@ -8,6 +8,8 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFi
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.FieldSource;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -24,7 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class InstrumentDto implements Reconcilable {
 
-    private Long id;
+    private Integer id;
     private String ticker;
     private String cusip;
     private String isin;
@@ -39,7 +41,7 @@ public class InstrumentDto implements Reconcilable {
     public void validateForReconciliation() throws ValidationException {
         String failedValidationFields = getFailedValidationFields();
         if (!failedValidationFields.isEmpty()) {
-            throwFieldMissedException(failedValidationFields);
+            throwFieldMissedException(failedValidationFields, FieldSource.ONE_SOURCE_LOAN_CONTRACT);
         }
     }
 

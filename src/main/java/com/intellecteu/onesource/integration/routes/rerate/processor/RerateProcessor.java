@@ -9,14 +9,12 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.WAITING_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
@@ -66,6 +64,7 @@ public class RerateProcessor {
     private final BackOfficeService lenderBackOfficeService;
     private final BackOfficeService borrowerBackOfficeService;
     private final OneSourceService oneSourceService;
+    private final ContractService contractService;
     private final RerateTradeService rerateTradeService;
     private final RerateService rerateService;
     private final RerateReconcileService rerateReconcileService;
@@ -75,13 +74,14 @@ public class RerateProcessor {
 
     @Autowired
     public RerateProcessor(BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService,
-        OneSourceService oneSourceService, RerateTradeService rerateTradeService,
+        OneSourceService oneSourceService, ContractService contractService, RerateTradeService rerateTradeService,
         RerateService rerateService,
         RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
         CloudEventRecordService cloudEventRecordService) {
         this.lenderBackOfficeService = lenderBackOfficeService;
         this.borrowerBackOfficeService = borrowerBackOfficeService;
         this.oneSourceService = oneSourceService;
+        this.contractService = contractService;
         this.rerateTradeService = rerateTradeService;
         this.rerateService = rerateService;
         this.rerateReconcileService = rerateReconcileService;
@@ -291,5 +291,4 @@ public class RerateProcessor {
             RERATE_PROPOSAL_DISCREPANCIES, String.valueOf(rerate.getMatchingSpireTradeId()), e.getErrorList());
         cloudEventRecordService.record(recordRequest);
     }
-
 }

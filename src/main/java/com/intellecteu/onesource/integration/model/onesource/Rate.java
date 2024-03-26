@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -26,11 +27,8 @@ public class Rate implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(getRebateRate(), REBATE);
-    }
-
-    public Double retrieveRateBps() {
-        return fee == null ? getRebateRate() : fee.getBaseRate();
+        throwIfFieldMissedException(rebate, REBATE, ONE_SOURCE_LOAN_CONTRACT);
+        rebate.validateForReconciliation();
     }
 
     public Double getRebateRate() {
