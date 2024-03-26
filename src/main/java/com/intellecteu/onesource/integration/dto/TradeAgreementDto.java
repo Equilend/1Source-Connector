@@ -60,7 +60,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("transactingParties")
     private List<TransactingPartyDto> transactingParties;
     @JsonProperty("eventId")
-    private Long eventId;
+    private String eventId;
     @JsonProperty("resourceUri")
     private String resourceUri;
     @Builder.Default
@@ -77,7 +77,7 @@ public class TradeAgreementDto implements Reconcilable {
         @JsonProperty("settlementType") SettlementType settlementType,
         @JsonProperty("collateral") CollateralDto collateral,
         @JsonProperty("transactingParties") List<TransactingPartyDto> transactingParties,
-        @JsonProperty("eventId") Long eventId,
+        @JsonProperty("eventId") String eventId,
         @JsonProperty("resourceUri") String resourceUri
     ) {
         this.executionVenue = executionVenue;

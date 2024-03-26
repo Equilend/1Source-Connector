@@ -214,7 +214,7 @@ public class EntityApiTestFactory {
 
     public static TradeEventEntity buildTradeEvent() {
         return TradeEventEntity.builder()
-            .eventId(1L)
+            .eventId("1220fd46122abae8bfee44b2b0e85a4949a2d6cdea8207ba9e09b1686884e3468bd3:8")
             .build();
     }
 

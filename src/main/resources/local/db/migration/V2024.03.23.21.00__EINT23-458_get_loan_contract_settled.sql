@@ -1,7 +1,7 @@
 -- Test GET_LOAN_CONTRACT_SETTLED success flow data
 
 -- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
--- VALUES (3003, 'CONTRACT_OPENED', now(), 'contracts/32b71278-9ad2-445a-bfb0-b5ada72f4789');
+-- VALUES ('3003', 'CONTRACT_OPENED', now(), 'contracts/32b71278-9ad2-445a-bfb0-b5ada72f4789');
 --
 -- INSERT INTO internal_ref (id, broker, account_id, internal_id)
 -- VALUES (7802, 'testLenderBroker', '7802', '7802'),

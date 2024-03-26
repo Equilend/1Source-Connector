@@ -263,7 +263,7 @@ CREATE TABLE IF NOT EXISTS trade
     settlement_type VARCHAR(255) NULL,
     collateral      BIGINT       NULL,
     processing_status VARCHAR(255) NULL,
-    event_id             BIGINT       NULL,
+    event_id          VARCHAR(255)       NULL,
     resource_uri         VARCHAR(255) NULL,
     CONSTRAINT pk_trade PRIMARY KEY (id)
 );
@@ -271,7 +271,7 @@ CREATE TABLE IF NOT EXISTS trade
 CREATE TABLE IF NOT EXISTS trade_event
 (
     id              SERIAL NOT NULL,
-    event_id        BIGINT       NULL,
+    event_id        VARCHAR(255)      NULL,
     event_type      VARCHAR(255) NULL,
     event_datetime  timestamp    NULL,
     resource_uri    VARCHAR(255) NULL,

@@ -50,7 +50,7 @@ public class TradeAgreement implements Reconcilable {
     private Collateral collateral;
     private List<TransactingParty> transactingParties;
     @JsonIgnore
-    private Long eventId;
+    private String eventId;
     @JsonIgnore
     private String resourceUri;
     private ProcessingStatus processingStatus;

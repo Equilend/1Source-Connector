@@ -30,7 +30,7 @@ public class TradeEventEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "event_id")
-    private Long eventId;
+    private String eventId;
     @Column(name = "event_type")
     @Enumerated(value = EnumType.STRING)
     private EventType eventType;

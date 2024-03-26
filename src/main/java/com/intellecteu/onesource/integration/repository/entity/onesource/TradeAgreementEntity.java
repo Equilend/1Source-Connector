@@ -79,7 +79,7 @@ public class TradeAgreementEntity {
     @JoinColumn(name = "transacting_party_id")
     private List<TransactingPartyEntity> transactingParties;
     @Column(name = "event_id")
-    private Long eventId;
+    private String eventId;
     @Column(name = "resource_uri")
     private String resourceUri;
     @Column(name = "processing_status")
