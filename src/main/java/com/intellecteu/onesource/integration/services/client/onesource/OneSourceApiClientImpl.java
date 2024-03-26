@@ -358,6 +358,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             return response.getBody();
         } catch (HttpStatusCodeException e) {
             log.warn("Retrieve events response: " + e.getStatusCode());
+            log.debug("Details: " + e.getMessage());
             if (UNAUTHORIZED == e.getStatusCode() || INTERNAL_SERVER_ERROR == e.getStatusCode()) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
                 cloudEventRecordService.record(eventBuilder.buildExceptionRequest(e, GET_1SOURCE_EVENTS));
