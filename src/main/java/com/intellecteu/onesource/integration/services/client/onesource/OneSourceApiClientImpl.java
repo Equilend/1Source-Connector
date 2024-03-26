@@ -338,8 +338,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public List<TradeEvent> retrieveEvents(LocalDateTime timeStamp) {
-        var encodedTimestamp = URLEncoder.encode(
-            timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString(), StandardCharsets.US_ASCII);
+        var encodedTimestamp = timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString();
         String url = UriComponentsBuilder
             .fromHttpUrl(onesourceBaseEndpoint + version + EVENTS_ENDPOINT)
             .queryParam("since", encodedTimestamp)
