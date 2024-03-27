@@ -108,6 +108,8 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private SettlementInstruction buildBorrowerInstructionFromPosition(Position position) {
         return SettlementInstruction.builder()
+            .settlementBic("ZYXXUS01XXX") // hardcode for the demo
+            .localAgentAcct("6789XYZ") // hardcode for the demo
             .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }
@@ -142,6 +144,8 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private SettlementInstruction buildInstruction(Position position) {
         return SettlementInstruction.builder()
+            .settlementBic("XYZXUS01XXX") //hardcoded for the demo
+            .localAgentBic("1234ABC") // hardcoded for the demo
             .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }

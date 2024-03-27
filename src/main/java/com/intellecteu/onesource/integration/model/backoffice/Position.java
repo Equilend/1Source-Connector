@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Builder
-@NoArgsConstructor
+//@NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -77,6 +77,20 @@ public class Position implements Reconcilable {
     private PositionAccount positionCpAccount;
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
+
+    public Position() {
+        setIndexForDemo();
+    }
+
+    public void setIndex(Index index) {
+        setIndexForDemo();
+    }
+    //TODO hardcode for the demo. Expected to be removed
+    private void setIndexForDemo(){
+        index = new Index();
+        index.setIndexId(12);
+        index.setIndexName("Fixed Rate");
+    }
 
     public void setProcessingStatus(ProcessingStatus processingStatus) {
         log.debug("Processing status {} was set for positionId={}", processingStatus, positionId);

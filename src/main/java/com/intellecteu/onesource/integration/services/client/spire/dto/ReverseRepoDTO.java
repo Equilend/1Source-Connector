@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * ReverseRepoDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class ReverseRepoDTO {
   @JsonProperty("accountAllocations")
   private List<AccountAllocationDTO> accountAllocations = new ArrayList<>();
@@ -510,10 +510,10 @@ public class ReverseRepoDTO {
   }
 
    /**
-   * Required only when posting a position, increase and partial return qty on Pay To Hold &amp; Required only when the lending account is pooled
+   * Required only when posting a position,  increase and partial return qty on Pay To Hold  &amp; Required only when the lending account is pooled
    * @return accountAllocations
   **/
-  @ApiModelProperty(required = true, value = "Required only when posting a position, increase and partial return qty on Pay To Hold & Required only when the lending account is pooled")
+  @ApiModelProperty(required = true, value = "Required only when posting a position,  increase and partial return qty on Pay To Hold  & Required only when the lending account is pooled")
   public List<AccountAllocationDTO> getAccountAllocations() {
     return accountAllocations;
   }
@@ -2200,10 +2200,10 @@ public class ReverseRepoDTO {
   }
 
    /**
-   * Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold 
+   * Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold 
    * @return nonMarkable
   **/
-  @ApiModelProperty(value = "Tells whether the position is markable or not, used while booking/editing Loan and Pay To Hold ")
+  @ApiModelProperty(value = "Tells whether the position is markable or not, used while booking/editing  Loan and Pay To Hold ")
   public Boolean isNonMarkable() {
     return nonMarkable;
   }
@@ -2650,10 +2650,10 @@ public class ReverseRepoDTO {
   }
 
    /**
-   * Required only when posting a position, returning and increasing qty on Pay To Hold
+   * Required only when posting a position,  returning and increasing qty on Pay To Hold
    * @return quantity
   **/
-  @ApiModelProperty(required = true, value = "Required only when posting a position, returning and increasing qty on Pay To Hold")
+  @ApiModelProperty(required = true, value = "Required only when posting a position,  returning and increasing qty on Pay To Hold")
   public Double getQuantity() {
     return quantity;
   }

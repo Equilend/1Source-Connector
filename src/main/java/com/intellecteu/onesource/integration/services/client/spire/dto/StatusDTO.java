@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * StatusDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class StatusDTO {
   @JsonProperty("forAccount")
   private Integer forAccount = null;
@@ -265,10 +265,10 @@ public class StatusDTO {
   }
 
    /**
-   * Allowed values for position and trade status: OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED. Allowed values for trade settled status: NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID
+   * Allowed values for position and trade status:  OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED.  Allowed values for trade settled status:  NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID
    * @return status
   **/
-  @ApiModelProperty(value = "Allowed values for position and trade status: OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED. Allowed values for trade settled status: NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID")
+  @ApiModelProperty(value = "Allowed values for position and trade status:  OPEN, CLOSED, FUTURE, PREPAID, FAILED, CANCELLED.  Allowed values for trade settled status:  NEW, READY, PENDING, SETTLED, DELETED, FAILED, NO INSTRUCTION, PRINTED, ACCEPTED, VOID")
   public String getStatus() {
     return status;
   }

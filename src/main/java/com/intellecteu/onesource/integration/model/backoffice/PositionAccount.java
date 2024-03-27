@@ -31,7 +31,7 @@ public class PositionAccount implements Reconcilable {
     private Long accountId;
     private String shortName;
     private String lei;
-    private Long oneSourceId;
+    private String oneSourceId;
     private Long dtc;
 
     @Override
