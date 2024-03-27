@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * LadderKey
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class LadderKey {
   @JsonProperty("accountId")
   private Long accountId = null;

@@ -53,9 +53,12 @@ public class UpdatePositionProcessor {
             .orElse(null);
     }
 
+    // commented out for the demo purposes. Expected this method will be returned
     private Position updateInitialPositionForRerate(Position initialPosition, TradeOut tradeUpdateRequest) {
-        updateFixedRate(initialPosition, tradeUpdateRequest);
-        updateNotFixedRate(initialPosition, tradeUpdateRequest);
+//        updateFixedRate(initialPosition, tradeUpdateRequest);
+//        updateNotFixedRate(initialPosition, tradeUpdateRequest);
+        initialPosition.setRate(tradeUpdateRequest.getRateOrSpread()); // hardcode only for the demo
+        initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate()); // hardcode only for the demo
         return initialPosition;
     }
 

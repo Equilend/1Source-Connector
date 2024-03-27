@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * PositionOutDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class PositionOutDTO {
   @JsonProperty("account2DTO")
   private AccountDTO account2DTO = null;
@@ -291,7 +291,7 @@ public class PositionOutDTO {
   private Double price = null;
 
   @JsonProperty("principalOrInterest")
-  private Character principalOrInterest = null;
+  private String principalOrInterest = null;
 
   @JsonProperty("quantity")
   private Double quantity = null;
@@ -1976,7 +1976,7 @@ public class PositionOutDTO {
     this.price = price;
   }
 
-  public PositionOutDTO principalOrInterest(Character principalOrInterest) {
+  public PositionOutDTO principalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
     return this;
   }
@@ -1986,11 +1986,11 @@ public class PositionOutDTO {
    * @return principalOrInterest
   **/
   @ApiModelProperty(value = "")
-  public Character getPrincipalOrInterest() {
+  public String getPrincipalOrInterest() {
     return principalOrInterest;
   }
 
-  public void setPrincipalOrInterest(Character principalOrInterest) {
+  public void setPrincipalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
   }
 

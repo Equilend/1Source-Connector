@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * SResponseobject
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class SResponseobject {
   @JsonProperty("data")
   private Object data = null;

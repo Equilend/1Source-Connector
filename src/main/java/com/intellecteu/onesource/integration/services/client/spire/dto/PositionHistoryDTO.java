@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * PositionHistoryDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class PositionHistoryDTO {
   @JsonProperty("accountGroupDTO")
   private AccountDTO accountGroupDTO = null;
@@ -495,7 +495,7 @@ public class PositionHistoryDTO {
   private String primaryIdType = null;
 
   @JsonProperty("principalOrInterest")
-  private Character principalOrInterest = null;
+  private String principalOrInterest = null;
 
   @JsonProperty("purchasedInterest")
   private Double purchasedInterest = null;
@@ -3521,7 +3521,7 @@ public class PositionHistoryDTO {
     this.primaryIdType = primaryIdType;
   }
 
-  public PositionHistoryDTO principalOrInterest(Character principalOrInterest) {
+  public PositionHistoryDTO principalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
     return this;
   }
@@ -3531,11 +3531,11 @@ public class PositionHistoryDTO {
    * @return principalOrInterest
   **/
   @ApiModelProperty(value = "")
-  public Character getPrincipalOrInterest() {
+  public String getPrincipalOrInterest() {
     return principalOrInterest;
   }
 
-  public void setPrincipalOrInterest(Character principalOrInterest) {
+  public void setPrincipalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
   }
 

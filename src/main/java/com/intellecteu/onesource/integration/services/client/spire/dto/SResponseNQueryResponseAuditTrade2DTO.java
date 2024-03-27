@@ -22,7 +22,7 @@ import java.util.Objects;
 /**
  * SResponseNQueryResponseAuditTrade2DTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class SResponseNQueryResponseAuditTrade2DTO {
   @JsonProperty("data")
   private NQueryResponseAuditTrade2DTO data = null;

@@ -45,8 +45,6 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Trade
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.Named;
-import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 /*
@@ -136,6 +134,7 @@ public abstract class OneSourceMapper {
 
     public abstract TradeEvent toModel(TradeEventEntity tradeEventEntity);
 
+    @Mapping(target = "settlement", source = "settlementList")
     public abstract ContractProposalDTO toRequestDto(ContractProposal contractProposal);
 
     public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);

@@ -421,6 +421,7 @@
                     <invokerPackage>${project.groupId}.onesource.integration.services.client.spire.invoker
                     </invokerPackage>
                     <configOptions>
+                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
                         <dateLibrary>java8-localdatetime</dateLibrary>
                     </configOptions>
                 </configuration>
@@ -441,6 +442,7 @@
                     <invokerPackage>${project.groupId}.onesource.integration.services.client.onesource.invoker
                     </invokerPackage>
                     <configOptions>
+                        <hideGenerationTimestamp>true</hideGenerationTimestamp>
                         <dateLibrary>java8-localdatetime</dateLibrary>
                     </configOptions>
                 </configuration>

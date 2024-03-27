@@ -22,7 +22,7 @@ import java.util.Objects;
  * BuyinCompleteDTO
  */
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-01-22T10:16:28.187392600Z[Europe/London]")
+
 
 public class BuyinCompleteDTO {
   @JsonProperty("buyinCompleteId")

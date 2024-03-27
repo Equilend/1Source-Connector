@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * CouponPayment
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class CouponPayment {
   @JsonProperty("coupon")
   private Double coupon = null;
