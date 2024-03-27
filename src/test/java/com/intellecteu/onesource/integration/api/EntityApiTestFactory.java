@@ -250,8 +250,8 @@ public class EntityApiTestFactory {
             .positionStatus(positionStatus)
             .exposure(new PositionExposure(11, 0.05d, 10, 12))
             .positionType(new PositionType(22, "CASH BORROW", true))
-            .positionAccount(new PositionAccount(11L, 1L, "testLei", "testLeiName", 123L, 123L))
-            .positionCpAccount(new PositionAccount(22L, 2L, "testCpLei", "testCpLeiName", 456L, 456L))
+            .positionAccount(new PositionAccount(11L, 1L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new PositionAccount(22L, 2L, "testCpLei", "testCpLeiName", "456L", 456L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();
