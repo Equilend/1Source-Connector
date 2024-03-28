@@ -140,10 +140,12 @@ public abstract class OneSourceMapper {
     @Mapping(target = "roundingRule", expression = "java(contractProposalApproval.getRoundingRule().doubleValue())")
     public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);
 
+    @Mapping(target = "executionVenue", source = "venue")
     public abstract TradeAgreementDTO toRequestDto(TradeAgreement tradeAgreement);
 
     public abstract ContractProposal toModel(ContractProposalDTO contractProposal);
 
+    @Mapping(source = "executionVenue", target = "venue")
     public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
 
     public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rate) {
