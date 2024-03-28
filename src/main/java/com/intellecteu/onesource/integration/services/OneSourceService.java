@@ -182,7 +182,6 @@ public class OneSourceService {
      * Send new contract proposal request to OneSource for inclusion in the ledger
      *
      * @param contractProposal ContractProposal
-     * @param position Position
      * @return true if HTTP response code is CREATED (201)
      * @throws RestClientException if response status is 4xx or 5xx
      */

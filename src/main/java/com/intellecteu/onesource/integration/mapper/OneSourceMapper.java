@@ -145,18 +145,34 @@ public abstract class OneSourceMapper {
 
     public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
 
-    public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rateDTO) {
-        if (rateDTO.getRebate() != null) {
-            return toRequestDto(rateDTO.getRebate());
-        } else if (rateDTO.getFee() != null) {
-            return toRequestDto(rateDTO.getFee());
+    public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rate) {
+        if (rate.getRebate() != null) {
+            return toRequestDto(rate.getRebate());
+        } else if (rate.getFee() != null) {
+            return toRequestDto(rate.getFee());
         }
         return null;
     }
 
-    public abstract RebateRateDTO toRequestDto(RebateRate rebateRate);
+    public RebateRateDTO toRequestDto(RebateRate rebateRate) {
+        if (rebateRate.getFixed() != null) {
+            RebateRateDTO rebateRateDTO = new RebateRateDTO();
+            FixedRateDTO fixedRateDto = toFixedRebateDto(rebateRate);
+            rebateRateDTO.setRebate(fixedRateDto);
+            return rebateRateDTO;
+        }
+        if (rebateRate.getFloating() != null) {
+            RebateRateDTO rebateRateDTO = new RebateRateDTO();
+            FloatingRateDTO floatingRateDTO = toFloatingRebateDto(rebateRate);
+            rebateRateDTO.setRebate(floatingRateDTO);
+            return rebateRateDTO;
+        }
+        return null;
+    }
 
     public abstract FeeRateDTO toRequestDto(FeeRate feeRate);
+    public abstract FloatingRateDTO toFloatingRebateDto(RebateRate rebateRate);
+    public abstract FixedRateDTO toFixedRebateDto(RebateRate rebateRate);
 
     public Rate toModel(OneOfTradeAgreementRateDTODTO rateDTO) {
         if (rateDTO instanceof RebateRateDTO) {
