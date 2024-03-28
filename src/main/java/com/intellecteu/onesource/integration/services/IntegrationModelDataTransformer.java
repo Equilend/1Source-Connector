@@ -103,13 +103,16 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         return SettlementInstructionUpdate.builder()
             .partyRole(BORROWER)
             .instruction(buildBorrowerInstructionFromPosition(position))
+            .internalAcctCd(String.valueOf(position.getPositionAccount().getAccountId()))
             .build();
     }
 
     private SettlementInstruction buildBorrowerInstructionFromPosition(Position position) {
         return SettlementInstruction.builder()
-            .settlementBic("ZYXXUS01XXX") // hardcode for the demo
-            .localAgentAcct("6789XYZ") // hardcode for the demo
+            .settlementBic("DTCYUS33") // hardcode for the demo
+            .localAgentAcct("ZYXXUS02XXX") // hardcode for the demo
+            .localAgentName("678XYZ") // hardcode for the demo
+            .localAgentAcct("XYZ678") // hardcode for the demo
             .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }
