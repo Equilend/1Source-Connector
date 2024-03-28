@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ContractProposalApproval {
 
     private String internalRefId;
-    private Double roundingRule;
+    private Integer roundingRule;
     private SettlementInstructionUpdate settlement;
 
 }

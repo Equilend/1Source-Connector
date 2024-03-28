@@ -24,6 +24,7 @@ public class SettlementInstructionUpdate {
     private Long instructionId;
     private PartyRole partyRole;
     private SettlementInstruction instruction;
+    private String internalAcctCd;
 
     public SettlementInstructionUpdate(SettlementInstruction instruction) {
         this.instruction = instruction;
