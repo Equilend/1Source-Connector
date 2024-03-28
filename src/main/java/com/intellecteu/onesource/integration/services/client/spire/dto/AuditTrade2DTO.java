@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * AuditTrade2DTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class AuditTrade2DTO {
   @JsonProperty("account2DTO")
   private AccountDTO account2DTO = null;

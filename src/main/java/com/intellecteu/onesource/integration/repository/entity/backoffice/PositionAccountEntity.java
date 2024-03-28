@@ -32,7 +32,7 @@ public class PositionAccountEntity {
     private Long accountId;
     private String shortName;
     private String lei;
-    private Long oneSourceId;
+    private String oneSourceId;
     private Long dtc;
 
     @OneToMany(mappedBy = "account", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)

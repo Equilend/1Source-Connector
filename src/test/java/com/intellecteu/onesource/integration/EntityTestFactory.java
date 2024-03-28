@@ -229,8 +229,8 @@ public class EntityTestFactory {
             .positionStatus(positionStatus)
             .exposure(new PositionExposure(11, 0.05d, 10, 12))
             .positionType(new PositionType(22, "CASH BORROW", true))
-            .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", 123L, 123L))
-            .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", 345L, 345L))
+            .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();

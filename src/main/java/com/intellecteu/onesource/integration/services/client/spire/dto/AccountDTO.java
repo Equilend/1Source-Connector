@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * AccountDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class AccountDTO {
   @JsonProperty("aba")
   private String aba = null;
@@ -278,7 +278,7 @@ public class AccountDTO {
   private String pseudoTaxId = null;
 
   @JsonProperty("rebateFee")
-  private Character rebateFee = null;
+  private String rebateFee = null;
 
   @JsonProperty("regsLevel")
   private Integer regsLevel = null;
@@ -1851,7 +1851,7 @@ public class AccountDTO {
     this.pseudoTaxId = pseudoTaxId;
   }
 
-  public AccountDTO rebateFee(Character rebateFee) {
+  public AccountDTO rebateFee(String rebateFee) {
     this.rebateFee = rebateFee;
     return this;
   }
@@ -1861,11 +1861,11 @@ public class AccountDTO {
    * @return rebateFee
   **/
   @ApiModelProperty(value = "")
-  public Character getRebateFee() {
+  public String getRebateFee() {
     return rebateFee;
   }
 
-  public void setRebateFee(Character rebateFee) {
+  public void setRebateFee(String rebateFee) {
     this.rebateFee = rebateFee;
   }
 

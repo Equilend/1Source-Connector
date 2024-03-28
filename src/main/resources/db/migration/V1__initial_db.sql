@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS account
     account_id      BIGINT NOT NULL,
     short_name      VARCHAR(255) NULL,
     lei             VARCHAR(255) NULL,
-    one_source_id   BIGINT NULL,
+    one_source_id   VARCHAR(255) NULL,
     dtc             BIGINT NULL
 );
 

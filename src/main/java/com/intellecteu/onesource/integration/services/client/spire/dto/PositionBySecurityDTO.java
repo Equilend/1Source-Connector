@@ -20,7 +20,7 @@ import java.util.Objects;
 /**
  * PositionBySecurityDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class PositionBySecurityDTO {
   @JsonProperty("avgRate")
   private Double avgRate = null;

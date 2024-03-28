@@ -23,7 +23,7 @@ import java.util.Objects;
 /**
  * PayToHoldTradeInputDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class PayToHoldTradeInputDTO {
   @JsonProperty("accrualAmount")
   private Double accrualAmount = null;
@@ -214,10 +214,10 @@ public class PayToHoldTradeInputDTO {
   }
 
    /**
-   * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan, &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold, &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold, &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold Qty, &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
+   * Should be &#39;Cancel Loan Trade&#39; to Cancel Loan,  &#39;Cancel Pay To Hold Trade&#39; to Cancel Pay To Hold,  &#39;Adjust Rate&#39; to Re-rate on Loan and Pay To Hold,  &#39;Decrease Pay To Hold&#39; to descrease Pay To Hold Qty,  &#39;Increase Pay To Hold&#39; to increase Pay To Hold Qty
    * @return action
   **/
-  @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan, 'Cancel Pay To Hold Trade' to Cancel Pay To Hold, 'Adjust Rate' to Re-rate on Loan and Pay To Hold, 'Decrease Pay To Hold' to descrease Pay To Hold Qty, 'Increase Pay To Hold' to increase Pay To Hold Qty")
+  @ApiModelProperty(required = true, value = "Should be 'Cancel Loan Trade' to Cancel Loan,  'Cancel Pay To Hold Trade' to Cancel Pay To Hold,  'Adjust Rate' to Re-rate on Loan and Pay To Hold,  'Decrease Pay To Hold' to descrease Pay To Hold Qty,  'Increase Pay To Hold' to increase Pay To Hold Qty")
   public String getAction() {
     return action;
   }

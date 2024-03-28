@@ -45,8 +45,6 @@ import com.intellecteu.onesource.integration.repository.SettlementUpdateReposito
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
@@ -338,7 +336,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public List<TradeEvent> retrieveEvents(LocalDateTime timeStamp) {
-        var encodedTimestamp = timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString();
+        String encodedTimestamp = timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString();
         String url = UriComponentsBuilder
             .fromHttpUrl(onesourceBaseEndpoint + version + EVENTS_ENDPOINT)
             .queryParam("since", encodedTimestamp)

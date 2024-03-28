@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * MessageDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-03-23T11:29:17.054Z")
+
 public class MessageDTO {
   @JsonProperty("accountId")
   private Long accountId = null;
@@ -51,7 +51,7 @@ public class MessageDTO {
   private Long createUserId = null;
 
   @JsonProperty("direction")
-  private Character direction = null;
+  private String direction = null;
 
   @JsonProperty("entryUser")
   private String entryUser = null;
@@ -281,7 +281,7 @@ public class MessageDTO {
     this.createUserId = createUserId;
   }
 
-  public MessageDTO direction(Character direction) {
+  public MessageDTO direction(String direction) {
     this.direction = direction;
     return this;
   }
@@ -291,11 +291,11 @@ public class MessageDTO {
    * @return direction
   **/
   @ApiModelProperty(value = "")
-  public Character getDirection() {
+  public String getDirection() {
     return direction;
   }
 
-  public void setDirection(Character direction) {
+  public void setDirection(String direction) {
     this.direction = direction;
   }
 
