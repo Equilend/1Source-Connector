@@ -11,6 +11,7 @@ import com.intellecteu.onesource.integration.repository.entity.backoffice.Positi
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -93,13 +94,21 @@ public class PositionService {
         return positionRepository.findAllNotCanceledAndSettled().stream().map(backOfficeMapper::toModel).toList();
     }
 
-    public Optional<String> getMaxPositionId() { // todo rework change logic with SQL query
+    /**
+     * Return the latest trade id for the persisted positions.
+     * If the list of persisted positions is empty, "0" will be returned.
+     *
+     * @return String last trade id of persisted positions or "0"
+     */
+    public String getMaxTradeId() { // todo rework change logic with SQL query
         List<PositionEntity> storedPositions = positionRepository.findAll();
         log.debug("Found {} positions. Getting the latest id recorded.", storedPositions.size());
         return storedPositions.stream()
-            .map(PositionEntity::getPositionId)
+            .map(PositionEntity::getTradeId)
+            .filter(Objects::nonNull)
             .max(Comparator.naturalOrder())
-            .map(String::valueOf);
+            .map(String::valueOf)
+            .orElse("0");
     }
 
     public List<Position> findAllByProcessingStatus(ProcessingStatus status) {

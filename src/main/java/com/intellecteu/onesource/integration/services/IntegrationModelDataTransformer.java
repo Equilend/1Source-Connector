@@ -45,6 +45,8 @@ import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.model.onesource.VenueType;
 import io.micrometer.common.util.StringUtils;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +128,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .dividendRatePct(position.getLoanBorrow().getTaxWithholdingRate())
             .tradeDate(position.getTradeDate().toLocalDate())
             .termType(buildTermType(position.getTermId()))
-            .termDate(position.getEndDate().toLocalDate()) // todo ask how to handle NPE
+            .termDate(retrieveEndDate(position.getEndDate(), position.getTermId()))
             .settlementDate(position.getSettleDate().toLocalDate())
             .settlementType(buildSettlementType(position.getDeliverFree()))
             .collateral(buildCollateral(position))
@@ -134,6 +136,13 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
                 buildLenderTransactionParty(position),
                 buildBorrowerTransactionParty(position)))
             .build();
+    }
+
+    private LocalDate retrieveEndDate(LocalDateTime endDate, Integer termId) {
+        if (endDate == null || termId == null) {
+            return null;
+        }
+        return termId.equals(0) ? endDate.toLocalDate() : null;
     }
 
     private Settlement createLenderSettlement(Position position) {

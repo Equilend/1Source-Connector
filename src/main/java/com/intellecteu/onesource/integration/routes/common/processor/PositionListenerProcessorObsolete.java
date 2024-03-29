@@ -7,7 +7,6 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -31,7 +30,7 @@ public class PositionListenerProcessorObsolete {
     }
 
     public void fetchNewPositions() {
-        Optional<String> maxPositionId = positionService.getMaxPositionId();
+        String maxPositionId = positionService.getMaxTradeId();
         List<Position> newSpirePositions = new ArrayList<>();
         newSpirePositions.addAll(borrowerBackOfficeService.getNewSpirePositionsObsolete(maxPositionId));
         newSpirePositions.addAll(lenderBackOfficeService.getNewSpirePositionsObsolete(maxPositionId));

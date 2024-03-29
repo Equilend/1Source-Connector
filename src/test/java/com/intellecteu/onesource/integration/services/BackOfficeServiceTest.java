@@ -89,7 +89,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositionsObsolete(Optional.empty());
+        service.getNewSpirePositionsObsolete("0");
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }
@@ -112,7 +112,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositionsObsolete(Optional.empty());
+        service.getNewSpirePositionsObsolete("0");
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }

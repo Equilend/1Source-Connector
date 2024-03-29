@@ -105,10 +105,9 @@ public class BackOfficeService {
     private final CloudEventRecordService cloudEventRecordService;
 
     @Deprecated(since = "0.0.5-SNAPSHOT")
-    public List<Position> getNewSpirePositionsObsolete(Optional<String> lastPositionId) {
-        String maxPositionId = lastPositionId.orElse(STARTING_POSITION_ID);
+    public List<Position> getNewSpirePositionsObsolete(String lastPositionId) {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewPositions(maxPositionId));
+            .tuples(createTuplesGetNewPositions(lastPositionId));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
@@ -136,11 +135,10 @@ public class BackOfficeService {
         tradeSpireApiClient.confirmAndBatchPendingPositionsUsingPOST(null, confirmationDto);
     }
 
-    public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
-        String lastTradeIdRecorded = lastPositionId.orElse(String.valueOf(STARTING_TRADE_ID));
+    public List<Position> getNewSpirePositions(String lastTradeId) {
         NQuery nQuery = new NQuery()
             .andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTradePositions(lastTradeIdRecorded));
+            .tuples(createTuplesGetNewTradePositions(lastTradeId));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             log.debug("Sending request with SPIRE API Client");

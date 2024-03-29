@@ -7,7 +7,6 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +25,8 @@ public class PositionListenerProcessor {
     }
 
     public void fetchNewPositions() {
-        Optional<String> maxPositionId = positionService.getMaxPositionId();
-        List<Position> newSpirePositions = backOfficeService.getNewSpirePositions(maxPositionId);
+        String maxTradeId = positionService.getMaxTradeId();
+        List<Position> newSpirePositions = backOfficeService.getNewSpirePositions(maxTradeId);
         newSpirePositions.forEach(position -> {
             position.setVenueRefId(position.getCustomValue2());
             position.setCreationDatetime(LocalDateTime.now());
