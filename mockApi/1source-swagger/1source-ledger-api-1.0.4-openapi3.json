@@ -3525,7 +3525,7 @@
                         "type": "boolean"
                     },
                     "effectiveDateDelay": {
-                        "type": "number",
+                        "type": "integer",
                         "format": "int32"
                     },
                     "effectiveDate": {
@@ -3726,7 +3726,7 @@
                 ]
             },
             "Quantity": {
-                "type": "number",
+                "type": "integer",
                 "format": "int32"
             },
             "RebateRate": {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import jakarta.persistence.CascadeType;
@@ -20,7 +19,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -54,7 +52,7 @@ public class TradeAgreementEntity {
     @JoinColumn(name = "rate_id")
     private RateEntity rate;
     @Column(name = "quantity")
-    private BigDecimal quantity;
+    private Integer quantity;
     @Column(name = "currency")
     @Enumerated(value = EnumType.STRING)
     private CurrencyCd billingCurrency;

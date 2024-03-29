@@ -77,8 +77,6 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -271,10 +269,7 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
 
     private Optional<ProcessExceptionDetails> reconcileQuantity(TradeAgreement trade, Position position) {
         if (trade.getQuantity() != null && position.getQuantity() != null) {
-            BigDecimal tradeQuantity = trade.getQuantity().setScale(2, RoundingMode.HALF_UP);
-            BigDecimal positionQuantity = BigDecimal.valueOf(position.getQuantity())
-                .setScale(2, RoundingMode.HALF_UP);
-            return checkEquality(tradeQuantity, QUANTITY, positionQuantity, POSITION_QUANTITY);
+            return checkEquality(trade.getQuantity(), QUANTITY, position.getQuantity().intValue(), POSITION_QUANTITY);
         }
         return Optional.empty();
     }

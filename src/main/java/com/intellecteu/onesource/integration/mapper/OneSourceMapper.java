@@ -45,6 +45,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Trade
 import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 /*
@@ -137,7 +138,7 @@ public abstract class OneSourceMapper {
     @Mapping(target = "settlement", source = "settlementList")
     public abstract ContractProposalDTO toRequestDto(ContractProposal contractProposal);
 
-    @Mapping(target = "roundingRule", expression = "java(contractProposalApproval.getRoundingRule().doubleValue())")
+    @Mapping(target = "roundingRule", source = "roundingRule", qualifiedByName = "mapIntegerToDouble")
     public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);
 
     @Mapping(target = "executionVenue", source = "venue")
@@ -194,4 +195,11 @@ public abstract class OneSourceMapper {
 
     public abstract SettlementInstructionUpdateEntity toEntity(SettlementInstructionUpdate settlementInstructionUpdate);
 
+    @Named("mapIntegerToDouble")
+    public Double mapIntegerToDouble(Integer integer) {
+        if (integer == null) {
+            return null;
+        }
+        return integer.doubleValue();
+    }
 }

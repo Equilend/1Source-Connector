@@ -36,6 +36,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
@@ -48,6 +49,7 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
@@ -55,7 +57,6 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
-import java.math.BigDecimal;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -103,7 +104,7 @@ public class ModelTestFactory {
             .venue(buildVenue())
             .instrument(buildInstrument())
             .rate(buildRate())
-            .quantity(BigDecimal.valueOf(2L))
+            .quantity(2)
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
@@ -432,5 +433,23 @@ public class ModelTestFactory {
         SystemEventData systemEventData = buildSystemEventDataModel();
         CloudEventMetadata metadata = buildCloudEventMetadata();
         return new IntegrationCloudEvent(metadata, systemEventData);
+    }
+
+    public static ContractProposalApproval buildContractProposalApproval() {
+        return ContractProposalApproval.builder()
+            .internalRefId("testInternalRefId")
+            .roundingRule(4)
+            .settlement(buildSettlementUpdate())
+            .build();
+    }
+
+    private static SettlementInstructionUpdate buildSettlementUpdate() {
+        return SettlementInstructionUpdate.builder()
+            .venueRefId("testVenueRefId")
+            .instructionId(1L)
+            .partyRole(LENDER)
+            .instruction(buildInstruction())
+            .internalAcctCd("567")
+            .build();
     }
 }

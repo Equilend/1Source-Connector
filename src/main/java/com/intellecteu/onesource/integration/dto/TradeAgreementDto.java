@@ -7,11 +7,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
-import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
-import java.math.BigDecimal;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDate;
 import java.util.List;
@@ -37,7 +34,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("rate")
     private RateDto rate;
     @JsonProperty("quantity")
-    private BigDecimal quantity;
+    private Integer quantity;
     @JsonProperty("billingCurrency")
     private CurrencyCd billingCurrency;
     @JsonProperty("dividendRatePct")
@@ -69,7 +66,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonCreator
     public TradeAgreementDto(@JsonProperty("executionVenue") VenueDto executionVenue,
         @JsonProperty("instrument") InstrumentDto instrument, @JsonProperty("rate") RateDto rate,
-        @JsonProperty("quantity") BigDecimal quantity,
+        @JsonProperty("quantity") Integer quantity,
         @JsonProperty("billingCurrency") CurrencyCd billingCurrency,
         @JsonProperty("dividendRatePct") Double dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
         @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDate termDate,
