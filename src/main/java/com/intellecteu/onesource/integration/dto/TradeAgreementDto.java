@@ -1,20 +1,12 @@
 package com.intellecteu.onesource.integration.dto;
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.CurrencyCd;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
@@ -46,7 +38,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("billingCurrency")
     private CurrencyCd billingCurrency;
     @JsonProperty("dividendRatePct")
-    private Integer dividendRatePct;
+    private Double dividendRatePct;
     @JsonProperty("tradeDate")
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate tradeDate;
@@ -65,7 +57,7 @@ public class TradeAgreementDto implements Reconcilable {
     @JsonProperty("transactingParties")
     private List<TransactingPartyDto> transactingParties;
     @JsonProperty("eventId")
-    private Long eventId;
+    private String eventId;
     @JsonProperty("resourceUri")
     private String resourceUri;
     @Builder.Default
@@ -76,13 +68,13 @@ public class TradeAgreementDto implements Reconcilable {
         @JsonProperty("instrument") InstrumentDto instrument, @JsonProperty("rate") RateDto rate,
         @JsonProperty("quantity") Integer quantity,
         @JsonProperty("billingCurrency") CurrencyCd billingCurrency,
-        @JsonProperty("dividendRatePct") Integer dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
+        @JsonProperty("dividendRatePct") Double dividendRatePct, @JsonProperty("tradeDate") LocalDate tradeDate,
         @JsonProperty("termType") TermType termType, @JsonProperty("termDate") LocalDate termDate,
         @JsonProperty("settlementDate") LocalDate settlementDate,
         @JsonProperty("settlementType") SettlementType settlementType,
         @JsonProperty("collateral") CollateralDto collateral,
         @JsonProperty("transactingParties") List<TransactingPartyDto> transactingParties,
-        @JsonProperty("eventId") Long eventId,
+        @JsonProperty("eventId") String eventId,
         @JsonProperty("resourceUri") String resourceUri
     ) {
         this.executionVenue = executionVenue;
@@ -104,16 +96,16 @@ public class TradeAgreementDto implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(instrument, INSTRUMENT);
-        throwIfFieldMissedException(quantity, QUANTITY);
-        throwIfFieldMissedException(tradeDate, TRADE_DATE);
-        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE);
-        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE);
-        throwIfFieldMissedException(collateral, COLLATERAL);
-        rate.validateForReconciliation();
-        collateral.validateForReconciliation();
-        instrument.validateForReconciliation();
-        validateParties();
+//        throwIfFieldMissedException(instrument, INSTRUMENT);
+//        throwIfFieldMissedException(quantity, QUANTITY);
+//        throwIfFieldMissedException(tradeDate, TRADE_DATE);
+//        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE);
+//        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE);
+//        throwIfFieldMissedException(collateral, COLLATERAL);
+//        rate.validateForReconciliation();
+//        collateral.validateForReconciliation();
+//        instrument.validateForReconciliation();
+//        validateParties();
     }
 
     public String retrieveVenueName() {

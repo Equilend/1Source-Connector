@@ -12,15 +12,14 @@
 
 package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+
 /**
 * OneOfSettlementInstructionDTO
 */
 @JsonTypeInfo(
-  use = JsonTypeInfo.Id.NAME,
-  include = JsonTypeInfo.As.PROPERTY,
-  property = "type")
+  use = Id.DEDUCTION)
 public interface OneOfSettlementInstructionDTO {
 
 }

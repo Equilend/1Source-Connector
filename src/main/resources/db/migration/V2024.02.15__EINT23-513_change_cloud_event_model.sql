@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS event_data
 (
     event_data_id          VARCHAR(255) PRIMARY KEY,
-    "message"              VARCHAR(255) NULL,
+    "message"              TEXT NULL,
     CONSTRAINT fk_cloud_event FOREIGN KEY (event_data_id) REFERENCES event_record (id)
 );
 

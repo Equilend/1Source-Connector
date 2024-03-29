@@ -1,0 +1,8 @@
+Prepared local migration data: V2024.03.22.19.00__EINT23-452_decline_loan_proposal_as_borrower.sql
+
+1. Insert into the database decline instruction:
+    - should be matched with the contract id
+    - should have `relatedProposalType` == 'CONTRACT'
+
+2. Insert into the database contract:
+    - should have processing status 'DISCREPANCIES' or 'UNMATCHED'

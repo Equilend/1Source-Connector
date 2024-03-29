@@ -33,6 +33,6 @@ public class CloudSystemEventDto {
     @JsonProperty("datacontenttype")
     private String dataContentType;
     @Column(name = "data")
-    private SystemEventData eventData;
+    private SystemEventData data;
 
 }

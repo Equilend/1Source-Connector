@@ -47,13 +47,13 @@ public class RerateTradeService {
         return lastRerateTrade.map(rerateTrade -> rerateTrade.getTradeId());
     }
 
-    public Optional<RerateTrade> findUnmatchedRerateTrade(String contractId, LocalDate settleDate) {
+    public Optional<RerateTrade> findUnmatchedRerateTrade(String contractId, LocalDate accrualDate) {
         List<RerateTrade> rerateTradesWithRelatedContractId = rerateTradeRepository.findUnmatchedRerateTrades(
             contractId).stream().map(backOfficeMapper::toModel).collect(
             Collectors.toList());
         Optional<RerateTrade> rerateTrade = rerateTradesWithRelatedContractId.stream()
-            .filter(r -> r.getTradeOut().getSettleDate().toLocalDate()
-                .equals(settleDate))
+            .filter(r -> r.getTradeOut().getAccrualDate().toLocalDate()
+                .equals(accrualDate))
             .findFirst();
         return rerateTrade;
     }

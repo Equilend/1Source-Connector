@@ -27,7 +27,9 @@ public class InstrumentEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
+    @Column(name = "security_id")
+    private Long securityId;
     @Column(name = "ticker")
     private String ticker;
     @Column(name = "cusip")
@@ -36,7 +38,7 @@ public class InstrumentEntity {
     private String isin;
     @Column(name = "sedol")
     private String sedol;
-    @Column(name = "quick")
+    @Column(name = "quick_code")
     private String quick;
     @Column(name = "figi")
     private String figi;

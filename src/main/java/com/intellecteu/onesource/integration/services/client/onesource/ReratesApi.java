@@ -117,7 +117,10 @@ public class ReratesApi {
      * @throws RestClientException if an error occurs while attempting to invoke the API
      */
     public void ledgerContractsContractIdReratesPost(RerateProposalDTO body, String contractId) throws RestClientException {
-        ledgerContractsContractIdReratesPostWithHttpInfo(body, contractId);
+        ResponseEntity<Void> response = ledgerContractsContractIdReratesPostWithHttpInfo(body, contractId);
+        if (!HttpStatus.CREATED.equals(response.getStatusCode())) {
+            throw new HttpClientErrorException(response.getStatusCode());
+        }
     }
 
     /**

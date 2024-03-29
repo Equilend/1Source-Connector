@@ -14,7 +14,6 @@ import static com.intellecteu.onesource.integration.model.onesource.VenueType.ON
 
 import com.intellecteu.onesource.integration.dto.AgreementDto;
 import com.intellecteu.onesource.integration.dto.CollateralDto;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.FeeRateDto;
 import com.intellecteu.onesource.integration.dto.FixedRateDto;
 import com.intellecteu.onesource.integration.dto.InstrumentDto;
@@ -39,12 +38,12 @@ import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionExposureDto;
 import com.intellecteu.onesource.integration.dto.spire.PositionTypeDto;
 import com.intellecteu.onesource.integration.dto.spire.SecurityDetailDto;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.LocalMarketField;
 import com.intellecteu.onesource.integration.model.onesource.LocalVenueField;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementType;
@@ -75,21 +74,19 @@ public class DtoTestFactory {
             .build();
     }
 
-    public static ContractDto buildContractDto() {
-        return ContractDto.builder()
+    public static Contract buildContractDto() {
+        return Contract.builder()
             .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
-            .lastEvent(buildTradeEventDto())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
-            .lastUpdateDatetime(LocalDateTime.now())
-            .settlement(List.of(buildSettlementDto()))
-            .trade(buildTradeAgreementDto())
+            .lastUpdateDateTime(LocalDateTime.now())
+            .settlement(List.of())
+            .trade(null)
             .build();
     }
 
     public static TradeEventDto buildTradeEventDto() {
         return TradeEventDto.builder()
-            .eventId(1L)
+            .eventId("1L")
             .build();
     }
 
@@ -101,7 +98,7 @@ public class DtoTestFactory {
             .rate(buildRateDto())
             .quantity(2)
             .billingCurrency(USD)
-            .dividendRatePct(2)
+            .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
             .termType(OPEN)
             .termDate(LocalDate.now())
@@ -230,13 +227,13 @@ public class DtoTestFactory {
 
     public static LoanBorrowDto buildLoanBorrowDto(TradeAgreementDto tradeAgreement) {
         return LoanBorrowDto.builder()
-            .taxWithholdingRate(tradeAgreement.getDividendRatePct().doubleValue())
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
             .build();
     }
 
     public static LoanBorrowDto buildLoanBorrowDto(TradeAgreement tradeAgreement) {
         return LoanBorrowDto.builder()
-            .taxWithholdingRate(tradeAgreement.getDividendRatePct().doubleValue())
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
             .build();
     }
 
@@ -269,7 +266,7 @@ public class DtoTestFactory {
             .cusip(tradeAgreement.getInstrument().getCusip())
             .isin(tradeAgreement.getInstrument().getIsin())
             .sedol(tradeAgreement.getInstrument().getSedol())
-            .quickCode(tradeAgreement.getInstrument().getQuick())
+            .quickCode(tradeAgreement.getInstrument().getQuickCode())
             .bloombergId(tradeAgreement.getInstrument().getFigi())
             .build();
     }
@@ -370,7 +367,7 @@ public class DtoTestFactory {
 
     public static InstrumentDto buildInstrumentDto() {
         return InstrumentDto.builder()
-            .id(9999L)
+            .id(9999)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")
@@ -515,7 +512,7 @@ public class DtoTestFactory {
             				"lastModUserId": 1,
             				"lastModTs": "2023-10-30T00:30:10",
             				"statusId": 1,
-            				"quantity": 15000.0,
+            				"quantity": 15000,
             				"price": 119.57,
             				"factor": 1.0,
             				"indexId": 12,

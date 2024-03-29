@@ -5,8 +5,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.intellecteu.onesource.integration.api.dto.DeclineInstructionDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
 import com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionApiService;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -45,7 +45,7 @@ public class DeclineInstructionController {
         DeclineInstructionDto createdInstruction = declineInstructionApiService.createDeclineInstruction(
             declineInstructionDto);
         return ResponseEntity
-            .status(HttpStatus.ACCEPTED)
+            .accepted()
             .body(createdInstruction);
     }
 }

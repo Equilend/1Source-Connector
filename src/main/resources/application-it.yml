@@ -31,5 +31,5 @@ onesource:
 spire:
   lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_DEV:http://localhost:8083}
   borrowerEndpoint: ${SPIRE_LENDER_ENDPOINT_DEV:http://localhost:8083}
-  username: ${SPIRE_LENDER_USERNAME_DEV:TestUser}
-  password: ${SPIRE_LENDER_PASSWORD_DEV:Password}
+  username: ${SPIRE_USERNAME_DEV:TestUser}
+  password: ${SPIRE_PASSWORD_DEV:Password}

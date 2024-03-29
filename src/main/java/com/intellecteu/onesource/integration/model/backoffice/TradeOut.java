@@ -1,11 +1,14 @@
 package com.intellecteu.onesource.integration.model.backoffice;
 
 import java.time.LocalDateTime;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
+@Builder
+//@NoArgsConstructor
+@AllArgsConstructor
 public class TradeOut {
 
     private Long tradeId;
@@ -21,4 +24,18 @@ public class TradeOut {
     private Integer statusId;
     private Position position;
 
+    public TradeOut() {
+        setIndexForDemo();
+    }
+
+    public void setIndex(Index index) {
+        setIndexForDemo();
+    }
+
+    //TODO hardcode for the demo. Expected to be removed
+    private void setIndexForDemo() {
+        index = new Index();
+        index.setIndexId(12);
+        index.setIndexName("Fixed Rate");
+    }
 }

@@ -13,22 +13,15 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.Character;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositionHistoryKeyDTO;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * PositionHistoryDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class PositionHistoryDTO {
   @JsonProperty("accountGroupDTO")
   private AccountDTO accountGroupDTO = null;
@@ -502,7 +495,7 @@ public class PositionHistoryDTO {
   private String primaryIdType = null;
 
   @JsonProperty("principalOrInterest")
-  private Character principalOrInterest = null;
+  private String principalOrInterest = null;
 
   @JsonProperty("purchasedInterest")
   private Double purchasedInterest = null;
@@ -3528,7 +3521,7 @@ public class PositionHistoryDTO {
     this.primaryIdType = primaryIdType;
   }
 
-  public PositionHistoryDTO principalOrInterest(Character principalOrInterest) {
+  public PositionHistoryDTO principalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
     return this;
   }
@@ -3538,11 +3531,11 @@ public class PositionHistoryDTO {
    * @return principalOrInterest
   **/
   @ApiModelProperty(value = "")
-  public Character getPrincipalOrInterest() {
+  public String getPrincipalOrInterest() {
     return principalOrInterest;
   }
 
-  public void setPrincipalOrInterest(Character principalOrInterest) {
+  public void setPrincipalOrInterest(String principalOrInterest) {
     this.principalOrInterest = principalOrInterest;
   }
 

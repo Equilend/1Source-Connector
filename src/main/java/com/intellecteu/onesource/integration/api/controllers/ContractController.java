@@ -5,7 +5,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import com.intellecteu.onesource.integration.api.dto.ContractDto;
 import com.intellecteu.onesource.integration.api.dto.PageResponse;
 import com.intellecteu.onesource.integration.api.services.contracts.ContractApiService;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

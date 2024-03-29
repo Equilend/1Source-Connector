@@ -1,0 +1,2 @@
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('7', 'CONTRACT_PROPOSED', now(), '/ledger/contracts/32b71278-9ad2-445a-bfb0-b5ada72f7777')

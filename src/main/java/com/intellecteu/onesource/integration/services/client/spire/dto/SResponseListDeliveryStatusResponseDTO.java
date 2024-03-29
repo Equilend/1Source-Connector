@@ -13,21 +13,18 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.DeliveryStatusResponseDTO;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * SResponseListDeliveryStatusResponseDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class SResponseListDeliveryStatusResponseDTO {
   @JsonProperty("data")
   private List<DeliveryStatusResponseDTO> data = null;

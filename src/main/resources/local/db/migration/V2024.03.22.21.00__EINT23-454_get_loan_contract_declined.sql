@@ -1,0 +1,77 @@
+-- Test GET_LOAN_CONTRACT_DECLINED success flow data
+
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('3003', 'CONTRACT_DECLINED', now(), 'contracts/32b71278-9ad2-445a-bfb0-b5ada72f3003');
+--
+-- INSERT INTO internal_ref (id, broker, account_id, internal_id)
+-- VALUES (8091, 'testLenderBroker', '8091', '8091'),
+--        (54033, 'testBorrowerBroker', '54033', '54033');
+--
+-- INSERT INTO party (id, party_id, party_name, gleif_lei, internal_id)
+-- VALUES (8091, 8091, 'LENDER', '8091', '8091'),
+--        (54033, 54033, 'BORROWER', '54033', '540337');
+--
+-- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code)
+-- VALUES  (8091, '234', '02318091106', 'US023180911067', '2000019', '457'),
+--         (54033, '234', '02318091107', 'US023180911068', '2000010', '457');
+--
+-- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
+-- VALUES (8091, 0.05, 0, '2023-10-25 13:50:41.633000', '0'),
+--        (54033, 0.05, 0, '2023-10-25 13:50:41.633000', '0');
+--
+-- INSERT INTO rebate (id, fixed)
+-- VALUES (8091, 8091), (54033, 54033);
+--
+-- INSERT INTO rate (id, rebate)
+-- VALUES  (8091, 8091), (54033, 54033);
+--
+-- INSERT INTO collateral (id, contract_price, collateral_value, currency,
+--                         type, margin, rounding_rule, rounding_mode)
+-- VALUES (8091, 119.57, 1798091.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
+--        (54033, 119.57, 1798091.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
+-- VALUES (8091, '8091', 'ONPLATFORM', 'testLenderVenueName', '8091'),
+--        (54033, '54033', 'ONPLATFORM', 'testBorrowerVenueName', '54033');
+--
+-- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+--                    dividend_rate, trade_date, term_type, term_date, settlement_date,
+--                    settlement_type, collateral)
+-- VALUES  (54033, 54033, 54033, 54033, 11000.0, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 54033),
+--         (8091, 8091, 8091, 8091, 15000, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 8091);
+--
+-- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (8091, '32b71278-9ad2-445a-bfb0-b5ada72f8091', 'PENDING', 8091, '8091', 'CREATED'),
+--        (54033, '32b71278-9ad2-445a-bfb0-b5ada72f54033', 'PENDING', 54033, '54033', 'CREATED');
+--
+-- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
+-- VALUES (8091, 'LENDER', 8091, 8091, 54033);
+--
+-- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
+--                       matching_spire_position_id, matching_spire_trade_id)
+-- VALUES (54033, '32b71278-9ad2-445a-bfb0-b5ada72f3003', 'PROPOSED', 54033, 'DISCREPANCIES', 54033, 54033);
+--
+-- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
+-- VALUES (8091, 8091, 'lender_acc', '8091', 8091, 1),
+--        (54033, 54033, 'borrower_acc', '54033', 54033, 2);
+--
+-- INSERT INTO position (position_id, custom_value2, ticker, cusip, isin,
+--                       sedol, quick_code, price_factor, rate, end_date,
+--                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
+--                       settle_date, deliver_free, amount, price,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
+--                       index_id, index_name, spread, accrual_date,
+--                       matching_1source_loan_contract_id, trade_id)
+-- VALUES ('54033', '54033', '54033', '02318091107', 'US023180911068',
+--         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
+--         11000.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 0,
+--         '2023-10-25 13:50:41.633000', false, 1798091.5, 119.57,
+--         1.02, 0, 0, 'CASH BORROW',
+--         54033, 8091, '54033', '8091', 'MATCHED', null,
+--         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000',
+--         '32b71278-9ad2-445a-bfb0-b5ada72f3003', 54033);

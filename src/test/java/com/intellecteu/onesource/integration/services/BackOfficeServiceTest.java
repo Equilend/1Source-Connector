@@ -50,6 +50,10 @@ class BackOfficeServiceTest {
     @Mock
     private InstructionSpireApiClient instructionClient;
 
+    private Integer userId = -1;
+
+    private String userName = "userName";
+
     @Mock
     private SpireMapper spireMapper;
 
@@ -63,7 +67,7 @@ class BackOfficeServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
-        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient,
+        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient, userId, userName,
             spireMapper, rerateTradeMapper, cloudEventRecordService);
     }
 
@@ -85,7 +89,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositions(Optional.empty());
+        service.getNewSpirePositionsObsolete("0");
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }
@@ -108,7 +112,7 @@ class BackOfficeServiceTest {
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
-        service.getNewSpirePositions(Optional.empty());
+        service.getNewSpirePositionsObsolete("0");
 
         assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
     }
@@ -118,9 +122,9 @@ class BackOfficeServiceTest {
         SResponseNQueryResponseTradeOutDTO responseNQueryResponseTradeOutDTO = new SResponseNQueryResponseTradeOutDTO();
         NQueryResponseTradeOutDTO data = new NQueryResponseTradeOutDTO();
         PositionOutDTO positionOutDTO = new PositionOutDTO();
-        positionOutDTO.setPositionId(1l);
+        positionOutDTO.setPositionId(1L);
         TradeOutDTO tradeOutDTO = new TradeOutDTO();
-        Long tradeId = 1l;
+        Long tradeId = 1L;
         tradeOutDTO.setTradeId(tradeId);
         tradeOutDTO.setPositionOutDTO(positionOutDTO);
         List<TradeOutDTO> beans = List.of(tradeOutDTO);

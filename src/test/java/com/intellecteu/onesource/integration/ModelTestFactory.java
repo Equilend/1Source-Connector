@@ -2,11 +2,11 @@ package com.intellecteu.onesource.integration;
 
 import static com.intellecteu.onesource.integration.EntityTestFactory.createFieldImpacted;
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.DISCREPANCY;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RERATE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralType.CASH;
 import static com.intellecteu.onesource.integration.model.onesource.CurrencyCd.USD;
@@ -18,14 +18,15 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
+import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
-import com.intellecteu.onesource.integration.model.backoffice.PositionCollateralType;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
@@ -35,7 +36,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
@@ -48,6 +49,8 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
+import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
+import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
@@ -57,6 +60,7 @@ import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -70,24 +74,24 @@ public class ModelTestFactory {
 
     public static Instrument buildInstrument() {
         return Instrument.builder()
-            .id(9999L)
+            .id(9999)
+            .securityId(123L)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")
             .sedol("testSedol")
-            .quick("testQuick")
+            .quickCode("testQuick")
             .figi("testFigi")
             .description("testDescription")
             .price(buildPrice())
+            .priceFactor(22)
             .build();
     }
 
     public static Contract buildContract() {
         return Contract.builder()
             .contractId("32b71278-9ad2-445a-bfb0-b5ada72f7194")
-            .lastEvent(buildTradeEvent())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
             .lastUpdateDateTime(LocalDateTime.now())
             .settlement(List.of(buildSettlement()))
             .trade(buildTradeAgreement())
@@ -102,7 +106,7 @@ public class ModelTestFactory {
             .rate(buildRate())
             .quantity(2)
             .billingCurrency(USD)
-            .dividendRatePct(2)
+            .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
             .termType(TermType.OPEN)
             .termDate(LocalDate.now())
@@ -198,7 +202,7 @@ public class ModelTestFactory {
 
     public static TradeEvent buildTradeEvent() {
         return TradeEvent.builder()
-            .eventId(1L)
+            .eventId("1L")
             .build();
     }
 
@@ -208,17 +212,117 @@ public class ModelTestFactory {
         return om.convertValue(agreementDto, Agreement.class);
     }
 
+    public static TradeOut buildSpireTrade(String tradeType) {
+        return TradeOut.builder()
+            .tradeId(34L)
+            .tradeDate(LocalDateTime.now().minusDays(3))
+            .postDate(LocalDateTime.now().minusHours(1))
+            .settleDate(LocalDateTime.now().minusDays(2))
+            .accrualDate(LocalDateTime.now())
+            .rateOrSpread(123.00)
+            .tradeType(tradeType)
+            .index(new Index(12, "testIndexName", 1.05))
+            .status("testStatus")
+            .statusId(66)
+            .position(buildPosition())
+            .build();
+    }
+
+    public static Position buildPositionFromTradeAgreement(TradeAgreement tradeAgreement) {
+        return Position.builder()
+            .positionId(9L)
+            .customValue2(tradeAgreement.getVenue().getVenueRefKey())
+            .positionSecurityDetail(buildPositionSecurityDetail(tradeAgreement))
+            .rate(tradeAgreement.getRate().getFee().getBaseRate())
+            .quantity(tradeAgreement.getQuantity().doubleValue())
+            .currency(buildCurrency(tradeAgreement))
+            .loanBorrow(buildLoanBorrow(tradeAgreement))
+            .tradeDate(LocalDateTime.of(tradeAgreement.getTradeDate(), LocalTime.now()))
+            .settleDate(LocalDateTime.of(tradeAgreement.getSettlementDate(), LocalTime.now()))
+            .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
+            .amount(tradeAgreement.getCollateral().getCollateralValue())
+            .price(tradeAgreement.getCollateral().getContractPrice())
+            .exposure(buildPositionExposure(tradeAgreement))
+            .positionType(buildPositionType(tradeAgreement))
+            .positionAccount(buildAccount(tradeAgreement.getTransactingParties().get(0)))
+            .positionCpAccount(buildAccount(tradeAgreement.getTransactingParties().get(1)))
+            .build();
+    }
+
+    public static PositionAccount buildAccount(TransactingParty party) {
+        PositionAccount account = new PositionAccount();
+        account.setLei(retrieveLei(party));
+        return account;
+    }
+
+    private static String retrieveLei(TransactingParty party) {
+        return party.getParty().getGleifLei();
+    }
+
+    public static PositionType buildPositionType(TradeAgreement tradeAgreement) {
+        return PositionType.builder()
+            .positionType(retrievePositionType(tradeAgreement.getTransactingParties()))
+            .isCash(true)
+            .build();
+    }
+
+    private static String retrievePositionType(List<TransactingParty> parties) {
+        boolean isCashLoan = parties.stream().anyMatch(p -> p.getPartyRole() == LENDER);
+        if (isCashLoan) {
+            return "CASH LOAN";
+        }
+        boolean isCashBorrow = parties.stream().anyMatch(p -> p.getPartyRole() == BORROWER);
+        if (isCashBorrow) {
+            return "CASH BORROW";
+        }
+        return null;
+    }
+
+    public static PositionExposure buildPositionExposure(TradeAgreement tradeAgreement) {
+        return PositionExposure.builder()
+            .cpHaircut(tradeAgreement.getCollateral().getMargin() / 100.0)
+            .cpMarkRoundTo(tradeAgreement.getCollateral().getRoundingRule())
+            .build();
+    }
+
+    private static Boolean translateDeliverFree(SettlementType settlementType) {
+        return settlementType != DVP;
+    }
+
+    public static LoanBorrow buildLoanBorrow(TradeAgreement tradeAgreement) {
+        return LoanBorrow.builder()
+            .taxWithholdingRate(tradeAgreement.getDividendRatePct())
+            .build();
+    }
+
+    public static Currency buildCurrency(TradeAgreement tradeAgreement) {
+        return Currency.builder()
+            .currencyKy(tradeAgreement.getBillingCurrency().name())
+            .build();
+    }
+
+    public static PositionSecurityDetail buildPositionSecurityDetail(TradeAgreement tradeAgreement) {
+        return PositionSecurityDetail.builder()
+            .ticker(tradeAgreement.getInstrument().getTicker())
+            .cusip(tradeAgreement.getInstrument().getCusip())
+            .isin(tradeAgreement.getInstrument().getIsin())
+            .sedol(tradeAgreement.getInstrument().getSedol())
+            .quickCode(tradeAgreement.getInstrument().getQuickCode())
+            .bloombergId(tradeAgreement.getInstrument().getFigi())
+            .build();
+    }
+
     public static Position buildPosition() {
         return buildPosition(null);
     }
 
     public static Position buildPosition(PositionStatus positionStatus) {
         if (positionStatus == null) {
-            positionStatus = new PositionStatus(OPEN);
+            positionStatus = new PositionStatus(33, OPEN.getValue());
         }
         return Position.builder()
             .venueRefId("testVenueRefId")
-            .positionId("testSpirePositionId")
+            .positionId(100L)
             .customValue2("customValue2")
             .termId(1)
             .positionSecurityDetail(buildSecurityDetail())
@@ -231,15 +335,14 @@ public class ModelTestFactory {
             .deliverFree(true)
             .amount(1.0d)
             .price(100.0d)
-            .contractValue(123.0d)
             .positionStatus(positionStatus)
-            .positionCollateralType(new PositionCollateralType("CASH"))
-            .exposure(new PositionExposure(0.05d, 10, 12))
-            .positionType(new PositionType(1, "CASH BORROW"))
-            .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
-            .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
+            .exposure(new PositionExposure(46, 0.05d, 10, 12))
+            .positionType(new PositionType(11, "CASH BORROW", true))
+            .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
+            .index(new Index(123, "testIndexName", 4.04))
             .build();
     }
 
@@ -330,5 +433,23 @@ public class ModelTestFactory {
         SystemEventData systemEventData = buildSystemEventDataModel();
         CloudEventMetadata metadata = buildCloudEventMetadata();
         return new IntegrationCloudEvent(metadata, systemEventData);
+    }
+
+    public static ContractProposalApproval buildContractProposalApproval() {
+        return ContractProposalApproval.builder()
+            .internalRefId("testInternalRefId")
+            .roundingRule(4)
+            .settlement(buildSettlementUpdate())
+            .build();
+    }
+
+    private static SettlementInstructionUpdate buildSettlementUpdate() {
+        return SettlementInstructionUpdate.builder()
+            .venueRefId("testVenueRefId")
+            .instructionId(1L)
+            .partyRole(LENDER)
+            .instruction(buildInstruction())
+            .internalAcctCd("567")
+            .build();
     }
 }

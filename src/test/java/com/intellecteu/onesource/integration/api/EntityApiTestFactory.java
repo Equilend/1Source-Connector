@@ -1,11 +1,11 @@
 package com.intellecteu.onesource.integration.api;
 
 import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.PositionStatus.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.DISCREPANCY;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RERATE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralDescription.DEBT;
 import static com.intellecteu.onesource.integration.model.onesource.CollateralType.CASH;
 import static com.intellecteu.onesource.integration.model.onesource.CurrencyCd.USD;
@@ -21,7 +21,6 @@ import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
-import com.intellecteu.onesource.integration.model.backoffice.PositionCollateralType;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -32,7 +31,6 @@ import com.intellecteu.onesource.integration.model.enums.RelatedProposalType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
@@ -71,7 +69,8 @@ public class EntityApiTestFactory {
 
     public static InstrumentEntity buildInstrumentEntity() {
         return InstrumentEntity.builder()
-            .id(9999L)
+            .id(9999)
+            .securityId(99L)
             .ticker("testTicker")
             .cusip("testCusip")
             .isin("testIsin")
@@ -103,10 +102,8 @@ public class EntityApiTestFactory {
     public static ContractEntity buildContract(String contractId) {
         return ContractEntity.builder()
             .contractId(contractId)
-            .lastEvent(buildTradeEvent())
             .lastUpdatePartyId("test")
-            .eventType(EventType.CONTRACT_PROPOSED)
-            .lastUpdateDatetime(LocalDateTime.now())
+            .lastUpdateDateTime(LocalDateTime.now())
             .settlement(List.of(buildSettlementEntity()))
             .trade(buildTradeAgreement())
             .build();
@@ -120,7 +117,7 @@ public class EntityApiTestFactory {
             .rate(buildRateEntity())
             .quantity(2)
             .billingCurrency(USD)
-            .dividendRatePct(2)
+            .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
             .termType(TermType.OPEN)
             .termDate(LocalDate.now())
@@ -216,7 +213,7 @@ public class EntityApiTestFactory {
 
     public static TradeEventEntity buildTradeEvent() {
         return TradeEventEntity.builder()
-            .eventId(1L)
+            .eventId("1220fd46122abae8bfee44b2b0e85a4949a2d6cdea8207ba9e09b1686884e3468bd3:8")
             .build();
     }
 
@@ -232,11 +229,11 @@ public class EntityApiTestFactory {
 
     public static Position buildPosition(PositionStatus positionStatus) {
         if (positionStatus == null) {
-            positionStatus = new PositionStatus(OPEN);
+            positionStatus = new PositionStatus(22, OPEN.getValue());
         }
         return Position.builder()
             .venueRefId("testVenueRefId")
-            .positionId("testSpirePositionId")
+            .positionId(12345L)
             .customValue2("customValue2")
             .termId(1)
             .positionSecurityDetail(buildSecurityDetail())
@@ -249,13 +246,11 @@ public class EntityApiTestFactory {
             .deliverFree(true)
             .amount(1.0d)
             .price(100.0d)
-            .contractValue(123.0d)
             .positionStatus(positionStatus)
-            .positionCollateralType(new PositionCollateralType("CASH"))
-            .exposure(new PositionExposure(0.05d, 10, 12))
-            .positionType(new PositionType(1, "CASH BORROW"))
-            .positionAccount(new PositionAccount(1l, "testLei", "testLeiName", "testAccountId"))
-            .positionCpAccount(new PositionAccount(2l, "testCpLei", "testCpLeiName", "testAccountId"))
+            .exposure(new PositionExposure(11, 0.05d, 10, 12))
+            .positionType(new PositionType(22, "CASH BORROW", true))
+            .positionAccount(new PositionAccount(11L, 1L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new PositionAccount(22L, 2L, "testCpLei", "testCpLeiName", "456L", 456L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();

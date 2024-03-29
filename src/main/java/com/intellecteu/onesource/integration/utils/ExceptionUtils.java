@@ -5,6 +5,11 @@ import static com.intellecteu.onesource.integration.exception.RequiredDataMissed
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.exception.RequiredDataMissedException;
+import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
+import com.intellecteu.onesource.integration.model.enums.FieldSource;
+import java.util.List;
 import java.util.List;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -24,18 +29,20 @@ public class ExceptionUtils {
      * @param fieldName String a field name which raises the exception
      * @throws RequiredDataMissedException after the exception dto was configured
      */
-    public static void throwIfFieldMissedException(@Nullable Object field, String fieldName)
+    public static void throwIfFieldMissedException(@Nullable Object field, String fieldName, FieldSource fieldSource)
         throws ValidationException {
         if (field == null) {
             var exceptionDto = new ProcessExceptionDetails();
+            exceptionDto.setSource(fieldSource);
             exceptionDto.setFieldName(fieldName);
             exceptionDto.setFieldValue(String.format(REQUIRED_DATA_MISSED_MSG, exceptionDto.getFieldName()));
+            exceptionDto.setFieldExceptionType(FieldExceptionType.MISSING);
             log.debug("Validation failed. " + exceptionDto.getFieldValue());
             throw new ValidationException(List.of(fieldName));
         }
     }
 
-    public static void throwFieldMissedException(String fieldName) throws ValidationException {
-        throwIfFieldMissedException(null, fieldName);
+    public static void throwFieldMissedException(String fieldName, FieldSource fieldSource) throws ValidationException {
+        throwIfFieldMissedException(null, fieldName, fieldSource);
     }
 }

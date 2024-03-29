@@ -14,12 +14,11 @@
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
 import java.util.Objects;
-import java.util.Arrays;
 
 /**
  * JsonNode
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class JsonNode {
 
   @Override

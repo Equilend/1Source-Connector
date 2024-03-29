@@ -13,23 +13,16 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositionlimitusedDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeEvent;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TradeInputDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class TradeInputDTO {
   @JsonProperty("action")
   private String action = null;
@@ -81,6 +74,9 @@ public class TradeInputDTO {
 
   @JsonProperty("skipLimitCheckAndUpdate")
   private Boolean skipLimitCheckAndUpdate = null;
+
+  @JsonProperty("skipOneSource")
+  private Boolean skipOneSource = null;
 
   @JsonProperty("source")
   private String source = null;
@@ -436,6 +432,24 @@ public class TradeInputDTO {
     this.skipLimitCheckAndUpdate = skipLimitCheckAndUpdate;
   }
 
+  public TradeInputDTO skipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+    return this;
+  }
+
+   /**
+   * Get skipOneSource
+   * @return skipOneSource
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSkipOneSource() {
+    return skipOneSource;
+  }
+
+  public void setSkipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+  }
+
   public TradeInputDTO source(String source) {
     this.source = source;
     return this;
@@ -607,6 +621,7 @@ public class TradeInputDTO {
         Objects.equals(this.postOrSettle, tradeInputDTO.postOrSettle) &&
         Objects.equals(this.skipInventoryCheckAndUpdate, tradeInputDTO.skipInventoryCheckAndUpdate) &&
         Objects.equals(this.skipLimitCheckAndUpdate, tradeInputDTO.skipLimitCheckAndUpdate) &&
+        Objects.equals(this.skipOneSource, tradeInputDTO.skipOneSource) &&
         Objects.equals(this.source, tradeInputDTO.source) &&
         Objects.equals(this.system, tradeInputDTO.system) &&
         Objects.equals(this.systemId, tradeInputDTO.systemId) &&
@@ -619,7 +634,7 @@ public class TradeInputDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(action, allowTradeForNoCurrDaySecPrice, avpoPostId, byPassLimits, bypassRTI, cancelFail, chainedTradeDTO, doNotRecall, eventList, groupedPositionRef, msgId, orderId, originalTrade, positionLimitUsed, postOrSettle, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, source, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
+    return Objects.hash(action, allowTradeForNoCurrDaySecPrice, avpoPostId, byPassLimits, bypassRTI, cancelFail, chainedTradeDTO, doNotRecall, eventList, groupedPositionRef, msgId, orderId, originalTrade, positionLimitUsed, postOrSettle, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipOneSource, source, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
   }
 
 
@@ -645,6 +660,7 @@ public class TradeInputDTO {
     sb.append("    postOrSettle: ").append(toIndentedString(postOrSettle)).append("\n");
     sb.append("    skipInventoryCheckAndUpdate: ").append(toIndentedString(skipInventoryCheckAndUpdate)).append("\n");
     sb.append("    skipLimitCheckAndUpdate: ").append(toIndentedString(skipLimitCheckAndUpdate)).append("\n");
+    sb.append("    skipOneSource: ").append(toIndentedString(skipOneSource)).append("\n");
     sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    system: ").append(toIndentedString(system)).append("\n");
     sb.append("    systemId: ").append(toIndentedString(systemId)).append("\n");

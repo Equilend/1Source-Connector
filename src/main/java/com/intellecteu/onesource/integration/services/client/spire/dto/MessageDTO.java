@@ -13,20 +13,15 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.Character;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * MessageDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class MessageDTO {
   @JsonProperty("accountId")
   private Long accountId = null;
@@ -56,7 +51,7 @@ public class MessageDTO {
   private Long createUserId = null;
 
   @JsonProperty("direction")
-  private Character direction = null;
+  private String direction = null;
 
   @JsonProperty("entryUser")
   private String entryUser = null;
@@ -286,7 +281,7 @@ public class MessageDTO {
     this.createUserId = createUserId;
   }
 
-  public MessageDTO direction(Character direction) {
+  public MessageDTO direction(String direction) {
     this.direction = direction;
     return this;
   }
@@ -296,11 +291,11 @@ public class MessageDTO {
    * @return direction
   **/
   @ApiModelProperty(value = "")
-  public Character getDirection() {
+  public String getDirection() {
     return direction;
   }
 
-  public void setDirection(Character direction) {
+  public void setDirection(String direction) {
     this.direction = direction;
   }
 

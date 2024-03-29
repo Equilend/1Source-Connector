@@ -5,7 +5,6 @@ import java.io.IOException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;
 import org.springframework.http.client.ClientHttpRequestInterceptor;
@@ -18,12 +17,6 @@ import org.springframework.stereotype.Component;
 public class RestTemplateAuthInterceptor implements ClientHttpRequestInterceptor {
 
     private final AuthService authService;
-
-    @Value("${spire.username}")
-    private String spireUsername;
-
-    @Value("${spire.password}")
-    private String spirePassword;
 
     @Value("${onesource.baseEndpoint}")
     private String onesourceEndpoint;
@@ -39,10 +32,7 @@ public class RestTemplateAuthInterceptor implements ClientHttpRequestInterceptor
             log.debug("Executing request to {}", uri);
             request.getHeaders().setBearerAuth(accessToken);
         } else {
-            log.debug("Intercept the HTTP request, adding header Client_id.");
-            log.debug("Executing request to {}", uri);
-            final HttpHeaders headers = request.getHeaders();
-            headers.add("Client_id", spireUsername);
+            log.debug("Intercept the HTTP request. Executing request to SPIRE {}", uri);
         }
 
         return execution.execute(request, body);

@@ -1,0 +1,10 @@
+Prepared local migration data: V2024.03.22.21.00__EINT23-454_get_loan_contract_declined.sql
+
+1. Insert to the database event
+    - eventType = 'CONTRACT_DECLINED';
+    - resourceUri should contain the id of the persisted contract
+
+2. Insert to the database the loan contract:
+    - in the first test case the contract should have `contract.getMatchingSpirePositionId() == null`;
+    - in the second test case the contract should match with position:
+        -Insert to the database the matched position

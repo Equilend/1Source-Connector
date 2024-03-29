@@ -10015,8 +10015,7 @@
                     "format": "int64"
                 },
                 "oneSourceId": {
-                    "type": "integer",
-                    "format": "int64"
+                    "type": "string"
                 },
                 "othIncomeFlg": {
                     "type": "string"
@@ -10060,8 +10059,7 @@
                     "type": "string"
                 },
                 "rebateFee": {
-                    "originalRef": "Character",
-                    "$ref": "#/definitions/Character"
+                    "type": "string"
                 },
                 "regsLevel": {
                     "type": "integer",
@@ -11667,6 +11665,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -11879,10 +11880,6 @@
                 }
             },
             "title": "ChangeLRValueByCptyDTO"
-        },
-        "Character": {
-            "type": "object",
-            "title": "Character"
         },
         "CollateralDTO": {
             "type": "object",
@@ -12670,6 +12667,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -12961,6 +12961,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -13156,6 +13159,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -14203,6 +14209,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -15635,6 +15644,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -16813,6 +16825,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -16899,8 +16914,7 @@
                     "format": "int64"
                 },
                 "direction": {
-                    "originalRef": "Character",
-                    "$ref": "#/definitions/Character"
+                    "type": "string"
                 },
                 "entryUser": {
                     "type": "string"
@@ -18422,6 +18436,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -20463,8 +20480,7 @@
                     "type": "string"
                 },
                 "principalOrInterest": {
-                    "originalRef": "Character",
-                    "$ref": "#/definitions/Character"
+                    "type": "string"
                 },
                 "purchasedInterest": {
                     "type": "number",
@@ -21074,8 +21090,7 @@
                     "format": "double"
                 },
                 "principalOrInterest": {
-                    "originalRef": "Character",
-                    "$ref": "#/definitions/Character"
+                    "type": "string"
                 },
                 "quantity": {
                     "type": "number",
@@ -21356,6 +21371,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -22870,6 +22888,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -23982,6 +24003,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -27847,6 +27871,9 @@
                 "skipLimitCheckAndUpdate": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "source": {
                     "type": "string"
                 },
@@ -28487,6 +28514,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -28682,6 +28712,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {
@@ -28881,6 +28914,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -29078,6 +29114,9 @@
                 "skipMinSpreadCheck": {
                     "type": "boolean"
                 },
+                "skipOneSource": {
+                    "type": "boolean"
+                },
                 "skipSecChillCheck": {
                     "type": "boolean"
                 },
@@ -29273,6 +29312,9 @@
                     "type": "boolean"
                 },
                 "skipMinSpreadCheck": {
+                    "type": "boolean"
+                },
+                "skipOneSource": {
                     "type": "boolean"
                 },
                 "skipSecChillCheck": {

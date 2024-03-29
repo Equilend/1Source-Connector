@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SettlementInstructionUpdateDto {
 
-    private Double roundingRule;
+    private Integer roundingRule;
     private RoundingMode roundingMode;
     private SettlementDto settlement;
 
