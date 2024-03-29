@@ -71,7 +71,7 @@ public class AppConfig {
     @Bean("lenderApiClient")
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient lenderApiClient(RestTemplate restTemplate,
-        @Value("${spire.lenderEndpoint}") String spireBasePath) {
+        @Value("${spire.baseEndpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
         return apiClient;
@@ -80,7 +80,7 @@ public class AppConfig {
     @Bean("borrowerApiClient")
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient borrowerApiClient(RestTemplate restTemplate,
-        @Value("${spire.borrowerEndpoint}") String spireBasePath) {
+        @Value("${spire.baseEndpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
         return apiClient;
