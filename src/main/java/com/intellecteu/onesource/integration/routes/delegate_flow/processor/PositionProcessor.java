@@ -16,9 +16,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -325,13 +323,10 @@ public class PositionProcessor {
             log.warn("""
                 The loan contract proposal instruction has not been processed by 1Source for the \
                 (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
-            final HttpStatusCode statusCode = HttpStatus.valueOf(e.getStatusCode().value());
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR).contains(statusCode)) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
-                    String.valueOf(position.getPositionId()));
-                cloudEventRecordService.record(recordRequest);
-            }
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
+                String.valueOf(position.getPositionId()));
+            cloudEventRecordService.record(recordRequest);
             return false;
         }
     }
