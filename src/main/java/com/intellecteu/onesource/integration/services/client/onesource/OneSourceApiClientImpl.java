@@ -14,11 +14,10 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_1SOURCE_EVENTS;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_PARTICIPANTS_LIST;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
-import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.ONESOURCE_ISSUE;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SPIRE_ISSUE;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static java.lang.String.format;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.PATCH;
@@ -31,16 +30,12 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.intellecteu.onesource.integration.dto.ContractDto;
 import com.intellecteu.onesource.integration.dto.ContractProposalDto;
 import com.intellecteu.onesource.integration.dto.PartyDto;
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
-import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -50,10 +45,9 @@ import com.intellecteu.onesource.integration.repository.SettlementUpdateReposito
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -75,12 +69,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Service
 public class OneSourceApiClientImpl implements OneSourceApiClient {
 
+    private final ContractsApi contractsApi;
     private final ContractRepository contractRepository;
     private final CloudEventRecordService cloudEventRecordService;
     private final RestTemplate restTemplate;
     private final SettlementUpdateRepository settlementUpdateRepository;
     private final TradeEventRepository eventRepository;
-    private final EventMapper eventMapper;
     private final OneSourceMapper oneSourceMapper;
 
     private static final String EVENTS_ENDPOINT = "/ledger/events";
@@ -97,49 +91,17 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     @Value("${onesource.version}")
     private String version;
 
-    public OneSourceApiClientImpl(ContractRepository contractRepository,
+    public OneSourceApiClientImpl(ContractsApi contractsApi, ContractRepository contractRepository,
         CloudEventRecordService cloudEventRecordService,
-        RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository, EventMapper eventMapper,
+        RestTemplate restTemplate, SettlementUpdateRepository settlementUpdateRepository,
         TradeEventRepository eventRepository, OneSourceMapper oneSourceMapper) {
+        this.contractsApi = contractsApi;
         this.contractRepository = contractRepository;
         this.cloudEventRecordService = cloudEventRecordService;
         this.restTemplate = restTemplate;
         this.settlementUpdateRepository = settlementUpdateRepository;
-        this.eventMapper = eventMapper;
         this.eventRepository = eventRepository;
         this.oneSourceMapper = oneSourceMapper;
-    }
-
-    @Override
-    public void createContract(Agreement agreement, ContractProposal contractProposal, Position position) {
-        var headers = new HttpHeaders();
-        headers.setContentType(APPLICATION_JSON);
-        HttpEntity<ContractProposal> request = new HttpEntity<>(contractProposal, headers);
-
-        executeCreateContractRequest(agreement, position, request);
-    }
-
-    private void executeCreateContractRequest(Agreement agreement, Position position,
-        HttpEntity<ContractProposal> request) {
-        String agreementId = agreement == null ? null : agreement.getAgreementId();
-        log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT);
-        try {
-            restTemplate.exchange(
-                onesourceBaseEndpoint + version + CREATE_CONTRACT_ENDPOINT, POST, request, JsonNode.class);
-        } catch (HttpStatusCodeException e) {
-            log.warn(
-                "The loan contract proposal instruction has not been processed by 1Source for the trade agreement: "
-                    + "{} (SPIRE Position: {}) for the following reason: {}",
-                agreementId, position.getPositionId(), e.getStatusCode());
-            final HttpStatusCode statusCode = e.getStatusCode();
-            if (Set.of(BAD_REQUEST, UNAUTHORIZED, INTERNAL_SERVER_ERROR)
-                .contains(HttpStatus.valueOf(statusCode.value()))) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
-                    position.getPositionId());
-                cloudEventRecordService.record(recordRequest);
-            }
-        }
     }
 
     @Override
@@ -201,7 +163,8 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         }
         Settlement settlement = Settlement.builder()
             .partyRole(BORROWER)
-            .instruction(eventMapper.toInstruction(settlementInstructionUpdate.getInstruction())).build();
+//            .instruction(eventMapper.toInstruction(settlementInstructionUpdate.getInstruction()))
+            .build();
 
         log.debug("Settlement with role {} was created from venueRefId:{}",
             settlement.getPartyRole(), venueRefId);
@@ -217,14 +180,14 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
         } catch (HttpStatusCodeException e) {
             log.error(
                 format(POST_LOAN_CONTRACT_PROPOSAL_UPDATE_EXCEPTION_MSG, contract.getContractId(), e.getStatusText()));
-            contract.setProcessingStatus(SPIRE_ISSUE);
+//            contract.setProcessingStatus(SPIRE_ISSUE);
             final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_SETTLEMENT);
                 var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
                     POST_LOAN_CONTRACT_UPDATE,
-                    contract.getMatchingSpirePositionId());
+                    String.valueOf(contract.getMatchingSpirePositionId()));
                 cloudEventRecordService.record(recordRequest);
             }
         }
@@ -232,7 +195,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     @Deprecated(since = "1.0.4")
-    public void approveContract(ContractDto contract) {
+    public void approveContract(Contract contract) {
         log.debug("Approving contract: {}", contract.getContractId());
         var headers = new HttpHeaders();
         headers.setContentType(APPLICATION_JSON);
@@ -241,7 +204,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_APPROVE_ENDPOINT, POST,
                 request, JsonNode.class, contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            var positionId = contract.getMatchingSpirePositionId();
+            var positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
@@ -266,7 +229,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 request, JsonNode.class, contract.getContractId());
             log.debug("Contract id: {} approval was sent.", contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            var positionId = contract.getMatchingSpirePositionId();
+            var positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusCode()));
             contract.setProcessingStatus(ONESOURCE_ISSUE);
@@ -279,6 +242,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     }
 
     @Override
+    @Deprecated(since = "0.0.5-SNAPSHOT", forRemoval = true)
     public void declineContract(Contract contract) {
         try {
             String formattedEndpoint = CONTRACT_DECLINE_ENDPOINT.replace("{contractId}", contract.getContractId());
@@ -287,16 +251,37 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
                 null, JsonNode.class, contract.getContractId());
             log.debug("The contract: {} was declined!", contract.getContractId());
         } catch (HttpStatusCodeException e) {
-            String positionId = contract.getMatchingSpirePositionId();
+            String positionId = String.valueOf(contract.getMatchingSpirePositionId());
             log.error(
                 format(DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG, contract.getContractId(), positionId, e.getStatusText()));
-            contract.setProcessingStatus(SPIRE_ISSUE);
+//            contract.setProcessingStatus(SPIRE_ISSUE);
             final HttpStatusCode statusCode = e.getStatusCode();
             if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
                 makeCloudEventRecord(contract.getContractId(), e, DECLINE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
         }
+    }
+
+    @Override
+    public Contract cancelContract(Contract contract) {
+        log.debug("Sending POST request to {}", onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT);
+        try {
+            restTemplate.exchange(onesourceBaseEndpoint + version + CONTRACT_CANCEL_ENDPOINT, POST,
+                null, JsonNode.class, contract.getContractId());
+            contract.setProcessingStatus(CANCEL_SUBMITTED);
+            return contract;
+        } catch (HttpStatusCodeException e) {
+            final HttpStatusCode statusCode = e.getStatusCode();
+            if (Set.of(BAD_REQUEST, UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR)
+                .contains(HttpStatus.valueOf(statusCode.value()))) {
+                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+                var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
+                    CANCEL_LOAN_CONTRACT_PROPOSAL, String.valueOf(contract.getMatchingSpirePositionId()));
+                cloudEventRecordService.record(recordRequest);
+            }
+        }
+        return null;
     }
 
     @Override
@@ -351,8 +336,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public List<TradeEvent> retrieveEvents(LocalDateTime timeStamp) {
-        var encodedTimestamp = URLEncoder.encode(
-            timeStamp.atZone(ZoneOffset.UTC).toString(), StandardCharsets.US_ASCII);
+        String encodedTimestamp = timeStamp.truncatedTo(ChronoUnit.SECONDS).atZone(ZoneOffset.UTC).toString();
         String url = UriComponentsBuilder
             .fromHttpUrl(onesourceBaseEndpoint + version + EVENTS_ENDPOINT)
             .queryParam("since", encodedTimestamp)
@@ -372,6 +356,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             return response.getBody();
         } catch (HttpStatusCodeException e) {
             log.warn("Retrieve events response: " + e.getStatusCode());
+            log.debug("Details: " + e.getMessage());
             if (UNAUTHORIZED == e.getStatusCode() || INTERNAL_SERVER_ERROR == e.getStatusCode()) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
                 cloudEventRecordService.record(eventBuilder.buildExceptionRequest(e, GET_1SOURCE_EVENTS));
@@ -395,7 +380,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private void saveStatusOnUnsuccessfulRequest(Contract contract, String response) {
         log.error("The loan contract : {} cannot be canceled for the following reason: {}",
             contract.getContractId(), response);
-        contract.setProcessingStatus(SPIRE_ISSUE);
+//        contract.setProcessingStatus(SPIRE_ISSUE);
         contractRepository.save(oneSourceMapper.toEntity(contract));
     }
 }

@@ -1,0 +1,20 @@
+-- Test POST_LOAN_CONTRACT_PROPOSAL Lender success flow data
+
+-- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
+-- VALUES (22, 22, 'lender_acc', '22', 123, 1),
+--        (44, 44, 'borrower_acc', '44', 789, 2);
+--
+-- INSERT INTO position (position_id, custom_value2, ticker, cusip, isin,
+--                       sedol, quick_code, price_factor, rate, end_date,
+--                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
+--                       settle_date, deliver_free, amount, price,
+--                        cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
+--                       index_id, index_name, spread, accrual_date)
+-- VALUES ('22', '22', '123', '023135107', 'US0231351068',
+--         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
+--         22.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
+--         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
+--         1.02, 0, 0, 'CASH LOAN',
+--         22, 44, '22', '44', 'CREATED', 'PENDING ONESOURCE CONFIRMATION',
+--         123, 'EFFR', 11.0, '2023-10-25 13:50:41.633000');

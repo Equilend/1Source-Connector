@@ -13,25 +13,17 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.AccountAllocationDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.CompetingBidDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.CouponPayment;
-import com.intellecteu.onesource.integration.services.client.spire.dto.SecurityDtlDTO;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * PayToHoldDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class PayToHoldDTO {
   @JsonProperty("accountAllocations")
   private List<AccountAllocationDTO> accountAllocations = new ArrayList<>();

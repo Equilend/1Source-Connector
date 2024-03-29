@@ -6,7 +6,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.CP_LEI;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.DELIVER_FREE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_AMOUNT;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CURRENCY_KY;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_PRICE;
@@ -22,9 +22,12 @@ import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFi
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.FieldSource;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
+import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -73,7 +76,7 @@ public class PositionDto implements Reconcilable {
     private PositionCollateralTypeDto collateralTypeDto;
     @JsonProperty("exposureDTO")
     private PositionExposureDto exposureDto;
-    @JsonProperty("positiontypeDTO")
+    @JsonProperty("positionTypeDTO")
     private PositionTypeDto positionTypeDto;
     @JsonProperty("accountDTO")
     private AccountDTO accountDto;
@@ -148,7 +151,7 @@ public class PositionDto implements Reconcilable {
             sb.append(POSITION_AMOUNT).append(COMMA_DELIMITER);
         }
         if (currency == null || currency.getCurrencyKy() == null) {
-            sb.append(POSITION_CURRENCY).append(COMMA_DELIMITER);
+            sb.append(POSITION_CURRENCY_KY).append(COMMA_DELIMITER);
         }
         if (exposureDto == null || exposureDto.getCpHaircut() == null) {
             sb.append(CP_HAIRCUT).append(COMMA_DELIMITER);
@@ -170,7 +173,7 @@ public class PositionDto implements Reconcilable {
             sb.append(failedIdentifiers);
         }
         if (!sb.isEmpty()) {
-            throwFieldMissedException(sb.toString());
+            throwFieldMissedException(sb.toString(), FieldSource.BACKOFFICE_POSITION);
         }
     }
 

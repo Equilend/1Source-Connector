@@ -23,14 +23,12 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.SwiftbicD
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.NoArgsConstructor;
 
 /**
  * InstructionDTO
  */
 @jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-01-19T17:56:43.469+02:00")
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class InstructionDTO {

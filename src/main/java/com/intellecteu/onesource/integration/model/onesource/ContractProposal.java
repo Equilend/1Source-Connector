@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ContractProposal {
 
     private TradeAgreement trade;
+    @JsonProperty("settlement")
     private List<Settlement> settlementList;
 
 }

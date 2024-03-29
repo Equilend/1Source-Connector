@@ -14,14 +14,13 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
  * TradeAgreementDTO
  */
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-01-22T10:16:28.187392600Z[Europe/London]")
+
 
 public class TradeAgreementDTO {
   @JsonProperty("executionVenue")
@@ -34,10 +33,10 @@ public class TradeAgreementDTO {
   private OneOfTradeAgreementRateDTODTO rate = null;
 
   @JsonProperty("openQuantity")
-  private BigDecimal openQuantity = null;
+  private Integer openQuantity = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("billingCurrency")
   private CurrencyCdDTO billingCurrency = null;
@@ -120,7 +119,7 @@ public class TradeAgreementDTO {
     this.rate = rate;
   }
 
-  public TradeAgreementDTO openQuantity(BigDecimal openQuantity) {
+  public TradeAgreementDTO openQuantity(Integer openQuantity) {
     this.openQuantity = openQuantity;
     return this;
   }
@@ -130,15 +129,15 @@ public class TradeAgreementDTO {
    * @return openQuantity
   **/
   @Schema(description = "")
-  public BigDecimal getOpenQuantity() {
+  public Integer getOpenQuantity() {
     return openQuantity;
   }
 
-  public void setOpenQuantity(BigDecimal openQuantity) {
+  public void setOpenQuantity(Integer openQuantity) {
     this.openQuantity = openQuantity;
   }
 
-  public TradeAgreementDTO quantity(BigDecimal quantity) {
+  public TradeAgreementDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -148,11 +147,11 @@ public class TradeAgreementDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

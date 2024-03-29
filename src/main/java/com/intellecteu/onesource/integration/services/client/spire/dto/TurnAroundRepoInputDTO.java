@@ -13,26 +13,17 @@
 
 package com.intellecteu.onesource.integration.services.client.spire.dto;
 
-import java.util.Objects;
-import java.util.Arrays;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.PositionlimitusedDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.RepoTradeInputDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.TradeEvent;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TurnAroundRepoInputDTO
  */
-@jakarta.annotation.Generated(value = "io.swagger.codegen.languages.JavaClientCodegen", date = "2024-02-20T15:00:33.025Z")
+
 public class TurnAroundRepoInputDTO {
   @JsonProperty("accrualAmount")
   private Double accrualAmount = null;
@@ -153,6 +144,9 @@ public class TurnAroundRepoInputDTO {
 
   @JsonProperty("skipMinSpreadCheck")
   private Boolean skipMinSpreadCheck = null;
+
+  @JsonProperty("skipOneSource")
+  private Boolean skipOneSource = null;
 
   @JsonProperty("skipSecChillCheck")
   private Boolean skipSecChillCheck = null;
@@ -928,6 +922,24 @@ public class TurnAroundRepoInputDTO {
     this.skipMinSpreadCheck = skipMinSpreadCheck;
   }
 
+  public TurnAroundRepoInputDTO skipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+    return this;
+  }
+
+   /**
+   * Get skipOneSource
+   * @return skipOneSource
+  **/
+  @ApiModelProperty(value = "")
+  public Boolean isSkipOneSource() {
+    return skipOneSource;
+  }
+
+  public void setSkipOneSource(Boolean skipOneSource) {
+    this.skipOneSource = skipOneSource;
+  }
+
   public TurnAroundRepoInputDTO skipSecChillCheck(Boolean skipSecChillCheck) {
     this.skipSecChillCheck = skipSecChillCheck;
     return this;
@@ -1158,6 +1170,7 @@ public class TurnAroundRepoInputDTO {
         Objects.equals(this.skipInventoryCheckAndUpdate, turnAroundRepoInputDTO.skipInventoryCheckAndUpdate) &&
         Objects.equals(this.skipLimitCheckAndUpdate, turnAroundRepoInputDTO.skipLimitCheckAndUpdate) &&
         Objects.equals(this.skipMinSpreadCheck, turnAroundRepoInputDTO.skipMinSpreadCheck) &&
+        Objects.equals(this.skipOneSource, turnAroundRepoInputDTO.skipOneSource) &&
         Objects.equals(this.skipSecChillCheck, turnAroundRepoInputDTO.skipSecChillCheck) &&
         Objects.equals(this.source, turnAroundRepoInputDTO.source) &&
         Objects.equals(this.startDate, turnAroundRepoInputDTO.startDate) &&
@@ -1172,7 +1185,7 @@ public class TurnAroundRepoInputDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice, asOfEndDate, asOfStartDate, autoRecall, autoReturn, avpoPostId, byPassLimits, bypassRTI, cancelFail, cancelMarks, chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade, doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef, includeCouponInterest, msgId, newRepoTradeInput, oldRepoTradeInput, orderId, originalTrade, position, positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipMinSpreadCheck, skipSecChillCheck, source, startDate, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
+    return Objects.hash(accrualAmount, accrualTypeId, action, allowTradeForNoCurrDaySecPrice, asOfEndDate, asOfStartDate, autoRecall, autoReturn, avpoPostId, byPassLimits, bypassRTI, cancelFail, cancelMarks, chainedTradeDTO, checkCompliance, checkInventory, checkLimits, copyRestrictions, createTerminationTrade, doNotCancelLinked, doNotPost, doNotRecall, endDate, errorMessage, eventList, groupedPositionRef, includeCouponInterest, msgId, newRepoTradeInput, oldRepoTradeInput, orderId, originalTrade, position, positionLimitUsed, postOrSettle, preTradeId, skipAldCheck, skipInventoryCheckAndUpdate, skipLimitCheckAndUpdate, skipMinSpreadCheck, skipOneSource, skipSecChillCheck, source, startDate, system, systemId, trade, tradeRefNo, updateInventory, userId, userName);
   }
 
 
@@ -1221,6 +1234,7 @@ public class TurnAroundRepoInputDTO {
     sb.append("    skipInventoryCheckAndUpdate: ").append(toIndentedString(skipInventoryCheckAndUpdate)).append("\n");
     sb.append("    skipLimitCheckAndUpdate: ").append(toIndentedString(skipLimitCheckAndUpdate)).append("\n");
     sb.append("    skipMinSpreadCheck: ").append(toIndentedString(skipMinSpreadCheck)).append("\n");
+    sb.append("    skipOneSource: ").append(toIndentedString(skipOneSource)).append("\n");
     sb.append("    skipSecChillCheck: ").append(toIndentedString(skipSecChillCheck)).append("\n");
     sb.append("    source: ").append(toIndentedString(source)).append("\n");
     sb.append("    startDate: ").append(toIndentedString(startDate)).append("\n");
