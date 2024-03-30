@@ -70,7 +70,8 @@ public class OneSourceService {
         this.oneSourceApiClient = oneSourceApiClient;
         this.reratesApi = reratesApi;
         this.contractsApi = contractsApi;
-        this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
+        this.contractsApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
+        this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion)); // todo update version param in application.yml
         this.eventMapper = eventMapper;
         this.oneSourceMapper = oneSourceMapper;
     }

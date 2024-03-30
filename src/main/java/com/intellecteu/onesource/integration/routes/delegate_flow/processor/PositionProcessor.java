@@ -323,6 +323,7 @@ public class PositionProcessor {
             log.warn("""
                 The loan contract proposal instruction has not been processed by 1Source for the \
                 (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
+            log.debug("Details: {}", e.getMessage());
             var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
             var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
                 String.valueOf(position.getPositionId()));

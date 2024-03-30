@@ -138,7 +138,6 @@ public abstract class OneSourceMapper {
     @Mapping(target = "settlement", source = "settlementList")
     public abstract ContractProposalDTO toRequestDto(ContractProposal contractProposal);
 
-    @Mapping(target = "roundingRule", source = "roundingRule", qualifiedByName = "mapIntegerToDouble")
     public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);
 
     @Mapping(target = "executionVenue", source = "venue")

@@ -178,10 +178,13 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Collateral buildCollateral(Position position) {
+        CollateralType collateralType = position.getPositionType().getIsCash() ? CollateralType.CASH : null;
         return Collateral.builder()
             .contractPrice(position.getPrice())
+            .contractValue(position.getAmount())
             .collateralValue(position.getAmount())
             .currency(position.getCurrency().getCurrencyKy())
+            .type(collateralType)
             .margin(position.getCpHaircut()) // todo check if percentage format
             .roundingRule(position.getCpMarkRoundTo())
             .roundingMode(ALWAYSUP)
@@ -204,7 +207,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private Party buildBorrowerParty(Position position) {
         return Party.builder()
-            .partyId(String.valueOf(position.getPositionCpAccount().getOneSourceId()))
+            .partyId(position.getPositionCpAccount().getOneSourceId())
             .gleifLei(position.getCpLei())
             .partyName(position.getPositionCpAccount().getOneSourceId()) // hardcode for demo
             .build();
@@ -220,9 +223,9 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private Party buildLenderParty(Position position) {
         return Party.builder()
-            .partyId(String.valueOf(position.getPositionAccount().getOneSourceId()))
+            .partyId(position.getPositionAccount().getOneSourceId())
             .gleifLei(position.getAccountLei())
-            .partyName(position.getPositionCpAccount().getOneSourceId()) // hardcode for demo
+            .partyName(position.getPositionAccount().getOneSourceId()) // hardcode for demo
             .build();
     }
 
@@ -250,9 +253,10 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Rate buildFixedRebateRateFromPosition(Position position) {
+        LocalDate accrualDate = position.getAccrualDate() == null ? null : position.getAccrualDate().toLocalDate();
         FixedRate fixedRate = FixedRate.builder()
-            .effectiveRate(position.getRate())
-            .effectiveDate(position.getAccrualDate().toLocalDate())
+            .baseRate(position.getRate())
+            .effectiveDate(accrualDate)
             .build();
         RebateRate rebateRate = RebateRate.builder()
             .fixed(fixedRate)
@@ -263,13 +267,14 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Rate buildFloatingRebateRateFromPosition(Position position) {
-        final double baseRate = position.getRate() - position.getIndex().getSpread();
+        final double baseRate = position.getRate() - position.getIndex().getSpread(); // todo check the Math
+        LocalDate accrualDate = position.getAccrualDate() == null ? null : position.getAccrualDate().toLocalDate();
         FloatingRate floatingRate = FloatingRate.builder()
             .benchmark(Benchmark.valueOf(position.getIndex().getIndexName()))
             .baseRate(baseRate)
             .spread(position.getIndex().getSpread())
             .isAutoRerate(false)
-            .effectiveDate(position.getAccrualDate().toLocalDate())
+            .effectiveDate(accrualDate)
             .build();
         RebateRate rebateRate = RebateRate.builder()
             .floating(floatingRate)

@@ -83,7 +83,7 @@ logging:
 
 onesource:
   baseEndpoint: ${1SOURCE_ENDPOINT}
-  version: ${1SOURCE_VERSION:/v1/}
+  version: ${1SOURCE_VERSION:/v1}
   auth:
     api:
       server-url: ${1SOURCE_AUTH_API_URL}

@@ -44,7 +44,7 @@ public class CollateralDTO {
   private Integer margin = null;
 
   @JsonProperty("roundingRule")
-  private Double roundingRule = null;
+  private Integer roundingRule = null;
 
   @JsonProperty("roundingMode")
   private RoundingModeDTO roundingMode = null;
@@ -175,7 +175,7 @@ public class CollateralDTO {
     this.margin = margin;
   }
 
-  public CollateralDTO roundingRule(Double roundingRule) {
+  public CollateralDTO roundingRule(Integer roundingRule) {
     this.roundingRule = roundingRule;
     return this;
   }
@@ -185,11 +185,11 @@ public class CollateralDTO {
    * @return roundingRule
   **/
   @Schema(description = "")
-  public Double getRoundingRule() {
+  public Integer getRoundingRule() {
     return roundingRule;
   }
 
-  public void setRoundingRule(Double roundingRule) {
+  public void setRoundingRule(Integer roundingRule) {
     this.roundingRule = roundingRule;
   }
 

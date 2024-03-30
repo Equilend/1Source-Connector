@@ -3149,8 +3149,8 @@
                         "format": "double"
                     },
                     "roundingRule": {
-                        "type": "number",
-                        "format": "double"
+                        "type": "integer",
+                        "format": "int32"
                     },
                     "roundingMode": {
                         "$ref": "#/components/schemas/RoundingMode"
@@ -3256,8 +3256,8 @@
                         "type": "string"
                     },
                     "roundingRule": {
-                        "type": "number",
-                        "format": "double"
+                        "type": "integer",
+                        "format": "int32"
                     },
                     "roundingMode": {
                         "$ref": "#/components/schemas/RoundingMode"
