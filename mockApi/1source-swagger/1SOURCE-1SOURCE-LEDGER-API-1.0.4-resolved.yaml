@@ -3132,8 +3132,8 @@ components:
           type: integer
           format: double
         roundingRule:
-          type: number
-          format: double
+          type: integer
+          format: int32
         roundingMode:
           $ref: '#/components/schemas/RoundingMode'
     CollateralDescription:
@@ -3215,8 +3215,8 @@ components:
         internalRefId:
           type: string
         roundingRule:
-          type: number
-          format: double
+          type: integer
+          format: int32
         roundingMode:
           $ref: '#/components/schemas/RoundingMode'
         settlement:
@@ -3583,7 +3583,7 @@ components:
         price:
           $ref: '#/components/schemas/Price'
     Quantity:
-      type: number
+      type: integer
       format: int32
     RebateRate:
       type: object

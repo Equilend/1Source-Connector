@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.util.Objects;
 /**
  * ContractSplitLotDTO
@@ -24,7 +23,7 @@ import java.util.Objects;
 
 public class ContractSplitLotDTO {
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("internalRef")
   private InternalReferenceDTO internalRef = null;
@@ -32,7 +31,7 @@ public class ContractSplitLotDTO {
   @JsonProperty("settlement")
   private PartySettlementInstructionDTO settlement = null;
 
-  public ContractSplitLotDTO quantity(BigDecimal quantity) {
+  public ContractSplitLotDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -42,11 +41,11 @@ public class ContractSplitLotDTO {
    * @return quantity
   **/
   @Schema(description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

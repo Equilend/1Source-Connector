@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
@@ -25,7 +24,7 @@ import java.util.Objects;
 
 public class BuyinCompleteRequestDTO {
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("buyinDate")
   private LocalDate buyinDate = null;
@@ -33,7 +32,7 @@ public class BuyinCompleteRequestDTO {
   @JsonProperty("price")
   private PriceDTO price = null;
 
-  public BuyinCompleteRequestDTO quantity(BigDecimal quantity) {
+  public BuyinCompleteRequestDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -43,11 +42,11 @@ public class BuyinCompleteRequestDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

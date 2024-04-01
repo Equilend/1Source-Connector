@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +38,7 @@ public class ReturnDTO {
   private VenueDTO executionVenue = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("collateral")
   private CollateralDTO collateral = null;
@@ -125,7 +124,7 @@ public class ReturnDTO {
     this.executionVenue = executionVenue;
   }
 
-  public ReturnDTO quantity(BigDecimal quantity) {
+  public ReturnDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -135,11 +134,11 @@ public class ReturnDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

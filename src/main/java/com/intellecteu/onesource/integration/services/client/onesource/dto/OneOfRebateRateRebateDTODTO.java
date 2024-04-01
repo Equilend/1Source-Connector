@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 * OneOfRebateRateRebateDTODTO
 */
 @JsonTypeInfo(
-    use = Id.DEDUCTION)
+  use = Id.DEDUCTION)
 @JsonSubTypes({
   @JsonSubTypes.Type(value = FixedRateDTO.class, name = "FixedRateDTO"),
   @JsonSubTypes.Type(value = FloatingRateDTO.class, name = "FloatingRateDTO")

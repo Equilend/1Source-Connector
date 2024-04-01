@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
@@ -28,7 +27,7 @@ public class RecallProposalDTO {
   private VenueDTO executionVenue = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("recallDate")
   private LocalDate recallDate = null;
@@ -54,7 +53,7 @@ public class RecallProposalDTO {
     this.executionVenue = executionVenue;
   }
 
-  public RecallProposalDTO quantity(BigDecimal quantity) {
+  public RecallProposalDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -64,11 +63,11 @@ public class RecallProposalDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

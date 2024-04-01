@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
@@ -34,7 +33,7 @@ public class TradeAgreementDTO {
   private OneOfTradeAgreementRateDTODTO rate = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("billingCurrency")
   private CurrencyCdDTO billingCurrency = null;
@@ -117,7 +116,7 @@ public class TradeAgreementDTO {
     this.rate = rate;
   }
 
-  public TradeAgreementDTO quantity(BigDecimal quantity) {
+  public TradeAgreementDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -127,11 +126,11 @@ public class TradeAgreementDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 
