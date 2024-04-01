@@ -14,14 +14,15 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-
 /**
 * ContractsContractIdBodyDTO
 */
 @JsonTypeInfo(
-    use = Id.DEDUCTION)
+  use = JsonTypeInfo.Id.NAME,
+  include = JsonTypeInfo.As.PROPERTY,
+  property = "type")
 @JsonSubTypes({
+  @JsonSubTypes.Type(value = PriceUpdateDTO.class, name = "PriceUpdateDTO"),
   @JsonSubTypes.Type(value = SettlementStatusUpdateDTO.class, name = "SettlementStatusUpdateDTO"),
   @JsonSubTypes.Type(value = SettlementInstructionUpdateDTO.class, name = "SettlementInstructionUpdateDTO"),
   @JsonSubTypes.Type(value = InternalReferenceUpdateDTO.class, name = "InternalReferenceUpdateDTO")

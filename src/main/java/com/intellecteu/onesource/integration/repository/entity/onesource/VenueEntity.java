@@ -2,8 +2,6 @@ package com.intellecteu.onesource.integration.repository.entity.onesource;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.model.onesource.VenueType;
-import java.time.LocalDateTime;
-import java.util.Set;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,13 +12,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter
@@ -53,4 +55,10 @@ public class VenueEntity {
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "local_venue_field_id")
     private Set<LocalVenueFieldEntity> localVenueFields;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "trade_id", referencedColumnName = "id")
+    @ToString.Exclude
+    private TradeAgreementEntity tradeAgreement;
+
 }

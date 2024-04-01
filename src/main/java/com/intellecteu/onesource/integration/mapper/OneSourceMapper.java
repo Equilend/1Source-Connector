@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementInstructi
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
@@ -25,6 +26,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
@@ -43,8 +45,12 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Settl
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
+import java.util.Optional;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
@@ -55,11 +61,30 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class OneSourceMapper {
 
+
     public abstract Agreement toModel(AgreementEntity agreementEntity);
 
-    public abstract AgreementEntity toEntity(Agreement agreement);
+    @Mapping(target = "venues", qualifiedByName = "toVenueList")
+    public abstract TradeAgreement toModel(TradeAgreementEntity agreementEntity);
 
-    public abstract TradeAgreement toModel(TradeAgreementEntity tradeAgreementEntity);
+    @IterableMapping(qualifiedByName = "toVenueModel")
+    @Named("toVenueList")
+    public abstract List<Venue> toVenueList(List<VenueEntity> venueEntities);
+
+    @Named("toVenueModel")
+    @Mapping(target = "tradeId", source = "tradeAgreement.id")
+    public abstract Venue toVenueModel(VenueEntity venueEntity);
+
+    @Mapping(source = "tradeId", target = "tradeAgreement.id")
+    public abstract VenueEntity toModel(Venue venueModel);
+
+    @AfterMapping
+    public void setTradeId(@MappingTarget TradeAgreement tradeAgreement) {
+        Optional.ofNullable(tradeAgreement.getVenues())
+            .ifPresent(venues -> venues.forEach(venue -> venue.setTradeId(tradeAgreement.getId())));
+    }
+
+    public abstract AgreementEntity toEntity(Agreement agreement);
 
     @Mapping(target = "quickCode", source = "quick")
     public abstract Instrument toModel(InstrumentEntity instrumentEntity);
@@ -140,12 +165,10 @@ public abstract class OneSourceMapper {
 
     public abstract ContractProposalApprovalDTO toRequestDto(ContractProposalApproval contractProposalApproval);
 
-    @Mapping(target = "executionVenue", source = "venue")
     public abstract TradeAgreementDTO toRequestDto(TradeAgreement tradeAgreement);
 
     public abstract ContractProposal toModel(ContractProposalDTO contractProposal);
 
-    @Mapping(source = "executionVenue", target = "venue")
     public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
 
     public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rate) {

@@ -139,7 +139,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public void updateContract(Contract contract, HttpEntity<?> request) {
-        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
+        String venueRefId = contract.getTrade().getVenues().get(0).getVenueRefKey();
         executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
@@ -152,7 +152,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public Settlement retrieveSettlementInstruction(Contract contractDto) {
-        String venueRefId = contractDto.getTrade().getVenue().getVenueRefKey();
+        String venueRefId = contractDto.getTrade().getVenues().get(0).getVenueRefKey();
         log.debug("Updating contract by venueRefId: {}", venueRefId);
         var settlementInstructionUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()

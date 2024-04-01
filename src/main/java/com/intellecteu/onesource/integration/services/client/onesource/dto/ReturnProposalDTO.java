@@ -36,8 +36,11 @@ public class ReturnProposalDTO {
   @JsonProperty("returnSettlementDate")
   private LocalDate returnSettlementDate = null;
 
-  @JsonProperty("collateral")
-  private CollateralDTO collateral = null;
+  @JsonProperty("collateralValue")
+  private Double collateralValue = null;
+
+  @JsonProperty("settlementType")
+  private SettlementTypeDTO settlementType = null;
 
   @JsonProperty("settlement")
   private PartySettlementInstructionDTO settlement = null;
@@ -87,7 +90,7 @@ public class ReturnProposalDTO {
    * Get returnDate
    * @return returnDate
   **/
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   public LocalDate getReturnDate() {
     return returnDate;
   }
@@ -105,7 +108,7 @@ public class ReturnProposalDTO {
    * Get returnSettlementDate
    * @return returnSettlementDate
   **/
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   public LocalDate getReturnSettlementDate() {
     return returnSettlementDate;
   }
@@ -114,22 +117,40 @@ public class ReturnProposalDTO {
     this.returnSettlementDate = returnSettlementDate;
   }
 
-  public ReturnProposalDTO collateral(CollateralDTO collateral) {
-    this.collateral = collateral;
+  public ReturnProposalDTO collateralValue(Double collateralValue) {
+    this.collateralValue = collateralValue;
     return this;
   }
 
    /**
-   * Get collateral
-   * @return collateral
+   * Get collateralValue
+   * @return collateralValue
   **/
   @Schema(description = "")
-  public CollateralDTO getCollateral() {
-    return collateral;
+  public Double getCollateralValue() {
+    return collateralValue;
   }
 
-  public void setCollateral(CollateralDTO collateral) {
-    this.collateral = collateral;
+  public void setCollateralValue(Double collateralValue) {
+    this.collateralValue = collateralValue;
+  }
+
+  public ReturnProposalDTO settlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
+    return this;
+  }
+
+   /**
+   * Get settlementType
+   * @return settlementType
+  **/
+  @Schema(description = "")
+  public SettlementTypeDTO getSettlementType() {
+    return settlementType;
+  }
+
+  public void setSettlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
   }
 
   public ReturnProposalDTO settlement(PartySettlementInstructionDTO settlement) {
@@ -164,13 +185,14 @@ public class ReturnProposalDTO {
         Objects.equals(this.quantity, returnProposal.quantity) &&
         Objects.equals(this.returnDate, returnProposal.returnDate) &&
         Objects.equals(this.returnSettlementDate, returnProposal.returnSettlementDate) &&
-        Objects.equals(this.collateral, returnProposal.collateral) &&
+        Objects.equals(this.collateralValue, returnProposal.collateralValue) &&
+        Objects.equals(this.settlementType, returnProposal.settlementType) &&
         Objects.equals(this.settlement, returnProposal.settlement);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(executionVenue, quantity, returnDate, returnSettlementDate, collateral, settlement);
+    return Objects.hash(executionVenue, quantity, returnDate, returnSettlementDate, collateralValue, settlementType, settlement);
   }
 
 
@@ -183,7 +205,8 @@ public class ReturnProposalDTO {
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    returnDate: ").append(toIndentedString(returnDate)).append("\n");
     sb.append("    returnSettlementDate: ").append(toIndentedString(returnSettlementDate)).append("\n");
-    sb.append("    collateral: ").append(toIndentedString(collateral)).append("\n");
+    sb.append("    collateralValue: ").append(toIndentedString(collateralValue)).append("\n");
+    sb.append("    settlementType: ").append(toIndentedString(settlementType)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
     sb.append("}");
     return sb.toString();

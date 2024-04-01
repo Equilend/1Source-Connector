@@ -12,51 +12,40 @@
 
 package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
-import java.util.ArrayList;
-import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
- * DelegationsDTO
+ * Gets or Sets ContractSplitStatus
  */
+public enum ContractSplitStatusDTO {
+  PROPOSED("PROPOSED"),
+  PENDING("PENDING"),
+  APPLIED("APPLIED");
 
+  private String value;
 
-
-public class DelegationsDTO extends ArrayList<DelegationDTO> {
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-    return super.equals(o);
+  ContractSplitStatusDTO(String value) {
+    this.value = value;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode());
+  @JsonValue
+  public String getValue() {
+    return value;
   }
-
 
   @Override
   public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("class DelegationsDTO {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
-    sb.append("}");
-    return sb.toString();
+    return String.valueOf(value);
   }
 
-  /**
-   * Convert the given object to string with each line indented by 4 spaces
-   * (except the first line).
-   */
-  private String toIndentedString(Object o) {
-    if (o == null) {
-      return "null";
+  @JsonCreator
+  public static ContractSplitStatusDTO fromValue(String input) {
+    for (ContractSplitStatusDTO b : ContractSplitStatusDTO.values()) {
+      if (b.value.equals(input)) {
+        return b;
+      }
     }
-    return o.toString().replace("\n", "\n    ");
+    return null;
   }
-
 }

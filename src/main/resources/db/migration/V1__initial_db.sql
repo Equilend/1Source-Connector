@@ -217,7 +217,8 @@ CREATE TABLE IF NOT EXISTS settlement
     party_role          VARCHAR(255) NULL,
     settlement_status   VARCHAR(255) NULL,
     instruction         BIGINT       NULL,
-    contract_id         BIGINT       NULL
+    contract_id         BIGINT       NULL,
+    internal_acct_cd   VARCHAR(255)  NULL
 );
 
 CREATE TABLE IF NOT EXISTS settlement_instruction_update
@@ -250,7 +251,6 @@ CREATE TABLE IF NOT EXISTS timestamp
 CREATE TABLE IF NOT EXISTS trade
 (
     id              BIGSERIAL NOT NULL,
-    venue_id        BIGINT       NULL,
     instrument_id   BIGINT       NULL,
     rate_id         BIGINT       NULL,
     quantity        INT    NULL,
@@ -297,6 +297,7 @@ CREATE TABLE IF NOT EXISTS venue
     venue_name           VARCHAR(255) NULL,
     venue_ref_key            VARCHAR(255) NULL,
     transaction_datetime timestamp    NULL,
+    trade_id             BIGINT       NULL,
     CONSTRAINT pk_venue PRIMARY KEY (id)
 );
 
@@ -459,15 +460,12 @@ ALTER TABLE settlement_instruction_update
 ALTER TABLE trade DROP CONSTRAINT IF EXISTS FK_TRADE_ON_COLLATERAL;
 ALTER TABLE trade DROP CONSTRAINT IF EXISTS FK_TRADE_ON_INSTRUMENT;
 ALTER TABLE trade DROP CONSTRAINT IF EXISTS FK_TRADE_ON_RATE;
-ALTER TABLE trade DROP CONSTRAINT IF EXISTS FK_TRADE_ON_VENUE;
 ALTER TABLE trade
     ADD CONSTRAINT FK_TRADE_ON_COLLATERAL FOREIGN KEY (collateral) REFERENCES collateral (id);
 ALTER TABLE trade
     ADD CONSTRAINT FK_TRADE_ON_INSTRUMENT FOREIGN KEY (instrument_id) REFERENCES instrument (id);
 ALTER TABLE trade
     ADD CONSTRAINT FK_TRADE_ON_RATE FOREIGN KEY (rate_id) REFERENCES rate (id);
-ALTER TABLE trade
-    ADD CONSTRAINT FK_TRADE_ON_VENUE FOREIGN KEY (venue_id) REFERENCES venue (id);
 
 ALTER TABLE transacting_party DROP CONSTRAINT IF EXISTS FK_TRANSACTING_PARTY_ON_PARTY;
 ALTER TABLE transacting_party DROP CONSTRAINT IF EXISTS FK_TRANSACTING_PARTY_ON_TRANSACTING_PARTY;
@@ -497,10 +495,13 @@ ADD CONSTRAINT FK_POSITION_CP FOREIGN KEY (cp_id) REFERENCES account (id);
 
 ALTER TABLE settlement_temp
     ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT_TEMP FOREIGN KEY (settlement_id) REFERENCES settlement (id);
-ALTER TABLE participant DROP CONSTRAINT IF EXISTS FK_PARTICIPANT_HOLDER;
 
+ALTER TABLE participant DROP CONSTRAINT IF EXISTS FK_PARTICIPANT_HOLDER;
 ALTER TABLE participant add participant_holder_id BIGINT NULL;
 ALTER TABLE participant ADD CONSTRAINT FK_PARTICIPANT_HOLDER FOREIGN KEY (participant_holder_id) REFERENCES participant_holder (id);
+
+ALTER TABLE venue DROP CONSTRAINT IF EXISTS FK_TRADE;
+ALTER TABLE venue ADD CONSTRAINT FK_TRADE FOREIGN KEY (trade_id) REFERENCES trade (id);
 
 COMMENT ON COLUMN trade.event_id IS 'Link to the event that created this trade';
 COMMENT ON COLUMN trade.resource_uri IS 'Resource URI for this trade';

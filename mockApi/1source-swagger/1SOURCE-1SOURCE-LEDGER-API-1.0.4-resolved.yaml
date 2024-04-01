@@ -1015,6 +1015,104 @@ paths:
                 $ref: '#/components/schemas/LedgerResponse'
       security:
       - stage_auth: []
+  /ledger/contracts/{contractId}/split/{contractSplitId}:
+    get:
+      tags:
+      - contracts
+      summary: Retrieve a contract split.
+      parameters:
+      - name: contractId
+        in: path
+        description: The unique identifier of a contract
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ContractId'
+      - name: contractSplitId
+        in: path
+        description: The unique identifier of a contract split
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ContractSplitId'
+      responses:
+        "200":
+          description: The contract split corresponding to the provided "contractSplitId"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContractSplit'
+        "401":
+          description: Not authorized to do this operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+        "500":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+      security:
+      - stage_auth: []
+  /ledger/contracts/{contractId}/split/{contractSplitId}/approve:
+    post:
+      tags:
+      - contracts
+      summary: Approve a contract split in "proposed" state.
+      parameters:
+      - name: contractId
+        in: path
+        description: The unique identifier of a contract
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ContractId'
+      - name: contractSplitId
+        in: path
+        description: The unique identifier of a proposed contract split
+        required: true
+        style: simple
+        explode: false
+        schema:
+          $ref: '#/components/schemas/ContractSplitId'
+      responses:
+        "200":
+          description: Operation was successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+        "401":
+          description: Not authorized to do this operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+        "500":
+          description: An error occurred
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LedgerResponse'
+      security:
+      - stage_auth: []
   /ledger/contracts/{contractId}/events:
     get:
       tags:
@@ -2901,7 +2999,7 @@ components:
           type: string
           format: date-time
         trade:
-          $ref: '#/components/schemas/TradeAgreement'
+          $ref: '#/components/schemas/VenueTradeAgreement'
     Agreements:
       type: array
       items:
@@ -3071,8 +3169,8 @@ components:
     Contract:
       required:
       - contractId
+      - contractStatus
       - lastUpdateDatetime
-      - status
       type: object
       properties:
         contractId:
@@ -3086,12 +3184,16 @@ components:
         lastUpdateDatetime:
           type: string
           format: date-time
+        isInitiator:
+          type: boolean
         trade:
           $ref: '#/components/schemas/TradeAgreement'
         settlement:
           type: array
           items:
             $ref: '#/components/schemas/PartySettlementInstruction'
+        splitContractId:
+          $ref: '#/components/schemas/ContractId'
     ContractId:
       type: string
       description: The unique identifier of a contract - UUID
@@ -3123,10 +3225,27 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/Contract'
-    ContractSplitProposal:
-      type: array
-      items:
-        $ref: '#/components/schemas/ContractSplitLot'
+    ContractSplit:
+      required:
+      - contractSplitId
+      - contractSplitStatus
+      - lastUpdateDatetime
+      type: object
+      properties:
+        contractSplitId:
+          $ref: '#/components/schemas/ContractSplitId'
+        contractSplitStatus:
+          $ref: '#/components/schemas/ContractSplitStatus'
+        splitLots:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractSplitLot'
+        lastUpdateDatetime:
+          type: string
+          format: date-time
+    ContractSplitId:
+      type: string
+      description: The unique identifier of a contract split - UUID
     ContractSplitLot:
       required:
       - original
@@ -3136,6 +3255,18 @@ components:
           $ref: '#/components/schemas/Quantity'
         internalRef:
           $ref: '#/components/schemas/InternalReference'
+        settlement:
+          $ref: '#/components/schemas/PartySettlementInstruction'
+    ContractSplitProposal:
+      type: array
+      items:
+        $ref: '#/components/schemas/ContractSplitLot'
+    ContractSplitStatus:
+      type: string
+      enum:
+      - PROPOSED
+      - PENDING
+      - APPLIED
     ContractStatus:
       type: string
       enum:
@@ -3146,8 +3277,6 @@ components:
       - DECLINED
       - OPEN
       - CLOSED
-      - SPLIT_PENDING
-      - SPLIT_DECLINED
     CurrencyCd:
       type: string
       enum:
@@ -3213,8 +3342,9 @@ components:
       - CONTRACT_CLOSED
       - CONTRACT_DECLINED
       - CONTRACT_OPENED
-      - CONTRACT_ALLOCATION
-      - CONTRACT_SPLIT
+      - CONTRACT_SPLIT_PROPOSED
+      - CONTRACT_SPLIT_PENDING
+      - CONTRACT_SPLIT_APPLIED
       - SETTLEMENT_STATUS_UPDATE
       - SETTLEMENT_INSTRUCTION_UPDATE
       - RERATE_PROPOSED
@@ -3226,7 +3356,8 @@ components:
       - RETURN_PENDING
       - RETURN_SETTLED
       - RETURN_CANCELED
-      - RECALL_OPEN
+      - RETURN_ACKNOWLEDGED
+      - RECALL_OPENED
       - RECALL_UPDATED
       - RECALL_CANCELED
       - RECALL_CLOSED
@@ -3444,6 +3575,13 @@ components:
       enum:
       - SHARE
       - LOT
+    PriceUpdate:
+      required:
+      - price
+      type: object
+      properties:
+        price:
+          $ref: '#/components/schemas/Price'
     Quantity:
       type: number
       format: int32
@@ -3478,20 +3616,31 @@ components:
           $ref: '#/components/schemas/Quantity'
         quantity:
           $ref: '#/components/schemas/Quantity'
+        recallDate:
+          type: string
+          format: date
+        recallDueDate:
+          type: string
+          format: date
         lastUpdateDatetime:
           type: string
           format: date-time
     RecallProposal:
       required:
       - quantity
+      - recallDate
       type: object
       properties:
         executionVenue:
           $ref: '#/components/schemas/Venue'
         quantity:
           $ref: '#/components/schemas/Quantity'
-        collateral:
-          $ref: '#/components/schemas/Collateral'
+        recallDate:
+          type: string
+          format: date
+        recallDueDate:
+          type: string
+          format: date
     Recalls:
       type: array
       items:
@@ -3528,6 +3677,9 @@ components:
           oneOf:
           - $ref: '#/components/schemas/RebateRate'
           - $ref: '#/components/schemas/FeeRate'
+        dateProposed:
+          type: string
+          format: date
         lastUpdateDatetime:
           type: string
           format: date-time
@@ -3578,6 +3730,8 @@ components:
           $ref: '#/components/schemas/Quantity'
         collateral:
           $ref: '#/components/schemas/Collateral'
+        settlementType:
+          $ref: '#/components/schemas/SettlementType'
         settlement:
           type: array
           items:
@@ -3602,6 +3756,8 @@ components:
     ReturnProposal:
       required:
       - quantity
+      - returnDate
+      - returnSettlementDate
       type: object
       properties:
         executionVenue:
@@ -3614,8 +3770,11 @@ components:
         returnSettlementDate:
           type: string
           format: date
-        collateral:
-          $ref: '#/components/schemas/Collateral'
+        collateralValue:
+          type: number
+          format: double
+        settlementType:
+          $ref: '#/components/schemas/SettlementType'
         settlement:
           $ref: '#/components/schemas/PartySettlementInstruction'
     Returns:
@@ -3709,16 +3868,14 @@ components:
       - transactingParties
       type: object
       properties:
-        executionVenue:
-          $ref: '#/components/schemas/Venue'
+        venues:
+          $ref: '#/components/schemas/Venues'
         instrument:
           $ref: '#/components/schemas/Instrument'
         rate:
           oneOf:
           - $ref: '#/components/schemas/RebateRate'
           - $ref: '#/components/schemas/FeeRate'
-        openQuantity:
-          $ref: '#/components/schemas/Quantity'
         quantity:
           $ref: '#/components/schemas/Quantity'
         billingCurrency:
@@ -3793,6 +3950,52 @@ components:
       type: array
       items:
         $ref: '#/components/schemas/VenueParty'
+    Venues:
+      type: array
+      items:
+        $ref: '#/components/schemas/Venue'
+    VenueTradeAgreement:
+      required:
+      - collateral
+      - instrument
+      - quantity
+      - rate
+      - tradeDate
+      - transactingParties
+      type: object
+      properties:
+        executionVenue:
+          $ref: '#/components/schemas/Venue'
+        instrument:
+          $ref: '#/components/schemas/Instrument'
+        rate:
+          oneOf:
+          - $ref: '#/components/schemas/RebateRate'
+          - $ref: '#/components/schemas/FeeRate'
+        quantity:
+          $ref: '#/components/schemas/Quantity'
+        billingCurrency:
+          $ref: '#/components/schemas/CurrencyCd'
+        dividendRatePct:
+          type: number
+          format: double
+        tradeDate:
+          type: string
+          format: date
+        termType:
+          $ref: '#/components/schemas/TermType'
+        termDate:
+          type: string
+          format: date
+        settlementDate:
+          type: string
+          format: date
+        settlementType:
+          $ref: '#/components/schemas/SettlementType'
+        collateral:
+          $ref: '#/components/schemas/Collateral'
+        transactingParties:
+          $ref: '#/components/schemas/TransactingParties'
     VenueType:
       type: string
       enum:
@@ -3800,6 +4003,7 @@ components:
       - OFFPLATFORM
     contracts_contractId_body:
       oneOf:
+      - $ref: '#/components/schemas/PriceUpdate'
       - $ref: '#/components/schemas/SettlementStatusUpdate'
       - $ref: '#/components/schemas/SettlementInstructionUpdate'
       - $ref: '#/components/schemas/InternalReferenceUpdate'

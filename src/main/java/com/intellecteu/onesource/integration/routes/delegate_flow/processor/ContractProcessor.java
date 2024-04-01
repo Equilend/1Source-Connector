@@ -221,11 +221,11 @@ public class ContractProcessor {
     }
 
     private void matchNgtTradeContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
-        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
-        notMatchedPositions.stream()
-            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
-            .findAny()
-            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
+//        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
+//        notMatchedPositions.stream()
+//            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
+//            .findAny()
+//            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
     }
 
     private void matchContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
@@ -249,7 +249,9 @@ public class ContractProcessor {
     }
 
     private static boolean isNgtTradeContract(Contract contract) {
-        return contract.getTrade().getVenue() != null && contract.getTrade().getVenue().getVenueRefKey() != null;
+        return contract.getTrade().getVenues() != null 
+            && contract.getTrade().getVenues().get(0) != null
+            && contract.getTrade().getVenues().get(0).getVenueRefKey() != null;
     }
 
     private Position updateMatchedContractAndPosition(Contract contract, Position position) {

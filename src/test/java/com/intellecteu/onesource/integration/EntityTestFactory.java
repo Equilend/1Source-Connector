@@ -88,10 +88,13 @@ public class EntityTestFactory {
             .build();
     }
 
-    public static TradeAgreementEntity buildTradeAgreement() {
-        return TradeAgreementEntity.builder()
-            .id(1L)
-            .venue(buildVenueEntity())
+    public static TradeAgreementEntity buildTradeAgreement(Long id) {
+        Long tradeId = 1L;
+        if (id != null) {
+            tradeId = id;
+        }
+        TradeAgreementEntity entity = TradeAgreementEntity.builder()
+            .id(tradeId)
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
             .quantity(2)
@@ -106,6 +109,12 @@ public class EntityTestFactory {
             .transactingParties(createTransactionParties())
             .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
             .build();
+        entity.addVenue(buildVenueEntity());
+        return entity;
+    }
+
+    public static TradeAgreementEntity buildTradeAgreement() {
+        return buildTradeAgreement(null);
     }
 
     public static List<TransactingPartyEntity> createTransactionParties() {

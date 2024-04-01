@@ -18,20 +18,20 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
- * TradeAgreementDTO
+ * VenueTradeAgreementDTO
  */
 
 
 
-public class TradeAgreementDTO {
-  @JsonProperty("venues")
-  private VenuesDTO venues = null;
+public class VenueTradeAgreementDTO {
+  @JsonProperty("executionVenue")
+  private VenueDTO executionVenue = null;
 
   @JsonProperty("instrument")
   private InstrumentDTO instrument = null;
 
   @JsonProperty("rate")
-  private OneOfTradeAgreementRateDTODTO rate = null;
+  private OneOfVenueTradeAgreementRateDTODTO rate = null;
 
   @JsonProperty("quantity")
   private BigDecimal quantity = null;
@@ -63,25 +63,25 @@ public class TradeAgreementDTO {
   @JsonProperty("transactingParties")
   private TransactingPartiesDTO transactingParties = null;
 
-  public TradeAgreementDTO venues(VenuesDTO venues) {
-    this.venues = venues;
+  public VenueTradeAgreementDTO executionVenue(VenueDTO executionVenue) {
+    this.executionVenue = executionVenue;
     return this;
   }
 
    /**
-   * Get venues
-   * @return venues
+   * Get executionVenue
+   * @return executionVenue
   **/
   @Schema(description = "")
-  public VenuesDTO getVenues() {
-    return venues;
+  public VenueDTO getExecutionVenue() {
+    return executionVenue;
   }
 
-  public void setVenues(VenuesDTO venues) {
-    this.venues = venues;
+  public void setExecutionVenue(VenueDTO executionVenue) {
+    this.executionVenue = executionVenue;
   }
 
-  public TradeAgreementDTO instrument(InstrumentDTO instrument) {
+  public VenueTradeAgreementDTO instrument(InstrumentDTO instrument) {
     this.instrument = instrument;
     return this;
   }
@@ -99,7 +99,7 @@ public class TradeAgreementDTO {
     this.instrument = instrument;
   }
 
-  public TradeAgreementDTO rate(OneOfTradeAgreementRateDTODTO rate) {
+  public VenueTradeAgreementDTO rate(OneOfVenueTradeAgreementRateDTODTO rate) {
     this.rate = rate;
     return this;
   }
@@ -109,15 +109,15 @@ public class TradeAgreementDTO {
    * @return rate
   **/
   @Schema(required = true, description = "")
-  public OneOfTradeAgreementRateDTODTO getRate() {
+  public OneOfVenueTradeAgreementRateDTODTO getRate() {
     return rate;
   }
 
-  public void setRate(OneOfTradeAgreementRateDTODTO rate) {
+  public void setRate(OneOfVenueTradeAgreementRateDTODTO rate) {
     this.rate = rate;
   }
 
-  public TradeAgreementDTO quantity(BigDecimal quantity) {
+  public VenueTradeAgreementDTO quantity(BigDecimal quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -135,7 +135,7 @@ public class TradeAgreementDTO {
     this.quantity = quantity;
   }
 
-  public TradeAgreementDTO billingCurrency(CurrencyCdDTO billingCurrency) {
+  public VenueTradeAgreementDTO billingCurrency(CurrencyCdDTO billingCurrency) {
     this.billingCurrency = billingCurrency;
     return this;
   }
@@ -153,7 +153,7 @@ public class TradeAgreementDTO {
     this.billingCurrency = billingCurrency;
   }
 
-  public TradeAgreementDTO dividendRatePct(Double dividendRatePct) {
+  public VenueTradeAgreementDTO dividendRatePct(Double dividendRatePct) {
     this.dividendRatePct = dividendRatePct;
     return this;
   }
@@ -171,7 +171,7 @@ public class TradeAgreementDTO {
     this.dividendRatePct = dividendRatePct;
   }
 
-  public TradeAgreementDTO tradeDate(LocalDate tradeDate) {
+  public VenueTradeAgreementDTO tradeDate(LocalDate tradeDate) {
     this.tradeDate = tradeDate;
     return this;
   }
@@ -189,7 +189,7 @@ public class TradeAgreementDTO {
     this.tradeDate = tradeDate;
   }
 
-  public TradeAgreementDTO termType(TermTypeDTO termType) {
+  public VenueTradeAgreementDTO termType(TermTypeDTO termType) {
     this.termType = termType;
     return this;
   }
@@ -207,7 +207,7 @@ public class TradeAgreementDTO {
     this.termType = termType;
   }
 
-  public TradeAgreementDTO termDate(LocalDate termDate) {
+  public VenueTradeAgreementDTO termDate(LocalDate termDate) {
     this.termDate = termDate;
     return this;
   }
@@ -225,7 +225,7 @@ public class TradeAgreementDTO {
     this.termDate = termDate;
   }
 
-  public TradeAgreementDTO settlementDate(LocalDate settlementDate) {
+  public VenueTradeAgreementDTO settlementDate(LocalDate settlementDate) {
     this.settlementDate = settlementDate;
     return this;
   }
@@ -243,7 +243,7 @@ public class TradeAgreementDTO {
     this.settlementDate = settlementDate;
   }
 
-  public TradeAgreementDTO settlementType(SettlementTypeDTO settlementType) {
+  public VenueTradeAgreementDTO settlementType(SettlementTypeDTO settlementType) {
     this.settlementType = settlementType;
     return this;
   }
@@ -261,7 +261,7 @@ public class TradeAgreementDTO {
     this.settlementType = settlementType;
   }
 
-  public TradeAgreementDTO collateral(CollateralDTO collateral) {
+  public VenueTradeAgreementDTO collateral(CollateralDTO collateral) {
     this.collateral = collateral;
     return this;
   }
@@ -279,7 +279,7 @@ public class TradeAgreementDTO {
     this.collateral = collateral;
   }
 
-  public TradeAgreementDTO transactingParties(TransactingPartiesDTO transactingParties) {
+  public VenueTradeAgreementDTO transactingParties(TransactingPartiesDTO transactingParties) {
     this.transactingParties = transactingParties;
     return this;
   }
@@ -306,34 +306,34 @@ public class TradeAgreementDTO {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    TradeAgreementDTO tradeAgreement = (TradeAgreementDTO) o;
-    return Objects.equals(this.venues, tradeAgreement.venues) &&
-        Objects.equals(this.instrument, tradeAgreement.instrument) &&
-        Objects.equals(this.rate, tradeAgreement.rate) &&
-        Objects.equals(this.quantity, tradeAgreement.quantity) &&
-        Objects.equals(this.billingCurrency, tradeAgreement.billingCurrency) &&
-        Objects.equals(this.dividendRatePct, tradeAgreement.dividendRatePct) &&
-        Objects.equals(this.tradeDate, tradeAgreement.tradeDate) &&
-        Objects.equals(this.termType, tradeAgreement.termType) &&
-        Objects.equals(this.termDate, tradeAgreement.termDate) &&
-        Objects.equals(this.settlementDate, tradeAgreement.settlementDate) &&
-        Objects.equals(this.settlementType, tradeAgreement.settlementType) &&
-        Objects.equals(this.collateral, tradeAgreement.collateral) &&
-        Objects.equals(this.transactingParties, tradeAgreement.transactingParties);
+    VenueTradeAgreementDTO venueTradeAgreement = (VenueTradeAgreementDTO) o;
+    return Objects.equals(this.executionVenue, venueTradeAgreement.executionVenue) &&
+        Objects.equals(this.instrument, venueTradeAgreement.instrument) &&
+        Objects.equals(this.rate, venueTradeAgreement.rate) &&
+        Objects.equals(this.quantity, venueTradeAgreement.quantity) &&
+        Objects.equals(this.billingCurrency, venueTradeAgreement.billingCurrency) &&
+        Objects.equals(this.dividendRatePct, venueTradeAgreement.dividendRatePct) &&
+        Objects.equals(this.tradeDate, venueTradeAgreement.tradeDate) &&
+        Objects.equals(this.termType, venueTradeAgreement.termType) &&
+        Objects.equals(this.termDate, venueTradeAgreement.termDate) &&
+        Objects.equals(this.settlementDate, venueTradeAgreement.settlementDate) &&
+        Objects.equals(this.settlementType, venueTradeAgreement.settlementType) &&
+        Objects.equals(this.collateral, venueTradeAgreement.collateral) &&
+        Objects.equals(this.transactingParties, venueTradeAgreement.transactingParties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(venues, instrument, rate, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
+    return Objects.hash(executionVenue, instrument, rate, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class TradeAgreementDTO {\n");
+    sb.append("class VenueTradeAgreementDTO {\n");
     
-    sb.append("    venues: ").append(toIndentedString(venues)).append("\n");
+    sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    instrument: ").append(toIndentedString(instrument)).append("\n");
     sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");

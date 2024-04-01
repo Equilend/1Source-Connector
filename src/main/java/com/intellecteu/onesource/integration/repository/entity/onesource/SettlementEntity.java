@@ -50,5 +50,7 @@ public class SettlementEntity {
     @JoinColumn(name = "contract_id", referencedColumnName = "id")
     @ToString.Exclude
     private ContractEntity contract;
+    @Column(name = "internal_acct_cd")
+    private String internalAcctCd;
 
 }

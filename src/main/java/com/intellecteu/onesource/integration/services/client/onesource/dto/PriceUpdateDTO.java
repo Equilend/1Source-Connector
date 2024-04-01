@@ -12,15 +12,37 @@
 
 package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
-import java.util.ArrayList;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.Objects;
 /**
- * DelegationsDTO
+ * PriceUpdateDTO
  */
 
 
 
-public class DelegationsDTO extends ArrayList<DelegationDTO> {
+public class PriceUpdateDTO implements ContractsContractIdBodyDTO {
+  @JsonProperty("price")
+  private PriceDTO price = null;
+
+  public PriceUpdateDTO price(PriceDTO price) {
+    this.price = price;
+    return this;
+  }
+
+   /**
+   * Get price
+   * @return price
+  **/
+  @Schema(required = true, description = "")
+  public PriceDTO getPrice() {
+    return price;
+  }
+
+  public void setPrice(PriceDTO price) {
+    this.price = price;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -30,20 +52,22 @@ public class DelegationsDTO extends ArrayList<DelegationDTO> {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    return super.equals(o);
+    PriceUpdateDTO priceUpdate = (PriceUpdateDTO) o;
+    return Objects.equals(this.price, priceUpdate.price);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode());
+    return Objects.hash(price);
   }
 
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class DelegationsDTO {\n");
-    sb.append("    ").append(toIndentedString(super.toString())).append("\n");
+    sb.append("class PriceUpdateDTO {\n");
+    
+    sb.append("    price: ").append(toIndentedString(price)).append("\n");
     sb.append("}");
     return sb.toString();
   }

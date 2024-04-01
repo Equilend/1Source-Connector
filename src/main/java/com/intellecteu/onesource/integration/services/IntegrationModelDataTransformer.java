@@ -120,7 +120,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private TradeAgreement buildTradeFromPosition(Position position) {
         return TradeAgreement.builder()
-            .venue(buildExecutionVenueFromPosition(position))
+            .venues(List.of(buildExecutionVenueFromPosition(position)))
             .instrument(buildInstrumentFromPosition(position))
             .rate(buildRebateRateFromPosition(position))
             .quantity(position.getQuantity().intValue())
@@ -178,7 +178,10 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Collateral buildCollateral(Position position) {
-        CollateralType collateralType = position.getPositionType().getIsCash() ? CollateralType.CASH : null;
+        CollateralType collateralType = null;
+        if (position.getPositionType().getIsCash() != null) {
+            collateralType = position.getPositionType().getIsCash() ? CollateralType.CASH : null;
+        }
         return Collateral.builder()
             .contractPrice(position.getPrice())
             .contractValue(position.getAmount())

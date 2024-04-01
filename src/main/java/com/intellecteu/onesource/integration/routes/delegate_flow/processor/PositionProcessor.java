@@ -101,6 +101,7 @@ public class PositionProcessor {
         return position;
     }
 
+    @Transactional
     public Position findByPositionId(Long positionId) {
         return positionService.getByPositionId(positionId).orElse(null);
     }

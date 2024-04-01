@@ -44,6 +44,9 @@ public class ReturnDTO {
   @JsonProperty("collateral")
   private CollateralDTO collateral = null;
 
+  @JsonProperty("settlementType")
+  private SettlementTypeDTO settlementType = null;
+
   @JsonProperty("settlement")
   private List<PartySettlementInstructionDTO> settlement = null;
 
@@ -158,6 +161,24 @@ public class ReturnDTO {
     this.collateral = collateral;
   }
 
+  public ReturnDTO settlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
+    return this;
+  }
+
+   /**
+   * Get settlementType
+   * @return settlementType
+  **/
+  @Schema(description = "")
+  public SettlementTypeDTO getSettlementType() {
+    return settlementType;
+  }
+
+  public void setSettlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
+  }
+
   public ReturnDTO settlement(List<PartySettlementInstructionDTO> settlement) {
     this.settlement = settlement;
     return this;
@@ -218,13 +239,14 @@ public class ReturnDTO {
         Objects.equals(this.executionVenue, _return.executionVenue) &&
         Objects.equals(this.quantity, _return.quantity) &&
         Objects.equals(this.collateral, _return.collateral) &&
+        Objects.equals(this.settlementType, _return.settlementType) &&
         Objects.equals(this.settlement, _return.settlement) &&
         Objects.equals(this.lastUpdateDatetime, _return.lastUpdateDatetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlement, lastUpdateDatetime);
+    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlementType, settlement, lastUpdateDatetime);
   }
 
 
@@ -239,6 +261,7 @@ public class ReturnDTO {
     sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    collateral: ").append(toIndentedString(collateral)).append("\n");
+    sb.append("    settlementType: ").append(toIndentedString(settlementType)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
     sb.append("}");

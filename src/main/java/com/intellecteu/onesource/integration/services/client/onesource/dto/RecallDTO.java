@@ -15,6 +15,7 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 /**
@@ -41,6 +42,12 @@ public class RecallDTO {
 
   @JsonProperty("quantity")
   private BigDecimal quantity = null;
+
+  @JsonProperty("recallDate")
+  private LocalDate recallDate = null;
+
+  @JsonProperty("recallDueDate")
+  private LocalDate recallDueDate = null;
 
   @JsonProperty("lastUpdateDatetime")
   private LocalDateTime lastUpdateDatetime = null;
@@ -153,6 +160,42 @@ public class RecallDTO {
     this.quantity = quantity;
   }
 
+  public RecallDTO recallDate(LocalDate recallDate) {
+    this.recallDate = recallDate;
+    return this;
+  }
+
+   /**
+   * Get recallDate
+   * @return recallDate
+  **/
+  @Schema(description = "")
+  public LocalDate getRecallDate() {
+    return recallDate;
+  }
+
+  public void setRecallDate(LocalDate recallDate) {
+    this.recallDate = recallDate;
+  }
+
+  public RecallDTO recallDueDate(LocalDate recallDueDate) {
+    this.recallDueDate = recallDueDate;
+    return this;
+  }
+
+   /**
+   * Get recallDueDate
+   * @return recallDueDate
+  **/
+  @Schema(description = "")
+  public LocalDate getRecallDueDate() {
+    return recallDueDate;
+  }
+
+  public void setRecallDueDate(LocalDate recallDueDate) {
+    this.recallDueDate = recallDueDate;
+  }
+
   public RecallDTO lastUpdateDatetime(LocalDateTime lastUpdateDatetime) {
     this.lastUpdateDatetime = lastUpdateDatetime;
     return this;
@@ -187,12 +230,14 @@ public class RecallDTO {
         Objects.equals(this.executionVenue, recall.executionVenue) &&
         Objects.equals(this.openQuantity, recall.openQuantity) &&
         Objects.equals(this.quantity, recall.quantity) &&
+        Objects.equals(this.recallDate, recall.recallDate) &&
+        Objects.equals(this.recallDueDate, recall.recallDueDate) &&
         Objects.equals(this.lastUpdateDatetime, recall.lastUpdateDatetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(recallId, contractId, status, executionVenue, openQuantity, quantity, lastUpdateDatetime);
+    return Objects.hash(recallId, contractId, status, executionVenue, openQuantity, quantity, recallDate, recallDueDate, lastUpdateDatetime);
   }
 
 
@@ -207,6 +252,8 @@ public class RecallDTO {
     sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    openQuantity: ").append(toIndentedString(openQuantity)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+    sb.append("    recallDate: ").append(toIndentedString(recallDate)).append("\n");
+    sb.append("    recallDueDate: ").append(toIndentedString(recallDueDate)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -36,6 +36,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
+import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
@@ -99,9 +100,8 @@ public class ModelTestFactory {
     }
 
     public static TradeAgreement buildTradeAgreement() {
-        return TradeAgreement.builder()
+        final TradeAgreement agreement = TradeAgreement.builder()
             .id(1L)
-            .venue(buildVenue())
             .instrument(buildInstrument())
             .rate(buildRate())
             .quantity(2)
@@ -116,6 +116,8 @@ public class ModelTestFactory {
             .transactingParties(createTransactionParties())
             .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
             .build();
+        agreement.setVenues(List.of(buildVenue(agreement.getId())));
+        return agreement;
     }
 
     public static List<TransactingParty> createTransactionParties() {
@@ -162,7 +164,7 @@ public class ModelTestFactory {
             .build();
     }
 
-    public static Venue buildVenue() {
+    public static Venue buildVenue(Long tradeId) {
         return Venue.builder()
             .id(99999L)
             .partyId("testPartyId")
@@ -172,6 +174,7 @@ public class ModelTestFactory {
             .transactionDateTime(LocalDateTime.now())
             .venueParties(Set.of(buildVenueParty()))
             .localVenueFields(Set.of(buildVenueFields()))
+            .tradeId(tradeId)
             .build();
 
     }
@@ -231,7 +234,7 @@ public class ModelTestFactory {
     public static Position buildPositionFromTradeAgreement(TradeAgreement tradeAgreement) {
         return Position.builder()
             .positionId(9L)
-            .customValue2(tradeAgreement.getVenue().getVenueRefKey())
+            .customValue2(tradeAgreement.getVenues().get(0).getVenueRefKey())
             .positionSecurityDetail(buildPositionSecurityDetail(tradeAgreement))
             .rate(tradeAgreement.getRate().getFee().getBaseRate())
             .quantity(tradeAgreement.getQuantity().doubleValue())
@@ -451,5 +454,13 @@ public class ModelTestFactory {
             .instruction(buildInstruction())
             .internalAcctCd("567")
             .build();
+    }
+
+    public static ContractProposal buildContractProposal() {
+        return ContractProposal.builder()
+            .trade(buildTradeAgreement())
+            .settlementList(List.of(buildSettlement()))
+            .build();
+
     }
 }

@@ -981,7 +981,7 @@
       "type": "http",
       "documentation": "",
       "method": "post",
-      "endpoint": "lender/trades/search/onesource/trade/query",
+      "endpoint": "trades/search/onesource/trade/query",
       "responses": [
         {
           "uuid": "c11b06c9-ff4c-404c-9651-17c7e3d76225",

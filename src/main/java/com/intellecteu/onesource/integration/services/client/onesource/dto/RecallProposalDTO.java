@@ -15,6 +15,7 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 /**
  * RecallProposalDTO
@@ -29,8 +30,11 @@ public class RecallProposalDTO {
   @JsonProperty("quantity")
   private BigDecimal quantity = null;
 
-  @JsonProperty("collateral")
-  private CollateralDTO collateral = null;
+  @JsonProperty("recallDate")
+  private LocalDate recallDate = null;
+
+  @JsonProperty("recallDueDate")
+  private LocalDate recallDueDate = null;
 
   public RecallProposalDTO executionVenue(VenueDTO executionVenue) {
     this.executionVenue = executionVenue;
@@ -68,22 +72,40 @@ public class RecallProposalDTO {
     this.quantity = quantity;
   }
 
-  public RecallProposalDTO collateral(CollateralDTO collateral) {
-    this.collateral = collateral;
+  public RecallProposalDTO recallDate(LocalDate recallDate) {
+    this.recallDate = recallDate;
     return this;
   }
 
    /**
-   * Get collateral
-   * @return collateral
+   * Get recallDate
+   * @return recallDate
   **/
-  @Schema(description = "")
-  public CollateralDTO getCollateral() {
-    return collateral;
+  @Schema(required = true, description = "")
+  public LocalDate getRecallDate() {
+    return recallDate;
   }
 
-  public void setCollateral(CollateralDTO collateral) {
-    this.collateral = collateral;
+  public void setRecallDate(LocalDate recallDate) {
+    this.recallDate = recallDate;
+  }
+
+  public RecallProposalDTO recallDueDate(LocalDate recallDueDate) {
+    this.recallDueDate = recallDueDate;
+    return this;
+  }
+
+   /**
+   * Get recallDueDate
+   * @return recallDueDate
+  **/
+  @Schema(description = "")
+  public LocalDate getRecallDueDate() {
+    return recallDueDate;
+  }
+
+  public void setRecallDueDate(LocalDate recallDueDate) {
+    this.recallDueDate = recallDueDate;
   }
 
 
@@ -98,12 +120,13 @@ public class RecallProposalDTO {
     RecallProposalDTO recallProposal = (RecallProposalDTO) o;
     return Objects.equals(this.executionVenue, recallProposal.executionVenue) &&
         Objects.equals(this.quantity, recallProposal.quantity) &&
-        Objects.equals(this.collateral, recallProposal.collateral);
+        Objects.equals(this.recallDate, recallProposal.recallDate) &&
+        Objects.equals(this.recallDueDate, recallProposal.recallDueDate);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(executionVenue, quantity, collateral);
+    return Objects.hash(executionVenue, quantity, recallDate, recallDueDate);
   }
 
 
@@ -114,7 +137,8 @@ public class RecallProposalDTO {
     
     sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
-    sb.append("    collateral: ").append(toIndentedString(collateral)).append("\n");
+    sb.append("    recallDate: ").append(toIndentedString(recallDate)).append("\n");
+    sb.append("    recallDueDate: ").append(toIndentedString(recallDueDate)).append("\n");
     sb.append("}");
     return sb.toString();
   }

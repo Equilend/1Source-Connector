@@ -180,7 +180,7 @@ public class OneSourceService {
         throws RestClientException {
         final ContractProposalDTO requestDto = oneSourceMapper.toRequestDto(contractProposal);
         log.debug("Sending a request to create a loan contract proposal.");
-        final ResponseEntity<LedgerResponseDTO> response = contractsApi.ledgerContractsPost(requestDto);
+        final ResponseEntity<LedgerResponseDTO> response = contractsApi.ledgerContractsPostWithHttpInfo(requestDto);
         return response.getStatusCode().value() == 201;
     }
 

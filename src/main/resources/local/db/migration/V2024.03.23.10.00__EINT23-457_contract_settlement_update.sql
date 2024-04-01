@@ -8,14 +8,14 @@
 --                       sedol, quick_code, price_factor, rate, end_date,
 --                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
 --                       settle_date, deliver_free, amount, price,
---                       cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type, is_cash,
 --                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
 --                       index_id, index_name, spread, accrual_date, matching_1source_loan_contract_id)
 -- VALUES ('7373', '7373', '123', '023135107', 'US0231351068',
 --         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
 --         7373.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
---         1.02, 0, 0, 'CASH LOAN',
+--         1.02, 0, 0, 'CASH LOAN', true,
 --         7373, 2828, '7373', '2828', 'CREATED', 'FUTURE',
 --         123, 'EFFR', 11.0, '2023-10-25 13:50:41.633000', '7373');
 --
@@ -27,13 +27,13 @@
 --                       sedol, quick_code, price_factor, rate, end_date,
 --                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
 --                       settle_date, deliver_free, amount, price,
---                       cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type, is_cash,
 --                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
 --                       index_id, index_name, spread, accrual_date, matching_1source_loan_contract_id)
 -- VALUES ('4141', '4141', '123', '023135107', 'US0231351068',
 --         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
 --         4141.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
---         1.02, 0, 0, 'CASH LOAN',
+--         1.02, 0, 0, 'CASH LOAN', true,
 --         4141, 1212, '4141', '1212', 'CREATED', 'FUTURE',
 --         123, 'EFFR', 11.0, '2023-10-25 13:50:41.633000',  '4141');

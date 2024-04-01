@@ -28,20 +28,20 @@
 -- VALUES (101, 119.57, 179101.5, 179101.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
 --        (202, 119.57, 179101.5, 179101.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
 --
--- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
--- VALUES (101, '101', 'ONPLATFORM', 'testLenderVenueName', '101'),
---        (202, '202', 'ONPLATFORM', 'testBorrowerVenueName', '202');
 --
---
--- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+-- INSERT INTO trade (id, instrument_id, rate_id, quantity, currency,
 --                    dividend_rate, trade_date, term_type, term_date, settlement_date,
 --                    settlement_type, collateral)
--- VALUES  (101, 101, 101, 101, 15000, 'USD',
+-- VALUES  (101, 101, 101, 15000, 'USD',
 --          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
 --          'DVP', 101),
---         (202, 202, 202, 202, 15000, 'USD',
+--         (202, 202, 202, 15000, 'USD',
 --          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
 --          'DVP', 202);
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key, trade_id)
+-- VALUES (101, '101', 'ONPLATFORM', 'testLenderVenueName', '101', 101),
+--        (202, '202', 'ONPLATFORM', 'testBorrowerVenueName', '202', 202);
 --
 -- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
 -- VALUES (101, '32b71278-9ad2-445a-bfb0-b5ada72f101', 'PENDING', 101, '101', 'CREATED'),
@@ -63,7 +63,7 @@
 --                       sedol, quick_code, price_factor, rate, end_date,
 --                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
 --                       settle_date, deliver_free, amount, price,
---                       cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type, is_cash,
 --                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
 --                       index_id, index_name, spread, accrual_date,
 --                       matching_1source_loan_contract_id, trade_id)
@@ -71,7 +71,7 @@
 --         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
 --         11000.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 179101.5, 119.57,
---         1.02, 0, 0, 'CASH LOAN',
+--         1.02, 0, 0, 'CASH LOAN', true,
 --         101, 202, '101', '202', 'CREATED', null,
 --         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000',
 --         null, 101);

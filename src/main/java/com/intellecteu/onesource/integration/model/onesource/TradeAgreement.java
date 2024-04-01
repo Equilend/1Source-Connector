@@ -32,8 +32,8 @@ public class TradeAgreement implements Reconcilable {
 
     @JsonIgnore
     private Long id;
-    @JsonProperty("executionVenue")
-    private Venue venue;
+    @JsonProperty("venues")
+    private List<Venue> venues;
     private Instrument instrument;
     private Rate rate;
     private Integer quantity;
@@ -65,10 +65,6 @@ public class TradeAgreement implements Reconcilable {
         collateral.validateForReconciliation();
         instrument.validateForReconciliation();
         validateParties();
-    }
-
-    public String retrieveVenueName() {
-        return venue.getVenueName();
     }
 
     private void validateParties() throws ValidationException {

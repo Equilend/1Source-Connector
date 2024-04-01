@@ -21,7 +21,7 @@ import java.util.Objects;
 
 
 
-public class SettlementInstructionDTO implements OneOfSettlementInstructionDTO {
+public class SettlementInstructionDTO {
   @JsonProperty("settlementBic")
   private String settlementBic = null;
 

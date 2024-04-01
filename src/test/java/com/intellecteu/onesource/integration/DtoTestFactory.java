@@ -155,7 +155,7 @@ public class DtoTestFactory {
     public static PositionDto buildPositionDtoFromTradeAgreement(TradeAgreement tradeAgreement) {
         return PositionDto.builder()
             .positionId("9")
-            .customValue2(tradeAgreement.getVenue().getVenueRefKey())
+            .customValue2(tradeAgreement.getVenues().get(0).getVenueRefKey())
             .securityDetailDto(buildSecurityDetailDto(tradeAgreement))
             .rate(tradeAgreement.getRate().getFee().getBaseRate())
             .quantity(tradeAgreement.getQuantity().doubleValue())
