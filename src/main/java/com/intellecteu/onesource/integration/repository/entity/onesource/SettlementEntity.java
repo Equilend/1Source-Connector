@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -20,7 +19,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter
@@ -46,11 +44,12 @@ public class SettlementEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "instruction")
     private SettlementInstructionEntity instruction;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "contract_id", referencedColumnName = "id")
-    @ToString.Exclude
-    private ContractEntity contract;
     @Column(name = "internal_acct_cd")
     private String internalAcctCd;
+
+//    @ManyToOne(fetch = FetchType.EAGER)
+//    @JoinColumn(name = "contract_id", referencedColumnName = "id")
+//    @ToString.Exclude
+//    private ContractEntity contract;
 
 }

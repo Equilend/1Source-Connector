@@ -40,7 +40,8 @@ public class TradeAgreementEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @OneToMany(mappedBy = "tradeAgreement", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "trade_id")
     @JsonProperty("venues")
     private List<VenueEntity> venues;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -82,13 +83,13 @@ public class TradeAgreementEntity {
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;
 
-    public void addVenue(VenueEntity venue) {
-        if (this.venues == null) {
-            this.venues = new ArrayList<>();
-        }
-        this.venues.add(venue);
-        venue.setTradeAgreement(this);
-    }
+//    public void addVenue(VenueEntity venue) {
+//        if (this.venues == null) {
+//            this.venues = new ArrayList<>();
+//        }
+//        this.venues.add(venue);
+//        venue.setTradeAgreement(this);
+//    }
 
     public TradeAgreementEntity() {
         venues = new ArrayList<>();

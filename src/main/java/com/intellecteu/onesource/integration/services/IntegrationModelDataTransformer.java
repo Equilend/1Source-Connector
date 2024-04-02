@@ -119,11 +119,12 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private TradeAgreement buildTradeFromPosition(Position position) {
+        Integer quantity = position.getQuantity() == null ? null : position.getQuantity().intValue();
         return TradeAgreement.builder()
             .venues(List.of(buildExecutionVenueFromPosition(position)))
             .instrument(buildInstrumentFromPosition(position))
             .rate(buildRebateRateFromPosition(position))
-            .quantity(position.getQuantity().intValue())
+            .quantity(quantity)
             .billingCurrency(CurrencyCd.fromValue(position.getCurrency().getCurrencyKy()))
             .dividendRatePct(position.getLoanBorrow().getTaxWithholdingRate())
             .tradeDate(position.getTradeDate().toLocalDate())

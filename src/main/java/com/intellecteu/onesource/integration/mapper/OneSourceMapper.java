@@ -72,14 +72,12 @@ public abstract class OneSourceMapper {
     public abstract List<Venue> toVenueList(List<VenueEntity> venueEntities);
 
     @Named("toVenueModel")
-    @Mapping(target = "tradeId", source = "tradeAgreement.id")
     public abstract Venue toVenueModel(VenueEntity venueEntity);
 
-    @Mapping(source = "tradeId", target = "tradeAgreement.id")
     public abstract VenueEntity toModel(Venue venueModel);
 
     @AfterMapping
-    public void setTradeId(@MappingTarget TradeAgreement tradeAgreement) {
+    public void setTradeId(Object anySource, @MappingTarget TradeAgreement tradeAgreement) {
         Optional.ofNullable(tradeAgreement.getVenues())
             .ifPresent(venues -> venues.forEach(venue -> venue.setTradeId(tradeAgreement.getId())));
     }

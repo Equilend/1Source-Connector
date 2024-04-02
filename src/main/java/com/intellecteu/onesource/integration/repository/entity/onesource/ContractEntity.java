@@ -62,13 +62,14 @@ public class ContractEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "trade_id", referencedColumnName = "id")
     private TradeAgreementEntity trade;
-    @OneToMany(mappedBy = "contract", fetch = FetchType.LAZY,
+    @OneToMany(fetch = FetchType.LAZY,
         cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "contract_id")
     private List<SettlementEntity> settlement = new ArrayList<>();
 
-    public void addSettlement(SettlementEntity settlement) {
-        this.settlement.add(settlement);
-        settlement.setContract(this);
-    }
+//    public void addSettlement(SettlementEntity settlement) {
+//        this.settlement.add(settlement);
+//        settlement.setContract(this);
+//    }
 
 }

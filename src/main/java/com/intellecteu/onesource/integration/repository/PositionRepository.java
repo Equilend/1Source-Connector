@@ -20,7 +20,7 @@ public interface PositionRepository extends JpaRepository<PositionEntity, Long> 
 
     @Query("select p from PositionEntity p where p.matching1SourceLoanContractId is null "
         + "and (p.processingStatus = 'CREATED' or p.processingStatus = 'UPDATED')")
-    Optional<PositionEntity> getNotMatched();
+    List<PositionEntity> getNotMatched();
 
     @Query("select p from PositionEntity p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
     List<PositionEntity> findAllNotCanceledAndSettled();

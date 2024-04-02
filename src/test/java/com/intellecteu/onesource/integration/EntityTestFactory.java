@@ -97,6 +97,7 @@ public class EntityTestFactory {
             .id(tradeId)
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
+            .venues(List.of(buildVenueEntity()))
             .quantity(2)
             .billingCurrency(USD)
             .dividendRatePct(2d)
@@ -109,7 +110,7 @@ public class EntityTestFactory {
             .transactingParties(createTransactionParties())
             .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
             .build();
-        entity.addVenue(buildVenueEntity());
+//        entity.addVenue(buildVenueEntity());
         return entity;
     }
 

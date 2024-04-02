@@ -91,7 +91,8 @@ public class ContractProcessor {
         String resourceUri = event.getResourceUri();
         try {
             String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
-            return oneSourceService.retrieveContractDetails(contractId);
+            final Contract contract = oneSourceService.retrieveContractDetails(contractId);
+            return contract;
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
             final HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
