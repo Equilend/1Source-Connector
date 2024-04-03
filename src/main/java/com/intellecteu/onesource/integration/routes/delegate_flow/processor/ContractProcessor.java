@@ -23,6 +23,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
@@ -474,6 +475,14 @@ public class ContractProcessor {
     }
 
     private void recordToolkitIssueEvent(IntegrationProcess process, String record,
+        IntegrationSubProcess subProcess) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(process, record, subProcess));
+    }
+
+    private void recordToolkitTechnicalEvent(IntegrationProcess process, String record,
         IntegrationSubProcess subProcess) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
         var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);

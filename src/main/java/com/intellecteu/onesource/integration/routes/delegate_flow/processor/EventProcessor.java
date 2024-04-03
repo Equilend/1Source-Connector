@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -160,8 +162,18 @@ public class EventProcessor {
     }
 
     public void recordContractDeclineIssue(TradeEvent event) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildToolkitIssueRequest(event.getResourceUri(), GET_LOAN_CONTRACT_DECLINED);
+        String resourceUri = event.getResourceUri();
+        cloudEventRecordService.getToolkitCloudEventId(resourceUri,
+                GET_LOAN_CONTRACT_DECLINED, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(CONTRACT_INITIATION, resourceUri, GET_LOAN_CONTRACT_DECLINED));
+    }
+
+    private void recordToolkitTechnicalEvent(IntegrationProcess process, String record,
+        IntegrationSubProcess subProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
     }
 

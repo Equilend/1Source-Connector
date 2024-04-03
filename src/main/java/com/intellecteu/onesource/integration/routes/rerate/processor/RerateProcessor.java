@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -259,6 +260,7 @@ public class RerateProcessor {
 
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         HttpStatusCodeException e, String rerateId, Long tradeId) {
+        String persistedCloudEventId = null;
         Map<String, String> data = new HashMap<>();
         data.put(HTTP_STATUS_TEXT, e.getStatusText());
         if (rerateId != null) {
@@ -266,24 +268,38 @@ public class RerateProcessor {
         }
         if (tradeId != null) {
             data.put(TRADE_ID, String.valueOf(tradeId));
+            persistedCloudEventId = cloudEventRecordService // temporary hardcoded until related object will be captured
+                .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
+                .orElse(null);
         }
-        var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
-            data, List.of());
-        cloudEventRecordService.record(recordRequest);
+        if (StringUtils.isEmpty(persistedCloudEventId)) {
+            var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
+                data, List.of());
+            cloudEventRecordService.record(recordRequest);
+        } else {
+            cloudEventRecordService.updateTime(persistedCloudEventId);
+        }
     }
 
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, String rerateId,
         Long tradeId) {
+        String persistedCloudEventId = null;
         Map<String, String> data = new HashMap<>();
         if (rerateId != null) {
             data.put(RERATE_ID, rerateId);
         }
         if (tradeId != null) {
             data.put(TRADE_ID, String.valueOf(tradeId));
+            persistedCloudEventId = cloudEventRecordService // temporary hardcoded until related object will be captured
+                .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
+                .orElse(null);
         }
-        var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
-            data, List.of());
-        cloudEventRecordService.record(recordRequest);
+        if (StringUtils.isEmpty(persistedCloudEventId)) {
+            var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
+            cloudEventRecordService.record(recordRequest);
+        } else {
+            cloudEventRecordService.updateTime(persistedCloudEventId);
+        }
     }
 
     private void createFailedReconciliationEvent(Rerate rerate, ReconcileException e) {

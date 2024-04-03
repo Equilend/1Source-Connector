@@ -51,7 +51,7 @@
 --
 -- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
 --                       matching_spire_position_id, matching_spire_trade_id)
--- VALUES (202, '202', 'PROPOSED', 202, 'PROPOSED', 202, 202);
+-- VALUES (202, '202', 'PENDING', 202, 'CREATED', 202, 202);
 --
 -- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
 -- VALUES (101, 101, 'lender_acc', '101', 101, 1),
@@ -69,7 +69,7 @@
 --         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
 --         11000.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 179101.5, 119.57,
---         1.02, 0, 0, 'CASH LOAN', true,
---         202, 101, '101', '101', 'UPDATED', null,
+--         1.02, 0, 0, 'CASH BORROW', true,
+--         202, 101, '101', '101', 'CREATED', null,
 --         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000',
 --         null, 202);

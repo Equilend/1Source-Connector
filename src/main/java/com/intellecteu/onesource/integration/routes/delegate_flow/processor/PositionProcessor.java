@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
@@ -16,6 +17,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -233,14 +235,16 @@ public class PositionProcessor {
             recordContractProposalMatched(matchedContract);
         } catch (ContractNotFoundException e) {
             log.debug("No matched contracts found for position Id={}", position.getPositionId());
-            recordSystemEvent(position, POSITION_UNMATCHED);
+            recordSystemEvent(position, GET_NEW_POSITIONS_PENDING_CONFIRMATION, POSITION_UNMATCHED);
         }
     }
 
-    private void recordSystemEvent(Position position, RecordType recordType) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(String.valueOf(position.getPositionId()), recordType);
-        cloudEventRecordService.record(recordRequest);
+    private void recordSystemEvent(Position position, IntegrationSubProcess subProcess, RecordType recordType) {
+        final String positionId = String.valueOf(position.getPositionId());
+        cloudEventRecordService.getToolkitCloudEventId(positionId, subProcess, recordType)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> createContractInitiationCloudEvent(positionId, recordType, null));
     }
 
     private Contract retrieveMatchedContract(Position position, Set<Contract> unmatchedContracts) {
@@ -321,14 +325,16 @@ public class PositionProcessor {
         try {
             return oneSourceService.instructLoanContractProposal(proposal);
         } catch (HttpStatusCodeException e) {
+            final String positionId = String.valueOf(position.getPositionId());
             log.warn("""
                 The loan contract proposal instruction has not been processed by 1Source for the \
-                (SPIRE Position: {}) for the following reason: {}""", position.getPositionId(), e.getStatusCode());
+                (SPIRE Position: {}) for the following reason: {}""", positionId, e.getStatusCode());
             log.debug("Details: {}", e.getMessage());
-            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-            var recordRequest = eventBuilder.buildExceptionRequest(e, POST_LOAN_CONTRACT_PROPOSAL,
-                String.valueOf(position.getPositionId()));
-            cloudEventRecordService.record(recordRequest);
+            Optional<String> eventId = cloudEventRecordService.getToolkitCloudEventId(positionId,
+                    POST_LOAN_CONTRACT_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE);
+            eventId.ifPresentOrElse(
+                    cloudEventRecordService::updateTime,
+                    () ->  createExceptionCloudEvent(positionId, e, CONTRACT_INITIATION, POST_LOAN_CONTRACT_PROPOSAL));
             return false;
         }
     }
@@ -358,6 +364,13 @@ public class PositionProcessor {
     private void createCloudEvent(String recordData, RecordType recordType, String relatedData, IntegrationProcess iP) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(iP);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void createExceptionCloudEvent(String recordData, HttpStatusCodeException exception,
+        IntegrationProcess iP, IntegrationSubProcess subProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(iP);
+        var recordRequest = eventBuilder.buildExceptionRequest(exception, subProcess, recordData);
         cloudEventRecordService.record(recordRequest);
     }
 }
