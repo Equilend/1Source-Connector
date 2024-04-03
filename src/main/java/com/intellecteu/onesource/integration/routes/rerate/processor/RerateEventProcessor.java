@@ -14,7 +14,9 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.CONTRACT_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.POSITION_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RESOURCE_URI;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
@@ -196,6 +198,8 @@ public class RerateEventProcessor {
         Map<String, String> data = new HashMap<>();
         data.put(RERATE_ID, rerate.getRerateId());
         data.put(TRADE_ID, String.valueOf(rerate.getMatchingSpireTradeId()));
+        data.put(POSITION_ID, String.valueOf(rerate.getRelatedSpirePositionId()));
+        data.put(CONTRACT_ID, rerate.getContractId());
         var recordRequest = eventBuilder.buildRequest(GET_RERATE_APPROVED, RERATE_PROPOSAL_APPROVED,
             data, List.of());
         cloudEventRecordService.record(recordRequest);
@@ -205,7 +209,7 @@ public class RerateEventProcessor {
         var data = new HashMap<String, String>();
         data.put(RERATE_ID, rerate.getRerateId());
         data.put(TRADE_ID, String.valueOf(rerate.getMatchingSpireTradeId()));
-        data.put("contractId", rerate.getContractId());
+        data.put(CONTRACT_ID, rerate.getContractId());
         var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_APPLIED, RERATE_PROPOSAL_APPLIED, data, List.of());
         cloudEventRecordService.record(recordRequest);
     }
@@ -213,6 +217,8 @@ public class RerateEventProcessor {
     private void recordRerateDeclinedCloudEvent(Rerate rerate) {
         var data = new HashMap<String, String>();
         data.put(RERATE_ID, rerate.getRerateId());
+        data.put(POSITION_ID, String.valueOf(rerate.getRelatedSpirePositionId()));
+        data.put(CONTRACT_ID, rerate.getContractId());
         var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_DECLINED, RERATE_PROPOSAL_DECLINED, data,
             List.of());
         cloudEventRecordService.record(recordRequest);

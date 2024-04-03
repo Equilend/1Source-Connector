@@ -70,6 +70,7 @@ spring:
           keycloak:
             issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
             user-name-attribute: ${onesource.auth.principal-attribute}
+
 springdoc:
   api-docs:
     enabled: false
@@ -112,9 +113,22 @@ spire:
   userId: ${SPIRE_USERID}
   username: ${SPIRE_USERNAME}
   password: ${SPIRE_PASSWORD}
+  kafka:
+    consumer:
+      bootstrap-server: ${SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER:localhost:29092}
+      username: ${SPIRE_KAFKA_CONSUMER_USERNAME:kafka-user}
+      password: ${SPIRE_KAFKA_CONSUMER_PASSWORD:kafka-password}
+      listener:
+        correction-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID:it-ci}
+          topic: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC:correctionInstruction}
+        decline-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID:it-di}
+          topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC:declineInstruction}
 
 cloudevents:
   specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
+
 
 notification:
   enable: ${NOTIFICATION_ENABLE:false}

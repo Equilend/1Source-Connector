@@ -1,7 +1,10 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.BACKOFFICE_RERATE;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_RERATE_DISCREPANCIES_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.RERATE_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPLIED_RERATE_MSG;
@@ -9,6 +12,9 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CONFIRM_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.DECLIED_RERATE_MSG;
@@ -17,12 +23,17 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACED_RERATE_TRADE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACE_RERATE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.UNMATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPLIED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPLIED_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_TECHNICAL_EXCEPTION_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCELED_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_EXCEPTION_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CONFIRM_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.DECLIED_RERATE;
@@ -31,6 +42,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.GET_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.MATCHED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACED_RERATE_TRADE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
@@ -55,6 +68,8 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     public static final String RERATE_ID = "rerateId";
     public static final String TRADE_ID = "tradeId";
+    public static final String CONTRACT_ID = "contractId";
+    public static final String POSITION_ID = "positionId";
     public static final String RESOURCE_URI = "resourceURI";
     public static final String HTTP_STATUS_TEXT = "httpStatusText";
 
@@ -157,6 +172,18 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                     default -> null;
                 };
             }
+            case PROCESS_TRADE_UPDATE: {
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_1SOURCE ->
+                        createCancelRerateExceptionCloudRequest(subProcess, recordType, data);
+                    case RERATE_TRADE_REPLACED -> createRerateTradeReplacedCloudRequest(subProcess, recordType, data);
+                    case RERATE_TRADE_REPLACE_SUBMITTED ->
+                        createRerateTradeReplaceSubmittedCloudRequest(subProcess, recordType, data);
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createEntityExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
             case GET_RERATE_PROPOSAL: {
                 return switch (recordType) {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
@@ -188,6 +215,21 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                     default -> null;
                 };
             }
+            case PROCESS_TRADE_CANCELED: {
+                return switch (recordType) {
+                    case RERATE_TRADE_CANCELED -> createRerateTradeCanceledCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_TRADE_CANCEL: {
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_1SOURCE ->
+                        createCancelRerateExceptionCloudRequest(subProcess, recordType, data);
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createEntityExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
         }
         return null;
     }
@@ -201,7 +243,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(MATCHED_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
 
@@ -214,7 +259,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(MATCHED_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
 
@@ -226,7 +274,10 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(APPROVED_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
 
@@ -245,14 +296,16 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createApproveRerateExceptionCloudRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
+        String dataMessage = format(APPROVE_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(POSITION_ID),
             data.get(HTTP_STATUS_TEXT));
         return createRecordRequest(
             recordType,
             format(APPROVE_EXCEPTION_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
@@ -265,7 +318,9 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(CONFIRM_EXCEPTION_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
@@ -278,7 +333,81 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(DECLINE_EXCEPTION_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createCancelRerateExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCEL_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
+            data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(CANCEL_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createEntityExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(REPLACE_RERATE_EXCEPTION_RERATE_MSG, data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(REPLACE_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
             createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateTradeReplacedCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(REPLACED_RERATE_TRADE_MSG, data.get("oldTradeId"), data.get("amendedTradeId"));
+        return createRecordRequest(
+            recordType,
+            format(REPLACED_RERATE_TRADE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get("oldTradeId"), "Initial Trade"),
+                new RelatedObject(data.get("amendedTradeId"), "Amended Trade")))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateTradeReplaceSubmittedCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCEL_RERATE_MSG, data.get("oldTradeId"), data.get(TRADE_ID),
+            data.get(RERATE_ID));
+        return createRecordRequest(
+            recordType,
+            format(CANCEL_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get("oldTradeId"), "Initial Trade"),
+                new RelatedObject(data.get("amendedTradeId"), "Amended Trade"),
+                new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateTradeCanceledCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCELED_RERATE_MSG, data.get("oldTradeId"), data.get("amendedTradeId"),
+            data.get(RERATE_ID));
+        return createRecordRequest(
+            recordType,
+            format(CANCELED_RERATE, data.get("amendedTradeId")),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get("oldTradeId"), "Canceled Trade"),
+                new RelatedObject(data.get("amendedTradeId"), "offsetting Trade")))
         );
     }
 
@@ -291,7 +420,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(POST_RERATE_EXCEPTION_1SOURCE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
@@ -304,7 +433,8 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(GET_RERATE_EXCEPTION_1SOURCE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
@@ -316,7 +446,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(APPROVE_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
         );
     }
 
@@ -328,7 +458,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(APPLIED_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
         );
     }
 
@@ -340,7 +470,9 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(DECLIED_RERATE, data.get(RERATE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
 
@@ -352,7 +484,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(DECLINE_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
         );
     }
 
@@ -364,7 +496,9 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(CREATED_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
@@ -376,7 +510,9 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(UNMATCHED_RERATE, data.get(RERATE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
