@@ -1,5 +1,7 @@
 package com.intellecteu.onesource.integration.routes.rerate;
 
+import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_AMEND;
+import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_CANCELLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
@@ -15,8 +17,10 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.CorrectionInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateEventProcessor;
@@ -56,20 +60,28 @@ public class RerateRoute extends RouteBuilder {
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT d FROM DeclineInstructionEntity d WHERE d.relatedProposalType = 'RERATE' AND d.processingStatus IS NULL";
 
+    private static final String CORRECTION_INSTRUCTION_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.toolkit.CorrectionInstructionEntity?"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT c FROM CorrectionInstructionEntity c WHERE c.instructionType = '%s' AND c.relatedProposalType = 'RERATE' AND c.processingStatus IS NULL";
+
     private final RerateProcessor rerateProcessor;
     private final RerateEventProcessor rerateEventProcessor;
     private final OneSourceMapper oneSourceMapper;
     private final BackOfficeMapper backOfficeMapper;
     private final DeclineInstructionMapper declineInstructionMapper;
+    private final CorrectionInstructionMapper correctionInstructionMapper;
 
     @Autowired
     public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
-        BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper) {
+        BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper,
+        CorrectionInstructionMapper correctionInstructionMapper) {
         this.rerateProcessor = rerateProcessor;
         this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
         this.backOfficeMapper = backOfficeMapper;
         this.declineInstructionMapper = declineInstructionMapper;
+        this.correctionInstructionMapper = correctionInstructionMapper;
     }
 
     @Override
@@ -173,6 +185,23 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
             .bean(rerateEventProcessor, "saveEvent")
             .log("<<< Finished PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[DECLINED]");
+
+        from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_AMEND))
+            .log(">>> Started PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId}")
+            .bean(correctionInstructionMapper, "toModel")
+            .bean(rerateProcessor, "amendRerateTrade")
+            .bean(rerateProcessor, "updateCorrectionInstructionProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateProcessor, "saveCorrectionInstruction")
+            .log("<<< Finished PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], Rerate[PROPOSED, TO_VALIDATE], RerateTrade[REPLACED]");
+
+        from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_CANCELLED))
+            .log(">>> Started PROCESS_TRADE_CANCEL for CorrectionInstruction: ${body.instructionId}")
+            .bean(correctionInstructionMapper, "toModel")
+            .bean(rerateProcessor, "cancelRerateTrade")
+            .bean(rerateProcessor, "updateCorrectionInstructionProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateProcessor, "saveCorrectionInstruction")
+            .log("<<< Finished PROCESS_TRADE_CANCEL for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], RerateTrade[CANCELED], Rerate[PROPOSED, CANCEL_SUBMITTED]");
+
     }
     //@formatter:on
 
@@ -198,5 +227,9 @@ public class RerateRoute extends RouteBuilder {
 
     private String createUnprocessedDeclineInstructionSQLEndpoint(){
         return DECLINE_INSTRUCTION_SQL_ENDPOINT;
+    }
+
+    private String createUnprocessedCorrectionInstructionSQLEndpoint(CorrectionInstructionType type){
+        return String.format(CORRECTION_INSTRUCTION_SQL_ENDPOINT, type);
     }
 }
