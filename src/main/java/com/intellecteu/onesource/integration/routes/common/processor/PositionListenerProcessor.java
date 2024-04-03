@@ -27,6 +27,9 @@ public class PositionListenerProcessor {
     public void fetchNewPositions() {
         String maxTradeId = positionService.getMaxTradeId();
         List<Position> newSpirePositions = backOfficeService.getNewSpirePositions(maxTradeId);
+        if (!newSpirePositions.isEmpty()) {
+            log.debug("{} new positions were retrieved", newSpirePositions.size());
+        }
         newSpirePositions.forEach(position -> {
             position.setVenueRefId(position.getCustomValue2());
             position.setCreationDatetime(LocalDateTime.now());

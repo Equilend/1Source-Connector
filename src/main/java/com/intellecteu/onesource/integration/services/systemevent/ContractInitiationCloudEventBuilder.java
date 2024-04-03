@@ -123,7 +123,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     public ContractInitiationCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit-uri}") String integrationUri) {
+        @Value("${cloudevents.source}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 

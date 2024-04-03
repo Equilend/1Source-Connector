@@ -85,7 +85,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private static final String CONTRACT_ENDPOINT = "/ledger/contracts/{contractId}";
     private static final String CREATE_CONTRACT_ENDPOINT = "/ledger/contracts";
 
-    @Value("${onesource.baseEndpoint}")
+    @Value("${onesource.base-endpoint}")
     private String onesourceBaseEndpoint;
 
     @Value("${onesource.version}")

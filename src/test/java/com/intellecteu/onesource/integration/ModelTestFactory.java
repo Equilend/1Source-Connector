@@ -31,6 +31,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventMetadata;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
@@ -368,6 +369,7 @@ public class ModelTestFactory {
             .relatedSubProcess("testRelatedSubProcess")
             .dataContentType("testDataContentType")
             .eventData(buildSystemEventDataModel())
+            .processingStatus(CloudEventProcessingStatus.CREATED)
             .build();
     }
 

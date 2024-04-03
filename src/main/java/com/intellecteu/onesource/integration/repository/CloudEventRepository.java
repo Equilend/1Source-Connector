@@ -9,9 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface CloudEventRepository extends JpaRepository<CloudSystemEventEntity, String> {
 
-    @Query(nativeQuery = true,
-        value = "SELECT * FROM event_record WHERE processingstatus IS NULL")
-    Set<CloudSystemEventEntity> findAllWhereProcessingStatusIsNull();
+    Set<CloudSystemEventEntity> findAllByProcessingStatusIsNull();
 
     @Modifying
     @Query(nativeQuery = true,

@@ -1,28 +1,32 @@
 package com.intellecteu.onesource.integration.routes.common;
 
 import com.intellecteu.onesource.integration.routes.common.processor.CloudEventNotificationProcessor;
-import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class EventNotificationProducerRoute extends RouteBuilder {
 
     private final CloudEventNotificationProcessor eventNotificationProcessor;
+    private final boolean enabled;
+    private final Integer timer;
 
-    @Value("${notification.enable}")
-    private boolean isEnabled;
+    public EventNotificationProducerRoute(CloudEventNotificationProcessor eventNotificationProcessor,
+        @Value("${notification.enable}") boolean enabled,
+        @Value("${notification.timer}") Integer timer) {
+        this.eventNotificationProcessor = eventNotificationProcessor;
+        this.enabled = enabled;
+        this.timer = timer;
+    }
 
     @Override
     public void configure() {
-        from("timer://eventTimer?period={{notification.timer}}")
+        from(String.format("timer://eventTimer?period=%d", timer))
             .routeId("EventNotificationRoute")
-            .autoStartup(isEnabled)
-            .log(">>>> Sending notifications...")
-            .setHeader("timestamp", constant("{{notification.timer}}"))
+            .autoStartup(enabled)
+            .log(">>> Starting SEND_SYSTEM_EVENT_NOTIFICATIONS process.")
             .bean(eventNotificationProcessor, "sendAllEvents")
-            .log("<<<<< Sending events process was finished!");
+            .log("<<< SEND_SYSTEM_EVENT_NOTIFICATIONS process was finished!");
     }
 }

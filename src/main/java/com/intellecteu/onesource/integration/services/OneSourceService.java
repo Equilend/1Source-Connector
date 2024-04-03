@@ -64,14 +64,14 @@ public class OneSourceService {
     @Autowired
     public OneSourceService(OneSourceApiClient oneSourceApiClient, ReratesApi reratesApi, EventMapper eventMapper,
         OneSourceMapper oneSourceMapper,
-        @Value("${onesource.baseEndpoint}") String onesourceBasePath,
+        @Value("${onesource.base-endpoint}") String onesourceBasePath,
         @Value("${onesource.version}") String onesourceVersion,
         ContractsApi contractsApi) {
         this.oneSourceApiClient = oneSourceApiClient;
         this.reratesApi = reratesApi;
         this.contractsApi = contractsApi;
         this.contractsApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
-        this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion)); // todo update version param in application.yml
+        this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
         this.eventMapper = eventMapper;
         this.oneSourceMapper = oneSourceMapper;
     }

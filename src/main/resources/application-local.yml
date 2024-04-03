@@ -1,67 +1,15 @@
-starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
-route:
-  rerate:
-    enable: ${RERATE_ROUTE_LOCAL:true}
-  bilateral-flow:
-    contract-initiation:
-      enable: ${CI_BILATERAL_FLOW_ENABLE_LOCAL:true}
-      timer: ${CI_BILATERAL_FLOW_TIMER_LOCAL:60000}
-  delegate-flow:
-    contract-initiation:
-      enable: ${CI_DELEGATE_FLOW_ENABLE_LOCAL:true}
-      timer: ${CI_DELEGATE_FLOW_TIMER_LOCAL:60000}
-    update-position:
-      enable: ${UP_DELEGATE_FLOW_ENABLE_LOCAL:true}
-      timer: ${UP_DELEGATE_FLOW_TIMER_LOCAL:10000}
-  position-listener:
-    enable: ${POSITION_LISTENER_ENABLE_LOCAL:true}
-    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER_LOCAL:60000}
-    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER_LOCAL:60000}
-integration-toolkit-uri: ${INTEGRATION_TOOLKIT_URI_LOCAL:http://integration.toolkit}
-
 camel:
-  timer: ${CAMEL_TIMER_LOCAL:60000}
-  newPositionTimer: ${CAMEL_TIMER_LOCAL:60000}
-  positionTimer: ${CAMEL_TIMER_LOCAL:60000}
-  newBackOfficeTradeEventTimer: ${CAMEL_TIMER:60000}
+  timer: ${CAMEL_TIMER_LOCAL:100000}
+  newPositionTimer: ${CAMEL_TIMER_LOCAL:600000}
+  positionTimer: ${CAMEL_TIMER_LOCAL:600000}
+  newBackOfficeTradeEventTimer: ${CAMEL_TIMER_LOCAL:600000}
   partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
   timestamp: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
   route:
     autostart: ${CAMEL_AUTOSTART_LOCAL:true}
-
-spring:
-  datasource:
-    url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
-    username: ${DB_USERNAME_LOCAL:postgres}
-    password: ${DB_PASSWORD_LOCAL:postgres}
-  jpa:
-    show-sql: false
-    properties:
-      hibernate:
-        default_schema: ${DB_SCHEMA_LOCAL:postgres}
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
-  flyway:
-    locations: classpath:db/migration, classpath:local/db/migration
-    baseline-on-migrate: true
-    url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
-    user: ${DB_USERNAME_LOCAL:postgres}
-    password: ${DB_PASSWORD_LOCAL:postgres}
-    schemas: ${DB_SCHEMA_LOCAL:postgres}
-    enabled: true
-    default-schema: ${DB_SCHEMA_LOCAL:postgres}
-
-  jackson:
-    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}
-          jwk-set-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}/protocol/openid-connect/certs
-
+cloudevents:
+  specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}
+  source: ${CLOUD_EVENTS_SOURCE:http://lender-or-borrower.endpoint}
 logging:
   level:
     com:
@@ -95,42 +43,92 @@ logging:
         client:
           RestTemplate: INFO
     root: INFO
-
-onesource:
-  baseEndpoint: ${1SOURCE_ENDPOINT_LOCAL:http://localhost:8081}
-  version:
-  auth:
-    api:
-      server-url: ${1SOURCE_AUTH_API_URL_LOCAL:http://localhost:8088}
-      realm: ${1SOURCE_AUTH_API_REALM_LOCAL:1source-keycloak}
-      resource: ${1SOURCE_AUTH_API_CLIENT_ID_LOCAL:1source-ui-app}
-    server-url: ${1SOURCE_AUTH_URL_LOCAL:http://localhost:8088}
-    realm: ${1SOURCE_AUTH_REALM_LOCAL:1source-keycloak}
-    public-client: true
-    resource: ${1SOURCE_AUTH_CLIENT_ID_LOCAL:1source-integration}
-    principal-attribute: ${1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE_LOCAL:preferred_username}
-    username: ${1SOURCE_AUTH_USER_NAME_LOCAL:test-user}
-    password: ${1SOURCE_AUTH_USER_PASSWORD_LOCAL:12345}
-    credentials:
-      secret: ${1SOURCE_AUTH_CLIENT_SECRET_LOCAL:secret}
-
-spire:
-  baseEndpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083}
-  lenderEndpoint: ${SPIRE_LENDER_ENDPOINT_LOCAL:http://localhost:8083/lender}
-  borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT_LOCAL:http://localhost:8083/borrower}
-  userId: ${SPIRE_USERID_LOCAL:-1}
-  username: ${SPIRE_USERNAME_LOCAL:test-user}
-  password: ${SPIRE_PASSWORD_LOCAL:12345}
-
-cloudevents:
-  specversion: ${CLOUD_EVENTS_SPEC_VERSION_LOCAL:1.0}
-
 notification:
   enable: ${NOTIFICATION_ENABLE_LOCAL:false}
-  timer: ${NOTIFICATION_TIMER_LOCAL:10000}
-  spire:
-    bootstrap-server: ${SPIRE_BOOTSTRAP_SERVER_LOCAL:localhost:9092}
-    topic: ${NOTIFICATION_SPIRE_TOPIC_LOCAL:TEST.TOPIC}
-    auth:
-      key: ${NOTIFICATION_SPIRE_KEY_LOCAL:test}
-      secret: ${NOTIFICATION_SPIRE_SECRET_LOCAL:test}
+  timer: ${NOTIFICATION_TIMER_LOCAL:100000}
+onesource:
+  auth:
+    api:
+      client-id: ${1SOURCE_AUTH_API_CLIENT_ID_LOCAL:1source-ui-app}
+      realm: ${1SOURCE_AUTH_API_REALM_LOCAL:1source-keycloak}
+      server-url: ${1SOURCE_AUTH_API_URL_LOCAL:http://localhost:8088}
+    client-id: ${1SOURCE_AUTH_CLIENT_ID_LOCAL:1source-integration}
+    credentials:
+      secret: ${1SOURCE_AUTH_CLIENT_SECRET_LOCAL:secret}
+    password: ${1SOURCE_AUTH_USER_PASSWORD_LOCAL:12345}
+    principal-attribute: ${1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE_LOCAL:preferred_username}
+    public-client: true
+    realm: ${1SOURCE_AUTH_REALM_LOCAL:1source-keycloak}
+    server-url: ${1SOURCE_AUTH_URL_LOCAL:http://localhost:8088}
+    username: ${1SOURCE_AUTH_USER_NAME_LOCAL:test-user}
+  base-endpoint: ${1SOURCE_ENDPOINT_LOCAL:http://localhost:8081}
+  version:
+route:
+  bilateral-flow:
+    contract-initiation:
+      enable: ${CI_BILATERAL_FLOW_ENABLE_LOCAL:true}
+      timer: ${CI_BILATERAL_FLOW_TIMER_LOCAL:60000}
+  delegate-flow:
+    contract-initiation:
+      enable: ${CI_DELEGATE_FLOW_ENABLE_LOCAL:true}
+      timer: ${CI_DELEGATE_FLOW_TIMER_LOCAL:60000}
+    update-position:
+      enable: ${UP_DELEGATE_FLOW_ENABLE_LOCAL:true}
+      timer: ${UP_DELEGATE_FLOW_TIMER_LOCAL:60000}
+  position-listener:
+    enable: ${POSITION_LISTENER_ENABLE_LOCAL:true}
+    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER_LOCAL:60000}
+    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER_LOCAL:60000}
+  rerate:
+    enable: ${RERATE_ROUTE_LOCAL:true}
+spire:
+  base-endpoint: ${SPIRE_BASE_ENDPOINT_LOCAL:http://localhost:8083}
+  kafka:
+    producer:
+      auth:
+        key: ${SPIRE_KAFKA_KEY_LOCAL:test}
+        secret: ${SPIRE_KAFKA_SECRET_LOCAL:test}
+      bootstrap-server: ${SPIRE_KAFKA_BOOTSTRAP_SERVER_LOCAL:localhost:9092}
+      topic: ${SPIRE_KAFKA_TOPIC_LOCAL:TEST.TOPIC}
+  password: ${SPIRE_PASSWORD_LOCAL:12345}
+  user-id: ${SPIRE_USER_ID_LOCAL:-1}
+  username: ${SPIRE_USERNAME_LOCAL:test-user}
+spring:
+  datasource:
+    password: ${DB_PASSWORD_LOCAL:postgres}
+    url: ${DB_URL_LOCAL:jdbc:postgresql://localhost:5432/postgres}
+    username: ${DB_USERNAME_LOCAL:postgres}
+  flyway:
+    baseline-on-migrate: true
+    default-schema: ${DB_SCHEMA_LOCAL:postgres}
+    enabled: true
+    locations: classpath:db/migration, classpath:local/db/migration
+    password: ${DB_PASSWORD_LOCAL:postgres}
+    schemas: ${DB_SCHEMA_LOCAL:postgres}
+    url: ${DB_URL_LOCAL:jdbc:postgresql://1source-postgres:5432/postgres}
+    user: ${DB_USERNAME_LOCAL:postgres}
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: ${DB_SCHEMA_LOCAL:postgres}
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}
+          jwk-set-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}/protocol/openid-connect/certs
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    url: /toolkit_openapi.yaml
+starting-trade-event-datetime: ${CAMEL_TIMESTAMP_LOCAL:2023-06-25T09:51:16.111Z}
+
+
+

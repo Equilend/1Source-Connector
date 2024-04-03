@@ -1,24 +1,38 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventMetadata;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SystemEventDataEntity;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
-import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = JsonMapper.class)
 @Slf4j
 public abstract class CloudSystemEventMapper {
 
-    @Mapping(target = "eventData", source = "cloudEventEntity.data")
+    protected JsonMapper jsonMapper;
+
+    @Autowired
+    public void setJsonMapper(JsonMapper jsonMapper) {
+        this.jsonMapper = jsonMapper;
+    }
+
+    @Mapping(target = "eventData", source = "data")
     public abstract CloudSystemEvent toCloudEvent(CloudSystemEventEntity cloudEventEntity);
 
+    /**
+     * Bidirectional mapping for SystemEventDataEntity and CloudSystemEventEntity
+     * should handle initiation of the inner object.
+     * The setter entity.setData(dataEntity) should be after the initiation of the cloudEventEntity
+     *
+     * @param cloudEvent CloudSystemEvent model
+     * @return CloudSystemEventEntity entity
+     */
     public CloudSystemEventEntity toCloudEventEntity(CloudSystemEvent cloudEvent) {
         SystemEventDataEntity dataEntity = toSystemEventEntity(cloudEvent.getEventData());
         final CloudSystemEventEntity entity = CloudSystemEventEntity.builder()
@@ -31,6 +45,7 @@ public abstract class CloudSystemEventMapper {
             .relatedProcess(cloudEvent.getRelatedProcess())
             .relatedSubProcess(cloudEvent.getRelatedSubProcess())
             .dataContentType(cloudEvent.getDataContentType())
+            .processingStatus(cloudEvent.getProcessingStatus())
             .build();
         entity.setData(dataEntity);
         return entity;
@@ -49,14 +64,7 @@ public abstract class CloudSystemEventMapper {
     public abstract SystemEventDataEntity toSystemEventEntity(SystemEventData data);
 
     public String toJson(CloudSystemEvent event) {
-        var objectMapper = new ObjectMapper();
-        try {
-            final String metadata = objectMapper.writeValueAsString(event.toString());
-            final String data = objectMapper.writeValueAsString(event.getEventData().toString());
-            return metadata + data;
-        } catch (IOException e) {
-            log.debug("Error on parsing: {}", e.getMessage());
-        }
-        return null;
+        return jsonMapper.recordToJson(event);
     }
+
 }

@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.intellecteu.onesource.integration.EntityTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
+import com.intellecteu.onesource.integration.config.ApplicationTestConfig;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventMetadata;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
@@ -13,12 +14,29 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
 import java.net.URI;
 import java.time.LocalDateTime;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-public class CloudEventMapperTest {
+@ExtendWith(SpringExtension.class)
+@ContextConfiguration(classes = {
+    ApplicationTestConfig.class})
+public class CloudSystemEventMapperTest {
 
-    private final CloudSystemEventMapper mapper = Mappers.getMapper(CloudSystemEventMapper.class);
+    @Autowired
+    JsonMapper jsonMapper;
+
+    private CloudSystemEventMapper mapper;
+
+    @BeforeEach
+    void setUp() {
+        mapper = Mappers.getMapper(CloudSystemEventMapper.class);
+        mapper.setJsonMapper(jsonMapper);
+    }
 
     @Test
     void entityToModel() {
@@ -35,6 +53,7 @@ public class CloudEventMapperTest {
         assertEquals(entity.getData().getMessage(), cloudEvent.getEventData().getMessage());
         assertEquals(entity.getData().getFieldsImpacted(), cloudEvent.getEventData().getFieldsImpacted());
         assertEquals(entity.getData().getRelatedObjects(), cloudEvent.getEventData().getRelatedObjects());
+        assertEquals(entity.getProcessingStatus(), cloudEvent.getProcessingStatus());
     }
 
     @Test
@@ -52,6 +71,7 @@ public class CloudEventMapperTest {
         assertEquals(model.getEventData().getMessage(), entity.getData().getMessage());
         assertEquals(model.getEventData().getFieldsImpacted(), entity.getData().getFieldsImpacted());
         assertEquals(model.getEventData().getRelatedObjects(), entity.getData().getRelatedObjects());
+        assertEquals(model.getProcessingStatus(), entity.getProcessingStatus());
     }
 
     @Test

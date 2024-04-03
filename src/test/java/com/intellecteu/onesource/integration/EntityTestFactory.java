@@ -28,6 +28,7 @@ import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
@@ -315,6 +316,7 @@ public class EntityTestFactory {
             .relatedProcess("testRelatedProcess")
             .relatedSubProcess("testRelatedSubProcess")
             .dataContentType("application/json")
+            .processingStatus(CloudEventProcessingStatus.CREATED)
             .build();
         entity.setData(createTestEventData(entity.getId()));
         return entity;

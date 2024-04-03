@@ -1,16 +1,24 @@
-package com.intellecteu.onesource.integration;
+package com.intellecteu.onesource.integration.config;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import lombok.experimental.UtilityClass;
+import com.intellecteu.onesource.integration.mapper.JsonMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-@UtilityClass
-public class TestConfig {
+@Configuration
+public class ApplicationTestConfig {
 
-    public static ObjectMapper createTestObjectMapper() {
+    @Bean
+    public JsonMapper jsonMapper() {
+        return new JsonMapper(createTestObjectMapper());
+    }
+
+    @Bean
+    public ObjectMapper createTestObjectMapper() {
         var objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -20,4 +28,5 @@ public class TestConfig {
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         return objectMapper;
     }
+
 }
