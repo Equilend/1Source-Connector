@@ -17,9 +17,9 @@ public interface CloudEventRepository extends JpaRepository<CloudSystemEventEnti
     void updateProcessingStatusById(String id, String status);
 
     @Query(nativeQuery = true, value = """
-        SELECT e.id FROM spire1sitkdb.event_record e \
-            JOIN spire1sitkdb.event_data ed ON ed.event_data_id = e.id \
-            JOIN spire1sitkdb.event_data_related_objects edro ON edro.event_data_id = ed.event_data_id \
+        SELECT e.id FROM event_record e \
+            JOIN event_data ed ON ed.event_data_id = e.id \
+            JOIN event_data_related_objects edro ON edro.event_data_id = ed.event_data_id \
         WHERE edro.related_object_id = :related \
         AND e.type = :recordType \
         AND e.relatedsubprocess = :subProcess \
@@ -28,7 +28,7 @@ public interface CloudEventRepository extends JpaRepository<CloudSystemEventEnti
 
 
     @Query(nativeQuery = true, value = """
-        SELECT e.id FROM spire1sitkdb.event_record e \
+        SELECT e.id FROM event_record e \
         WHERE e.subject = :subject \
         AND e.type = :recordType \
         AND e.relatedsubprocess = :subProcess \

@@ -1,5 +1,11 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.PARTY_ID;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SEDOL;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
@@ -424,12 +430,12 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     private CloudEventBuildRequest loanContractProposalUnmatched(RecordType recordType, Contract contract) {
         String dataMessage = format(LOAN_CONTRACT_PROPOSAL_UNMATCHED_MSG, contract.getContractId());
         final List<FieldImpacted> fieldsImpacted = Stream.of(
-                buildUnmatchedLoanProposalFieldImpacted("CUSIP", contract.retrieveCusip()),
-                buildUnmatchedLoanProposalFieldImpacted("ISIN", contract.retrieveIsin()),
-                buildUnmatchedLoanProposalFieldImpacted("SEDOL", contract.retrieveSedol()),
-                buildUnmatchedLoanProposalFieldImpacted("Trade date", String.valueOf(contract.getTrade().getTradeDate())),
-                buildUnmatchedLoanProposalFieldImpacted("Quantity", String.valueOf(contract.getTrade().getQuantity())),
-                buildUnmatchedLoanProposalFieldImpacted("Lender", contract.retrievePartyId(PartyRole.LENDER)))
+                buildUnmatchedLoanProposalFieldImpacted(CUSIP, contract.retrieveCusip()),
+                buildUnmatchedLoanProposalFieldImpacted(ISIN, contract.retrieveIsin()),
+                buildUnmatchedLoanProposalFieldImpacted(SEDOL, contract.retrieveSedol()),
+                buildUnmatchedLoanProposalFieldImpacted(TRADE_DATE, String.valueOf(contract.getTrade().getTradeDate())),
+                buildUnmatchedLoanProposalFieldImpacted(QUANTITY, String.valueOf(contract.getTrade().getQuantity())),
+                buildUnmatchedLoanProposalFieldImpacted(PARTY_ID, contract.retrievePartyId(PartyRole.LENDER)))
             .toList();
         return createRecordRequest(
             recordType,

@@ -32,6 +32,7 @@ public class AgreementConstant {
         public static final String ISIN = "trade.instrument.isin";
         public static final String FIGI = "trade.instrument.figi";
         public static final String GLEIF_LEI = "trade.transactingParties.party.gleifLei";
+        public static final String PARTY_ID = "trade.transactingParties.party.partyId";
         public static final String PRICE_UNIT = "trade.instrument.price.unit";
         public static final String QUANTITY = "trade.quantity";
         public static final String QUICK = "trade.instrument.quick";
@@ -49,8 +50,8 @@ public class AgreementConstant {
         public static final String TERM_DATE = "trade.termDate";
         public static final String TERM_TYPE = "trade.termType";
         public static final String TICKER = "trade.instrument.ticker";
-        public static final String TRADE = "Trade";
-        public static final String TRADE_DATE = "TradeDate";
+        public static final String TRADE = "trade";
+        public static final String TRADE_DATE = "trade.tradeDate";
         public static final String VENUE_REF_KEY = "trade.executionVenue.venueRefKey";
     }
 
