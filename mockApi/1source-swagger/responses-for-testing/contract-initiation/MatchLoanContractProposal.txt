@@ -63,7 +63,7 @@ VALUES (101, '101', 'PROPOSED', 101, 'UNMATCHED', 101, 101),
 
 2. Insert to the database test position:
     - position type should be 'CASH LOAN';
-    - position processing status should be 'CREATED' or 'UPDATED';
+    - position processing status should be 'SUBMITTED' or 'UPDATE_SUBMITTED';
     - position matching1SourceLoanContractId should be NULL
 
 INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)

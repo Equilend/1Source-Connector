@@ -129,11 +129,10 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .setHeader("currentContract", body())
             .bean(contractProcessor, "matchLenderPosition")
-            .choice()
-            .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
-            .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
-            .end()
-            .end()
+                .choice()
+                    .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
+                    .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
+                .end()
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[MATCHED, UNMATCHED]")
         .end();

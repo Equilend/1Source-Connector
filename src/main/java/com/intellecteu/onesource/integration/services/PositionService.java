@@ -73,7 +73,7 @@ public class PositionService {
     }
 
     public Set<Position> getNotMatched() {
-        List<PositionEntity> positionList = positionRepository.getNotMatched();
+        List<PositionEntity> positionList = positionRepository.getNotMatchedForBorrower();
         return positionList.stream().map(backOfficeMapper::toModel).collect(Collectors.toSet());
     }
 

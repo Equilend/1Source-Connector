@@ -128,7 +128,7 @@ public class ContractProcessor {
     }
 
     private void createFailedReconciliationEvent(Contract contractProposal, ReconcileException e) {
-        String relatedSequence = String.format("%d,%d", contractProposal.getMatchingSpirePositionId(),
+        String relatedSequence = format("%d,%d", contractProposal.getMatchingSpirePositionId(),
             contractProposal.getMatchingSpireTradeId());
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(CONTRACT_INITIATION);
@@ -207,8 +207,9 @@ public class ContractProcessor {
     public boolean matchLenderPosition(@NonNull Contract contract) {
         final Optional<Position> relatedPosition = retrieveRelatedLenderPosition(contract);
         return relatedPosition.map(position -> {
+            log.debug("Lender position:{} matches to contract:{}", position.getPositionId(), contract.getContractId());
             final Position savedPosition = updateMatchedContractAndPosition(contract, position);
-            recordLoanProposalMatchedSystemEvent(contract, savedPosition);
+            recordPendingApprovalSystemEvent(contract, savedPosition);
             return true;
         }).orElse(false);
     }
@@ -325,11 +326,11 @@ public class ContractProcessor {
     private Long retrieveContractRelatedPositionId(TransactingParty lenderParty, String contractId) {
         final InternalReference internalRef = lenderParty.getInternalRef();
         if (internalRef == null) {
-            throw new EntityNotFoundException(String.format("Internal ref is null for contractID = %s.", contractId));
+            throw new EntityNotFoundException(format("Internal ref is null for contractID = %s.", contractId));
         }
         final String internalRefId = internalRef.getInternalRefId();
         if (internalRefId == null) {
-            throw new EntityNotFoundException(String.format("Internal refId is null for contractID = %s.", contractId));
+            throw new EntityNotFoundException(format("Internal refId is null for contractID = %s.", contractId));
         }
         return Long.parseLong(internalRefId);
     }
@@ -338,13 +339,13 @@ public class ContractProcessor {
         List<TransactingParty> contractParties = contract.getTrade().getTransactingParties();
         if (CollectionUtils.isEmpty(contractParties)) {
             throw new EntityNotFoundException(
-                String.format("Contract %s has no transacting parties", contract.getContractId()));
+                format("Contract %s has no transacting parties", contract.getContractId()));
         }
         return contractParties.stream()
             .filter(p -> p.getPartyRole() == PartyRole.LENDER)
             .findAny()
             .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Contract %s does not have LENDER transacting party", contract.getContractId())));
+                format("Contract %s does not have LENDER transacting party", contract.getContractId())));
     }
 
     public Contract updateContractProcessingStatusAndCreatedTime(@NonNull Contract contract,
@@ -403,14 +404,14 @@ public class ContractProcessor {
         });
     }
 
-    private void recordPendingApprovalSystemEvent(Contract contract, Position savedPosition) {
+    private void recordPendingApprovalSystemEvent(Contract contract, Position position) {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL,
-            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+            format("%d,%d", position.getPositionId(), position.getTradeId()));
     }
 
     private void recordLoanProposalMatchedSystemEvent(Contract contract, Position savedPosition) {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED,
-            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+            format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
     }
 
     private void recordLoanProposalUnmatchedSystemEvent(Contract contract) {
@@ -427,8 +428,7 @@ public class ContractProcessor {
     }
 
     public void recordApprovedSystemEvent(@NonNull Contract contract) {
-        String related = String.format("%d,%d", contract.getMatchingSpirePositionId(),
-            contract.getMatchingSpireTradeId());
+        String related = format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
     }
 
@@ -440,12 +440,12 @@ public class ContractProcessor {
     public void recordLoanProposalDeclinedSystemEvent(@NonNull Contract contract) {
         String related = contract.getMatchingSpirePositionId() == null
             ? null
-            : String.format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
+            : format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_DECLINED, related);
     }
 
     public void recordContractProposalValidatedEvent(@NonNull Contract contract) {
-        String relatedSequence = String.format("%d,%d", contract.getMatchingSpirePositionId(),
+        String relatedSequence = format("%d,%d", contract.getMatchingSpirePositionId(),
             contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED, relatedSequence);
     }

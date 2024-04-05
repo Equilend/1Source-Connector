@@ -27,7 +27,8 @@ public class CloudEventRecordServiceImpl implements CloudEventRecordService {
     @Transactional
     public void record(CloudEventBuildRequest buildRequest) {
         final IntegrationCloudEvent record = createEvent(buildRequest);
-        log.debug("A cloud event for related sub process: {} was recorded.", buildRequest.getRelatedSubProcess());
+        log.debug("The cloud event was recorded. Record type:{}, subProcess:{}",
+            buildRequest.getRecordType(), buildRequest.getRelatedSubProcess());
         record(record);
     }
 
