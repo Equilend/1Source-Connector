@@ -55,7 +55,7 @@ import org.springframework.web.client.HttpClientErrorException;
 class RerateProcessorTest {
 
     @Mock
-    private BackOfficeService lenderBackOfficeService;
+    private BackOfficeService backOfficeService;
     @Mock
     private BackOfficeService borrowerBackOfficeService;
     @Mock
@@ -82,7 +82,7 @@ class RerateProcessorTest {
         RerateCloudEventBuilder cloudEventBuildRequest = mock(RerateCloudEventBuilder.class);
         doReturn(cloudEventBuildRequest).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
-        rerateProcessor = new RerateProcessor(lenderBackOfficeService, borrowerBackOfficeService, oneSourceService,
+        rerateProcessor = new RerateProcessor(backOfficeService, oneSourceService,
             rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
             correctionInstructionService, cloudEventRecordService);
     }
@@ -92,7 +92,7 @@ class RerateProcessorTest {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
         List<RerateTrade> lenderRerateTradeList = List.of(rerateTrade);
-        doReturn(lenderRerateTradeList).when(lenderBackOfficeService).getNewBackOfficeRerateTradeEvents(any());
+        doReturn(lenderRerateTradeList).when(backOfficeService).getNewBackOfficeRerateTradeEvents(any());
 
         List<RerateTrade> rerateTradeList = rerateProcessor.fetchNewRerateTrades();
 
@@ -245,7 +245,7 @@ class RerateProcessorTest {
     void confirmRerateTrade_NotOkResponse_RecordTechnicalExceptionEvent() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(lenderBackOfficeService)
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(backOfficeService)
             .confirmBackOfficeRerateTrade(any());
 
         RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);

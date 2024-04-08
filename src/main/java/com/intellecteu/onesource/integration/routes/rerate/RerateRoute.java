@@ -8,12 +8,10 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -24,7 +22,6 @@ import com.intellecteu.onesource.integration.model.enums.CorrectionInstructionTy
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateEventProcessor;
-import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.rerate.processor.RerateProcessor;
 import java.util.Arrays;
 import java.util.stream.Collectors;
@@ -201,6 +198,22 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateProcessor, "updateCorrectionInstructionProcessingStatus(${body}, PROCESSED)")
             .bean(rerateProcessor, "saveCorrectionInstruction")
             .log("<<< Finished PROCESS_TRADE_CANCEL for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], RerateTrade[CANCELED], Rerate[PROPOSED, CANCEL_SUBMITTED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_CANCELED))
+            .log(">>> Started PROCESS_RERATE_PROPOSAL_CANCELED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processRerateCanceledEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_PROPOSAL_CANCELED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[CANCELED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RERATE_CANCEL_PENDING))
+            .log(">>> Started PROCESS_RERATE_CANCEL_PENDING for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(rerateEventProcessor, "processReratePendingCancelEvent")
+            .bean(rerateEventProcessor, "updateEventProcessingStatus(${body}, PROCESSED)")
+            .bean(rerateEventProcessor, "saveEvent")
+            .log("<<< Finished PROCESS_RERATE_CANCEL_PENDING for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[CANCEL_PENDING]");
 
     }
     //@formatter:on
