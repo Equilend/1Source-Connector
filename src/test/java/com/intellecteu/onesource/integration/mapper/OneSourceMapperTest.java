@@ -1,10 +1,13 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
+import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
+import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +30,14 @@ class OneSourceMapperTest {
 
         assertNull(result.getRoundingRule());
         assertEquals(approval.getInternalRefId(), result.getInternalRefId());
+    }
 
+    @Test
+    void testVenueMappingToEntity_shouldAssignTradeId() {
+        final TradeAgreement model = ModelTestFactory.buildTradeAgreement();
+        TradeAgreementEntity entity = oneSourceMapper.toEntity(model);
+
+        assertNotNull(entity.getVenues().get(0));
     }
 
 }

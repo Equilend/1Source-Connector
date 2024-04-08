@@ -112,7 +112,7 @@ public class EntityApiTestFactory {
     public static TradeAgreementEntity buildTradeAgreement() {
         return TradeAgreementEntity.builder()
             .id(1L)
-            .venue(buildVenueEntity())
+            .venues(List.of(buildVenueEntity()))
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
             .quantity(2)

@@ -3,9 +3,6 @@ package com.intellecteu.onesource.integration.repository.entity.onesource;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.ContractStatus;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -65,12 +62,14 @@ public class ContractEntity {
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "trade_id", referencedColumnName = "id")
     private TradeAgreementEntity trade;
-    @OneToMany(mappedBy = "contract", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY,
+        cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @JoinColumn(name = "contract_id")
     private List<SettlementEntity> settlement = new ArrayList<>();
 
-    public void addSettlement(SettlementEntity settlement) {
-        this.settlement.add(settlement);
-        settlement.setContract(this);
-    }
+//    public void addSettlement(SettlementEntity settlement) {
+//        this.settlement.add(settlement);
+//        settlement.setContract(this);
+//    }
 
 }

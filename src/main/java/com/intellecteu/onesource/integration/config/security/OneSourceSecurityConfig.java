@@ -24,7 +24,7 @@ public class OneSourceSecurityConfig {
 
     private final String uiClientId;
 
-    public OneSourceSecurityConfig(@Value("${onesource.auth.api.resource}") String uiClientId) {
+    public OneSourceSecurityConfig(@Value("${onesource.auth.api.client-id}") String uiClientId) {
         this.uiClientId = uiClientId;
     }
 

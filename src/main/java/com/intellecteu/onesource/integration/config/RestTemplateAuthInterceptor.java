@@ -18,7 +18,7 @@ public class RestTemplateAuthInterceptor implements ClientHttpRequestInterceptor
 
     private final AuthService authService;
 
-    @Value("${onesource.baseEndpoint}")
+    @Value("${onesource.base-endpoint}")
     private String onesourceEndpoint;
 
     @Override

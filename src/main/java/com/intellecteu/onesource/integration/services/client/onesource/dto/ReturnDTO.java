@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,10 +38,13 @@ public class ReturnDTO {
   private VenueDTO executionVenue = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("collateral")
   private CollateralDTO collateral = null;
+
+  @JsonProperty("settlementType")
+  private SettlementTypeDTO settlementType = null;
 
   @JsonProperty("settlement")
   private List<PartySettlementInstructionDTO> settlement = null;
@@ -122,7 +124,7 @@ public class ReturnDTO {
     this.executionVenue = executionVenue;
   }
 
-  public ReturnDTO quantity(BigDecimal quantity) {
+  public ReturnDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -132,11 +134,11 @@ public class ReturnDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 
@@ -156,6 +158,24 @@ public class ReturnDTO {
 
   public void setCollateral(CollateralDTO collateral) {
     this.collateral = collateral;
+  }
+
+  public ReturnDTO settlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
+    return this;
+  }
+
+   /**
+   * Get settlementType
+   * @return settlementType
+  **/
+  @Schema(description = "")
+  public SettlementTypeDTO getSettlementType() {
+    return settlementType;
+  }
+
+  public void setSettlementType(SettlementTypeDTO settlementType) {
+    this.settlementType = settlementType;
   }
 
   public ReturnDTO settlement(List<PartySettlementInstructionDTO> settlement) {
@@ -218,13 +238,14 @@ public class ReturnDTO {
         Objects.equals(this.executionVenue, _return.executionVenue) &&
         Objects.equals(this.quantity, _return.quantity) &&
         Objects.equals(this.collateral, _return.collateral) &&
+        Objects.equals(this.settlementType, _return.settlementType) &&
         Objects.equals(this.settlement, _return.settlement) &&
         Objects.equals(this.lastUpdateDatetime, _return.lastUpdateDatetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlement, lastUpdateDatetime);
+    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlementType, settlement, lastUpdateDatetime);
   }
 
 
@@ -239,6 +260,7 @@ public class ReturnDTO {
     sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    collateral: ").append(toIndentedString(collateral)).append("\n");
+    sb.append("    settlementType: ").append(toIndentedString(settlementType)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
     sb.append("}");

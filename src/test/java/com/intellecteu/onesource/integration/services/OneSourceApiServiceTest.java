@@ -93,7 +93,7 @@ class OneSourceApiServiceTest {
     }
 
     @Test
-    @Disabled(value = "Staging env sends 404 on encoded timestamp. Temporary disabled.")
+    @Disabled(value = "Encoded time leads to 404 error on staging env")
     @DisplayName("Url builder should change colons ':' symbols to encoded '%3A' chars")
     void test_retrieveEvents_shouldEncodeColonsSymbols() {
         var localDateTime = LocalDateTime.of(2023, 10, 20, 11, 10, 7, 2);

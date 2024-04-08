@@ -23,17 +23,14 @@ import java.util.Objects;
 
 
 public class TradeAgreementDTO {
-  @JsonProperty("executionVenue")
-  private VenueDTO executionVenue = null;
+  @JsonProperty("venues")
+  private VenuesDTO venues = null;
 
   @JsonProperty("instrument")
   private InstrumentDTO instrument = null;
 
   @JsonProperty("rate")
   private OneOfTradeAgreementRateDTODTO rate = null;
-
-  @JsonProperty("openQuantity")
-  private Integer openQuantity = null;
 
   @JsonProperty("quantity")
   private Integer quantity = null;
@@ -65,22 +62,22 @@ public class TradeAgreementDTO {
   @JsonProperty("transactingParties")
   private TransactingPartiesDTO transactingParties = null;
 
-  public TradeAgreementDTO executionVenue(VenueDTO executionVenue) {
-    this.executionVenue = executionVenue;
+  public TradeAgreementDTO venues(VenuesDTO venues) {
+    this.venues = venues;
     return this;
   }
 
    /**
-   * Get executionVenue
-   * @return executionVenue
+   * Get venues
+   * @return venues
   **/
   @Schema(description = "")
-  public VenueDTO getExecutionVenue() {
-    return executionVenue;
+  public VenuesDTO getVenues() {
+    return venues;
   }
 
-  public void setExecutionVenue(VenueDTO executionVenue) {
-    this.executionVenue = executionVenue;
+  public void setVenues(VenuesDTO venues) {
+    this.venues = venues;
   }
 
   public TradeAgreementDTO instrument(InstrumentDTO instrument) {
@@ -117,24 +114,6 @@ public class TradeAgreementDTO {
 
   public void setRate(OneOfTradeAgreementRateDTODTO rate) {
     this.rate = rate;
-  }
-
-  public TradeAgreementDTO openQuantity(Integer openQuantity) {
-    this.openQuantity = openQuantity;
-    return this;
-  }
-
-   /**
-   * Get openQuantity
-   * @return openQuantity
-  **/
-  @Schema(description = "")
-  public Integer getOpenQuantity() {
-    return openQuantity;
-  }
-
-  public void setOpenQuantity(Integer openQuantity) {
-    this.openQuantity = openQuantity;
   }
 
   public TradeAgreementDTO quantity(Integer quantity) {
@@ -327,10 +306,9 @@ public class TradeAgreementDTO {
       return false;
     }
     TradeAgreementDTO tradeAgreement = (TradeAgreementDTO) o;
-    return Objects.equals(this.executionVenue, tradeAgreement.executionVenue) &&
+    return Objects.equals(this.venues, tradeAgreement.venues) &&
         Objects.equals(this.instrument, tradeAgreement.instrument) &&
         Objects.equals(this.rate, tradeAgreement.rate) &&
-        Objects.equals(this.openQuantity, tradeAgreement.openQuantity) &&
         Objects.equals(this.quantity, tradeAgreement.quantity) &&
         Objects.equals(this.billingCurrency, tradeAgreement.billingCurrency) &&
         Objects.equals(this.dividendRatePct, tradeAgreement.dividendRatePct) &&
@@ -345,7 +323,7 @@ public class TradeAgreementDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(executionVenue, instrument, rate, openQuantity, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
+    return Objects.hash(venues, instrument, rate, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
   }
 
 
@@ -354,10 +332,9 @@ public class TradeAgreementDTO {
     StringBuilder sb = new StringBuilder();
     sb.append("class TradeAgreementDTO {\n");
     
-    sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
+    sb.append("    venues: ").append(toIndentedString(venues)).append("\n");
     sb.append("    instrument: ").append(toIndentedString(instrument)).append("\n");
     sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-    sb.append("    openQuantity: ").append(toIndentedString(openQuantity)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    billingCurrency: ").append(toIndentedString(billingCurrency)).append("\n");
     sb.append("    dividendRatePct: ").append(toIndentedString(dividendRatePct)).append("\n");

@@ -20,18 +20,17 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Table(name = "trade")
@@ -41,10 +40,10 @@ public class TradeAgreementEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "venue_id")
-    @JsonProperty("executionVenue")
-    private VenueEntity venue;
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "trade_id")
+    @JsonProperty("venues")
+    private List<VenueEntity> venues;
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "instrument_id")
     private InstrumentEntity instrument;
@@ -83,4 +82,16 @@ public class TradeAgreementEntity {
     @Column(name = "processing_status")
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;
+
+//    public void addVenue(VenueEntity venue) {
+//        if (this.venues == null) {
+//            this.venues = new ArrayList<>();
+//        }
+//        this.venues.add(venue);
+//        venue.setTradeAgreement(this);
+//    }
+
+    public TradeAgreementEntity() {
+        venues = new ArrayList<>();
+    }
 }

@@ -12,14 +12,19 @@
 
 package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
-* OneOfSettlementInstructionDTO
+* OneOfVenueTradeAgreementRateDTODTO
 */
 @JsonTypeInfo(
   use = Id.DEDUCTION)
-public interface OneOfSettlementInstructionDTO {
+@JsonSubTypes({
+  @JsonSubTypes.Type(value = RebateRateDTO.class, name = "RebateRateDTO"),
+  @JsonSubTypes.Type(value = FeeRateDTO.class, name = "FeeRateDTO")
+})
+public interface OneOfVenueTradeAgreementRateDTODTO {
 
 }

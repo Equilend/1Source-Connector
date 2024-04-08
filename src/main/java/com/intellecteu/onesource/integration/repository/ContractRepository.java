@@ -15,10 +15,10 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     @Query("select c from ContractEntity c join fetch c.trade")
     List<ContractEntity> findAll();
 
-    @Query("select c from ContractEntity c join fetch c.trade t join fetch t.venue v where c.contractStatus = :status")
+    @Query("select c from ContractEntity c join fetch c.trade t join fetch t.venues v where c.contractStatus = :status")
     List<ContractEntity> findAllByContractStatus(ContractStatus status);
 
-    @Query("select distinct c from ContractEntity c left join fetch c.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where c.processingStatus <> 'PROCESSED'")
+    @Query("select distinct c from ContractEntity c left join fetch c.trade t left join fetch t.venues v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where c.processingStatus <> 'PROCESSED'")
     List<ContractEntity> findAllNotProcessed();
 
     List<ContractEntity> findAllByContractId(String contractId);
@@ -28,7 +28,7 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
     Optional<ContractEntity> findByContractId(String contractId);
 
     //TODO check if inner join will be enough in this case.
-    @Query("select c from ContractEntity c left join fetch c.trade t left join fetch t.venue v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where v.venueRefKey = :venueRefId")
+    @Query("select c from ContractEntity c left join fetch c.trade t left join fetch t.venues v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where v.venueRefKey = :venueRefId")
     List<ContractEntity> findByVenueRefId(@Param("venueRefId") String venueRefId);
 
     List<ContractEntity> findByMatchingSpirePositionId(Long positionId);

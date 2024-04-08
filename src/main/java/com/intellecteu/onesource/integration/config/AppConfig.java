@@ -62,7 +62,7 @@ public class AppConfig {
 
     @Bean("spireApiClient")
     public ApiClient spireApiClient(RestTemplate restTemplate,
-        @Value("${spire.baseEndpoint}") String spireBasePath) {
+        @Value("${spire.base-endpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
         return apiClient;
@@ -71,7 +71,7 @@ public class AppConfig {
     @Bean("lenderApiClient")
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient lenderApiClient(RestTemplate restTemplate,
-        @Value("${spire.lenderEndpoint}") String spireBasePath) {
+        @Value("${spire.base-endpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
         return apiClient;
@@ -80,7 +80,7 @@ public class AppConfig {
     @Bean("borrowerApiClient")
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public ApiClient borrowerApiClient(RestTemplate restTemplate,
-        @Value("${spire.borrowerEndpoint}") String spireBasePath) {
+        @Value("${spire.base-endpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
         return apiClient;
@@ -129,7 +129,7 @@ public class AppConfig {
     @Bean
     public BackOfficeService backOfficeService(PositionSpireApiClient spirePositionApiClient,
         TradeSpireApiClient tradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
+        @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
         SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(spirePositionApiClient, tradeSpireApiClient, instructionClient, userId,
             userName, spireMapper, backOfficeMapper, cloudEventRecordService);
@@ -139,7 +139,7 @@ public class AppConfig {
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
         TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
+        @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
         SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient, userId,
             userName, spireMapper, backOfficeMapper, cloudEventRecordService);
@@ -149,7 +149,7 @@ public class AppConfig {
     @Deprecated(since = "0.0.5-SNAPSHOT")
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
         TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        @Value("${spire.userId}") Integer userId, @Value("${spire.username}") String userName,
+        @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
         SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, instructionClient,
             userId, userName, spireMapper, backOfficeMapper, cloudEventRecordService);

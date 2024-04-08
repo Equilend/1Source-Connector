@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.util.Objects;
 /**
  * BuyinInitiateRequestDTO
@@ -24,9 +23,9 @@ import java.util.Objects;
 
 public class BuyinInitiateRequestDTO {
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
-  public BuyinInitiateRequestDTO quantity(BigDecimal quantity) {
+  public BuyinInitiateRequestDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -36,11 +35,11 @@ public class BuyinInitiateRequestDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

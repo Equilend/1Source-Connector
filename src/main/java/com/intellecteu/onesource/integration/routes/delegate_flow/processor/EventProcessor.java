@@ -2,22 +2,15 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CREATED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.PROPOSED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEW;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.isLender;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -25,11 +18,11 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
@@ -134,7 +127,7 @@ public class EventProcessor {
         for (Contract contract : proposedContracts) {
             log.debug("Requesting Spire position!");
             //TODO Change logic -> position listener update positions and here we using repository instead of API
-            final String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
+            final String venueRefId = contract.getTrade().getVenues().get(0).getVenueRefKey();
             List<Position> positions = lenderBackOfficeService.getPositionByVenueRefId(venueRefId);
             if (!positions.isEmpty()) {
                 Position position = positions.get(0);
@@ -169,8 +162,18 @@ public class EventProcessor {
     }
 
     public void recordContractDeclineIssue(TradeEvent event) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildToolkitIssueRequest(event.getResourceUri(), GET_LOAN_CONTRACT_DECLINED);
+        String resourceUri = event.getResourceUri();
+        cloudEventRecordService.getToolkitCloudEventId(resourceUri,
+                GET_LOAN_CONTRACT_DECLINED, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(CONTRACT_INITIATION, resourceUri, GET_LOAN_CONTRACT_DECLINED));
+    }
+
+    private void recordToolkitTechnicalEvent(IntegrationProcess process, String record,
+        IntegrationSubProcess subProcess) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
     }
 

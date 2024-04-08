@@ -96,6 +96,19 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
         .end();
 
+        from(buildGetPositionByStatusQuery(CREATED))
+            .routeId("GetNewPositionsAndMatchIfBorrower")
+            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower.")
+            .bean(backOfficeMapper, "toModel")
+                .choice()
+                    .when(method(IntegrationUtils.class, "isBorrower"))
+                        .bean(positionProcessor, "matchContractProposalAsBorrower")
+                .endChoice()
+            .end()
+            .log("<<< Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower "
+                + "with expected processing statuses: Contract[MATCHED]")
+            .end();
+
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
             .routeId("PostLoanContractProposal")
             .log(">>> Started POST_LOAN_CONTRACT_PROPOSAL subprocess")
@@ -110,30 +123,16 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "with expected processing statuses: Position[SUBMITTED, UPDATE_SUBMITTED]")
         .end();
 
-        from(buildGetPositionByStatusQuery(CREATED))
-            .routeId("MatchPositionWithContractProposal")
-            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process.")
-            .bean(backOfficeMapper, "toModel")
-                .choice()
-                    .when(method(IntegrationUtils.class, "isBorrower"))
-                        .bean(positionProcessor, "matchContractProposalAsBorrower")
-                .endChoice()
-            .end()
-            .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process "
-                + "with expected processing statuses: Contract[MATCHED]")
-        .end();
-
         from(buildGetContractByStatusQuery(PROPOSED))
             .routeId("MatchLoanContractProposal")
             .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
             .bean(oneSourceMapper, "toModel")
             .setHeader("currentContract", body())
             .bean(contractProcessor, "matchLenderPosition")
-            .choice()
-            .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
-            .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
-            .end()
-            .end()
+                .choice()
+                    .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
+                    .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
+                .end()
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[MATCHED, UNMATCHED]")
         .end();
@@ -240,7 +239,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log(">>> Started UPDATE_LOAN_CONTRACT_SETTL_STATUS process.")
             .bean(positionProcessor, "getAllByPositionStatus(FUTURE)")
             .bean(positionProcessor, "updateCapturedPositions")
-            .log("Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
+            .log("<<< Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
                 + "with expected processing statuses: Contract_Settlement[SETTLED]")
         .end();
 

@@ -29,5 +29,6 @@ public class Venue {
     private LocalDateTime transactionDateTime;
     private Set<VenueParty> venueParties;
     private Set<LocalVenueField> localVenueFields;
+    private Long tradeId;
 
 }
