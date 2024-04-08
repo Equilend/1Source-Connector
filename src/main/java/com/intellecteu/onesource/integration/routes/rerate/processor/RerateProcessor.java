@@ -78,8 +78,7 @@ import org.springframework.web.client.HttpStatusCodeException;
 @Slf4j
 public class RerateProcessor {
 
-    private final BackOfficeService lenderBackOfficeService;
-    private final BackOfficeService borrowerBackOfficeService;
+    private final BackOfficeService backOfficeService;
     private final OneSourceService oneSourceService;
     private final RerateTradeService rerateTradeService;
     private final RerateService rerateService;
@@ -90,13 +89,11 @@ public class RerateProcessor {
     private final RerateCloudEventBuilder eventBuilder;
 
     @Autowired
-    public RerateProcessor(BackOfficeService lenderBackOfficeService, BackOfficeService borrowerBackOfficeService,
-        OneSourceService oneSourceService, RerateTradeService rerateTradeService,
+    public RerateProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService, RerateTradeService rerateTradeService,
         RerateService rerateService,
         RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
         CorrectionInstructionService correctionInstructionService, CloudEventRecordService cloudEventRecordService) {
-        this.lenderBackOfficeService = lenderBackOfficeService;
-        this.borrowerBackOfficeService = borrowerBackOfficeService;
+        this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.rerateTradeService = rerateTradeService;
         this.rerateService = rerateService;
@@ -155,11 +152,7 @@ public class RerateProcessor {
 
     public List<RerateTrade> fetchNewRerateTrades() {
         Optional<Long> lastTradeId = rerateTradeService.getMaxTradeId();
-        List<RerateTrade> rerateTradeList = new ArrayList<>();
-        rerateTradeList.addAll(
-            lenderBackOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId));
-        rerateTradeList.addAll(
-            borrowerBackOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId));
+        List<RerateTrade> rerateTradeList = backOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId);
         return rerateTradeList;
     }
 
@@ -260,7 +253,7 @@ public class RerateProcessor {
 
     public RerateTrade confirmRerateTrade(RerateTrade rerateTrade) {
         try {
-            lenderBackOfficeService.confirmBackOfficeRerateTrade(rerateTrade);
+            backOfficeService.confirmBackOfficeRerateTrade(rerateTrade);
             rerateTrade.setProcessingStatus(CONFIRMED);
         } catch (HttpStatusCodeException codeException) {
             recordHttpExceptionCloudEvent(POST_RERATE_TRADE_CONFIRMATION, TECHNICAL_EXCEPTION_SPIRE,

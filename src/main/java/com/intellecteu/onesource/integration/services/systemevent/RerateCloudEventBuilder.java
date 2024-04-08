@@ -13,7 +13,10 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_RERATE_PROPOSAL_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CONFIRM_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CREATED_RERATE_MSG;
@@ -25,6 +28,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACED_RERATE_TRADE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACE_RERATE_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.RERATE_CANCELED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.RERATE_CANCEL_PENDING_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.UNMATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPLIED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPLIED_TECHNICAL_EXCEPTION_RERATE;
@@ -32,7 +37,10 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPROVE_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCELED_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCELED_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCELED_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_EXCEPTION_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CONFIRM_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
@@ -44,6 +52,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACED_RERATE_TRADE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACE_EXCEPTION_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.RERATE_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.UNMATCHED_RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RERATE_PROPOSAL;
@@ -227,6 +237,30 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                         createCancelRerateExceptionCloudRequest(subProcess, recordType, data);
                     case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
                         createEntityExceptionCloudRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_RERATE_PROPOSAL_CANCELED: {
+                return switch (recordType) {
+                    case RERATE_PROPOSAL_CANCELED ->
+                        createRerateProposalCanceledRecordRequest(subProcess, recordType, data);
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createRerateProposalCanceledTechnicalExceptionRecordRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_RERATE_CANCELED: {
+                return switch (recordType) {
+                    case RERATE_CANCELED -> createRerateCanceledRecordRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_RERATE_CANCEL_PENDING: {
+                return switch (recordType) {
+                    case RERATE_CANCEL_PENDING_CONFIRMATION ->
+                        createRerateCancelPendingRecordRequest(subProcess, recordType, data);
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createRerateCancelPendingTechnicalExceptionRecordRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -473,6 +507,77 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
                 new RelatedObject(data.get(POSITION_ID), POSITION),
                 new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateProposalCanceledRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(CANCELED_RERATE_PROPOSAL_MSG, data.get(RERATE_ID));
+        return createRecordRequest(
+            recordType,
+            format(CANCELED_RERATE_PROPOSAL, data.get(RERATE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateCanceledRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(RERATE_CANCELED_MSG, data.get(RERATE_ID));
+        return createRecordRequest(
+            recordType,
+            format(RERATE_CANCELED, data.get(RERATE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateCancelPendingRecordRequest(IntegrationSubProcess subProcess,
+        RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(RERATE_CANCEL_PENDING_MSG, data.get(RERATE_ID));
+        return createRecordRequest(
+            recordType,
+            format(RERATE_CANCEL_PENDING, data.get(RERATE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateCancelPendingTechnicalExceptionRecordRequest(
+        IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG, data.get(RESOURCE_URI));
+        return createRecordRequest(
+            recordType,
+            format(CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateProposalCanceledTechnicalExceptionRecordRequest(
+        IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG, data.get(RESOURCE_URI));
+        return createRecordRequest(
+            recordType,
+            format(CANCELED_TECHNICAL_EXCEPTION_RERATE, data.get(RESOURCE_URI)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
         );
     }
 

@@ -4,13 +4,21 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPLIED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_CANCEL_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPLIED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
@@ -170,6 +178,52 @@ public class RerateEventProcessor {
         return event;
     }
 
+    public TradeEvent processRerateCanceledEvent(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        try {
+            String rerateId = getRerateId(resourceUri);
+            Rerate rerate = rerateService.getByRerateId(rerateId);
+            if (!APPROVED.equals(rerate.getProcessingStatus())) {
+                if (rerate.getMatchingSpireTradeId() != null) {
+                    RerateTrade rerateTrade = rerateTradeService.getByTradeId(rerate.getMatchingSpireTradeId());
+                    rerateTrade.setLastUpdateDatetime(LocalDateTime.now());
+                    rerateTrade.setMatchingRerateId(null);
+                    rerateTradeService.save(rerateTrade);
+                }
+                recordRerateProposalCanceledCloudEvent(rerate);
+            }else{
+                recordRerateCanceledCloudEvent(rerate);
+            }
+            rerate.setLastUpdateDatetime(LocalDateTime.now());
+            rerate.setProcessingStatus(CANCELED);
+            rerateService.saveRerate(rerate);
+        } catch (EntityNotFoundException e) {
+            log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
+            recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_PROPOSAL_CANCELED,
+                TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri);
+        }
+        return event;
+    }
+
+    public TradeEvent processReratePendingCancelEvent(TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        try {
+            String rerateId = getRerateId(resourceUri);
+            Rerate rerate = rerateService.getByRerateId(rerateId);
+            rerate.setLastUpdateDatetime(LocalDateTime.now());
+            rerate.setProcessingStatus(CANCEL_PENDING);
+            rerateService.saveRerate(rerate);
+            recordRerateCancelPendingCloudEvent(rerate);
+        } catch (EntityNotFoundException e) {
+            log.debug("Rerate Entity with id {} was not found. Details: {} ", getRerateId(resourceUri), e.getMessage());
+            recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_CANCEL_PENDING,
+                TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri);
+        }
+        return event;
+    }
+
     private String getRerateId(String resourceUri) {
         if (resourceUri.endsWith("/")) {
             resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
@@ -224,4 +278,33 @@ public class RerateEventProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
+    private void recordRerateProposalCanceledCloudEvent(Rerate rerate) {
+        var data = new HashMap<String, String>();
+        data.put(RERATE_ID, rerate.getRerateId());
+        data.put(POSITION_ID, String.valueOf(rerate.getRelatedSpirePositionId()));
+        data.put(CONTRACT_ID, rerate.getContractId());
+        var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_PROPOSAL_CANCELED, RERATE_PROPOSAL_CANCELED, data,
+            List.of());
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordRerateCanceledCloudEvent(Rerate rerate) {
+        var data = new HashMap<String, String>();
+        data.put(RERATE_ID, rerate.getRerateId());
+        data.put(POSITION_ID, String.valueOf(rerate.getRelatedSpirePositionId()));
+        data.put(CONTRACT_ID, rerate.getContractId());
+        var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_CANCELED, RERATE_CANCELED, data,
+            List.of());
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordRerateCancelPendingCloudEvent(Rerate rerate) {
+        var data = new HashMap<String, String>();
+        data.put(RERATE_ID, rerate.getRerateId());
+        data.put(POSITION_ID, String.valueOf(rerate.getRelatedSpirePositionId()));
+        data.put(CONTRACT_ID, rerate.getContractId());
+        var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_CANCEL_PENDING, RERATE_CANCEL_PENDING_CONFIRMATION, data,
+            List.of());
+        cloudEventRecordService.record(recordRequest);
+    }
 }

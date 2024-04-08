@@ -117,7 +117,8 @@ public class RerateDTO {
         CANCEL_SUBMITTED("CANCEL_SUBMITTED"),
         SENT_FOR_APPROVAL("SENT_FOR_APPROVAL"),
         UPDATE_SUBMITTED("UPDATE_SUBMITTED"),
-        REPLACED("REPLACED");
+        REPLACED("REPLACED"),
+        CANCEL_PENDING("CANCEL_PENDING");
 
         private String value;
 
