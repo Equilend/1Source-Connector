@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_UPDATE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FUTURE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
@@ -88,8 +89,9 @@ public class PositionProcessor {
      *
      * @param position Position
      * @param processingStatus Processing status
-     * @return persisted position with updated processing status
+     * @return Position persisted position with updated processing status
      */
+    @Transactional
     public Position updateProcessingStatus(Position position, ProcessingStatus processingStatus) {
         position.setProcessingStatus(processingStatus);
         return positionService.savePosition(position);
@@ -108,9 +110,33 @@ public class PositionProcessor {
         return positionService.getByPositionId(positionId).orElse(null);
     }
 
+    public void instructCancelLoanContract(Position position) {
+        // todo instruct 1Source to cancel the loan contract
+    }
+
     @Transactional(readOnly = true)
     public List<Position> getAllByPositionStatus(String status) {
         return positionService.getAllByPositionStatus(status);
+    }
+
+    @Transactional
+    public List<Position> retrieveCanceledPositions() {
+        List<Position> positionsToRequest = positionService.getAllByPositionStatus(FUTURE.getValue());
+        if (CollectionUtils.isEmpty(positionsToRequest)) {
+            return List.of();
+        }
+        try {
+            final Set<Long> positionIdsToUpdate = backOfficeService.retrieveCancelledPositions(positionsToRequest)
+                .stream()
+                .map(Position::getPositionId)
+                .collect(Collectors.toSet());
+            return positionsToRequest.stream()
+                .filter(p -> positionIdsToUpdate.contains(p.getPositionId()))
+                .toList();
+        } catch (HttpStatusCodeException e) {
+            log.debug("Capture cloud events on requirements update");
+            return List.of();
+        }
     }
 
     @Transactional

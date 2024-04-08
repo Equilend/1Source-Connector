@@ -217,6 +217,21 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("<<< Finished POST_POSITION_UPDATE subprocess with expected processing statuses: Position[CONFIRMED]")
         .end();
 
+        from(String.format("timer://eventTimer?period=%d", updateTimer))
+            .routeId("ProcessPositionCanceled")
+            .log(">>> Started PROCESS_POSITION_CANCELED subprocess")
+            .bean(positionProcessor, "retrieveCanceledPositions")
+            .split(body())
+            .bean(positionProcessor, "updatePositionStatus(${body}, CANCELLED)")
+            .bean(positionProcessor, "updateProcessingStatus(${body}, CANCELED)")
+            .setHeader("position", body())
+            .bean(contractProcessor, "instructCancelLoanContract")
+            .filter(simple("${body} == true"))
+                .bean(contractProcessor, "recordPositionCancelSubmittedSystemEvent(${header.position})")
+            .log("<<< Finished PROCESS_POSITION_CANCELED subprocess "
+                + "with expected processing statuses: Position[CANCELED]")
+            .end();
+
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_DECLINED))
             .routeId("GetLoanContractDeclined")
             .log(">>> Started GET_LOAN_CONTRACT_DECLINED subprocess")

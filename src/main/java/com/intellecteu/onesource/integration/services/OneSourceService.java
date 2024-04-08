@@ -190,6 +190,12 @@ public class OneSourceService {
         return true;
     }
 
+    public boolean instructCancelLoanContract(String contractId) throws RestClientException {
+        log.debug("Sending request to cancel a loan contract id = {}.", contractId);
+        contractsApi.ledgerContractsContractIdCancelPost(contractId);
+        return true;
+    }
+
     public void instructUpdateSettlementStatus(Position position, SettlementStatus settlementStatus) {
         String contractId = position.getMatching1SourceLoanContractId();
         log.debug("Sending request to update contract={} with settlement status={}.",

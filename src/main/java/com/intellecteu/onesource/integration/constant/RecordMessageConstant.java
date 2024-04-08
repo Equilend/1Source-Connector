@@ -6,6 +6,17 @@ import lombok.experimental.UtilityClass;
 public class RecordMessageConstant {
 
     public static final String NOT_APPLICABLE = "N/A";
+    public static class ContractCancellation {
+
+        public static class Subject {
+            public static final String POSITION_CANCEL_SUBMITTED_SUBJECT = "Position - %s";
+        }
+
+        public static class DataMsg {
+            public static final String POSITION_CANCEL_SUBMITTED_MSG = """
+                The position %s related to 1Source loan contract %s has been canceled.""";
+        }
+    }
 
     public static class ContractInitiation {
 

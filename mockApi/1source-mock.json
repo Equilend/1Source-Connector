@@ -1080,11 +1080,16 @@
       "responses": [
         {
           "uuid": "8cab0a38-edcd-47f8-b1de-1aaf3c00346b",
-          "body": "{\n  \"code\": 200,\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"resouceUri\": \"string\",\n  \"responseDatetime\": \"2023-09-13T09:05:34.756Z\"\n}",
+          "body": "{\n  \"code\": 200,\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"resouceUri\": \"string\",\n  \"responseDatetime\": \"2024-04-04T08:48:23.559Z\"\n}",
           "latency": 0,
           "statusCode": 200,
           "label": "The contract corresponding to the provided \"contractId\" is canceled",
-          "headers": [],
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",

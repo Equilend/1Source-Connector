@@ -2,9 +2,11 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
@@ -23,6 +25,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
@@ -288,6 +291,15 @@ public class ContractProcessor {
         }
     }
 
+    public boolean instructCancelLoanContract(@NonNull Position position) {
+        try {
+            return oneSourceService.instructCancelLoanContract(position.getMatching1SourceLoanContractId());
+        } catch (HttpStatusCodeException e) {
+            log.debug("Capture cloud event for instruct cancel loan contract");
+        }
+        return false;
+    }
+
     public void instructContractApprovalAsBorrower(@NonNull Contract contract) {
         Optional<Position> matchedPosition = positionService.getByPositionId(contract.getMatchingSpirePositionId());
         matchedPosition.ifPresent(position -> instructContractApproval(contract, position));
@@ -404,6 +416,12 @@ public class ContractProcessor {
         });
     }
 
+    public void recordPositionCancelSubmittedSystemEvent(@NonNull Position position) {
+        final String positionId = String.valueOf(position.getPositionId());
+        createBusinessEvent(position.getMatching1SourceLoanContractId(), POSITION_CANCEL_SUBMITTED,
+            positionId, CAPTURE_POSITION_CANCELED, CONTRACT_CANCELLATION);
+    }
+
     private void recordPendingApprovalSystemEvent(Contract contract, Position position) {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL,
             format("%d,%d", position.getPositionId(), position.getTradeId()));
@@ -495,6 +513,27 @@ public class ContractProcessor {
         contract.setProcessingStatus(MATCHED);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         return contractService.save(contract);
+    }
+
+    private void createBusinessEvent(String record, RecordType recordType,
+        String related, IntegrationSubProcess subProcess, IntegrationProcess process) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, recordType)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordBusinessEvent(record, recordType, related, subProcess, process)
+            );
+    }
+
+    private void recordBusinessEvent(String record, RecordType recordType,
+        String related, IntegrationSubProcess subProcess, IntegrationProcess process) {
+        try {
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+            var recordRequest = eventBuilder.buildRequest(record, recordType, related);
+            cloudEventRecordService.record(recordRequest);
+        } catch (Exception e) {
+            log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}, record:{}",
+                recordType, process, subProcess, record);
+        }
     }
 
 }
