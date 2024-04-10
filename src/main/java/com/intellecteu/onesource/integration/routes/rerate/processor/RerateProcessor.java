@@ -181,10 +181,11 @@ public class RerateProcessor {
             rerateTrade.setProcessingStatus(SUBMITTED);
         } catch (HttpStatusCodeException codeException) {
             if (codeException.getStatusCode().value() != 400) {
-                rerateTrade.setProcessingStatus(WAITING_PROPOSAL);
                 recordHttpExceptionCloudEvent(POST_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
                     codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
                     rerateTrade.getRelatedPositionId());
+            }else{
+                rerateTrade.setProcessingStatus(WAITING_PROPOSAL);
             }
         }
         return rerateTrade;
