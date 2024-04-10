@@ -1,16 +1,15 @@
 package com.intellecteu.onesource.integration.routes.common.processor;
 
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
-
-import com.intellecteu.onesource.integration.exception.ConvertException;
 import com.intellecteu.onesource.integration.mapper.CloudSystemEventMapper;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
-import com.intellecteu.onesource.integration.repository.CloudEventRepository;
-import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
+import com.intellecteu.onesource.integration.services.CloudEventService;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -19,61 +18,57 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class CloudEventNotificationProcessor {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
-    private final CloudEventRepository repository;
+    private final CloudEventService cloudEventService;
     private final CloudSystemEventMapper systemEventMapper;
+    private final String spireTopic;
 
-    @Value("${notification.spire.topic}")
-    private String spireTopic;
+    public CloudEventNotificationProcessor(KafkaTemplate<String, String> kafkaTemplate,
+        CloudEventService cloudEventService,
+        CloudSystemEventMapper systemEventMapper,
+        @Value("${spire.kafka.producer.topic}") String spireTopic) {
+        this.kafkaTemplate = kafkaTemplate;
+        this.cloudEventService = cloudEventService;
+        this.systemEventMapper = systemEventMapper;
+        this.spireTopic = spireTopic;
+    }
 
     @Transactional
     public void sendAllEvents() {
-        final Set<CloudSystemEventEntity> entities = getNotProcessedEvents();
-        log.debug(">>>>> Sending notifications. Events to send: " + entities.size());
-        var errorList = new HashSet<CloudSystemEventEntity>();
-        for (var eventEntity : entities) {
-            CloudSystemEvent cloudSystemEvent = convertToCloudEvent(eventEntity);
-            if (cloudSystemEvent == null) {
-                errorList.add(eventEntity);
-            } else {
-                try {
-                    sendEvent(cloudSystemEvent);
-                    repository.updateProcessingStatusById(eventEntity.getId(), PROCESSED.name());
-                } catch (RuntimeException e) {
-                    errorList.add(eventEntity);
-                }
+        final Set<CloudSystemEvent> events = cloudEventService.getNotProcessedEvents();
+        log.debug("Sending notifications. Events to send: " + events.size());
+        var errorList = new HashSet<CloudSystemEvent>();
+        var successList = new HashSet<CloudSystemEvent>();
+        for (var cloudSystemEvent : events) {
+            try {
+                sendEvent(cloudSystemEvent);
+                cloudSystemEvent.setProcessingStatus(CloudEventProcessingStatus.PROCESSED);
+                successList.add(cloudSystemEvent);
+            } catch (RuntimeException e) {
+                cloudSystemEvent.setProcessingStatus(CloudEventProcessingStatus.FAILED);
+                errorList.add(cloudSystemEvent);
             }
         }
-        // think about batching
-        if (!errorList.isEmpty()) {
-            log.warn("Events were not sent. Failed amount: " + errorList.size());
-            errorList.forEach(event -> repository.updateProcessingStatusById(event.getId(), "FAILED"));
-        }
-        log.debug("<<<<< Sending notifications finished.");
-    }
 
-    private CloudSystemEvent convertToCloudEvent(CloudSystemEventEntity eventEntity) {
-        try {
-            return systemEventMapper.toCloudEvent(eventEntity);
-        } catch (ConvertException e) {
-            log.warn(String.format(ConvertException.CONVERT_MESSAGE, e.getMessage()));
+        var eventListToSave = Stream.of(successList, errorList).flatMap(Collection::stream).toList();
+        if (CollectionUtils.isNotEmpty(eventListToSave)) {
+            cloudEventService.saveAllCloudEvents(eventListToSave);
+            if (CollectionUtils.isNotEmpty(successList)) {
+                log.debug("System events successfully sent: {}", successList.size());
+            }
+            if (CollectionUtils.isNotEmpty(errorList)) {
+                log.warn("Events were not sent. Failed amount: " + errorList.size());
+            }
         }
-        return null;
     }
 
     public void sendEvent(CloudSystemEvent event) {
         // think whether we should send and consume events in a batch
-        final ProducerRecord<String, String> record = new ProducerRecord<>(spireTopic,
-            event.getRelatedProcess(),
-            systemEventMapper.toJson(event)
-        );
+        final String json = systemEventMapper.toJson(event);
+        String key = event.getRelatedProcess() + "." + event.getRelatedSubProcess();
+        final ProducerRecord<String, String> record = new ProducerRecord<>(spireTopic, key, json);
         kafkaTemplate.send(record);
-    }
-
-    private Set<CloudSystemEventEntity> getNotProcessedEvents() {
-        return repository.findAllWhereProcessingStatusIsNull();
     }
 }

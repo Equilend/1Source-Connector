@@ -85,7 +85,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     private static final String CONTRACT_ENDPOINT = "/ledger/contracts/{contractId}";
     private static final String CREATE_CONTRACT_ENDPOINT = "/ledger/contracts";
 
-    @Value("${onesource.baseEndpoint}")
+    @Value("${onesource.base-endpoint}")
     private String onesourceBaseEndpoint;
 
     @Value("${onesource.version}")
@@ -139,7 +139,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public void updateContract(Contract contract, HttpEntity<?> request) {
-        String venueRefId = contract.getTrade().getVenue().getVenueRefKey();
+        String venueRefId = contract.getTrade().getVenues().get(0).getVenueRefKey();
         executeUpdateContract(contract, request);
         log.debug("Contract id:{} with venueRefId:{} was updated!", contract.getContractId(), venueRefId);
     }
@@ -152,7 +152,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
 
     @Override
     public Settlement retrieveSettlementInstruction(Contract contractDto) {
-        String venueRefId = contractDto.getTrade().getVenue().getVenueRefKey();
+        String venueRefId = contractDto.getTrade().getVenues().get(0).getVenueRefKey();
         log.debug("Updating contract by venueRefId: {}", venueRefId);
         var settlementInstructionUpdate = settlementUpdateRepository.findByVenueRefId(venueRefId).stream()
             .findFirst()
@@ -356,6 +356,7 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
             return response.getBody();
         } catch (HttpStatusCodeException e) {
             log.warn("Retrieve events response: " + e.getStatusCode());
+            log.debug("Details: " + e.getMessage());
             if (UNAUTHORIZED == e.getStatusCode() || INTERNAL_SERVER_ERROR == e.getStatusCode()) {
                 var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
                 cloudEventRecordService.record(eventBuilder.buildExceptionRequest(e, GET_1SOURCE_EVENTS));

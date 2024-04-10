@@ -14,6 +14,7 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 /**
@@ -40,6 +41,9 @@ public class RerateDTO {
 
   @JsonProperty("rerate")
   private OneOfRerateRerateDTODTO rerate = null;
+
+  @JsonProperty("dateProposed")
+  private LocalDate dateProposed = null;
 
   @JsonProperty("lastUpdateDatetime")
   private LocalDateTime lastUpdateDatetime = null;
@@ -152,6 +156,24 @@ public class RerateDTO {
     this.rerate = rerate;
   }
 
+  public RerateDTO dateProposed(LocalDate dateProposed) {
+    this.dateProposed = dateProposed;
+    return this;
+  }
+
+   /**
+   * Get dateProposed
+   * @return dateProposed
+  **/
+  @Schema(description = "")
+  public LocalDate getDateProposed() {
+    return dateProposed;
+  }
+
+  public void setDateProposed(LocalDate dateProposed) {
+    this.dateProposed = dateProposed;
+  }
+
   public RerateDTO lastUpdateDatetime(LocalDateTime lastUpdateDatetime) {
     this.lastUpdateDatetime = lastUpdateDatetime;
     return this;
@@ -186,12 +208,13 @@ public class RerateDTO {
         Objects.equals(this.executionVenue, rerate.executionVenue) &&
         Objects.equals(this.rate, rerate.rate) &&
         Objects.equals(this.rerate, rerate.rerate) &&
+        Objects.equals(this.dateProposed, rerate.dateProposed) &&
         Objects.equals(this.lastUpdateDatetime, rerate.lastUpdateDatetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(rerateId, contractId, status, executionVenue, rate, rerate, lastUpdateDatetime);
+    return Objects.hash(rerateId, contractId, status, executionVenue, rate, rerate, dateProposed, lastUpdateDatetime);
   }
 
 
@@ -206,6 +229,7 @@ public class RerateDTO {
     sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
     sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
     sb.append("    rerate: ").append(toIndentedString(rerate)).append("\n");
+    sb.append("    dateProposed: ").append(toIndentedString(dateProposed)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
     sb.append("}");
     return sb.toString();

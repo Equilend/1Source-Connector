@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
 /**
@@ -34,10 +33,10 @@ public class BuyinInitiateDTO {
   private BuyinInitiateStatusDTO status = null;
 
   @JsonProperty("openQuantity")
-  private BigDecimal openQuantity = null;
+  private Integer openQuantity = null;
 
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("lastUpdateDatetime")
   private LocalDateTime lastUpdateDatetime = null;
@@ -96,7 +95,7 @@ public class BuyinInitiateDTO {
     this.status = status;
   }
 
-  public BuyinInitiateDTO openQuantity(BigDecimal openQuantity) {
+  public BuyinInitiateDTO openQuantity(Integer openQuantity) {
     this.openQuantity = openQuantity;
     return this;
   }
@@ -106,15 +105,15 @@ public class BuyinInitiateDTO {
    * @return openQuantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getOpenQuantity() {
+  public Integer getOpenQuantity() {
     return openQuantity;
   }
 
-  public void setOpenQuantity(BigDecimal openQuantity) {
+  public void setOpenQuantity(Integer openQuantity) {
     this.openQuantity = openQuantity;
   }
 
-  public BuyinInitiateDTO quantity(BigDecimal quantity) {
+  public BuyinInitiateDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -124,11 +123,11 @@ public class BuyinInitiateDTO {
    * @return quantity
   **/
   @Schema(description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 

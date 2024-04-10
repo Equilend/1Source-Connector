@@ -30,20 +30,19 @@
 -- VALUES (4455, 119.57, 1794455.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
 --        (6677, 119.57, 1794455.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
 --
--- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
--- VALUES (4455, '4455', 'ONPLATFORM', 'testLenderVenueName', '4455'),
---        (6677, '6677', 'ONPLATFORM', 'testBorrowerVenueName', '6677');
---
---
--- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+-- INSERT INTO trade (id, instrument_id, rate_id, quantity, currency,
 --                    dividend_rate, trade_date, term_type, term_date, settlement_date,
 --                    settlement_type, collateral)
--- VALUES  (6677, 6677, 6677, 6677, 11000.0, 'USD',
+-- VALUES  (6677, 6677, 6677, 11000.0, 'USD',
 --          85.0, '66774-02-21 13:50:41.633000', 'OPEN', '66774-02-21 13:50:41.633000', '66773-10-25 13:50:41.633000',
 --          'DVP', 6677),
---         (4455, 4455, 4455, 4455, 15000, 'USD',
+--         (4455, 4455, 4455, 15000, 'USD',
 --          85.0, '66774-02-21 13:50:41.633000', 'OPEN', '66774-02-21 13:50:41.633000', '66773-10-25 13:50:41.633000',
 --          'DVP', 4455);
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key, trade_id)
+-- VALUES (4455, '4455', 'ONPLATFORM', 'testLenderVenueName', '4455', 4455),
+--        (6677, '6677', 'ONPLATFORM', 'testBorrowerVenueName', '6677', 6677);
 --
 -- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
 -- VALUES (4455, '32b71278-9ad2-445a-bfb0-b5ada72f4455', 'PENDING', 4455, '4455', 'CREATED'),

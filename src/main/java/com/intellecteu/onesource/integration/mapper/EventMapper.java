@@ -224,7 +224,7 @@ public class EventMapper {
     public TradeAgreementDto toTradeAgreementDto(TradeAgreement tradeAgreement) {
         return TradeAgreementDto.builder()
             .id(tradeAgreement.getId())
-            .executionVenue(toVenueDto(tradeAgreement.getVenue()))
+//            .executionVenue(toVenueDto(tradeAgreement.getVenue()))
             .instrument(toInstrumentDto(tradeAgreement.getInstrument()))
             .rate(toRateDto(tradeAgreement.getRate()))
             .quantity(tradeAgreement.getQuantity())
@@ -246,7 +246,7 @@ public class EventMapper {
     public TradeAgreementDto toTradeAgreementDto(TradeAgreementEntity tradeAgreement) {
         return TradeAgreementDto.builder()
             .id(tradeAgreement.getId())
-            .executionVenue(toVenueDto(tradeAgreement.getVenue()))
+//            .executionVenue(toVenueDto(tradeAgreement.getVenues()))
             .instrument(toInstrumentDto(tradeAgreement.getInstrument()))
             .rate(toRateDto(tradeAgreement.getRate()))
             .quantity(tradeAgreement.getQuantity())

@@ -28,6 +28,7 @@ import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
@@ -51,7 +52,6 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Transac
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenuePartyEntity;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -89,13 +89,17 @@ public class EntityTestFactory {
             .build();
     }
 
-    public static TradeAgreementEntity buildTradeAgreement() {
-        return TradeAgreementEntity.builder()
-            .id(1L)
-            .venue(buildVenueEntity())
+    public static TradeAgreementEntity buildTradeAgreement(Long id) {
+        Long tradeId = 1L;
+        if (id != null) {
+            tradeId = id;
+        }
+        TradeAgreementEntity entity = TradeAgreementEntity.builder()
+            .id(tradeId)
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
-            .quantity(BigDecimal.valueOf(2L))
+            .venues(List.of(buildVenueEntity()))
+            .quantity(2)
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
@@ -107,6 +111,12 @@ public class EntityTestFactory {
             .transactingParties(createTransactionParties())
             .resourceUri("test/ledger/agreements/32b71278-9ad2-445a-bfb0-b5ada72f7199")
             .build();
+//        entity.addVenue(buildVenueEntity());
+        return entity;
+    }
+
+    public static TradeAgreementEntity buildTradeAgreement() {
+        return buildTradeAgreement(null);
     }
 
     public static List<TransactingPartyEntity> createTransactionParties() {
@@ -306,6 +316,7 @@ public class EntityTestFactory {
             .relatedProcess("testRelatedProcess")
             .relatedSubProcess("testRelatedSubProcess")
             .dataContentType("application/json")
+            .processingStatus(CloudEventProcessingStatus.CREATED)
             .build();
         entity.setData(createTestEventData(entity.getId()));
         return entity;

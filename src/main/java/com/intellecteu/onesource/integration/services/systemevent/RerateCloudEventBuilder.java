@@ -85,7 +85,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     public RerateCloudEventBuilder(
         @Value("${cloudevents.specversion}") String specVersion,
-        @Value("${integration-toolkit-uri}") String integrationUri) {
+        @Value("${cloudevents.source}") String integrationUri) {
         super(specVersion, integrationUri);
     }
 

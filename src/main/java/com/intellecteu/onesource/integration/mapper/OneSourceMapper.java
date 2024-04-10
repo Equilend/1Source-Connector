@@ -17,6 +17,7 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementInstructi
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
+import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
@@ -25,6 +26,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
@@ -43,8 +45,13 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Settl
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
 import java.util.List;
+import java.util.Optional;
+import org.mapstruct.AfterMapping;
+import org.mapstruct.IterableMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
 /*
@@ -54,11 +61,28 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public abstract class OneSourceMapper {
 
+
     public abstract Agreement toModel(AgreementEntity agreementEntity);
 
-    public abstract AgreementEntity toEntity(Agreement agreement);
+    @Mapping(target = "venues", qualifiedByName = "toVenueList")
+    public abstract TradeAgreement toModel(TradeAgreementEntity agreementEntity);
 
-    public abstract TradeAgreement toModel(TradeAgreementEntity tradeAgreementEntity);
+    @IterableMapping(qualifiedByName = "toVenueModel")
+    @Named("toVenueList")
+    public abstract List<Venue> toVenueList(List<VenueEntity> venueEntities);
+
+    @Named("toVenueModel")
+    public abstract Venue toVenueModel(VenueEntity venueEntity);
+
+    public abstract VenueEntity toModel(Venue venueModel);
+
+    @AfterMapping
+    public void setTradeId(Object anySource, @MappingTarget TradeAgreement tradeAgreement) {
+        Optional.ofNullable(tradeAgreement.getVenues())
+            .ifPresent(venues -> venues.forEach(venue -> venue.setTradeId(tradeAgreement.getId())));
+    }
+
+    public abstract AgreementEntity toEntity(Agreement agreement);
 
     @Mapping(target = "quickCode", source = "quick")
     public abstract Instrument toModel(InstrumentEntity instrumentEntity);
@@ -145,18 +169,34 @@ public abstract class OneSourceMapper {
 
     public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
 
-    public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rateDTO) {
-        if (rateDTO.getRebate() != null) {
-            return toRequestDto(rateDTO.getRebate());
-        } else if (rateDTO.getFee() != null) {
-            return toRequestDto(rateDTO.getFee());
+    public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rate) {
+        if (rate.getRebate() != null) {
+            return toRequestDto(rate.getRebate());
+        } else if (rate.getFee() != null) {
+            return toRequestDto(rate.getFee());
         }
         return null;
     }
 
-    public abstract RebateRateDTO toRequestDto(RebateRate rebateRate);
+    public RebateRateDTO toRequestDto(RebateRate rebateRate) {
+        if (rebateRate.getFixed() != null) {
+            RebateRateDTO rebateRateDTO = new RebateRateDTO();
+            FixedRateDTO fixedRateDto = toFixedRebateDto(rebateRate);
+            rebateRateDTO.setRebate(fixedRateDto);
+            return rebateRateDTO;
+        }
+        if (rebateRate.getFloating() != null) {
+            RebateRateDTO rebateRateDTO = new RebateRateDTO();
+            FloatingRateDTO floatingRateDTO = toFloatingRebateDto(rebateRate);
+            rebateRateDTO.setRebate(floatingRateDTO);
+            return rebateRateDTO;
+        }
+        return null;
+    }
 
     public abstract FeeRateDTO toRequestDto(FeeRate feeRate);
+    public abstract FloatingRateDTO toFloatingRebateDto(RebateRate rebateRate);
+    public abstract FixedRateDTO toFixedRebateDto(RebateRate rebateRate);
 
     public Rate toModel(OneOfTradeAgreementRateDTODTO rateDTO) {
         if (rateDTO instanceof RebateRateDTO) {
@@ -175,4 +215,11 @@ public abstract class OneSourceMapper {
 
     public abstract SettlementInstructionUpdateEntity toEntity(SettlementInstructionUpdate settlementInstructionUpdate);
 
+    @Named("mapIntegerToDouble")
+    public Double mapIntegerToDouble(Integer integer) {
+        if (integer == null) {
+            return null;
+        }
+        return integer.doubleValue();
+    }
 }

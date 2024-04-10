@@ -2,9 +2,11 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.APPROVE_LOAN_PROPOSAL_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.DECLINE_LOAN_PROPOSAL_EXCEPTION_MSG;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
@@ -23,6 +25,8 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
@@ -91,7 +95,8 @@ public class ContractProcessor {
         String resourceUri = event.getResourceUri();
         try {
             String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
-            return oneSourceService.retrieveContractDetails(contractId);
+            final Contract contract = oneSourceService.retrieveContractDetails(contractId);
+            return contract;
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
             final HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
@@ -126,7 +131,7 @@ public class ContractProcessor {
     }
 
     private void createFailedReconciliationEvent(Contract contractProposal, ReconcileException e) {
-        String relatedSequence = String.format("%d,%d", contractProposal.getMatchingSpirePositionId(),
+        String relatedSequence = format("%d,%d", contractProposal.getMatchingSpirePositionId(),
             contractProposal.getMatchingSpireTradeId());
         var eventBuilder = cloudEventRecordService.getFactory()
             .eventBuilder(CONTRACT_INITIATION);
@@ -205,6 +210,7 @@ public class ContractProcessor {
     public boolean matchLenderPosition(@NonNull Contract contract) {
         final Optional<Position> relatedPosition = retrieveRelatedLenderPosition(contract);
         return relatedPosition.map(position -> {
+            log.debug("Lender position:{} matches to contract:{}", position.getPositionId(), contract.getContractId());
             final Position savedPosition = updateMatchedContractAndPosition(contract, position);
             recordLoanProposalMatchedSystemEvent(contract, savedPosition);
             return true;
@@ -221,11 +227,11 @@ public class ContractProcessor {
     }
 
     private void matchNgtTradeContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
-        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
-        notMatchedPositions.stream()
-            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
-            .findAny()
-            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
+//        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
+//        notMatchedPositions.stream()
+//            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
+//            .findAny()
+//            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
     }
 
     private void matchContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
@@ -249,7 +255,9 @@ public class ContractProcessor {
     }
 
     private static boolean isNgtTradeContract(Contract contract) {
-        return contract.getTrade().getVenue() != null && contract.getTrade().getVenue().getVenueRefKey() != null;
+        return contract.getTrade().getVenues() != null 
+            && contract.getTrade().getVenues().get(0) != null
+            && contract.getTrade().getVenues().get(0).getVenueRefKey() != null;
     }
 
     private Position updateMatchedContractAndPosition(Contract contract, Position position) {
@@ -281,6 +289,15 @@ public class ContractProcessor {
                 recordTechnicalEvent(contract.getContractId(), e, DECLINE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
         }
+    }
+
+    public boolean instructCancelLoanContract(@NonNull Position position) {
+        try {
+            return oneSourceService.instructCancelLoanContract(position.getMatching1SourceLoanContractId());
+        } catch (HttpStatusCodeException e) {
+            log.debug("Capture cloud event for instruct cancel loan contract");
+        }
+        return false;
     }
 
     public void instructContractApprovalAsBorrower(@NonNull Contract contract) {
@@ -321,11 +338,11 @@ public class ContractProcessor {
     private Long retrieveContractRelatedPositionId(TransactingParty lenderParty, String contractId) {
         final InternalReference internalRef = lenderParty.getInternalRef();
         if (internalRef == null) {
-            throw new EntityNotFoundException(String.format("Internal ref is null for contractID = %s.", contractId));
+            throw new EntityNotFoundException(format("Internal ref is null for contractID = %s.", contractId));
         }
         final String internalRefId = internalRef.getInternalRefId();
         if (internalRefId == null) {
-            throw new EntityNotFoundException(String.format("Internal refId is null for contractID = %s.", contractId));
+            throw new EntityNotFoundException(format("Internal refId is null for contractID = %s.", contractId));
         }
         return Long.parseLong(internalRefId);
     }
@@ -334,13 +351,13 @@ public class ContractProcessor {
         List<TransactingParty> contractParties = contract.getTrade().getTransactingParties();
         if (CollectionUtils.isEmpty(contractParties)) {
             throw new EntityNotFoundException(
-                String.format("Contract %s has no transacting parties", contract.getContractId()));
+                format("Contract %s has no transacting parties", contract.getContractId()));
         }
         return contractParties.stream()
             .filter(p -> p.getPartyRole() == PartyRole.LENDER)
             .findAny()
             .orElseThrow(() -> new EntityNotFoundException(
-                String.format("Contract %s does not have LENDER transacting party", contract.getContractId())));
+                format("Contract %s does not have LENDER transacting party", contract.getContractId())));
     }
 
     public Contract updateContractProcessingStatusAndCreatedTime(@NonNull Contract contract,
@@ -399,14 +416,20 @@ public class ContractProcessor {
         });
     }
 
-    private void recordPendingApprovalSystemEvent(Contract contract, Position savedPosition) {
+    public void recordPositionCancelSubmittedSystemEvent(@NonNull Position position) {
+        final String positionId = String.valueOf(position.getPositionId());
+        createBusinessEvent(position.getMatching1SourceLoanContractId(), POSITION_CANCEL_SUBMITTED,
+            positionId, CAPTURE_POSITION_CANCELED, CONTRACT_CANCELLATION);
+    }
+
+    private void recordPendingApprovalSystemEvent(Contract contract, Position position) {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL,
-            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+            format("%d,%d", position.getPositionId(), position.getTradeId()));
     }
 
     private void recordLoanProposalMatchedSystemEvent(Contract contract, Position savedPosition) {
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_MATCHED,
-            String.format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
+            format("%d,%d", savedPosition.getPositionId(), savedPosition.getTradeId()));
     }
 
     private void recordLoanProposalUnmatchedSystemEvent(Contract contract) {
@@ -423,8 +446,7 @@ public class ContractProcessor {
     }
 
     public void recordApprovedSystemEvent(@NonNull Contract contract) {
-        String related = String.format("%d,%d", contract.getMatchingSpirePositionId(),
-            contract.getMatchingSpireTradeId());
+        String related = format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
     }
 
@@ -436,12 +458,12 @@ public class ContractProcessor {
     public void recordLoanProposalDeclinedSystemEvent(@NonNull Contract contract) {
         String related = contract.getMatchingSpirePositionId() == null
             ? null
-            : String.format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
+            : format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_DECLINED, related);
     }
 
     public void recordContractProposalValidatedEvent(@NonNull Contract contract) {
-        String relatedSequence = String.format("%d,%d", contract.getMatchingSpirePositionId(),
+        String relatedSequence = format("%d,%d", contract.getMatchingSpirePositionId(),
             contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_VALIDATED, relatedSequence);
     }
@@ -472,6 +494,14 @@ public class ContractProcessor {
 
     private void recordToolkitIssueEvent(IntegrationProcess process, String record,
         IntegrationSubProcess subProcess) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(process, record, subProcess));
+    }
+
+    private void recordToolkitTechnicalEvent(IntegrationProcess process, String record,
+        IntegrationSubProcess subProcess) {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
         var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
@@ -483,6 +513,27 @@ public class ContractProcessor {
         contract.setProcessingStatus(MATCHED);
         contract.setLastUpdateDateTime(LocalDateTime.now());
         return contractService.save(contract);
+    }
+
+    private void createBusinessEvent(String record, RecordType recordType,
+        String related, IntegrationSubProcess subProcess, IntegrationProcess process) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, recordType)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordBusinessEvent(record, recordType, related, subProcess, process)
+            );
+    }
+
+    private void recordBusinessEvent(String record, RecordType recordType,
+        String related, IntegrationSubProcess subProcess, IntegrationProcess process) {
+        try {
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+            var recordRequest = eventBuilder.buildRequest(record, recordType, related);
+            cloudEventRecordService.record(recordRequest);
+        } catch (Exception e) {
+            log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}, record:{}",
+                recordType, process, subProcess, record);
+        }
     }
 
 }

@@ -22,6 +22,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonTypeInfo(
     use = Id.DEDUCTION)
 @JsonSubTypes({
+  @JsonSubTypes.Type(value = PriceUpdateDTO.class, name = "PriceUpdateDTO"),
   @JsonSubTypes.Type(value = SettlementStatusUpdateDTO.class, name = "SettlementStatusUpdateDTO"),
   @JsonSubTypes.Type(value = SettlementInstructionUpdateDTO.class, name = "SettlementInstructionUpdateDTO"),
   @JsonSubTypes.Type(value = InternalReferenceUpdateDTO.class, name = "InternalReferenceUpdateDTO")

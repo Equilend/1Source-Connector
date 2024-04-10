@@ -11,12 +11,14 @@ import com.intellecteu.onesource.integration.repository.entity.backoffice.Positi
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -39,6 +41,7 @@ public class PositionService {
      * @param position Position model
      * @return representation of persisted Position entity
      */
+    @Transactional
     public Position savePosition(Position position) {
         position.setLastUpdateDateTime(LocalDateTime.now());
         PositionEntity positionEntity = positionRepository.save(backOfficeMapper.toEntity(position));
@@ -72,7 +75,7 @@ public class PositionService {
     }
 
     public Set<Position> getNotMatched() {
-        Optional<PositionEntity> positionList = positionRepository.getNotMatched();
+        List<PositionEntity> positionList = positionRepository.getNotMatchedForBorrower();
         return positionList.stream().map(backOfficeMapper::toModel).collect(Collectors.toSet());
     }
 
@@ -93,13 +96,21 @@ public class PositionService {
         return positionRepository.findAllNotCanceledAndSettled().stream().map(backOfficeMapper::toModel).toList();
     }
 
-    public Optional<String> getMaxPositionId() { // todo rework change logic with SQL query
+    /**
+     * Return the latest trade id for the persisted positions.
+     * If the list of persisted positions is empty, "0" will be returned.
+     *
+     * @return String last trade id of persisted positions or "0"
+     */
+    public String getMaxTradeId() { // todo rework change logic with SQL query
         List<PositionEntity> storedPositions = positionRepository.findAll();
         log.debug("Found {} positions. Getting the latest id recorded.", storedPositions.size());
         return storedPositions.stream()
-            .map(PositionEntity::getPositionId)
+            .map(PositionEntity::getTradeId)
+            .filter(Objects::nonNull)
             .max(Comparator.naturalOrder())
-            .map(String::valueOf);
+            .map(String::valueOf)
+            .orElse("0");
     }
 
     public List<Position> findAllByProcessingStatus(ProcessingStatus status) {

@@ -47,7 +47,7 @@ public class MatchingService {
     private boolean matchQuantity(Contract contract, Position position) {
         final TradeAgreement trade = contract.getTrade();
         return Objects.equals(position.getQuantity().intValue(),
-            trade.getQuantity()); // todo rework Trade quantity to Double?
+            trade.getQuantity());
     }
 
     private boolean matchTradeDate(Contract contract, Position position) {

@@ -77,8 +77,6 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementType;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -89,6 +87,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 @Service
 @Slf4j
@@ -142,7 +141,13 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
     }
 
     private Optional<ProcessExceptionDetails> reconcileVenue(TradeAgreement trade, Position position) {
-        return checkEquality(trade.getVenue().getVenueRefKey(), VENUE_REF_KEY,
+        if (position.getCustomValue2() == null || CollectionUtils.isEmpty(trade.getVenues())) {
+            return Optional.empty();
+        }
+        if (trade.getVenues().get(0) == null || trade.getVenues().get(0).getVenueRefKey() == null) {
+            return Optional.empty();
+        }
+        return checkEquality(trade.getVenues().get(0).getVenueRefKey(), VENUE_REF_KEY,
             position.getCustomValue2(), CUSTOM_VALUE_2);
     }
 
@@ -271,10 +276,7 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
 
     private Optional<ProcessExceptionDetails> reconcileQuantity(TradeAgreement trade, Position position) {
         if (trade.getQuantity() != null && position.getQuantity() != null) {
-            BigDecimal tradeQuantity = trade.getQuantity().setScale(2, RoundingMode.HALF_UP);
-            BigDecimal positionQuantity = BigDecimal.valueOf(position.getQuantity())
-                .setScale(2, RoundingMode.HALF_UP);
-            return checkEquality(tradeQuantity, QUANTITY, positionQuantity, POSITION_QUANTITY);
+            return checkEquality(trade.getQuantity(), QUANTITY, position.getQuantity().intValue(), POSITION_QUANTITY);
         }
         return Optional.empty();
     }

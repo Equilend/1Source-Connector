@@ -54,7 +54,7 @@ class ContractApiServiceTest {
 
         assertEquals(expectedResponse.getContractId(), actual.getContractId());
         assertEquals(expectedResponse.getTrade().getId(), actual.getTrade().getId());
-        assertEquals(expectedResponse.getTrade().getVenue().getId(), actual.getTrade().getVenue().getId());
+        assertEquals(expectedResponse.getTrade().getVenues().get(0).getId(), actual.getTrade().getVenues().get(0).getId());
     }
 
     @Test

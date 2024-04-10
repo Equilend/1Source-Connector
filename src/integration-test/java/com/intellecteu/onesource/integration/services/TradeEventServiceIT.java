@@ -56,9 +56,9 @@ public class TradeEventServiceIT extends AbstractTest {
     private MockRestServiceServer mockServer;
     private final ObjectMapper mapper = new ObjectMapper();
 
-    @Value("${onesource.baseEndpoint}")
+    @Value("${onesource.base-endpoint}")
     private String baseEndpoint;
-    @Value("${spire.baseSpireEndpoint}")
+    @Value("${spire.base-endpoint}")
     private String baseSpireEndpoint;
 
     @BeforeEach

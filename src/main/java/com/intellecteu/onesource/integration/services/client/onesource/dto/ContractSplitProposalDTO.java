@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import java.util.ArrayList;
 import java.util.Objects;
-
 /**
  * ContractSplitProposalDTO
  */

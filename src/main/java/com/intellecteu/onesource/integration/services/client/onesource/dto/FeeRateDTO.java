@@ -21,7 +21,7 @@ import java.util.Objects;
 
 
 
-public class FeeRateDTO implements OneOfRerateRateDTODTO, OneOfRerateRerateDTODTO, OneOfRerateProposalRateDTODTO, OneOfTradeAgreementRateDTODTO {
+public class FeeRateDTO implements OneOfRerateRateDTODTO, OneOfRerateRerateDTODTO, OneOfRerateProposalRateDTODTO, OneOfTradeAgreementRateDTODTO, OneOfVenueTradeAgreementRateDTODTO {
   @JsonProperty("fee")
   private FixedRateDefDTO fee = null;
 

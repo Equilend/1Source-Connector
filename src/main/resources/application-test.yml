@@ -1,77 +1,15 @@
-starting-trade-event-datetime: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
-route:
-  rerate:
-    enable: ${RERATE_ROUTE:true}
-  bilateral-flow:
-    contract-initiation:
-      enable: ${CI_BILATERAL_FLOW_ENABLE:true}
-      timer: ${CI_BILATERAL_FLOW_TIMER:60000}
-  delegate-flow:
-    contract-initiation:
-      enable: ${CI_DELEGATE_FLOW_ENABLE:true}
-      timer: ${CI_DELEGATE_FLOW_TIMER:60000}
-    update-position:
-      enable: ${UP_DELEGATE_FLOW_ENABLE:true}
-      timer: ${UP_DELEGATE_FLOW_TIMER:60000}
-  position-listener:
-    enable: ${POSITION_LISTENER_ENABLE:true}
-    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER:60000}
-    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER:60000}
-integration-toolkit-uri: ${INTEGRATION_TOOLKIT_URI:http://integration.toolkit}
-
 camel:
-  timer: ${CAMEL_TIMER_LOCAL:9000}
-  newPositionTimer: ${CAMEL_TIMER:9000}
-  positionTimer: ${CAMEL_TIMER_LOCAL:9000}
-  newBackOfficeTradeEventTimer: ${CAMEL_TIMER:9000}
+  timer: ${CAMEL_TIMER:100000}
+  newPositionTimer: ${CAMEL_TIMER:600000}
+  positionTimer: ${CAMEL_TIMER:600000}
+  newBackOfficeTradeEventTimer: ${CAMEL_TIMER:600000}
   partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
-  timestamp: 2023-06-25T09:51:16.111Z
+  timestamp: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
   route:
-    autostart: ${CAMEL_AUTOSTART_LOCAL:true}
-
-spring:
-  datasource:
-    url: jdbc:postgresql://1source-postgres:5432/postgres
-    username: postgres
-    password: postgres
-  jpa:
-    show-sql: false
-    properties:
-      hibernate:
-        default_schema: ${DB_SCHEMA:postgres}
-    hibernate:
-      ddl-auto: none
-    open-in-view: false
-  flyway:
-    locations: classpath:db/migration
-    baseline-on-migrate: true
-    url: jdbc:postgresql://1source-postgres:5432/postgres
-    user: postgres
-    password: postgres
-    schemas: postgres
-    enabled: true
-    default-schema: postgres
-  jackson:
-    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          #should be a link to a localhost where keycloak instance is running
-          issuer-uri: http://localhost:8088/realms/${onesource.auth.realm}
-          # should be a link to the service in the docker container
-          jwk-set-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}/protocol/openid-connect/certs
-      client:
-        registration:
-          keycloak:
-            client-id: ${onesource.auth.resource}
-            authorization-grant-type: authorization_code
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: ${onesource.auth.server-url}/realms/${onesource.auth.realm}
-            user-name-attribute: ${onesource.auth.principal-attribute}
-
+    autostart: ${CAMEL_AUTOSTART:true}
+cloudevents:
+  specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
+  source: ${CLOUD_EVENTS_SOURCE:http://lender-or-borrower.endpoint}
 logging:
   level:
     com:
@@ -92,37 +30,90 @@ logging:
           client:
             RestTemplate: INFO
     root: INFO
-
-onesource:
-  baseEndpoint: http://1source-mock:8081
-  version:
-  auth:
-    server-url: http://keycloak-mock:8080
-    realm: 1source-keycloak
-    public-client: true
-    resource: 1source-integration
-    principal-attribute: preferred_username
-    username: test-user
-    password: 12345
-    credentials:
-      secret: secret
-
-spire:
-  baseEndpoint: ${SPIRE_BASE_ENDPOINT:http://spire-mock:8083/lender}
-  lenderEndpoint: ${SPIRE_LENDER_ENDPOINT:http://spire-mock:8083/lender}
-  borrowerEndpoint: ${SPIRE_BORROWER_ENDPOINT:http://spire-mock:8083/borrower}
-  username: ${SPIRE_USERNAME:test-user}
-  password: ${SPIRE_PASSWORD:12345}
-
-cloudevents:
-  specversion: ${CLOUD_EVENTS_SPEC_VERSION:1.0}
-
 notification:
   enable: ${NOTIFICATION_ENABLE:false}
-  timer: ${NOTIFICATION_TIMER:10000}
-  spire:
-    bootstrap-server: ${SPIRE_BOOTSTRAP_SERVER:localhost:9092}
-    topic: ${NOTIFICATION_SPIRE_TOPIC:TEST.TOPIC}
-    auth:
-      key: ${NOTIFICATION_SPIRE_KEY:test}
-      secret: ${NOTIFICATION_SPIRE_SECRET:test}
+  timer: ${NOTIFICATION_TIMER:100000}
+onesource:
+  auth:
+    api:
+      client-id: ${1SOURCE_AUTH_API_CLIENT_ID:1source-ui-app}
+      realm: ${1SOURCE_AUTH_API_REALM:1source-keycloak}
+      server-url: ${1SOURCE_AUTH_API_URL:http://keycloak-mock:8080}
+    client-id: 1source-integration
+    credentials:
+      secret: secret
+    password: 12345
+    principal-attribute: preferred_username
+    public-client: true
+    realm: 1source-keycloak
+    server-url: http://keycloak-mock:8080
+    username: test-user
+  base-endpoint: http://1source-mock:8081
+  version:
+route:
+  bilateral-flow:
+    contract-initiation:
+      enable: ${CI_BILATERAL_FLOW_ENABLE:true}
+      timer: ${CI_BILATERAL_FLOW_TIMER:60000}
+  delegate-flow:
+    contract-initiation:
+      enable: ${CI_DELEGATE_FLOW_ENABLE:true}
+      timer: ${CI_DELEGATE_FLOW_TIMER:60000}
+    update-position:
+      enable: ${UP_DELEGATE_FLOW_ENABLE:true}
+      timer: ${UP_DELEGATE_FLOW_TIMER:60000}
+  position-listener:
+    enable: ${POSITION_LISTENER_ENABLE:true}
+    timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER:60000}
+    update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER:60000}
+  rerate:
+    enable: ${RERATE_ROUTE:true}
+spire:
+  base-endpoint: ${SPIRE_BASE_ENDPOINT:http://spire-mock:8083/lender}
+  kafka:
+    producer:
+      auth:
+        key: ${SPIRE_KAFKA_KEY:test}
+        secret: ${SPIRE_KAFKA_SECRET:test}
+      bootstrap-server: ${SPIRE_KAFKA_BOOTSTRAP_SERVER:localhost:9092}
+      topic: ${SPIRE_KAFKA_TOPIC:TEST.TOPIC}
+  password: ${SPIRE_PASSWORD:12345}
+  user-id: ${SPIRE_USER_ID:1}
+  username: ${SPIRE_USERNAME:test-user}
+spring:
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://1source-postgres:5432/postgres
+    username: postgres
+  flyway:
+    baseline-on-migrate: true
+    default-schema: postgres
+    enabled: true
+    locations: classpath:db/migration
+    password: postgres
+    schemas: postgres
+    url: jdbc:postgresql://1source-postgres:5432/postgres
+    user: postgres
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss.SSSX
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        default_schema: ${DB_SCHEMA:postgres}
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+  security:
+    oauth2:
+      resourceserver:
+        #should be a link to a localhost where keycloak instance is running
+        issuer-uri: http://localhost:8088/realms/${onesource.auth.api.realm}
+        # should be a link to the service in the docker container
+        jwk-set-uri: ${onesource.auth.api.server-url}/realms/${onesource.auth.api.realm}/protocol/openid-connect/certs
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    url: /toolkit_openapi.yaml
+starting-trade-event-datetime: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}

@@ -1,0 +1,11 @@
+Prepared local migration data: V2024.04.05.17.00__EINT23-627_position_cancellation_after_1source_confirmation.sql
+
+1. Insert to the database position
+    - position status should be 'FUTURE'
+
+2. Create a mock for /trades/search/position/query
+    The request body tuples:
+    - should have `positionId` IN list of retrieved position ids from the DB
+    - should have `status` EQUALS 'CANCELLED'
+
+3. Endpoint POST /Ledger/contracts/{contractId}/cancel should return success response.
