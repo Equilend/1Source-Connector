@@ -40,11 +40,17 @@ public class ContractDTO {
   @JsonProperty("lastUpdateDatetime")
   private LocalDateTime lastUpdateDatetime = null;
 
+  @JsonProperty("isInitiator")
+  private Boolean isInitiator = null;
+
   @JsonProperty("trade")
   private TradeAgreementDTO trade = null;
 
   @JsonProperty("settlement")
   private List<PartySettlementInstructionDTO> settlement = null;
+
+  @JsonProperty("splitContractId")
+  private String splitContractId = null;
 
   public ContractDTO contractId(String contractId) {
     this.contractId = contractId;
@@ -91,7 +97,7 @@ public class ContractDTO {
    * Get contractStatus
    * @return contractStatus
   **/
-  @Schema(description = "")
+  @Schema(required = true, description = "")
   public ContractStatusDTO getContractStatus() {
     return contractStatus;
   }
@@ -134,6 +140,24 @@ public class ContractDTO {
 
   public void setLastUpdateDatetime(LocalDateTime lastUpdateDatetime) {
     this.lastUpdateDatetime = lastUpdateDatetime;
+  }
+
+  public ContractDTO isInitiator(Boolean isInitiator) {
+    this.isInitiator = isInitiator;
+    return this;
+  }
+
+   /**
+   * Get isInitiator
+   * @return isInitiator
+  **/
+  @Schema(description = "")
+  public Boolean isIsInitiator() {
+    return isInitiator;
+  }
+
+  public void setIsInitiator(Boolean isInitiator) {
+    this.isInitiator = isInitiator;
   }
 
   public ContractDTO trade(TradeAgreementDTO trade) {
@@ -180,6 +204,24 @@ public class ContractDTO {
     this.settlement = settlement;
   }
 
+  public ContractDTO splitContractId(String splitContractId) {
+    this.splitContractId = splitContractId;
+    return this;
+  }
+
+   /**
+   * Get splitContractId
+   * @return splitContractId
+  **/
+  @Schema(description = "")
+  public String getSplitContractId() {
+    return splitContractId;
+  }
+
+  public void setSplitContractId(String splitContractId) {
+    this.splitContractId = splitContractId;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -195,13 +237,15 @@ public class ContractDTO {
         Objects.equals(this.contractStatus, contract.contractStatus) &&
         Objects.equals(this.lastUpdatePartyId, contract.lastUpdatePartyId) &&
         Objects.equals(this.lastUpdateDatetime, contract.lastUpdateDatetime) &&
+        Objects.equals(this.isInitiator, contract.isInitiator) &&
         Objects.equals(this.trade, contract.trade) &&
-        Objects.equals(this.settlement, contract.settlement);
+        Objects.equals(this.settlement, contract.settlement) &&
+        Objects.equals(this.splitContractId, contract.splitContractId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(contractId, lastEvent, contractStatus, lastUpdatePartyId, lastUpdateDatetime, trade, settlement);
+    return Objects.hash(contractId, lastEvent, contractStatus, lastUpdatePartyId, lastUpdateDatetime, isInitiator, trade, settlement, splitContractId);
   }
 
 
@@ -215,8 +259,10 @@ public class ContractDTO {
     sb.append("    contractStatus: ").append(toIndentedString(contractStatus)).append("\n");
     sb.append("    lastUpdatePartyId: ").append(toIndentedString(lastUpdatePartyId)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
+    sb.append("    isInitiator: ").append(toIndentedString(isInitiator)).append("\n");
     sb.append("    trade: ").append(toIndentedString(trade)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
+    sb.append("    splitContractId: ").append(toIndentedString(splitContractId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

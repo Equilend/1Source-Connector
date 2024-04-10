@@ -45,7 +45,8 @@ import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.model.onesource.VenueType;
 import io.micrometer.common.util.StringUtils;
-import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
@@ -103,28 +104,32 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         return SettlementInstructionUpdate.builder()
             .partyRole(BORROWER)
             .instruction(buildBorrowerInstructionFromPosition(position))
+            .internalAcctCd(String.valueOf(position.getPositionAccount().getAccountId()))
             .build();
     }
 
     private SettlementInstruction buildBorrowerInstructionFromPosition(Position position) {
         return SettlementInstruction.builder()
-            .settlementBic("ZYXXUS01XXX") // hardcode for the demo
-            .localAgentAcct("6789XYZ") // hardcode for the demo
+            .settlementBic("DTCYUS33") // hardcode for the demo
+            .localAgentAcct("ZYXXUS02XXX") // hardcode for the demo
+            .localAgentName("678XYZ") // hardcode for the demo
+            .localAgentAcct("XYZ678") // hardcode for the demo
             .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }
 
     private TradeAgreement buildTradeFromPosition(Position position) {
+        Integer quantity = position.getQuantity() == null ? null : position.getQuantity().intValue();
         return TradeAgreement.builder()
-            .venue(buildExecutionVenueFromPosition(position))
+            .venues(List.of(buildExecutionVenueFromPosition(position)))
             .instrument(buildInstrumentFromPosition(position))
             .rate(buildRebateRateFromPosition(position))
-            .quantity(BigDecimal.valueOf(position.getQuantity()))
+            .quantity(quantity)
             .billingCurrency(CurrencyCd.fromValue(position.getCurrency().getCurrencyKy()))
             .dividendRatePct(position.getLoanBorrow().getTaxWithholdingRate())
             .tradeDate(position.getTradeDate().toLocalDate())
             .termType(buildTermType(position.getTermId()))
-            .termDate(position.getEndDate().toLocalDate()) // todo ask how to handle NPE
+            .termDate(retrieveEndDate(position.getEndDate(), position.getTermId()))
             .settlementDate(position.getSettleDate().toLocalDate())
             .settlementType(buildSettlementType(position.getDeliverFree()))
             .collateral(buildCollateral(position))
@@ -134,18 +139,28 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .build();
     }
 
+    private LocalDate retrieveEndDate(LocalDateTime endDate, Integer termId) {
+        if (endDate == null || termId == null) {
+            return null;
+        }
+        return termId.equals(0) ? endDate.toLocalDate() : null;
+    }
+
     private Settlement createLenderSettlement(Position position) {
         return Settlement.builder()
             .partyRole(LENDER)
             .settlementStatus(SettlementStatus.NONE)
             .instruction(buildInstruction(position))
+            .internalAcctCd(String.valueOf(position.getPositionAccount().getAccountId()))
             .build();
     }
 
     private SettlementInstruction buildInstruction(Position position) {
         return SettlementInstruction.builder()
-            .settlementBic("XYZXUS01XXX") //hardcoded for the demo
-            .localAgentBic("1234ABC") // hardcoded for the demo
+            .settlementBic("DTCYUS33") //todo hardcoded for the demo
+            .localAgentBic("ZYXXUS01XXX") // hardcoded for the demo
+            .localAgentName("ABC1234") // hardcoded for the demo
+            .localAgentAcct("1234ABC") // hardcoded for the demo
             .dtcParticipantNumber(String.valueOf(position.getPositionAccount().getDtc()))
             .build();
     }
@@ -164,10 +179,16 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Collateral buildCollateral(Position position) {
+        CollateralType collateralType = null;
+        if (position.getPositionType().getIsCash() != null) {
+            collateralType = position.getPositionType().getIsCash() ? CollateralType.CASH : null;
+        }
         return Collateral.builder()
             .contractPrice(position.getPrice())
+            .contractValue(position.getAmount())
             .collateralValue(position.getAmount())
             .currency(position.getCurrency().getCurrencyKy())
+            .type(collateralType)
             .margin(position.getCpHaircut()) // todo check if percentage format
             .roundingRule(position.getCpMarkRoundTo())
             .roundingMode(ALWAYSUP)
@@ -190,8 +211,9 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private Party buildBorrowerParty(Position position) {
         return Party.builder()
-            .partyId(String.valueOf(position.getPositionCpAccount().getOneSourceId()))
+            .partyId(position.getPositionCpAccount().getOneSourceId())
             .gleifLei(position.getCpLei())
+            .partyName(position.getPositionCpAccount().getOneSourceId()) // hardcode for demo
             .build();
     }
 
@@ -205,8 +227,9 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
 
     private Party buildLenderParty(Position position) {
         return Party.builder()
-            .partyId(String.valueOf(position.getPositionAccount().getOneSourceId()))
+            .partyId(position.getPositionAccount().getOneSourceId())
             .gleifLei(position.getAccountLei())
+            .partyName(position.getPositionAccount().getOneSourceId()) // hardcode for demo
             .build();
     }
 
@@ -234,9 +257,10 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Rate buildFixedRebateRateFromPosition(Position position) {
+        LocalDate accrualDate = position.getAccrualDate() == null ? null : position.getAccrualDate().toLocalDate();
         FixedRate fixedRate = FixedRate.builder()
-            .effectiveRate(position.getRate())
-            .effectiveDate(position.getAccrualDate().toLocalDate())
+            .baseRate(position.getRate())
+            .effectiveDate(accrualDate)
             .build();
         RebateRate rebateRate = RebateRate.builder()
             .fixed(fixedRate)
@@ -247,13 +271,14 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     private Rate buildFloatingRebateRateFromPosition(Position position) {
-        final double baseRate = position.getRate() - position.getIndex().getSpread();
+        final double baseRate = position.getRate() - position.getIndex().getSpread(); // todo check the Math
+        LocalDate accrualDate = position.getAccrualDate() == null ? null : position.getAccrualDate().toLocalDate();
         FloatingRate floatingRate = FloatingRate.builder()
             .benchmark(Benchmark.valueOf(position.getIndex().getIndexName()))
             .baseRate(baseRate)
             .spread(position.getIndex().getSpread())
             .isAutoRerate(false)
-            .effectiveDate(position.getAccrualDate().toLocalDate())
+            .effectiveDate(accrualDate)
             .build();
         RebateRate rebateRate = RebateRate.builder()
             .floating(floatingRate)
@@ -266,6 +291,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     private Instrument buildInstrumentFromPosition(Position position) {
         final PositionSecurityDetail positionSecurityDetail = position.getPositionSecurityDetail();
         if (positionSecurityDetail != null) {
+            String figi = createFigiFromPositionDetail(positionSecurityDetail);
             return Instrument.builder()
                 .ticker(positionSecurityDetail.getTicker())
                 .cusip(positionSecurityDetail.getCusip())
@@ -273,10 +299,27 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
                 .sedol(positionSecurityDetail.getSedol())
                 .quickCode(positionSecurityDetail.getQuickCode())
                 .price(buildPriceFromPosition(position))
+                .figi(figi)
                 .build();
 
         }
         return null;
+    }
+
+    private String createFigiFromPositionDetail(PositionSecurityDetail positionSecurityDetail) {
+        final String ticker = positionSecurityDetail.getTicker();
+        if (StringUtils.isEmpty(ticker)) {
+            return null;
+        }
+        return switch (ticker) {
+            case "WMT" -> "BBG000BWXBC2";
+            case "AMZN" -> "BBG000BVPV84";
+            case "AAPL" -> "BBG000B9XRY4";
+            case "MSFT" -> "BBG000BPH459";
+            case "CVS" -> "BBG000BGRY34";
+            case "UNH" -> "BBG000CH5208";
+            default -> null;
+        };
     }
 
     private Price buildPriceFromPosition(Position position) {

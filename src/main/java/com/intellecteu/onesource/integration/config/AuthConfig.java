@@ -19,7 +19,7 @@ public class AuthConfig {
     @Value("${onesource.auth.realm}")
     private String realm;
 
-    @Value("${onesource.auth.resource}")
+    @Value("${onesource.auth.client-id}")
     private String clientId;
 
     @Value("${onesource.auth.credentials.secret}")

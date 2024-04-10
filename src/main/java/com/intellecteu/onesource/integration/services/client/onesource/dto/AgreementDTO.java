@@ -30,7 +30,7 @@ public class AgreementDTO {
   private LocalDateTime lastUpdateDatetime = null;
 
   @JsonProperty("trade")
-  private TradeAgreementDTO trade = null;
+  private VenueTradeAgreementDTO trade = null;
 
   public AgreementDTO agreementId(String agreementId) {
     this.agreementId = agreementId;
@@ -68,7 +68,7 @@ public class AgreementDTO {
     this.lastUpdateDatetime = lastUpdateDatetime;
   }
 
-  public AgreementDTO trade(TradeAgreementDTO trade) {
+  public AgreementDTO trade(VenueTradeAgreementDTO trade) {
     this.trade = trade;
     return this;
   }
@@ -78,11 +78,11 @@ public class AgreementDTO {
    * @return trade
   **/
   @Schema(description = "")
-  public TradeAgreementDTO getTrade() {
+  public VenueTradeAgreementDTO getTrade() {
     return trade;
   }
 
-  public void setTrade(TradeAgreementDTO trade) {
+  public void setTrade(VenueTradeAgreementDTO trade) {
     this.trade = trade;
   }
 

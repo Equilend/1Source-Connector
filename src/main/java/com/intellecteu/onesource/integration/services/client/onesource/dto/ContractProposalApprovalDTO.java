@@ -26,7 +26,7 @@ public class ContractProposalApprovalDTO {
   private String internalRefId = null;
 
   @JsonProperty("roundingRule")
-  private Double roundingRule = null;
+  private Integer roundingRule = null;
 
   @JsonProperty("roundingMode")
   private RoundingModeDTO roundingMode = null;
@@ -52,7 +52,7 @@ public class ContractProposalApprovalDTO {
     this.internalRefId = internalRefId;
   }
 
-  public ContractProposalApprovalDTO roundingRule(Double roundingRule) {
+  public ContractProposalApprovalDTO roundingRule(Integer roundingRule) {
     this.roundingRule = roundingRule;
     return this;
   }
@@ -62,11 +62,11 @@ public class ContractProposalApprovalDTO {
    * @return roundingRule
   **/
   @Schema(description = "")
-  public Double getRoundingRule() {
+  public Integer getRoundingRule() {
     return roundingRule;
   }
 
-  public void setRoundingRule(Double roundingRule) {
+  public void setRoundingRule(Integer roundingRule) {
     this.roundingRule = roundingRule;
   }
 

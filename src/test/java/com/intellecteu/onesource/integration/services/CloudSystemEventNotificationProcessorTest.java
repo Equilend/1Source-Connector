@@ -1,15 +1,14 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.intellecteu.onesource.integration.EntityTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.mapper.CloudSystemEventMapper;
-import com.intellecteu.onesource.integration.repository.CloudEventRepository;
-import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
+import com.intellecteu.onesource.integration.mapper.JsonMapper;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.routes.common.processor.CloudEventNotificationProcessor;
 import java.util.Set;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -21,18 +20,16 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class CloudSystemEventNotificationProcessorTest {
 
-    private static final String SPIRE_TOPIC_FIELD = "spireTopic";
     private static final String SPIRE_TOPIC_VALUE = "testTopic";
 
     @Mock
     private KafkaTemplate<String, String> kafkaTemplate;
     @Mock
-    private CloudEventRepository repository;
+    private CloudEventService cloudEventService;
 
     private CloudSystemEventMapper eventMapper;
 
@@ -41,22 +38,20 @@ class CloudSystemEventNotificationProcessorTest {
     @BeforeEach
     void setUp() {
         eventMapper = Mappers.getMapper(CloudSystemEventMapper.class);
-        service = new CloudEventNotificationProcessor(kafkaTemplate, repository, eventMapper);
-        ReflectionTestUtils.setField(service, SPIRE_TOPIC_FIELD, SPIRE_TOPIC_VALUE);
+        eventMapper.setJsonMapper(new JsonMapper(createTestObjectMapper()));
+        service = new CloudEventNotificationProcessor(kafkaTemplate, cloudEventService, eventMapper, SPIRE_TOPIC_VALUE);
     }
 
     @Test
     void sendAllEvents() {
-        CloudSystemEventEntity cloudEventEntity = EntityTestFactory.createSystemEventEntity();
-        when(repository.findAllWhereProcessingStatusIsNull()).thenReturn(Set.of(cloudEventEntity));
+        CloudSystemEvent cloudEvent = ModelTestFactory.buildCloudEventModel();
+        when(cloudEventService.getNotProcessedEvents()).thenReturn(Set.of(cloudEvent));
         when(kafkaTemplate.send(any(ProducerRecord.class))).thenReturn(null);
-        doNothing().when(repository).updateProcessingStatusById(any(), any());
 
         service.sendAllEvents();
 
-        verify(repository).findAllWhereProcessingStatusIsNull();
+        verify(cloudEventService).getNotProcessedEvents();
         verify(kafkaTemplate).send(any(ProducerRecord.class));
-        verify(repository).updateProcessingStatusById(any(), any());
     }
 
     @Test

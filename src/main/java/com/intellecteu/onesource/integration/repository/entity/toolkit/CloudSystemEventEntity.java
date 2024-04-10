@@ -4,7 +4,7 @@ package com.intellecteu.onesource.integration.repository.entity.toolkit;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SystemEventDataEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -71,7 +71,7 @@ public class CloudSystemEventEntity {
 
     @Column(name = "processingstatus")
     @Enumerated(value = EnumType.STRING)
-    private ProcessingStatus processingStatus;
+    private CloudEventProcessingStatus processingStatus;
 
     public void setData(SystemEventDataEntity data) {
         this.data = data;
@@ -109,7 +109,7 @@ public class CloudSystemEventEntity {
 
     public CloudSystemEventEntity(String id, String specVersion, String type, String source, String subject,
         LocalDateTime time, String relatedProcess, String relatedSubProcess, String dataContentType,
-        SystemEventDataEntity data, ProcessingStatus processingStatus) {
+        SystemEventDataEntity data, CloudEventProcessingStatus processingStatus) {
         this.id = id;
         this.specVersion = specVersion;
         this.type = type;

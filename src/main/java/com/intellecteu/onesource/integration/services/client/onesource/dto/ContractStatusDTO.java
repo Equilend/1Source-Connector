@@ -25,9 +25,7 @@ public enum ContractStatusDTO {
   CANCELED("CANCELED"),
   DECLINED("DECLINED"),
   OPEN("OPEN"),
-  CLOSED("CLOSED"),
-  SPLIT_PENDING("SPLIT_PENDING"),
-  SPLIT_DECLINED("SPLIT_DECLINED");
+  CLOSED("CLOSED");
 
   private String value;
 

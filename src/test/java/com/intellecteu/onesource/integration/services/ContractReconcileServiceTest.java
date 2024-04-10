@@ -62,7 +62,7 @@ class ContractReconcileServiceTest {
     @Order(2)
     @DisplayName("Throw exception on reconciliation fail for venueRefId")
     void reconcile_shouldThrowException_whenReconciliationFailOnVenueRefId() {
-        contract.getTrade().getVenue().setVenueRefKey("customValue");
+        contract.getTrade().getVenues().get(0).setVenueRefKey("customValue");
 
         verifyReconciliationFailure();
     }

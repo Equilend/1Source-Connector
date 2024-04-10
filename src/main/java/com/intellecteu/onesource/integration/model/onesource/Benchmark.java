@@ -7,7 +7,6 @@ public enum Benchmark {
     EFFR("EFFR"),
     OBFR("OBFR"),
     TGCR("TGCR"),
-    BFCR("BFCR"),
     SOFR("SOFR"),
     BGCR("BGCR");
 

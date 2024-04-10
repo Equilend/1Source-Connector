@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
@@ -24,8 +23,8 @@ import java.util.Objects;
 
 
 public class TradeAgreementDTO {
-  @JsonProperty("executionVenue")
-  private VenueDTO executionVenue = null;
+  @JsonProperty("venues")
+  private VenuesDTO venues = null;
 
   @JsonProperty("instrument")
   private InstrumentDTO instrument = null;
@@ -33,11 +32,8 @@ public class TradeAgreementDTO {
   @JsonProperty("rate")
   private OneOfTradeAgreementRateDTODTO rate = null;
 
-  @JsonProperty("openQuantity")
-  private BigDecimal openQuantity = null;
-
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("billingCurrency")
   private CurrencyCdDTO billingCurrency = null;
@@ -66,22 +62,22 @@ public class TradeAgreementDTO {
   @JsonProperty("transactingParties")
   private TransactingPartiesDTO transactingParties = null;
 
-  public TradeAgreementDTO executionVenue(VenueDTO executionVenue) {
-    this.executionVenue = executionVenue;
+  public TradeAgreementDTO venues(VenuesDTO venues) {
+    this.venues = venues;
     return this;
   }
 
    /**
-   * Get executionVenue
-   * @return executionVenue
+   * Get venues
+   * @return venues
   **/
   @Schema(description = "")
-  public VenueDTO getExecutionVenue() {
-    return executionVenue;
+  public VenuesDTO getVenues() {
+    return venues;
   }
 
-  public void setExecutionVenue(VenueDTO executionVenue) {
-    this.executionVenue = executionVenue;
+  public void setVenues(VenuesDTO venues) {
+    this.venues = venues;
   }
 
   public TradeAgreementDTO instrument(InstrumentDTO instrument) {
@@ -120,25 +116,7 @@ public class TradeAgreementDTO {
     this.rate = rate;
   }
 
-  public TradeAgreementDTO openQuantity(BigDecimal openQuantity) {
-    this.openQuantity = openQuantity;
-    return this;
-  }
-
-   /**
-   * Get openQuantity
-   * @return openQuantity
-  **/
-  @Schema(description = "")
-  public BigDecimal getOpenQuantity() {
-    return openQuantity;
-  }
-
-  public void setOpenQuantity(BigDecimal openQuantity) {
-    this.openQuantity = openQuantity;
-  }
-
-  public TradeAgreementDTO quantity(BigDecimal quantity) {
+  public TradeAgreementDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -148,11 +126,11 @@ public class TradeAgreementDTO {
    * @return quantity
   **/
   @Schema(required = true, description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 
@@ -328,10 +306,9 @@ public class TradeAgreementDTO {
       return false;
     }
     TradeAgreementDTO tradeAgreement = (TradeAgreementDTO) o;
-    return Objects.equals(this.executionVenue, tradeAgreement.executionVenue) &&
+    return Objects.equals(this.venues, tradeAgreement.venues) &&
         Objects.equals(this.instrument, tradeAgreement.instrument) &&
         Objects.equals(this.rate, tradeAgreement.rate) &&
-        Objects.equals(this.openQuantity, tradeAgreement.openQuantity) &&
         Objects.equals(this.quantity, tradeAgreement.quantity) &&
         Objects.equals(this.billingCurrency, tradeAgreement.billingCurrency) &&
         Objects.equals(this.dividendRatePct, tradeAgreement.dividendRatePct) &&
@@ -346,7 +323,7 @@ public class TradeAgreementDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(executionVenue, instrument, rate, openQuantity, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
+    return Objects.hash(venues, instrument, rate, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
   }
 
 
@@ -355,10 +332,9 @@ public class TradeAgreementDTO {
     StringBuilder sb = new StringBuilder();
     sb.append("class TradeAgreementDTO {\n");
     
-    sb.append("    executionVenue: ").append(toIndentedString(executionVenue)).append("\n");
+    sb.append("    venues: ").append(toIndentedString(venues)).append("\n");
     sb.append("    instrument: ").append(toIndentedString(instrument)).append("\n");
     sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
-    sb.append("    openQuantity: ").append(toIndentedString(openQuantity)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    billingCurrency: ").append(toIndentedString(billingCurrency)).append("\n");
     sb.append("    dividendRatePct: ").append(toIndentedString(dividendRatePct)).append("\n");

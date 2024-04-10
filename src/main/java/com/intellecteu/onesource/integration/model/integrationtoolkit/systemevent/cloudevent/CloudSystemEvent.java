@@ -6,10 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.Record;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.Recordable;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
-import jakarta.persistence.Column;
 import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 @Slf4j
 @Builder
+@AllArgsConstructor
 public class CloudSystemEvent implements Record {
 
     private String id;
@@ -33,8 +34,10 @@ public class CloudSystemEvent implements Record {
     private String relatedSubProcess;
     @JsonProperty("datacontenttype")
     private String dataContentType;
-    @Column(name = "data")
+    @JsonProperty("data")
     private SystemEventData eventData;
+    @JsonIgnore
+    private CloudEventProcessingStatus processingStatus;
 
     @SuppressWarnings("unchecked")
     @Override
@@ -62,20 +65,5 @@ public class CloudSystemEvent implements Record {
 
     public CloudSystemEvent() {
         id = UUID.randomUUID().toString();
-    }
-
-    public CloudSystemEvent(String id, String specVersion, String type, String source, String subject,
-        LocalDateTime time,
-        String relatedProcess, String relatedSubProcess, String dataContentType, SystemEventData eventData) {
-        this.id = id;
-        this.specVersion = specVersion;
-        this.type = type;
-        this.source = source;
-        this.subject = subject;
-        this.time = time;
-        this.relatedProcess = relatedProcess;
-        this.relatedSubProcess = relatedSubProcess;
-        this.dataContentType = dataContentType;
-        this.eventData = eventData;
     }
 }

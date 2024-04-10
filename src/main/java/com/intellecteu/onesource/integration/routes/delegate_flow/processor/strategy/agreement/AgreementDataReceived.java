@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor.strategy.agreement;
 
-import static com.intellecteu.onesource.integration.model.enums.FlowStatus.POSITION_RETRIEVED;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -12,7 +11,6 @@ import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.FlowStatus;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.services.AgreementService;
@@ -40,17 +38,17 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
     @Override
     @Transactional
     public void process(Agreement agreement) {
-        retrievePositionForTrade(agreement);
-        saveAgreementWithStage(agreement, POSITION_RETRIEVED);
-
-        if (agreement.getProcessingStatus() == ProcessingStatus.CREATED) {
-            String venueRefId = agreement.getTrade().getVenue().getVenueRefKey();
-            positionService.findByVenueRefId(venueRefId)
-                .ifPresent(position -> {
-                    processMatchingPosition(agreement, spireMapper.toPositionDto(position));
+//        retrievePositionForTrade(agreement);
+//        saveAgreementWithStage(agreement, POSITION_RETRIEVED);
+//
+//        if (agreement.getProcessingStatus() == ProcessingStatus.CREATED) {
+//            String venueRefId = agreement.getTrade().getVenue().getVenueRefKey();
+//            positionService.findByVenueRefId(venueRefId)
+//                .ifPresent(position -> {
+//                    processMatchingPosition(agreement, spireMapper.toPositionDto(position));
 //                    log.debug("Start reconciliation from AgreementDataReceived strategy");
 //                    reconcile(agreement, spireMapper.toPositionDto(position));
-                });
+//                });
         }
 // todo temporary commented out potentially obsolete flow
 
@@ -62,29 +60,29 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
 //            agreement.setEventType(EventType.TRADE_AGREED);
 //            saveAgreementWithStage(agreement, FlowStatus.PROCESSED);
 //        }
-    }
+//    }
 
-    private Position retrievePositionForTrade(Agreement agreement) {
-        var lenderPosition = retrievePositionForLender(agreement);
-        var borrowerPosition = retrievePositionForBorrower(agreement);
-        return lenderPosition == null ? borrowerPosition : lenderPosition;
-    }
+//    private Position retrievePositionForTrade(Agreement agreement) {
+//        var lenderPosition = retrievePositionForLender(agreement);
+//        var borrowerPosition = retrievePositionForBorrower(agreement);
+//        return lenderPosition == null ? borrowerPosition : lenderPosition;
+//    }
 
-    private Position retrievePositionForLender(Agreement agreement) {
-        TradeAgreement trade = agreement.getTrade();
-        String venueRefId = trade.getVenue().getVenueRefKey();
-        try {
-            return lenderBackOfficeService.getPositionForTrade(venueRefId).orElse(null);
-        } catch (PositionRetrievementException e) {
-            handlePositionRetrievementException(agreement, e, venueRefId, trade);
-            return null;
-        }
-    }
+//    private Position retrievePositionForLender(Agreement agreement) {
+//        TradeAgreement trade = agreement.getTrade();
+//        String venueRefId = trade.getVenue().getVenueRefKey();
+//        try {
+//            return lenderBackOfficeService.getPositionForTrade(venueRefId).orElse(null);
+//        } catch (PositionRetrievementException e) {
+//            handlePositionRetrievementException(agreement, e, venueRefId, trade);
+//            return null;
+//        }
+//    }
 
     private void handlePositionRetrievementException(Agreement agreement, PositionRetrievementException e,
         String venueRefId, TradeAgreement trade) {
         var msg = format("The position related to the trade : %s negotiated on %s on %s has not been recorded in SPIRE",
-            venueRefId, agreement.getTrade().retrieveVenueName(), agreement.getTrade().getTradeDate());
+            venueRefId, agreement.getTrade(), agreement.getTrade().getTradeDate());
         log.warn(msg);
         if (e.getCause() instanceof HttpStatusCodeException exception) {
             final HttpStatusCode statusCode = exception.getStatusCode();
@@ -97,7 +95,7 @@ public class AgreementDataReceived extends AbstractAgreementProcessStrategy {
 
     private Position retrievePositionForBorrower(Agreement agreement) {
         TradeAgreement trade = agreement.getTrade();
-        String venueRefId = trade.getVenue().getVenueRefKey();
+        String venueRefId = "trade.getVenue().getVenueRefKey()";
         try {
             return borrowerBackOfficeService.getPositionForTrade(venueRefId).orElse(null);
         } catch (PositionRetrievementException e) {

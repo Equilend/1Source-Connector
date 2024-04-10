@@ -30,19 +30,19 @@
 -- VALUES (9411, 119.57, 1799411.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
 --        (6532, 119.57, 1799411.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
 --
--- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key)
--- VALUES (9411, '9411', 'ONPLATFORM', 'testLenderVenueName', '9411'),
---        (6532, '6532', 'ONPLATFORM', 'testBorrowerVenueName', '6532');
---
--- INSERT INTO trade (id, venue_id, instrument_id, rate_id, quantity, currency,
+-- INSERT INTO trade (id, instrument_id, rate_id, quantity, currency,
 --                    dividend_rate, trade_date, term_type, term_date, settlement_date,
 --                    settlement_type, collateral)
--- VALUES  (6532, 6532, 6532, 6532, 6532.0, 'USD',
+-- VALUES  (6532, 6532, 6532, 6532.0, 'USD',
 --          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
 --          'DVP', 6532),
---         (9411, 9411, 9411, 9411, 15000, 'USD',
+--         (9411, 9411, 9411, 15000, 'USD',
 --          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
 --          'DVP', 9411);
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key, trade_id)
+-- VALUES (9411, '9411', 'ONPLATFORM', 'testLenderVenueName', '9411', 9411),
+--        (6532, '6532', 'ONPLATFORM', 'testBorrowerVenueName', '6532', 6532);
 --
 -- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
 -- VALUES (9411, '32b71278-9ad2-445a-bfb0-b5ada72f9411', 'PENDING', 9411, '9411', 'CREATED'),

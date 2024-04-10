@@ -96,6 +96,19 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
         .end();
 
+        from(buildGetPositionByStatusQuery(CREATED))
+            .routeId("GetNewPositionsAndMatchIfBorrower")
+            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower.")
+            .bean(backOfficeMapper, "toModel")
+                .choice()
+                    .when(method(IntegrationUtils.class, "isBorrower"))
+                        .bean(positionProcessor, "matchContractProposalAsBorrower")
+                .endChoice()
+            .end()
+            .log("<<< Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower "
+                + "with expected processing statuses: Contract[MATCHED]")
+            .end();
+
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
             .routeId("PostLoanContractProposal")
             .log(">>> Started POST_LOAN_CONTRACT_PROPOSAL subprocess")
@@ -110,30 +123,16 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "with expected processing statuses: Position[SUBMITTED, UPDATE_SUBMITTED]")
         .end();
 
-        from(buildGetPositionByStatusQuery(CREATED))
-            .routeId("MatchPositionWithContractProposal")
-            .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process.")
-            .bean(backOfficeMapper, "toModel")
-                .choice()
-                    .when(method(IntegrationUtils.class, "isBorrower"))
-                        .bean(positionProcessor, "matchContractProposalAsBorrower")
-                .endChoice()
-            .end()
-            .log("Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process "
-                + "with expected processing statuses: Contract[MATCHED]")
-        .end();
-
         from(buildGetContractByStatusQuery(PROPOSED))
             .routeId("MatchLoanContractProposal")
             .log(">>> Started MATCH_LOAN_CONTRACT_PROPOSAL process.")
             .bean(oneSourceMapper, "toModel")
             .setHeader("currentContract", body())
             .bean(contractProcessor, "matchLenderPosition")
-            .choice()
-            .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
-            .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
-            .end()
-            .end()
+                .choice()
+                    .when().simple("${body} == false") // if lender was not matched, should execute matching for borrower
+                    .bean(contractProcessor, "matchBorrowerPosition(${header.currentContract})")
+                .end()
             .log("Finished MATCH_LOAN_CONTRACT_PROPOSAL process"
                 + "with expected processing statuses: Contract[MATCHED, UNMATCHED]")
         .end();
@@ -218,6 +217,21 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("<<< Finished POST_POSITION_UPDATE subprocess with expected processing statuses: Position[CONFIRMED]")
         .end();
 
+        from(String.format("timer://eventTimer?period=%d", updateTimer))
+            .routeId("ProcessPositionCanceled")
+            .log(">>> Started PROCESS_POSITION_CANCELED subprocess")
+            .bean(positionProcessor, "retrieveCanceledPositions")
+            .split(body())
+            .bean(positionProcessor, "updatePositionStatus(${body}, CANCELLED)")
+            .bean(positionProcessor, "updateProcessingStatus(${body}, CANCELED)")
+            .setHeader("position", body())
+            .bean(contractProcessor, "instructCancelLoanContract")
+            .filter(simple("${body} == true"))
+                .bean(contractProcessor, "recordPositionCancelSubmittedSystemEvent(${header.position})")
+            .log("<<< Finished PROCESS_POSITION_CANCELED subprocess "
+                + "with expected processing statuses: Position[CANCELED]")
+            .end();
+
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_DECLINED))
             .routeId("GetLoanContractDeclined")
             .log(">>> Started GET_LOAN_CONTRACT_DECLINED subprocess")
@@ -240,7 +254,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log(">>> Started UPDATE_LOAN_CONTRACT_SETTL_STATUS process.")
             .bean(positionProcessor, "getAllByPositionStatus(FUTURE)")
             .bean(positionProcessor, "updateCapturedPositions")
-            .log("Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
+            .log("<<< Finished UPDATE_LOAN_CONTRACT_SETTL_STATUS process"
                 + "with expected processing statuses: Contract_Settlement[SETTLED]")
         .end();
 

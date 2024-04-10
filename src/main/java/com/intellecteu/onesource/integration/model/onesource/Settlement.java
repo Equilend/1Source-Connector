@@ -23,5 +23,6 @@ public class Settlement {
     private SettlementStatus settlementStatus;
     private SettlementInstruction instruction;
     private Long contractId;
+    private String internalAcctCd;
 
 }

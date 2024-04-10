@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.util.Objects;
 /**
  * ContractSplitLotDTO
@@ -24,12 +23,15 @@ import java.util.Objects;
 
 public class ContractSplitLotDTO {
   @JsonProperty("quantity")
-  private BigDecimal quantity = null;
+  private Integer quantity = null;
 
   @JsonProperty("internalRef")
   private InternalReferenceDTO internalRef = null;
 
-  public ContractSplitLotDTO quantity(BigDecimal quantity) {
+  @JsonProperty("settlement")
+  private PartySettlementInstructionDTO settlement = null;
+
+  public ContractSplitLotDTO quantity(Integer quantity) {
     this.quantity = quantity;
     return this;
   }
@@ -39,11 +41,11 @@ public class ContractSplitLotDTO {
    * @return quantity
   **/
   @Schema(description = "")
-  public BigDecimal getQuantity() {
+  public Integer getQuantity() {
     return quantity;
   }
 
-  public void setQuantity(BigDecimal quantity) {
+  public void setQuantity(Integer quantity) {
     this.quantity = quantity;
   }
 
@@ -65,6 +67,24 @@ public class ContractSplitLotDTO {
     this.internalRef = internalRef;
   }
 
+  public ContractSplitLotDTO settlement(PartySettlementInstructionDTO settlement) {
+    this.settlement = settlement;
+    return this;
+  }
+
+   /**
+   * Get settlement
+   * @return settlement
+  **/
+  @Schema(description = "")
+  public PartySettlementInstructionDTO getSettlement() {
+    return settlement;
+  }
+
+  public void setSettlement(PartySettlementInstructionDTO settlement) {
+    this.settlement = settlement;
+  }
+
 
   @Override
   public boolean equals(Object o) {
@@ -76,12 +96,13 @@ public class ContractSplitLotDTO {
     }
     ContractSplitLotDTO contractSplitLot = (ContractSplitLotDTO) o;
     return Objects.equals(this.quantity, contractSplitLot.quantity) &&
-        Objects.equals(this.internalRef, contractSplitLot.internalRef);
+        Objects.equals(this.internalRef, contractSplitLot.internalRef) &&
+        Objects.equals(this.settlement, contractSplitLot.settlement);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(quantity, internalRef);
+    return Objects.hash(quantity, internalRef, settlement);
   }
 
 
@@ -92,6 +113,7 @@ public class ContractSplitLotDTO {
     
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    internalRef: ").append(toIndentedString(internalRef)).append("\n");
+    sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
     sb.append("}");
     return sb.toString();
   }

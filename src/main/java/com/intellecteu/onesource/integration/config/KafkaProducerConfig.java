@@ -8,6 +8,7 @@ import static org.apache.kafka.clients.producer.ProducerConfig.VALUE_SERIALIZER_
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.kafka.common.config.SaslConfigs;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,13 +22,13 @@ public class KafkaProducerConfig {
 
     private final static String AUTH_SECRET = "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"%s\" password=\"%s\";";
 
-    @Value("${notification.spire.bootstrap-server}")
+    @Value("${spire.kafka.producer.bootstrap-server}")
     private String bootstrapServer;
 
-    @Value("${notification.spire.auth.key}")
+    @Value("${spire.kafka.producer.auth.key}")
     private String key;
 
-    @Value("${notification.spire.auth.secret}")
+    @Value("${spire.kafka.producer.auth.secret}")
     private String secret;
 
     @Bean
@@ -36,7 +37,7 @@ public class KafkaProducerConfig {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(BOOTSTRAP_SERVERS_CONFIG, bootstrapServer);
         configProps.put(KEY_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProps.put(VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configProps.put(SECURITY_PROTOCOL_CONFIG, "SASL_SSL");
         configProps.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         configProps.put(SaslConfigs.SASL_JAAS_CONFIG, saslConfig);

@@ -23,6 +23,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
+import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.EQUALS;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.GREATER_THAN;
@@ -44,6 +45,7 @@ import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.PositionStatusEnum;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
@@ -105,10 +107,9 @@ public class BackOfficeService {
     private final CloudEventRecordService cloudEventRecordService;
 
     @Deprecated(since = "0.0.5-SNAPSHOT")
-    public List<Position> getNewSpirePositionsObsolete(Optional<String> lastPositionId) {
-        String maxPositionId = lastPositionId.orElse(STARTING_POSITION_ID);
+    public List<Position> getNewSpirePositionsObsolete(String lastPositionId) {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewPositions(maxPositionId));
+            .tuples(createTuplesGetNewPositions(lastPositionId));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
@@ -136,11 +137,10 @@ public class BackOfficeService {
         tradeSpireApiClient.confirmAndBatchPendingPositionsUsingPOST(null, confirmationDto);
     }
 
-    public List<Position> getNewSpirePositions(Optional<String> lastPositionId) {
-        String lastTradeIdRecorded = lastPositionId.orElse(String.valueOf(STARTING_TRADE_ID));
+    public List<Position> getNewSpirePositions(String lastTradeId) {
         NQuery nQuery = new NQuery()
             .andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTradePositions(lastTradeIdRecorded));
+            .tuples(createTuplesGetNewTradePositions(lastTradeId));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         try {
             log.debug("Sending request with SPIRE API Client");
@@ -298,19 +298,36 @@ public class BackOfficeService {
         return List.of();
     }
 
+    public List<Position> retrieveCancelledPositions(List<Position> persistedPositions) {
+        NQueryRequest nQueryRequest = buildRetrieveCancelledPositionsRequest(persistedPositions);
+        final ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
+            .getPositions(nQueryRequest);
+        if (responseHasData(response)) {
+            List<PositionOutDTO> updatedPositions = response.getBody().getData().getBeans();
+            return updatedPositions.stream().map(backOfficeMapper::toModel).toList();
+        }
+        return List.of();
+    }
+
     private NQueryRequest buildRetrieveOpenedPositionsRequest(List<Position> positionList) {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
-            .tuples(createTuplesGetOpenedPositions(positionList));
+            .tuples(createTuplesGetPositionsByPositionStatus(positionList, OPEN));
+        return new NQueryRequest().nQuery(nQuery);
+    }
+    private NQueryRequest buildRetrieveCancelledPositionsRequest(List<Position> positionList) {
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
+            .tuples(createTuplesGetPositionsByPositionStatus(positionList, CANCELLED));
         return new NQueryRequest().nQuery(nQuery);
     }
 
-    private List<NQueryTuple> createTuplesGetOpenedPositions(List<Position> positionList) {
+    private List<NQueryTuple> createTuplesGetPositionsByPositionStatus(List<Position> positionList,
+        PositionStatusEnum positionStatus) {
         String idListSequence = positionList.stream()
             .map(position -> String.valueOf(position.getPositionId()))
             .collect(Collectors.joining(","));
         return List.of(
             buildTuple(POSITION_ID, IN, idListSequence),
-            buildTuple(STATUS, EQUALS, OPEN.name())
+            buildTuple(STATUS, EQUALS, positionStatus.getValue())
         );
     }
 

@@ -8,13 +8,13 @@
 --                       sedol, quick_code, price_factor, rate, end_date,
 --                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
 --                       settle_date, deliver_free, amount, price,
---                        cp_haircut, cp_mark_round_to, depo_id, position_type,
+--                        cp_haircut, cp_mark_round_to, depo_id, position_type, is_cash,
 --                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
 --                       index_id, index_name, spread, accrual_date)
--- VALUES ('22', '22', '123', '023135107', 'US0231351068',
---         '2000010', '456', 0, 0.05, '2023-12-25 13:50:41.633000',
---         22.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
+-- VALUES ('22', '22', 'WMT', '023135107', 'US0231351068',
+--         '2000010', '456', 0, 0.05, '2023-12-26 13:55:41.633000',
+--         22, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
---         1.02, 0, 0, 'CASH LOAN',
+--         1.02, 1, 0, 'CASH LOAN', true,
 --         22, 44, '22', '44', 'CREATED', 'PENDING ONESOURCE CONFIRMATION',
---         123, 'EFFR', 11.0, '2023-10-25 13:50:41.633000');
+--         123, 'Fixed Rate', 11.0, '2023-10-25 13:50:41.633000');

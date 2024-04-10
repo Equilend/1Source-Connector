@@ -54,7 +54,6 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEn
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenuePartyEntity;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -113,10 +112,10 @@ public class EntityApiTestFactory {
     public static TradeAgreementEntity buildTradeAgreement() {
         return TradeAgreementEntity.builder()
             .id(1L)
-            .venue(buildVenueEntity())
+            .venues(List.of(buildVenueEntity()))
             .instrument(buildInstrumentEntity())
             .rate(buildRateEntity())
-            .quantity(BigDecimal.valueOf(2L))
+            .quantity(2)
             .billingCurrency(USD)
             .dividendRatePct(2d)
             .tradeDate(LocalDate.now())
