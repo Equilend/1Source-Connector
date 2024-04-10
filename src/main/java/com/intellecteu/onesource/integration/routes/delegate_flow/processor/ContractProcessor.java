@@ -10,6 +10,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.INSTRUCT_LOAN_CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -26,6 +27,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
@@ -295,9 +297,11 @@ public class ContractProcessor {
         try {
             return oneSourceService.instructCancelLoanContract(position.getMatching1SourceLoanContractId());
         } catch (HttpStatusCodeException e) {
-            log.debug("Capture cloud event for instruct cancel loan contract");
+            String record = position.getMatching1SourceLoanContractId();
+            String related = String.valueOf(position.getPositionId());
+            record1SourceTechnicalEvent(record, e, INSTRUCT_LOAN_CONTRACT_CANCELLATION, related, CONTRACT_CANCELLATION);
+            return false;
         }
-        return false;
     }
 
     public void instructContractApprovalAsBorrower(@NonNull Contract contract) {
@@ -438,13 +442,6 @@ public class ContractProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordTechnicalEvent(String recorded, HttpStatusCodeException exception,
-        IntegrationSubProcess subProcess, String related) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
-        cloudEventRecordService.record(recordRequest);
-    }
-
     public void recordApprovedSystemEvent(@NonNull Contract contract) {
         String related = format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
@@ -506,6 +503,32 @@ public class ContractProcessor {
         var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
     }
+
+    private void recordTechnicalEvent(String recorded, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordTechnicalEvent(IntegrationProcess process, String record,
+        HttpStatusCodeException exception, IntegrationSubProcess subProcess, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildExceptionRequest(record, exception, subProcess, related);
+        cloudEventRecordService.record(recordRequest);
+
+    }
+
+    private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related, IntegrationProcess process) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, TECHNICAL_EXCEPTION_1SOURCE)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordTechnicalEvent(process, record, exception, subProcess, related)
+            );
+    }
+
+
 
     private Contract saveContractAsMatched(Contract contract, Position position) {
         contract.setMatchingSpirePositionId(position.getPositionId());

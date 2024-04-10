@@ -9,10 +9,18 @@ public class RecordMessageConstant {
     public static class ContractCancellation {
 
         public static class Subject {
+            public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT = """
+            Capture of canceled positions - %s""";
+            public static final String INSTRUCT_CONTRACT_CANCEL_SUBJECT = "Position - %s";
             public static final String POSITION_CANCEL_SUBMITTED_SUBJECT = "Position - %s";
         }
 
         public static class DataMsg {
+            public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_MSG = """
+                Canceled positions cannot be captured from SPIRE for the following reason: %s""";
+
+            public static final String INSTRUCT_CONTRACT_CANCEL_MSG = """
+                The loan contract: %s (SPIRE position: %s) cannot be cancelled for the following reason: %s""";
             public static final String POSITION_CANCEL_SUBMITTED_MSG = """
                 The position %s related to 1Source loan contract %s has been canceled.""";
         }
