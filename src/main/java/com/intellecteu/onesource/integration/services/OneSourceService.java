@@ -132,12 +132,17 @@ public class OneSourceService {
     }
 
     public void approveRerate(String contractId, String rerateId) {
-        ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdApprovePostWithHttpInfo(
+        reratesApi.ledgerContractsContractIdReratesRerateIdApprovePostWithHttpInfo(
             contractId, rerateId);
     }
 
     public void declineRerate(String contractId, String rerateId){
-        ResponseEntity<LedgerResponseDTO> ledgerResponseDTOResponseEntity = reratesApi.ledgerContractsContractIdReratesRerateIdDeclinePostWithHttpInfo(
+        reratesApi.ledgerContractsContractIdReratesRerateIdDeclinePostWithHttpInfo(
+            contractId, rerateId);
+    }
+
+    public void cancelRerate(String contractId, String rerateId){
+        reratesApi.ledgerContractsContractIdReratesRerateIdCancelPostWithHttpInfo(
             contractId, rerateId);
     }
 

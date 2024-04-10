@@ -2,8 +2,11 @@ package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPLIED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RERATE_PROPOSED;
@@ -97,7 +100,7 @@ class RerateEventProcessorTest {
     }
 
     @Test
-    void processRerateAppliedEvent_ReratePendingEvent_savedRerate() {
+    void processRerateAppliedEvent_RerateAppliedEvent_savedRerate() {
         TradeEvent event = new TradeEvent();
         event.setEventType(RERATE_APPLIED);
         event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006/");
@@ -117,7 +120,7 @@ class RerateEventProcessorTest {
     }
 
     @Test
-    void processRerateDeclinedEvent_ReratePendingEvent_savedRerate() {
+    void processRerateDeclinedEvent_RerateDecliedEvent_savedRerate() {
         TradeEvent event = new TradeEvent();
         event.setEventType(RERATE_DECLINED);
         event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
@@ -133,6 +136,65 @@ class RerateEventProcessorTest {
 
         assertEquals(DECLINED, rerate.getProcessingStatus());
         assertNull(rerateTrade.getMatchingRerateId());
+        verify(rerateService, times(1)).saveRerate(any());
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void processRerateCanceledEvent_RerateCanceledEventAndNotApprovedRerate_savedCANCELEDRerateAndDelinkedRerateTrade() {
+        TradeEvent event = new TradeEvent();
+        event.setEventType(RERATE_CANCELED);
+        event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("1");
+        rerate.setMatchingSpireTradeId(1l);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setMatchingRerateId("1");
+        doReturn(rerateTrade).when(rerateTradeService).getByTradeId(any());
+
+        rerateEventProcessor.processRerateCanceledEvent(event);
+
+        assertEquals(CANCELED, rerate.getProcessingStatus());
+        assertNull(rerateTrade.getMatchingRerateId());
+        verify(rerateService, times(1)).saveRerate(any());
+        verify(rerateTradeService, times(1)).save(any(RerateTrade.class));
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void processRerateCanceledEvent_RerateCanceledEventAndApprovedRerate_savedCANCELEDRerate() {
+        TradeEvent event = new TradeEvent();
+        event.setEventType(RERATE_CANCELED);
+        event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("1");
+        rerate.setMatchingSpireTradeId(1l);
+        rerate.setProcessingStatus(APPROVED);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+
+        rerateEventProcessor.processRerateCanceledEvent(event);
+
+        assertEquals(CANCELED, rerate.getProcessingStatus());
+        verify(rerateService, times(1)).saveRerate(any());
+        verify(rerateTradeService, times(0)).save(any(RerateTrade.class));
+        verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void processReratePendingCancelEvent_ReratePendingCancelEvent_savedRerate() {
+        TradeEvent event = new TradeEvent();
+        event.setEventType(RERATE_CANCELED);
+        event.setResourceUri("/v1/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006");
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("1");
+        rerate.setMatchingSpireTradeId(1l);
+        rerate.setProcessingStatus(APPROVED);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+
+        rerateEventProcessor.processReratePendingCancelEvent(event);
+
+        assertEquals(CANCEL_PENDING, rerate.getProcessingStatus());
         verify(rerateService, times(1)).saveRerate(any());
         verify(cloudEventRecordService, times(1)).record(any());
     }

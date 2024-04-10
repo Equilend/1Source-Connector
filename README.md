@@ -161,6 +161,12 @@ Integration tests + skip Unit tests:
 | spring.flyway.user                             | YES      | postgres                                         | Username for the db.                                                                               |
 | spring.jackson.date-format                     | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
 | starting-trade-event-datetime                  | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
+| kafka.consumer.bootstrap-server                         | YES      | localhost:29092                                  | A bootstrap server for the Kafka for consumer                                                      |
+| kafka.consumer.username                                 | YES      | kafka-user                                       | A user for authorization for the Kafka consumer                                                    |
+| kafka.consumer.password                                 | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
+| kafka.consumer.listener.correction-instruction.group-id | YES      | it-ci                                            | Kafka group-id  for correction instruction                                                         |
+| kafka.consumer.listener.correction-instruction.topic    | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
+
 
 ### 4.1 System environments for the build
 
@@ -207,7 +213,11 @@ Integration tests + skip Unit tests:
 | spring.flyway.url                              | DB_URL                                   |
 | spring.flyway.user                             | DB_USERNAME                              |
 | starting-trade-event-datetime                  | CAMEL_TIMESTAMP                          |
-|                                                |                                          |
+| kafka.consumer.bootstrap-server                         | SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER                |
+| kafka.consumer.username                                 | SPIRE_KAFKA_CONSUMER_USERNAME                        |
+| kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |
+| kafka.consumer.listener.correction-instruction.group-id | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID |
+| kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
 
 ## 5.1 Generated DTO based on swagger
 

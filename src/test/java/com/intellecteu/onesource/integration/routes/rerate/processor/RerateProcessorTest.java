@@ -23,13 +23,15 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.CorrectionInstruction;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
-import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.CorrectionInstructionService;
 import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
@@ -53,11 +55,9 @@ import org.springframework.web.client.HttpClientErrorException;
 class RerateProcessorTest {
 
     @Mock
-    private BackOfficeService lenderBackOfficeService;
+    private BackOfficeService backOfficeService;
     @Mock
     private BackOfficeService borrowerBackOfficeService;
-    @Mock
-    private ContractService contractService;
     @Mock
     private RerateTradeService rerateTradeService;
     @Mock
@@ -68,6 +68,8 @@ class RerateProcessorTest {
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private DeclineInstructionService declineInstructionService;
+    @Mock
+    private CorrectionInstructionService correctionInstructionService;
     @Mock
     private OneSourceService oneSourceService;
 
@@ -80,9 +82,9 @@ class RerateProcessorTest {
         RerateCloudEventBuilder cloudEventBuildRequest = mock(RerateCloudEventBuilder.class);
         doReturn(cloudEventBuildRequest).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
-        rerateProcessor = new RerateProcessor(lenderBackOfficeService, borrowerBackOfficeService, oneSourceService,
-            contractService, rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
-            cloudEventRecordService);
+        rerateProcessor = new RerateProcessor(backOfficeService, oneSourceService,
+            rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
+            correctionInstructionService, cloudEventRecordService);
     }
 
     @Test
@@ -90,7 +92,7 @@ class RerateProcessorTest {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
         List<RerateTrade> lenderRerateTradeList = List.of(rerateTrade);
-        doReturn(lenderRerateTradeList).when(lenderBackOfficeService).getNewBackOfficeRerateTradeEvents(any());
+        doReturn(lenderRerateTradeList).when(backOfficeService).getNewBackOfficeRerateTradeEvents(any());
 
         List<RerateTrade> rerateTradeList = rerateProcessor.fetchNewRerateTrades();
 
@@ -243,7 +245,7 @@ class RerateProcessorTest {
     void confirmRerateTrade_NotOkResponse_RecordTechnicalExceptionEvent() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(lenderBackOfficeService)
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(backOfficeService)
             .confirmBackOfficeRerateTrade(any());
 
         RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
@@ -276,5 +278,42 @@ class RerateProcessorTest {
         DeclineInstruction result = rerateProcessor.declineRerate(declineInstruction);
 
         verify(cloudEventRecordService, times(1)).record(any());
+    }
+
+    @Test
+    void amendRerateTrade_existRerateTrade_REPLACEDStatus() {
+        long oldTradeId = 1l;
+        long amendedTradeId = 2l;
+        CorrectionInstruction correctionInstruction = new CorrectionInstruction();
+        correctionInstruction.setOldTradeId(oldTradeId);
+        correctionInstruction.setAmendedTradeId(amendedTradeId);
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(oldTradeId);
+        rerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
+        RerateTrade newRerateTrade = new RerateTrade();
+        newRerateTrade.setTradeId(amendedTradeId);
+        doReturn(rerateTrade).when(rerateTradeService).getByTradeId(oldTradeId);
+        doReturn(newRerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
+
+        CorrectionInstruction result = rerateProcessor.amendRerateTrade(correctionInstruction);
+
+        assertEquals(ProcessingStatus.REPLACED, rerateTrade.getProcessingStatus());
+    }
+
+    @Test
+    void cancelRerateTrade_existRerateTrade_CANCELEDDStatus() {
+        long oldTradeId = 1l;
+        long amendedTradeId = 2l;
+        CorrectionInstruction correctionInstruction = new CorrectionInstruction();
+        correctionInstruction.setOldTradeId(oldTradeId);
+        correctionInstruction.setAmendedTradeId(amendedTradeId);
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(amendedTradeId);
+        rerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
+        doReturn(rerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
+
+        CorrectionInstruction result = rerateProcessor.cancelRerateTrade(correctionInstruction);
+
+        assertEquals(ProcessingStatus.CANCELED, rerateTrade.getProcessingStatus());
     }
 }
