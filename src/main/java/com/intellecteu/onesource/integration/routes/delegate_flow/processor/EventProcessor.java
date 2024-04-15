@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FlowStatus.TRADE_DATA_RECEIVED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
@@ -168,6 +169,15 @@ public class EventProcessor {
             .ifPresentOrElse(
                 cloudEventRecordService::updateTime,
                 () -> recordToolkitTechnicalEvent(CONTRACT_INITIATION, resourceUri, GET_LOAN_CONTRACT_DECLINED));
+    }
+
+    public void recordContractCancelIssue(TradeEvent event) {
+        String resourceUri = event.getResourceUri();
+        cloudEventRecordService.getToolkitCloudEventId(resourceUri,
+                GET_LOAN_CONTRACT_CANCELED, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(CONTRACT_INITIATION, resourceUri, GET_LOAN_CONTRACT_CANCELED));
     }
 
     private void recordToolkitTechnicalEvent(IntegrationProcess process, String record,

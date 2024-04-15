@@ -13,6 +13,9 @@ public interface PositionRepository extends JpaRepository<PositionEntity, Long> 
 
     Optional<PositionEntity> getByPositionId(Long positionId);
 
+    @Query("select p from PositionEntity p where p.positionId = :positionId and p.positionType.positionType = :type")
+    Optional<PositionEntity> getByPositionIdAndType(Long positionId, String type);
+
     @Query("select p from PositionEntity p where p.matching1SourceLoanContractId is null "
         + "and (p.processingStatus = 'SUBMITTED' or p.processingStatus = 'UPDATE_SUBMITTED')"
         + "and p.positionId = :positionId")

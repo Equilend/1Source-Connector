@@ -2,12 +2,15 @@ package com.intellecteu.onesource.integration.services.systemevent;
 
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.CAPTURE_POSITION_CANCELED_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.INSTRUCT_CONTRACT_CANCEL_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.LOAN_CONTRACT_CANCELED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.POSITION_CANCEL_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.INSTRUCT_CONTRACT_CANCEL_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.LOAN_CONTRACT_CANCELED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.POSITION_CANCEL_SUBMITTED_SUBJECT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.INSTRUCT_LOAN_CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
@@ -63,6 +66,7 @@ public class ContractCancellationCloudEventBuilder extends IntegrationCloudEvent
     public CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related) {
         return switch (recordType) {
             case POSITION_CANCEL_SUBMITTED -> positionCancelSubmitted(recorded, recordType, related);
+            case LOAN_CONTRACT_CANCELED -> loanContractCanceled(recorded, recordType, related);
             default -> null;
         };
     }
@@ -79,6 +83,17 @@ public class ContractCancellationCloudEventBuilder extends IntegrationCloudEvent
             format(POSITION_CANCEL_SUBMITTED_SUBJECT, related),
             CONTRACT_CANCELLATION,
             CAPTURE_POSITION_CANCELED,
+            createEventData(dataMessage, getLoanContractRelatedToPosition(recorded, related))
+        );
+    }
+
+    private CloudEventBuildRequest loanContractCanceled(String recorded, RecordType recordType, String related) {
+        String dataMessage = format(LOAN_CONTRACT_CANCELED_MSG, recorded, related);
+        return createRecordRequest(
+            recordType,
+            format(LOAN_CONTRACT_CANCELED_SUBJECT, related),
+            CONTRACT_CANCELLATION,
+            GET_LOAN_CONTRACT_CANCELED,
             createEventData(dataMessage, getLoanContractRelatedToPosition(recorded, related))
         );
     }

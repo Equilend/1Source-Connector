@@ -1,11 +1,14 @@
 package com.intellecteu.onesource.integration.services;
 
+import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FAILED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import java.time.LocalDateTime;
@@ -67,6 +70,21 @@ public class PositionService {
     public Optional<Position> getByPositionId(Long positionId) {
         Optional<PositionEntity> positionEntity = positionRepository.getByPositionId(positionId);
         return positionEntity.map(backOfficeMapper::toModel);
+    }
+
+    public Optional<Position> getByPositionIdAndRole(Long positionId, PartyRole partyRole) {
+        String positionType = null;
+        if (PartyRole.BORROWER == partyRole) {
+            positionType = BORROWER_POSITION_TYPE;
+        }
+        if (PartyRole.LENDER == partyRole) {
+            positionType = LENDER_POSITION_TYPE;
+        }
+        if (positionType == null) {
+            return Optional.empty();
+        }
+        Optional<PositionEntity> position = positionRepository.getByPositionIdAndType(positionId, positionType);
+        return position.map(backOfficeMapper::toModel);
     }
 
     public Optional<Position> getNotMatchedByPositionId(Long positionId) {

@@ -1,0 +1,23 @@
+Prepared local migration data: V2024.04.12.13.00__EINT23-543_get_loan_proposal_canceled.sql
+
+1. Proposal test:
+    a) Insert to the database event
+        - eventType = 'CONTRACT_CANCELED';
+        - resourceUri should contain the id of the persisted contract
+
+    b) Insert to the database the loan contract:
+        - the contract should be 'PROPOSED';
+        - the contract should have `contract.getMatchingSpirePositionId() == null`;
+
+    c) Insert to the database related position:
+        - the position type should be 'CASH BORROW'.
+
+
+Prepared local migration data: V2024.04.12.14.00__EINT23-543_get_loan_contract_canceled.sql
+2. Contract test:
+        a) Insert to the database event
+            - eventType = 'CONTRACT_CANCELED';
+            - resourceUri should contain the id of the persisted contract
+
+        b) Insert to the database the loan contract:
+            - the contract should NOT be 'PROPOSED';
