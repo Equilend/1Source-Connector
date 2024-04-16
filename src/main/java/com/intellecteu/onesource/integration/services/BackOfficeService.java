@@ -18,9 +18,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Re
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
@@ -314,6 +312,7 @@ public class BackOfficeService {
             .tuples(createTuplesGetPositionsByPositionStatus(positionList, OPEN));
         return new NQueryRequest().nQuery(nQuery);
     }
+
     private NQueryRequest buildRetrieveCancelledPositionsRequest(List<Position> positionList) {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
             .tuples(createTuplesGetPositionsByPositionStatus(positionList, CANCELLED));
@@ -336,24 +335,13 @@ public class BackOfficeService {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
-        try {
-            ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
-            if (response.getBody().getData() != null
-                && response.getBody().getData().getTotalRows() != null
-                && response.getBody().getData().getTotalRows() > 0) {
-                List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
-                return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
-                    .collect(Collectors.toList());
-            }
-        } catch (RestClientException e) {
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatusCode statusCode = exception.getStatusCode();
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_TRADE_EVENTS_PENDING_CONFIRMATION, statusCode);
-                    recordTradeEventExceptionEvent(exception);
-                }
-            }
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
+                .collect(Collectors.toList());
         }
         return List.of();
     }
@@ -602,13 +590,6 @@ public class BackOfficeService {
         final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(
             position.getMatching1SourceLoanContractId(), exception, IntegrationSubProcess.POST_POSITION_UPDATE,
             String.valueOf(position.getPositionId()));
-        cloudEventRecordService.record(recordRequest);
-    }
-
-    private void recordTradeEventExceptionEvent(HttpStatusCodeException exception) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
-        final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(exception,
-            IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION);
         cloudEventRecordService.record(recordRequest);
     }
 
