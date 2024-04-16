@@ -9,6 +9,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -115,7 +116,7 @@ class RerateProcessorTest {
         rerateTrade.setProcessingStatus(CREATED);
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).instructRerate(any());
 
-        RerateTrade result = rerateProcessor.instructRerateTrade(rerateTrade);
+        assertThrows(HttpClientErrorException.class, () -> rerateProcessor.instructRerateTrade(rerateTrade));
 
         verify(cloudEventRecordService, times(1)).record(any());
     }
@@ -222,11 +223,10 @@ class RerateProcessorTest {
     void approve_NotOkResponse_RecordTechnicalExceptionEvent() {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
-
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService)
             .approveRerate(any(), any());
 
-        Rerate result = rerateProcessor.approveRerate(rerate);
+        assertThrows(HttpClientErrorException.class, () -> rerateProcessor.approveRerate(rerate));
 
         verify(cloudEventRecordService, times(1)).record(any());
     }
@@ -248,7 +248,7 @@ class RerateProcessorTest {
         doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(backOfficeService)
             .confirmBackOfficeRerateTrade(any());
 
-        RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
+        assertThrows(HttpClientErrorException.class, () -> rerateProcessor.confirmRerateTrade(rerateTrade));
 
         verify(cloudEventRecordService, times(1)).record(any());
     }

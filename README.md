@@ -111,113 +111,112 @@ Integration tests + skip Unit tests:
 
 ## 4. Application configuration
 
-| Name                                           | Required | Default                                          | Description                                                                                        |
-|------------------------------------------------|----------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
-| camel.timer                                    | NO       | 100_000                                          | A scheduled timer for Apache camel to pull the information from external systems, in milliseconds. |
-| camel.route.autostart                          | NO       | true                                             | A flag to turn Apache Camel routing off. (As usual used for testing purposes. )                    |
-| spring.datasource.url                          | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db. The default is a link to a docker container.             |
-| cloudevents.source                             | YES      | http://lender-or-borrower.endpoint               | Source of producing cloudevents. Expected the participant's URI                                    |
-| cloudevents.specversion                        | NO       | 1.0                                              | Spec version for Cloud Events.                                                                     |
-| notification.enable                            | YES      | false                                            | Turn on/off events notification to SPIRE Kafka topic.                                              |
-| notification.timer                             | NO       | 100_000                                          | A scheduled timer for the notification process.                                                    |
-| onesource.auth.api.client-id                   | YES      |                                                  | The client-id for the toolkit's API client.                                                        |
-| onesource.auth.api.realm                       | YES      |                                                  | The configured realm for the toolkit's API client authorization.                                   |
-| onesource.auth.api.server-url                  | YES      |                                                  | The 1Source auth server url for the toolkit's API client.                                          |
-| onesource.auth.client-id                       | YES      |                                                  | The client-id of the application.                                                                  |
-| onesource.auth.credentials.secret              | YES      |                                                  | Client secret.                                                                                     |
-| onesource.auth.principal-attribute             | YES      |                                                  | Token attribute to populate the userPrincipal name with.                                           |
-| onesource.auth.public-client                   | NO       | true                                             | If true, the java-adapter will not send credentials for the client to Keycloak.                    |
-| onesource.auth.password                        | YES      |                                                  | User password credentials.                                                                         |
-| onesource.auth.realm                           | YES      |                                                  | The configured realm for authorization.                                                            |
-| onesource.auth.server-url                      | YES      |                                                  | The 1Source auth server url.                                                                       |
-| onesource.auth.username                        | YES      |                                                  | User name credentials.                                                                             |
-| onesource.base-endpoint                        | YES      |                                                  | The endpoint for 1Source environment.                                                              |
-| onesource.version                              | YES      |                                                  | The current 1Source version.                                                                       |
-| route.delegate-flow.contract-initiation.enable | NO       | true                                             | Turn on/off Contract Initiation delegate flow (without trade)                                      |
-| route.delegate-flow.contract-initiation.timer  | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
-| route.delegate-flow.update-position.enable     | NO       | 60000                                            | A turn on/off Update Position route for delegated contract initiation flow.                        |
-| route.delegate-flow.update-position.timer      | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
-| route.position-listener.enable                 | NO       | true                                             | Turn on/off Position Listener route.                                                               |
-| route.position-listener.timer                  | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
-| route.position-listener.update-timer           | NO       | 60000                                            | A scheduled timer for Apache camel to execute update process in the route, in milliseconds.        |
-| route.rerate.enable                            | NO       | true                                             | Turn on/off Rerate route                                                                           |
-| spire.base-endpoint                            | YES      |                                                  | The endpoint for Spire environment.                                                                |
-| spire.kafka.producer.auth.key                  | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
-| spire.kafka.producer.auth.secret               | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
-| spire.kafka.producer.bootstrap-server          | YES      | localhost:9092                                   | A bootstrap server for the Kafka.                                                                  |
-| spire.kafka.producer.topic                     | YES      | TEST.TOPIC                                       | SPIRE Kafka topic to produce events.                                                               |
-| spire.password                                 | YES      |                                                  | Password for Spire connection.                                                                     |
-| spire.user-id                                  | YES      |                                                  | User id for SPIRE connection.                                                                      |
-| spire.username                                 | YES      |                                                  | Username for SPIRE connection.                                                                     |
-| spring.datasource.password                     | YES      | postgres                                         | Password for the db.                                                                               |
-| spring.datasource.username                     | YES      | postgres                                         | Username for the db.                                                                               |
-| spring.flyway.baseline-on-migrate              | NO       | true                                             | Turn of the baseline of the migrations.                                                            |
-| spring.flyway.default-schema                   | YES      | postgres                                         | Default schema name managed by Flyway.                                                             |
-| spring.flyway.enabled                          | NO       | true                                             | Turn off migrations.                                                                               |
-| spring.flyway.locations                        | NO       | classpath:db/migration                           | Location of the SQL migration scripts.                                                             |
-| spring.flyway.password                         | YES      | postgres                                         | Password for the db.                                                                               |
-| spring.flyway.schemas                          | YES      | postgres                                         | The database scheme names managed by Flyway.                                                       |
-| spring.flyway.url                              | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db.                                                          |
-| spring.flyway.user                             | YES      | postgres                                         | Username for the db.                                                                               |
-| spring.jackson.date-format                     | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
-| starting-trade-event-datetime                  | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
-| kafka.consumer.bootstrap-server                         | YES      | localhost:29092                                  | A bootstrap server for the Kafka for consumer                                                      |
-| kafka.consumer.username                                 | YES      | kafka-user                                       | A user for authorization for the Kafka consumer                                                    |
-| kafka.consumer.password                                 | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
-| kafka.consumer.listener.correction-instruction.group-id | YES      | it-ci                                            | Kafka group-id  for correction instruction                                                         |
-| kafka.consumer.listener.correction-instruction.topic    | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
-
+| Name                                                          | Required | Default                                          | Description                                                                                        |
+|---------------------------------------------------------------|----------|--------------------------------------------------|----------------------------------------------------------------------------------------------------|
+| camel.timer                                                   | NO       | 100_000                                          | A scheduled timer for Apache camel to pull the information from external systems, in milliseconds. |
+| camel.route.autostart                                         | NO       | true                                             | A flag to turn Apache Camel routing off. (As usual used for testing purposes. )                    |
+| spring.datasource.url                                         | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db. The default is a link to a docker container.             |
+| cloudevents.source                                            | YES      | http://lender-or-borrower.endpoint               | Source of producing cloudevents. Expected the participant's URI                                    |
+| cloudevents.specversion                                       | NO       | 1.0                                              | Spec version for Cloud Events.                                                                     |
+| notification.enable                                           | YES      | false                                            | Turn on/off events notification to SPIRE Kafka topic.                                              |
+| notification.timer                                            | NO       | 100_000                                          | A scheduled timer for the notification process.                                                    |
+| onesource.auth.api.client-id                                  | YES      |                                                  | The client-id for the toolkit's API client.                                                        |
+| onesource.auth.api.realm                                      | YES      |                                                  | The configured realm for the toolkit's API client authorization.                                   |
+| onesource.auth.api.server-url                                 | YES      |                                                  | The 1Source auth server url for the toolkit's API client.                                          |
+| onesource.auth.client-id                                      | YES      |                                                  | The client-id of the application.                                                                  |
+| onesource.auth.credentials.secret                             | YES      |                                                  | Client secret.                                                                                     |
+| onesource.auth.principal-attribute                            | YES      |                                                  | Token attribute to populate the userPrincipal name with.                                           |
+| onesource.auth.public-client                                  | NO       | true                                             | If true, the java-adapter will not send credentials for the client to Keycloak.                    |
+| onesource.auth.password                                       | YES      |                                                  | User password credentials.                                                                         |
+| onesource.auth.realm                                          | YES      |                                                  | The configured realm for authorization.                                                            |
+| onesource.auth.server-url                                     | YES      |                                                  | The 1Source auth server url.                                                                       |
+| onesource.auth.username                                       | YES      |                                                  | User name credentials.                                                                             |
+| onesource.base-endpoint                                       | YES      |                                                  | The endpoint for 1Source environment.                                                              |
+| onesource.version                                             | YES      |                                                  | The current 1Source version.                                                                       |
+| route.delegate-flow.contract-initiation.enable                | NO       | true                                             | Turn on/off Contract Initiation delegate flow (without trade)                                      |
+| route.delegate-flow.contract-initiation.timer                 | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
+| route.delegate-flow.update-position.enable                    | NO       | 60000                                            | A turn on/off Update Position route for delegated contract initiation flow.                        |
+| route.delegate-flow.update-position.timer                     | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
+| route.position-listener.enable                                | NO       | true                                             | Turn on/off Position Listener route.                                                               |
+| route.position-listener.timer                                 | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
+| route.position-listener.update-timer                          | NO       | 60000                                            | A scheduled timer for Apache camel to execute update process in the route, in milliseconds.        |
+| route.rerate.enable                                           | NO       | true                                             | Turn on/off Rerate route                                                                           |
+| spire.base-endpoint                                           | YES      |                                                  | The endpoint for Spire environment.                                                                |
+| spire.kafka.producer.auth.key                                 | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
+| spire.kafka.producer.auth.secret                              | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
+| spire.kafka.producer.bootstrap-server                         | YES      | localhost:9092                                   | A bootstrap server for the Kafka.                                                                  |
+| spire.kafka.producer.topic                                    | YES      | TEST.TOPIC                                       | SPIRE Kafka topic to produce events.                                                               |
+| spire.password                                                | YES      |                                                  | Password for Spire connection.                                                                     |
+| spire.user-id                                                 | YES      |                                                  | User id for SPIRE connection.                                                                      |
+| spire.username                                                | YES      |                                                  | Username for SPIRE connection.                                                                     |
+| spring.datasource.password                                    | YES      | postgres                                         | Password for the db.                                                                               |
+| spring.datasource.username                                    | YES      | postgres                                         | Username for the db.                                                                               |
+| spring.flyway.baseline-on-migrate                             | NO       | true                                             | Turn of the baseline of the migrations.                                                            |
+| spring.flyway.default-schema                                  | YES      | postgres                                         | Default schema name managed by Flyway.                                                             |
+| spring.flyway.enabled                                         | NO       | true                                             | Turn off migrations.                                                                               |
+| spring.flyway.locations                                       | NO       | classpath:db/migration                           | Location of the SQL migration scripts.                                                             |
+| spring.flyway.password                                        | YES      | postgres                                         | Password for the db.                                                                               |
+| spring.flyway.schemas                                         | YES      | postgres                                         | The database scheme names managed by Flyway.                                                       |
+| spring.flyway.url                                             | YES      | jdbc:postgresql://1source-postgres:5432/postgres | The connection url for the relational db.                                                          |
+| spring.flyway.user                                            | YES      | postgres                                         | Username for the db.                                                                               |
+| spring.jackson.date-format                                    | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
+| starting-trade-event-datetime                                 | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
+| spire.kafka.consumer.bootstrap-server                         | YES      | localhost:29092                                  | A bootstrap server for the Kafka for consumer                                                      |
+| spire.kafka.consumer.username                                 | YES      | kafka-user                                       | A user for authorization for the Kafka consumer                                                    |
+| spire.kafka.consumer.password                                 | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
+| spire.kafka.consumer.listener.correction-instruction.group-id | YES      | it-ci                                            | Kafka group-id  for correction instruction                                                         |
+| spire.kafka.consumer.listener.correction-instruction.topic    | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
 
 ### 4.1 System environments for the build
 
-| Property Name                                  | System environment                       |
-|------------------------------------------------|------------------------------------------|
-| camel.timer                                    | CAMEL_TIMER                              |
-| cloudevents.source                             | CLOUD_EVENTS_SOURCE                      |
-| notification.enable                            | NOTIFICATION_ENABLE                      |
-| notification.timer                             | NOTIFICATION_TIMER                       |
-| route.delegate-flow.contract-initiation.enable | CI_DELEGATE_FLOW_ENABLE                  |
-| route.delegate-flow.contract-initiation.timer  | CI_DELEGATE_FLOW_TIMER                   |
-| route.delegate-flow.update-position.enable     | UP_DELEGATE_FLOW_ENABLE                  |
-| route.delegate-flow.update-position.timer      | UP_DELEGATE_FLOW_TIMER                   |
-| route.position-listener.enable                 | POSITION_LISTENER_ENABLE                 |
-| route.position-listener.timer                  | POSITION_LISTENER_NEW_POSITIONS_TIMER    |
-| route.position-listener.update-timer           | POSITION_LISTENER_UPDATE_POSITIONS_TIMER |
-| route.rerate.enable                            | RERATE_ROUTE                             |
-| onesource.auth.api.client-id                   | 1SOURCE_AUTH_API_CLIENT_ID               |
-| onesource.auth.api.realm                       | 1SOURCE_AUTH_API_REALM                   |
-| onesource.auth.api.server-url                  | 1SOURCE_AUTH_API_URL                     |
-| onesource.auth.client-id                       | 1SOURCE_AUTH_CLIENT_ID                   |
-| onesource.auth.credentials.secret              | 1SOURCE_AUTH_CLIENT_SECRET               |
-| onesource.auth.password                        | 1SOURCE_AUTH_USER_PASSWORD               |
-| onesource.auth.principal-attribute             | 1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE         |
-| onesource.auth.realm                           | 1SOURCE_AUTH_REALM                       |
-| onesource.auth.server-url                      | 1SOURCE_AUTH_URL                         |
-| onesource.auth.username                        | 1SOURCE_AUTH_USER_NAME                   |
-| onesource.base-endpoint                        | 1SOURCE_ENDPOINT                         |
-| onesource.version                              | 1SOURCE_VERSION                          |
-| spire.base-endpoint                            | SPIRE_BASE_ENDPOINT                      |
-| spire.kafka.producer.auth.key                  | SPIRE_KAFKA_KEY                          |
-| spire.kafka.producer.auth.secret               | SPIRE_KAFKA_SECRET                       |
-| spire.kafka.producer.bootstrap-server          | SPIRE_KAFKA_BOOTSTRAP_SERVER             |
-| spire.kafka.producer.topic                     | SPIRE_KAFKA_TOPIC                        |
-| spire.password                                 | SPIRE_PASSWORD                           |
-| spire.user-id                                  | SPIRE_USER_ID                            |
-| spire.username                                 | SPIRE_USERNAME                           |
-| spring.datasource.password                     | DB_PASSWORD                              |
-| spring.datasource.url                          | DB_URL                                   |
-| spring.datasource.username                     | DB_USERNAME                              |
-| spring.flyway.default-schema                   | DB_SCHEMA                                |
-| spring.flyway.password                         | DB_PASSWORD                              |
-| spring.flyway.schemas                          | DB_SCHEMA                                |
-| spring.flyway.url                              | DB_URL                                   |
-| spring.flyway.user                             | DB_USERNAME                              |
-| starting-trade-event-datetime                  | CAMEL_TIMESTAMP                          |
-| kafka.consumer.bootstrap-server                         | SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER                |
-| kafka.consumer.username                                 | SPIRE_KAFKA_CONSUMER_USERNAME                        |
-| kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |
-| kafka.consumer.listener.correction-instruction.group-id | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID |
-| kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
+| Property Name                                                 | System environment                                   |
+|---------------------------------------------------------------|------------------------------------------------------|
+| camel.timer                                                   | CAMEL_TIMER                                          |
+| cloudevents.source                                            | CLOUD_EVENTS_SOURCE                                  |
+| notification.enable                                           | NOTIFICATION_ENABLE                                  |
+| notification.timer                                            | NOTIFICATION_TIMER                                   |
+| route.delegate-flow.contract-initiation.enable                | CI_DELEGATE_FLOW_ENABLE                              |
+| route.delegate-flow.contract-initiation.timer                 | CI_DELEGATE_FLOW_TIMER                               |
+| route.delegate-flow.update-position.enable                    | UP_DELEGATE_FLOW_ENABLE                              |
+| route.delegate-flow.update-position.timer                     | UP_DELEGATE_FLOW_TIMER                               |
+| route.position-listener.enable                                | POSITION_LISTENER_ENABLE                             |
+| route.position-listener.timer                                 | POSITION_LISTENER_NEW_POSITIONS_TIMER                |
+| route.position-listener.update-timer                          | POSITION_LISTENER_UPDATE_POSITIONS_TIMER             |
+| route.rerate.enable                                           | RERATE_ROUTE                                         |
+| onesource.auth.api.client-id                                  | 1SOURCE_AUTH_API_CLIENT_ID                           |
+| onesource.auth.api.realm                                      | 1SOURCE_AUTH_API_REALM                               |
+| onesource.auth.api.server-url                                 | 1SOURCE_AUTH_API_URL                                 |
+| onesource.auth.client-id                                      | 1SOURCE_AUTH_CLIENT_ID                               |
+| onesource.auth.credentials.secret                             | 1SOURCE_AUTH_CLIENT_SECRET                           |
+| onesource.auth.password                                       | 1SOURCE_AUTH_USER_PASSWORD                           |
+| onesource.auth.principal-attribute                            | 1SOURCE_AUTH_PRINCIPAL_ATTRIBUTE                     |
+| onesource.auth.realm                                          | 1SOURCE_AUTH_REALM                                   |
+| onesource.auth.server-url                                     | 1SOURCE_AUTH_URL                                     |
+| onesource.auth.username                                       | 1SOURCE_AUTH_USER_NAME                               |
+| onesource.base-endpoint                                       | 1SOURCE_ENDPOINT                                     |
+| onesource.version                                             | 1SOURCE_VERSION                                      |
+| spire.base-endpoint                                           | SPIRE_BASE_ENDPOINT                                  |
+| spire.kafka.producer.auth.key                                 | SPIRE_KAFKA_KEY                                      |
+| spire.kafka.producer.auth.secret                              | SPIRE_KAFKA_SECRET                                   |
+| spire.kafka.producer.bootstrap-server                         | SPIRE_KAFKA_BOOTSTRAP_SERVER                         |
+| spire.kafka.producer.topic                                    | SPIRE_KAFKA_TOPIC                                    |
+| spire.password                                                | SPIRE_PASSWORD                                       |
+| spire.user-id                                                 | SPIRE_USER_ID                                        |
+| spire.username                                                | SPIRE_USERNAME                                       |
+| spring.datasource.password                                    | DB_PASSWORD                                          |
+| spring.datasource.url                                         | DB_URL                                               |
+| spring.datasource.username                                    | DB_USERNAME                                          |
+| spring.flyway.default-schema                                  | DB_SCHEMA                                            |
+| spring.flyway.password                                        | DB_PASSWORD                                          |
+| spring.flyway.schemas                                         | DB_SCHEMA                                            |
+| spring.flyway.url                                             | DB_URL                                               |
+| spring.flyway.user                                            | DB_USERNAME                                          |
+| starting-trade-event-datetime                                 | CAMEL_TIMESTAMP                                      |
+| spire.kafka.consumer.bootstrap-server                         | SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER                |
+| spire.kafka.consumer.username                                 | SPIRE_KAFKA_CONSUMER_USERNAME                        |
+| spire.kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |
+| spire.kafka.consumer.listener.correction-instruction.group-id | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID |
+| spire.kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
 
 ## 5.1 Generated DTO based on swagger
 

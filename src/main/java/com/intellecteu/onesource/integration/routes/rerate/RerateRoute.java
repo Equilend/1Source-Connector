@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
@@ -68,22 +69,33 @@ public class RerateRoute extends RouteBuilder {
     private final BackOfficeMapper backOfficeMapper;
     private final DeclineInstructionMapper declineInstructionMapper;
     private final CorrectionInstructionMapper correctionInstructionMapper;
+    private final Integer redeliveryPolicyMaxRedeliveries;
+    private final String redeliveryPolicyDelayPattern;
 
     @Autowired
     public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
         BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper,
-        CorrectionInstructionMapper correctionInstructionMapper) {
+        CorrectionInstructionMapper correctionInstructionMapper,@Value("${route.rerate.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
+        @Value("${route.rerate.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern) {
         this.rerateProcessor = rerateProcessor;
         this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
         this.backOfficeMapper = backOfficeMapper;
         this.declineInstructionMapper = declineInstructionMapper;
         this.correctionInstructionMapper = correctionInstructionMapper;
+        this.redeliveryPolicyMaxRedeliveries = redeliveryPolicyMaxRedeliveries;
+        this.redeliveryPolicyDelayPattern = redeliveryPolicyDelayPattern;
     }
 
     @Override
     //@formatter:off
     public void configure() throws Exception {
+        onException(Exception.class)
+            .maximumRedeliveries(redeliveryPolicyMaxRedeliveries)
+            .delayPattern(redeliveryPolicyDelayPattern)
+            .handled(true)
+            .log("Caught an error: ${exception.message}")
+            .end();
 
         from("timer://eventTimer?period={{camel.newBackOfficeTradeEventTimer}}")
             .routeId("NewBackOfficeRerateTradeRoute")
