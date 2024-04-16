@@ -210,12 +210,6 @@ public class ModelTestFactory {
             .build();
     }
 
-    public static Agreement buildAgreement() {
-        var agreementDto = DtoTestFactory.buildAgreementDto();
-        var om = createTestObjectMapper();
-        return om.convertValue(agreementDto, Agreement.class);
-    }
-
     public static TradeOut buildSpireTrade(String tradeType) {
         return TradeOut.builder()
             .tradeId(34L)

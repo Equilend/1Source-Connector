@@ -16,6 +16,7 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -34,7 +35,7 @@ public class UpdatePositionProcessor {
     private final PositionService positionService;
     private final BackOfficeService backOfficeService;
     private final ContractService contractService;
-    private final OneSourceApiClient oneSourceApiClient;
+    private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
 
     public List<TradeOut> fetchUpdatesOnPositions(List<Position> initialPositions) {
@@ -150,7 +151,8 @@ public class UpdatePositionProcessor {
         return contractService.findByPositionId(position.getPositionId())
             .map(contract -> {
                 final String matchedContractId = position.getMatching1SourceLoanContractId();
-                return executeCancelRequest(position.getPositionId(), contract, matchedContractId);
+                executeCancelRequest(position.getPositionId(), contract, matchedContractId);
+                return contract;
             })
             .orElse(null); // temporary solution until new flow will be implemented
     }
@@ -160,8 +162,8 @@ public class UpdatePositionProcessor {
         contractOptional.ifPresent(contract -> {
             final String matchedContractId = position.getMatching1SourceLoanContractId();
             if (contract.getProcessingStatus() != DECLINED && matchedContractId.equals(contract.getContractId())) {
-                var canceledContract = executeCancelRequest(position.getPositionId(), contract, matchedContractId);
-                if (canceledContract != null) {
+                var canceled = executeCancelRequest(position.getPositionId(), contract, matchedContractId);
+                if (canceled) {
                     recordPositionCancelSubmittedEvent(contract);
                     contractService.save(contract);
                 }
@@ -169,9 +171,9 @@ public class UpdatePositionProcessor {
         });
     }
 
-    private Contract executeCancelRequest(Long positionId, Contract contract, String matchedContractId) {
+    private boolean executeCancelRequest(Long positionId, Contract contract, String matchedContractId) {
         log.debug("Sending cancel request for contract Id:{}, position Id:{}", matchedContractId, positionId);
-        return oneSourceApiClient.cancelContract(contract); // todo will be reworked to use modern API
+        return oneSourceService.instructCancelLoanContract(contract.getContractId());
     }
 
     public void recordPositionCanceledSystemEvent(Position toCancelPosition) {

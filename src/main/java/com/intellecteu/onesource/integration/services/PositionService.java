@@ -24,8 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class PositionService {
 
-    public final static Set<String> CANCEL_POSITION_STATUSES = Set.of(CANCELLED.getValue(), FAILED.getValue());
-
     private final PositionRepository positionRepository;
     private final BackOfficeMapper backOfficeMapper;
 
@@ -48,14 +46,6 @@ public class PositionService {
         log.debug("Position with id={} with processing status={} was saved.",
             positionEntity.getPositionId(), position.getProcessingStatus());
         return backOfficeMapper.toModel(positionEntity);
-    }
-
-    public Optional<Position> findByVenueRefId(String venueRefId) {
-        return positionRepository.findByVenueRefId(venueRefId).map(backOfficeMapper::toModel);
-    }
-
-    public Optional<Position> findByCustomValue2(String venueRefId) {
-        return positionRepository.findByCustomValue2(venueRefId).map(backOfficeMapper::toModel);
     }
 
     public List<Position> getByMatchingTradeAgreementId(String agreementId) {
@@ -111,11 +101,6 @@ public class PositionService {
             .max(Comparator.naturalOrder())
             .map(String::valueOf)
             .orElse("0");
-    }
-
-    public List<Position> findAllByProcessingStatus(ProcessingStatus status) {
-        return positionRepository.findAllByProcessingStatus(status).stream()
-            .map(backOfficeMapper::toModel).toList();
     }
 
     public List<Position> getAllByPositionStatus(String status) {

@@ -2,7 +2,6 @@ package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.model.onesource.FixedRate.FIXED_INDEX_NAME;
 
-import com.intellecteu.onesource.integration.mapper.EventMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -17,12 +16,14 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.client.onesource.ContractsApi;
+import com.intellecteu.onesource.integration.services.client.onesource.EventsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.EventsDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDefDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
@@ -56,44 +57,33 @@ import org.springframework.web.client.RestClientException;
 public class OneSourceService {
 
     private final OneSourceApiClient oneSourceApiClient;
+    private final EventsApi eventsApi;
     private final ReratesApi reratesApi;
     private final ContractsApi contractsApi;
-    private final EventMapper eventMapper;
     private final OneSourceMapper oneSourceMapper;
 
     @Autowired
-    public OneSourceService(OneSourceApiClient oneSourceApiClient, ReratesApi reratesApi, EventMapper eventMapper,
+    public OneSourceService(OneSourceApiClient oneSourceApiClient, EventsApi eventsApi, ReratesApi reratesApi,
         OneSourceMapper oneSourceMapper,
         @Value("${onesource.base-endpoint}") String onesourceBasePath,
         @Value("${onesource.version}") String onesourceVersion,
         ContractsApi contractsApi) {
         this.oneSourceApiClient = oneSourceApiClient;
+        this.eventsApi = eventsApi;
         this.reratesApi = reratesApi;
         this.contractsApi = contractsApi;
         this.contractsApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
         this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
-        this.eventMapper = eventMapper;
         this.oneSourceMapper = oneSourceMapper;
     }
 
     public List<TradeEvent> retrieveEvents(LocalDateTime lastEventDatetime) {
-        List<TradeEvent> tradeEvents = oneSourceApiClient.retrieveEvents(lastEventDatetime);
-        List<TradeEvent> newEvents = findNewEvents(tradeEvents, lastEventDatetime);
-        return newEvents;
+        EventsDTO eventDTOS = eventsApi.ledgerEventsGet(null, null, lastEventDatetime, null, null);
+        return oneSourceMapper.toTradeEventModelList(eventDTOS);
     }
 
     public Optional<Agreement> retrieveTradeAgreement(String eventUri, EventType eventType) {
         return oneSourceApiClient.findTradeAgreement(eventUri, eventType);
-    }
-
-    //TODO Do we need this logic?
-    @Deprecated
-    private List<TradeEvent> findNewEvents(List<TradeEvent> events, LocalDateTime lastEventDatetime) {
-        return events.stream()
-            .filter(p -> p.getEventDateTime().isAfter(lastEventDatetime))
-            .peek(i -> log.debug("New event Id: {}, Type: {}, Uri: {}, Event Datetime {}",
-                i.getEventId(), i.getEventType(), i.getResourceUri(), i.getEventDateTime()))
-            .toList();
     }
 
     public Contract retrieveContractDetails(String contractId) {
@@ -120,11 +110,6 @@ public class OneSourceService {
         }
     }
 
-    @Transactional
-    public void cancelContract(Contract contract, String positionId) {
-        oneSourceApiClient.cancelContract(contract, positionId);
-    }
-
     public void instructRerate(RerateTrade rerateTrade) {
         RerateProposalDTO body = buildRerateProposal(rerateTrade);
         reratesApi.ledgerContractsContractIdReratesPost(body,
@@ -136,12 +121,12 @@ public class OneSourceService {
             contractId, rerateId);
     }
 
-    public void declineRerate(String contractId, String rerateId){
+    public void declineRerate(String contractId, String rerateId) {
         reratesApi.ledgerContractsContractIdReratesRerateIdDeclinePostWithHttpInfo(
             contractId, rerateId);
     }
 
-    public void cancelRerate(String contractId, String rerateId){
+    public void cancelRerate(String contractId, String rerateId) {
         reratesApi.ledgerContractsContractIdReratesRerateIdCancelPostWithHttpInfo(
             contractId, rerateId);
     }
@@ -209,4 +194,5 @@ public class OneSourceService {
         final SettlementStatusUpdateDTO requestDto = oneSourceMapper.toRequestDto(settlementStatusUpdate);
         contractsApi.ledgerContractsContractIdPatch(contractId, requestDto);
     }
+
 }

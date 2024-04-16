@@ -120,28 +120,6 @@ public class EventProcessor {
         });
     }
 
-    public void cancelContract() {
-        log.debug(">>>>> Starting the Cancel contract process.");
-        List<Contract> proposedContracts = contractService.findAllByContractStatus(PROPOSED);
-        log.debug("Retrieved {} candidatesToCancel in Proposed status.", proposedContracts.size());
-        for (Contract contract : proposedContracts) {
-            log.debug("Requesting Spire position!");
-            //TODO Change logic -> position listener update positions and here we using repository instead of API
-            final String venueRefId = contract.getTrade().getVenues().get(0).getVenueRefKey();
-            List<Position> positions = lenderBackOfficeService.getPositionByVenueRefId(venueRefId);
-            if (!positions.isEmpty()) {
-                Position position = positions.get(0);
-                if (isLender(position) && position.getPositionStatus() != null
-                    && PositionService.CANCEL_POSITION_STATUSES.contains(position.getPositionStatus().getStatus())) {
-                    log.debug("Executing cancellation for contract with id {} and position with id {}",
-                        contract.getContractId(), position.getPositionId());
-                    oneSourceService.cancelContract(contract, String.valueOf(position.getPositionId()));
-                }
-            }
-        }
-        log.debug("<<<<< Finishing Cancel contract process.");
-    }
-
     private Agreement enrichAgreement(Agreement agreement, TradeEvent event) {
         agreement.getTrade().setEventId(event.getEventId());
         agreement.getTrade().setResourceUri(event.getResourceUri());

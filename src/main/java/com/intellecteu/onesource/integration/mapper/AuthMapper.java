@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.auth0.jwt.JWT;
-import com.intellecteu.onesource.integration.dto.AuthToken;
+import com.intellecteu.onesource.integration.model.AuthToken;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;

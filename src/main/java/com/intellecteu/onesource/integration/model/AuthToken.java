@@ -1,4 +1,4 @@
-package com.intellecteu.onesource.integration.dto;
+package com.intellecteu.onesource.integration.model;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

@@ -30,6 +30,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEn
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.EventDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
@@ -155,6 +156,11 @@ public abstract class OneSourceMapper {
     public abstract List<SettlementEntity> toEntityList(List<Settlement> settlement);
 
     public abstract List<Settlement> toModelList(List<SettlementEntity> settlement);
+
+    @Mapping(target = "eventDateTime", source = "eventDatetime")
+    public abstract TradeEvent toModel(EventDTO eventDTO);
+
+    public abstract List<TradeEvent> toTradeEventModelList(List<EventDTO> eventsDTO);
 
     public abstract TradeEvent toModel(TradeEventEntity tradeEventEntity);
 
