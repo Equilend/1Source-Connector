@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
@@ -130,9 +129,9 @@ public class AppConfig {
     public BackOfficeService backOfficeService(PositionSpireApiClient spirePositionApiClient,
         TradeSpireApiClient tradeSpireApiClient, InstructionSpireApiClient instructionClient,
         @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
-        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
+         BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(spirePositionApiClient, tradeSpireApiClient, instructionClient, userId,
-            userName, spireMapper, backOfficeMapper, cloudEventRecordService);
+            userName, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean("lenderBackOfficeService")
@@ -140,9 +139,9 @@ public class AppConfig {
     public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
         TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
         @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
-        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
+        BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient, userId,
-            userName, spireMapper, backOfficeMapper, cloudEventRecordService);
+            userName, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean("borrowerBackOfficeService")
@@ -150,9 +149,9 @@ public class AppConfig {
     public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
         TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
         @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
-        SpireMapper spireMapper, BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
+        BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, instructionClient,
-            userId, userName, spireMapper, backOfficeMapper, cloudEventRecordService);
+            userId, userName, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean

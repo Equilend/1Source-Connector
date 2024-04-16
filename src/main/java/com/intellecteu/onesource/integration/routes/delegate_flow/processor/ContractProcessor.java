@@ -212,7 +212,7 @@ public class ContractProcessor {
         return relatedPosition.map(position -> {
             log.debug("Lender position:{} matches to contract:{}", position.getPositionId(), contract.getContractId());
             final Position savedPosition = updateMatchedContractAndPosition(contract, position);
-            recordLoanProposalMatchedSystemEvent(contract, savedPosition);
+            recordPendingApprovalSystemEvent(contract, savedPosition);
             return true;
         }).orElse(false);
     }

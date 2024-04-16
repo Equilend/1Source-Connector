@@ -16,7 +16,6 @@ import static com.intellecteu.onesource.integration.model.onesource.RoundingMode
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
-import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
@@ -215,12 +214,6 @@ public class EntityApiTestFactory {
         return TradeEventEntity.builder()
             .eventId("1220fd46122abae8bfee44b2b0e85a4949a2d6cdea8207ba9e09b1686884e3468bd3:8")
             .build();
-    }
-
-    public static Agreement buildAgreement() {
-        var agreementDto = DtoTestFactory.buildAgreementDto();
-        var om = createTestObjectMapper();
-        return om.convertValue(agreementDto, Agreement.class);
     }
 
     public static Position buildPosition() {

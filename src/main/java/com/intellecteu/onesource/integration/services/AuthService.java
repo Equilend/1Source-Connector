@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.services;
 
-import com.intellecteu.onesource.integration.dto.AuthToken;
+import com.intellecteu.onesource.integration.model.AuthToken;
 
 public interface AuthService {
 

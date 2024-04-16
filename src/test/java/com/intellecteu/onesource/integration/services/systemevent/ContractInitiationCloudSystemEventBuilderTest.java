@@ -5,7 +5,6 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.intellecteu.onesource.integration.DtoTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
@@ -27,25 +26,25 @@ class ContractInitiationCloudSystemEventBuilderTest {
 
     @Test
     void createTradeAgreementReconcileFailBuildRequest() {
-        var agreement = DtoTestFactory.buildAgreementDto();
-        var position = DtoTestFactory.buildPositionDtoFromTradeAgreement(agreement.getTrade());
+        String agreemenId = "agreementId";
+        var positionId = "1L";
         var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message",
             FieldExceptionType.DISCREPANCY);
         var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message",
             FieldExceptionType.DISCREPANCY);
         var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message",
             FieldExceptionType.DISCREPANCY);
-        var discrepancies = List.of(firstException, secondException, thirdException);
+        List<ProcessExceptionDetails> discrepancies = List.of(firstException, secondException, thirdException);
 
         String expectedDataMsg = """
-            The trade agreement testId is in discrepancies with the position %s in SPIRE.
+            The trade agreement %s is in discrepancies with the position %s in SPIRE.
             List of discrepancies:
             - First test message
             - Second test message
-            - Third test message""".formatted(position.getPositionId());
+            - Third test message""".formatted(agreemenId, positionId);
 
-        CloudEventBuildRequest actualBuildRequest = builder.buildRequest(agreement.getAgreementId(),
-            RecordType.TRADE_AGREEMENT_DISCREPANCIES, position.getPositionId(), discrepancies);
+        CloudEventBuildRequest actualBuildRequest = builder.buildRequest(agreemenId,
+            RecordType.TRADE_AGREEMENT_DISCREPANCIES, positionId.toString(), discrepancies);
 
         final String actualDataMsg = actualBuildRequest.getData().getMessage();
         assertEquals(expectedDataMsg, actualDataMsg);

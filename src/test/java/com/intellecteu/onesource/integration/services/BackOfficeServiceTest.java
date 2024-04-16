@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapperImpl;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
@@ -55,9 +54,6 @@ class BackOfficeServiceTest {
     private String userName = "userName";
 
     @Mock
-    private SpireMapper spireMapper;
-
-    @Mock
     private CloudEventRecordService cloudEventRecordService;
 
     BackOfficeMapperImpl rerateTradeMapper = new BackOfficeMapperImpl();
@@ -67,54 +63,8 @@ class BackOfficeServiceTest {
     @BeforeEach
     void setUp() {
         openMocks(this);
-        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient, userId, userName,
-            spireMapper, rerateTradeMapper, cloudEventRecordService);
-    }
-
-    @Test
-    @DisplayName("Record Unauthorized response in a cloud event.")
-    void testExceptionCloudEventCapturing_whenApiResponseIsUnauthorized() {
-        var expectedExceptionToCapture = new HttpClientErrorException(HttpStatus.UNAUTHORIZED);
-        var recordFactory = new CloudEventFactoryImpl(
-            Map.of(CONTRACT_INITIATION,
-                new ContractInitiationCloudEventBuilder("specVersion", "http://localhost:8000")));
-        var eventBuilder = recordFactory.eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(
-            expectedExceptionToCapture, GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-
-        var argumentCaptor = ArgumentCaptor.forClass(CloudEventBuildRequest.class);
-
-        when(positionSpireApiClient.getPositions(any()))
-            .thenThrow(new HttpClientErrorException(HttpStatus.UNAUTHORIZED));
-        when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
-        doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
-
-        service.getNewSpirePositionsObsolete("0");
-
-        assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
-    }
-
-    @Test
-    @DisplayName("Record Forbidden response in a cloud event.")
-    void testExceptionCloudEventCapturing_whenApiResponseIsForbidden() {
-        var expectedExceptionToCapture = new HttpClientErrorException(HttpStatus.FORBIDDEN);
-        var recordFactory = new CloudEventFactoryImpl(
-            Map.of(CONTRACT_INITIATION,
-                new ContractInitiationCloudEventBuilder("specVersion", "http://localhost:8000")));
-        var eventBuilder = recordFactory.eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(
-            expectedExceptionToCapture, GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-
-        var argumentCaptor = ArgumentCaptor.forClass(CloudEventBuildRequest.class);
-
-        when(positionSpireApiClient.getPositions(any()))
-            .thenThrow(new HttpClientErrorException(HttpStatus.FORBIDDEN));
-        when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
-        doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
-
-        service.getNewSpirePositionsObsolete("0");
-
-        assertTrue(cloudEventsAreEqual(recordRequest, argumentCaptor.getValue()));
+        service = new BackOfficeService(positionSpireApiClient, tradeSpireApiClient, instructionClient, userId,
+            userName, rerateTradeMapper, cloudEventRecordService);
     }
 
     @Test
