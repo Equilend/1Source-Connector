@@ -12,8 +12,10 @@ public class RecordMessageConstant {
             public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT = """
             Capture of canceled positions - %s""";
             public static final String INSTRUCT_CONTRACT_CANCEL_SUBJECT = "Position - %s";
+            public static final String LOAN_CONTRACT_CANCEL_PENDING_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_CANCELED_SUBJECT = "Position - %s";
             public static final String POSITION_CANCEL_SUBMITTED_SUBJECT = "Position - %s";
+            public static final String PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_SUBJECT = "1Source Contract - %s";
         }
 
         public static class DataMsg {
@@ -24,8 +26,16 @@ public class RecordMessageConstant {
                 The loan contract: %s (SPIRE position: %s) cannot be cancelled for the following reason: %s""";
             public static final String LOAN_CONTRACT_CANCELED_MSG = """
                 The loan contract proposal %s matching with the SPIRE position %s has been canceled.""";
+
+            public static final String LOAN_CONTRACT_CANCEL_PENDING_MSG = """
+                The loan contract proposal %s matching with the SPIRE position %s is pending canceled \
+                as per counterparty cancellation request.""";
             public static final String POSITION_CANCEL_SUBMITTED_MSG = """
                 The position %s related to 1Source loan contract %s has been canceled.""";
+
+            public static final String PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_MSG = """
+                The loan contract %s has been marked as pending canceled in 1Source \
+                but the loan contract pending settlement has not been retrieved in the Integration toolkit.""";
         }
     }
 

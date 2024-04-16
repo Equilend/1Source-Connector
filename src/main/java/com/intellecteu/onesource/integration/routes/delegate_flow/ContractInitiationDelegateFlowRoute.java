@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCELED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_DECLINED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
@@ -194,7 +195,6 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                     .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
                 .otherwise()
                     .bean(contractProcessor, "updateContractProcessingStatus(${body}, APPROVED)")
-                    .bean(contractProcessor, "saveContract")
                     .setHeader("contract", body())
                     .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
                     .filter(body().isNotNull())
@@ -285,6 +285,25 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_LOAN_CONTRACT_CANCELED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[CANCELED]")
+            .end();
+
+        from(buildGetNotProcessedTradeEventQuery(CONTRACT_CANCEL_PENDING))
+            .routeId("ProcessLoanContractPendingCancellation")
+            .log(">>> Started PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(contractProcessor, "retrieveContractFromEvent")
+                .choice()
+                    .when(body().isNull())
+                        .bean(eventProcessor, "recordCancelPendingIssue(${header.tradeEvent})")
+                .otherwise()
+                    .bean(contractProcessor, "updateContractStatus(${body}, CANCEL_PENDING)")
+                    .bean(contractProcessor, "updateContractProcessingStatus(${body}, CANCEL_PENDING)")
+                    .bean(contractProcessor, "recordCancelPendingEvent")
+            .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Contract[CANCEL_PENDING]")
             .end();
     }
     private String buildDiscrepanciesContractQuery() {

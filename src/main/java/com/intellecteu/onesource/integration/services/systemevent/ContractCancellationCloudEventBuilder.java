@@ -3,17 +3,23 @@ package com.intellecteu.onesource.integration.services.systemevent;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.CAPTURE_POSITION_CANCELED_EXCEPTION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.INSTRUCT_CONTRACT_CANCEL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.LOAN_CONTRACT_CANCELED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.LOAN_CONTRACT_CANCEL_PENDING_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.POSITION_CANCEL_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.DataMsg.PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.INSTRUCT_CONTRACT_CANCEL_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.LOAN_CONTRACT_CANCELED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.LOAN_CONTRACT_CANCEL_PENDING_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.POSITION_CANCEL_SUBMITTED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractCancellation.Subject.PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_SUBJECT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.INSTRUCT_LOAN_CONTRACT_CANCELLATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -67,13 +73,28 @@ public class ContractCancellationCloudEventBuilder extends IntegrationCloudEvent
         return switch (recordType) {
             case POSITION_CANCEL_SUBMITTED -> positionCancelSubmitted(recorded, recordType, related);
             case LOAN_CONTRACT_CANCELED -> loanContractCanceled(recorded, recordType, related);
+            case LOAN_CONTRACT_CANCEL_PENDING -> loanContractCancelPending(recorded, recordType, related);
             default -> null;
         };
     }
 
     @Override
     public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
-        return null;
+        return switch (subProcess) {
+            case PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION -> contractPendingCancellation(recorded, subProcess);
+            default -> null;
+        };
+    }
+
+    private CloudEventBuildRequest contractPendingCancellation(String recorded, IntegrationSubProcess subProcess) {
+        String dataMessage = format(PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_MSG, recorded);
+        return createRecordRequest(
+            TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
+            format(PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_SUBJECT, recorded),
+            CONTRACT_CANCELLATION,
+            subProcess,
+            createEventData(dataMessage, getLoanContractRelated(recorded))
+        );
     }
 
     private CloudEventBuildRequest positionCancelSubmitted(String recorded, RecordType recordType, String related) {
@@ -94,6 +115,17 @@ public class ContractCancellationCloudEventBuilder extends IntegrationCloudEvent
             format(LOAN_CONTRACT_CANCELED_SUBJECT, related),
             CONTRACT_CANCELLATION,
             GET_LOAN_CONTRACT_CANCELED,
+            createEventData(dataMessage, getLoanContractRelatedToPosition(recorded, related))
+        );
+    }
+
+    private CloudEventBuildRequest loanContractCancelPending(String recorded, RecordType recordType, String related) {
+        String dataMessage = format(LOAN_CONTRACT_CANCEL_PENDING_MSG, recorded, related);
+        return createRecordRequest(
+            recordType,
+            format(LOAN_CONTRACT_CANCEL_PENDING_SUBJECT, related),
+            CONTRACT_CANCELLATION,
+            LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING,
             createEventData(dataMessage, getLoanContractRelatedToPosition(recorded, related))
         );
     }

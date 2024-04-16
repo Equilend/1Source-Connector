@@ -12,6 +12,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.INSTRUCT_LOAN_CONTRACT_CANCELLATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -21,6 +22,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
@@ -412,10 +414,22 @@ public class ContractProcessor {
         return contract;
     }
 
+    /**
+     * Update contract processing status and save the contract
+     *
+     * @param contract Contract
+     * @param processingStatus Processing status
+     * @return Contract persisted contract with updated processing status
+     */
+    @Transactional
     public Contract updateContractProcessingStatus(@NonNull Contract contract,
         @NonNull ProcessingStatus processingStatus) {
         contract.setProcessingStatus(processingStatus);
-        contract.setLastUpdateDateTime(LocalDateTime.now());
+        return saveContract(contract);
+    }
+
+    public Contract updateContractStatus(@NonNull Contract contract, ContractStatus contractStatus) {
+        contract.setContractStatus(contractStatus);
         return contract;
     }
 
@@ -568,7 +582,11 @@ public class ContractProcessor {
             );
     }
 
-
+    public void recordCancelPendingEvent(Contract contract) {
+        final String positionId = String.valueOf(contract.getMatchingSpirePositionId());
+        createBusinessEvent(contract.getContractId(), LOAN_CONTRACT_CANCEL_PENDING, positionId,
+            LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING, CONTRACT_CANCELLATION);
+    }
 
     private Contract saveContractAsMatched(Contract contract, Position position) {
         contract.setMatchingSpirePositionId(position.getPositionId());
