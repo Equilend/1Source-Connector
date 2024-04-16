@@ -1,7 +1,9 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_SETTLEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_SETTLEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
@@ -134,7 +136,7 @@ public class PositionProcessor {
                 .filter(p -> positionIdsToUpdate.contains(p.getPositionId()))
                 .toList();
         } catch (HttpStatusCodeException e) {
-            log.debug("Capture cloud events on requirements update");
+            createExceptionCloudEvent(e, CONTRACT_CANCELLATION, CAPTURE_POSITION_CANCELED);
             return List.of();
         }
     }
@@ -380,6 +382,11 @@ public class PositionProcessor {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(iP);
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private void createExceptionCloudEvent(HttpStatusCodeException exception,
+        IntegrationProcess iP, IntegrationSubProcess subProcess) {
+        createExceptionCloudEvent(null, exception, iP, subProcess);
     }
 
     private void createExceptionCloudEvent(String recordData, HttpStatusCodeException exception,

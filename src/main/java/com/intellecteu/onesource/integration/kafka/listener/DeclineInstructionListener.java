@@ -5,6 +5,7 @@ import com.intellecteu.onesource.integration.kafka.mapper.KafkaDeclineInstructio
 import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 @KafkaListener(id = "${spire.kafka.consumer.listener.decline-instruction.group-id}", topics = "${spire.kafka.consumer.listener.decline-instruction.topic}", containerFactory = "declineInstructionInstructionContainerFactory")
+@Profile("!local")
 public class DeclineInstructionListener {
 
     private final DeclineInstructionService declineInstructionService;

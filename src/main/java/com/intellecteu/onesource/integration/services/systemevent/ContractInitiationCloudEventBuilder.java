@@ -13,6 +13,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CANCEL_LOAN_PROPOSAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONFIRM_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_CANCEL_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_CANCEL_NO_RELATED_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_CREATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_MATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.CONTRACT_DECLINE_NOT_MATCHED_MSG;
@@ -43,6 +44,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.RECONCILE_TRADE_AGREEMENT_SUCCESS_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CANCELED_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CREATE_EVENT_MSG;
@@ -56,6 +58,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_COUNTERPARTY_SETTLEMENT_INSTRUCTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CREATED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_EVENTS_LOAN_CONTRACT_PROPOSAL_NO_RELATED_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.GET_POSITION_CONFIRMATION_EXCEPTION_SPIRE;
@@ -77,6 +80,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_POSITION_UPDATE_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_CANCELED_MATCHED_POSITION;
@@ -117,6 +121,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -154,6 +159,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         return switch (subProcess) {
             case GET_LOAN_CONTRACT_APPROVED -> buildContractApprovedIssueRequest(recorded, subProcess);
             case GET_LOAN_CONTRACT_DECLINED -> buildContractDeclinedIssueRequest(recorded, subProcess);
+            case GET_LOAN_CONTRACT_CANCELED -> buildContractCanceledIssueRequest(recorded, subProcess);
             default -> null;
         };
     }
@@ -257,6 +263,17 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             createEventData(dataMessage, getContractRelated(recorded)));
     }
 
+    private CloudEventBuildRequest buildContractCanceledIssueRequest(String recorded,
+        IntegrationSubProcess subProcess) {
+        String dataMessage = format(TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_MSG, recorded);
+        return createRecordRequest(
+            TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
+            format(TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_SUBJECT, recorded),
+            CONTRACT_INITIATION,
+            subProcess,
+            createEventData(dataMessage, getContractRelated(recorded)));
+    }
+
     private CloudEventBuildRequest getCpSI(String recorded, HttpStatusCodeException exception,
         IntegrationSubProcess subProcess, String related) {
         String dataMessage = format(GET_COUNTERPARTY_SETTLEMENT_INSTRUCTIONS_EXCEPTION_MSG, recorded,
@@ -342,13 +359,30 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     private CloudEventBuildRequest loanContractProposalCanceled(String recorded, RecordType recordType,
         String related) {
-        String dataMessage = format(CONTRACT_CANCEL_MSG, recorded, related, "not yet implemented");
+        String positionId = null;
+        try {
+            final String[] positionIdAndTradeId = related.split(",");
+            positionId = positionIdAndTradeId[0];
+        } catch (Exception e) {}
+
+        String dataMessage = null;
+        String subject = null;
+        final List<RelatedObject> contractWithTrade = new ArrayList<>();
+        if (positionId == null) {
+            dataMessage = format(CONTRACT_CANCEL_NO_RELATED_POSITION_MSG, recorded, "not yet implemented");
+            subject = format(GET_EVENTS_LOAN_CONTRACT_PROPOSAL_NO_RELATED_POSITION_CANCELED, recorded);
+            contractWithTrade.addAll(getContractRelated(recorded));
+        } else {
+            dataMessage = format(CONTRACT_CANCEL_MSG, recorded, positionId, "not yet implemented");
+            subject = format(GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED, positionId);
+            contractWithTrade.addAll(getContractRelatedToPositionWithTrade(recorded, related));
+        }
         return createRecordRequest(
             recordType,
-            format(GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED, related),
+            subject,
             CONTRACT_INITIATION,
             GET_LOAN_CONTRACT_CANCELED,
-            createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related))
+            createEventData(dataMessage, contractWithTrade)
         );
     }
 

@@ -9,12 +9,33 @@ public class RecordMessageConstant {
     public static class ContractCancellation {
 
         public static class Subject {
+            public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT = """
+            Capture of canceled positions - %s""";
+            public static final String INSTRUCT_CONTRACT_CANCEL_SUBJECT = "Position - %s";
+            public static final String LOAN_CONTRACT_CANCEL_PENDING_SUBJECT = "Position - %s";
+            public static final String LOAN_CONTRACT_CANCELED_SUBJECT = "Position - %s";
             public static final String POSITION_CANCEL_SUBMITTED_SUBJECT = "Position - %s";
+            public static final String PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_SUBJECT = "1Source Contract - %s";
         }
 
         public static class DataMsg {
+            public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_MSG = """
+                Canceled positions cannot be captured from SPIRE for the following reason: %s""";
+
+            public static final String INSTRUCT_CONTRACT_CANCEL_MSG = """
+                The loan contract: %s (SPIRE position: %s) cannot be cancelled for the following reason: %s""";
+            public static final String LOAN_CONTRACT_CANCELED_MSG = """
+                The loan contract proposal %s matching with the SPIRE position %s has been canceled.""";
+
+            public static final String LOAN_CONTRACT_CANCEL_PENDING_MSG = """
+                The loan contract proposal %s matching with the SPIRE position %s is pending canceled \
+                as per counterparty cancellation request.""";
             public static final String POSITION_CANCEL_SUBMITTED_MSG = """
                 The position %s related to 1Source loan contract %s has been canceled.""";
+
+            public static final String PROCESS_LOAN_CONTRACT_PENDING_CANCELLATION_MSG = """
+                The loan contract %s has been marked as pending canceled in 1Source \
+                but the loan contract pending settlement has not been retrieved in the Integration toolkit.""";
         }
     }
 
@@ -42,7 +63,8 @@ public class RecordMessageConstant {
             public static final String CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String DECLINE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String GET_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Loan contract proposal - %s";
-            public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED = "Loan contract proposal - %s";
+            public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_CANCELED = "Position - %s";
+            public static final String GET_EVENTS_LOAN_CONTRACT_PROPOSAL_NO_RELATED_POSITION_CANCELED = "Loan contract proposal - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_UNMATCHED_SUBJECT = "Loan contract proposal - %s";
             public static final String POSITION_CANCELED_SUBJECT = "Position - %s";
             public static final String POSITION_CANCELED_SUBMITTED_SUBJECT = "Position - %s";
@@ -54,6 +76,7 @@ public class RecordMessageConstant {
             public static final String POST_POSITION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String POST_SETTLEMENT_INSTRUCTION_UPDATE_EXCEPTION_SPIRE = "Position - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_SUBJECT = "1Source Contract - %s";
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT = "1Source Contract - %s";
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
@@ -85,6 +108,10 @@ public class RecordMessageConstant {
             public static final String CONTRACT_CANCEL_MSG = """
                 The loan contract proposal %s matching with the \
                 SPIRE position %s has been canceled by the Lender \
+                for the following reasons: %s""";
+
+            public static final String CONTRACT_CANCEL_NO_RELATED_POSITION_MSG = """
+                The loan contract proposal %s has been canceled by the Lender \
                 for the following reasons: %s""";
 
             public static final String CONTRACT_CREATE_MSG = """
@@ -204,6 +231,10 @@ public class RecordMessageConstant {
 
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_APPROVED_MSG = """
                 The loan contract proposal %s has been approved in 1Source but the loan contract proposal \
+                has not been retrieved in the Integration toolkit.""";
+
+            public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_MSG = """
+                The loan contract proposal %s has been canceled in 1Source but the loan contract proposal \
                 has not been retrieved in the Integration toolkit.""";
 
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_MSG = """

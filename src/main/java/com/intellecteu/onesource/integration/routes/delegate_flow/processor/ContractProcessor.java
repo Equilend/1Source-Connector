@@ -8,8 +8,11 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.INSTRUCT_LOAN_CONTRACT_CANCELLATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -18,7 +21,10 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
@@ -26,7 +32,9 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
@@ -108,6 +116,42 @@ public class ContractProcessor {
             }
             return null;
         }
+    }
+
+    public void executeCancelUpdate(@NonNull Contract contract) {
+        boolean isLoanProposal = ContractStatus.PROPOSED == contract.getContractStatus();
+        if (isLoanProposal) {
+            executeCancelUpdateForLoanContractProposal(contract);
+        }
+        contract.setProcessingStatus(ProcessingStatus.CANCELED);
+        contract.setContractStatus(CANCELED);
+        contractService.save(contract);
+        if (!isLoanProposal) {
+            createBusinessEvent(contract.getContractId(),
+                LOAN_CONTRACT_CANCELED, String.valueOf(contract.getMatchingSpirePositionId()),
+                GET_LOAN_CONTRACT_CANCELED, CONTRACT_CANCELLATION);
+        }
+    }
+
+    private void executeCancelUpdateForLoanContractProposal(Contract contract) {
+        if (contract.getMatchingSpirePositionId() != null) {
+            positionService.getByPositionIdAndRole(contract.getMatchingSpirePositionId(), PartyRole.BORROWER)
+                .ifPresent(position -> {
+                    position.setMatching1SourceLoanContractId(null);
+                    positionService.savePosition(position);
+                    String record = contract.getContractId();
+                    String related = String.format("%d,%d", position.getPositionId(), position.getTradeId());
+                    createBusinessEvent(record, LOAN_CONTRACT_PROPOSAL_CANCELED, related,
+                        GET_LOAN_CONTRACT_CANCELED, CONTRACT_INITIATION);
+                });
+        }
+    }
+
+    public Contract retrieveContractFromEvent(@NonNull TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        return contractService.findContractById(contractId).orElse(null);
     }
 
     public Contract validate(@NonNull Contract contractProposal) {
@@ -255,7 +299,7 @@ public class ContractProcessor {
     }
 
     private static boolean isNgtTradeContract(Contract contract) {
-        return contract.getTrade().getVenues() != null 
+        return contract.getTrade().getVenues() != null
             && contract.getTrade().getVenues().get(0) != null
             && contract.getTrade().getVenues().get(0).getVenueRefKey() != null;
     }
@@ -295,9 +339,11 @@ public class ContractProcessor {
         try {
             return oneSourceService.instructCancelLoanContract(position.getMatching1SourceLoanContractId());
         } catch (HttpStatusCodeException e) {
-            log.debug("Capture cloud event for instruct cancel loan contract");
+            String record = position.getMatching1SourceLoanContractId();
+            String related = String.valueOf(position.getPositionId());
+            record1SourceTechnicalEvent(record, e, INSTRUCT_LOAN_CONTRACT_CANCELLATION, related, CONTRACT_CANCELLATION);
+            return false;
         }
-        return false;
     }
 
     public void instructContractApprovalAsBorrower(@NonNull Contract contract) {
@@ -368,10 +414,22 @@ public class ContractProcessor {
         return contract;
     }
 
+    /**
+     * Update contract processing status and save the contract
+     *
+     * @param contract Contract
+     * @param processingStatus Processing status
+     * @return Contract persisted contract with updated processing status
+     */
+    @Transactional
     public Contract updateContractProcessingStatus(@NonNull Contract contract,
         @NonNull ProcessingStatus processingStatus) {
         contract.setProcessingStatus(processingStatus);
-        contract.setLastUpdateDateTime(LocalDateTime.now());
+        return saveContract(contract);
+    }
+
+    public Contract updateContractStatus(@NonNull Contract contract, ContractStatus contractStatus) {
+        contract.setContractStatus(contractStatus);
         return contract;
     }
 
@@ -438,13 +496,6 @@ public class ContractProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordTechnicalEvent(String recorded, HttpStatusCodeException exception,
-        IntegrationSubProcess subProcess, String related) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
-        cloudEventRecordService.record(recordRequest);
-    }
-
     public void recordApprovedSystemEvent(@NonNull Contract contract) {
         String related = format("%d,%d", contract.getMatchingSpirePositionId(), contract.getMatchingSpireTradeId());
         createContractInitiationCloudEvent(contract.getContractId(), LOAN_CONTRACT_PROPOSAL_APPROVED, related);
@@ -505,6 +556,36 @@ public class ContractProcessor {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
         var recordRequest = eventBuilder.buildToolkitIssueRequest(record, subProcess);
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordTechnicalEvent(String recorded, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+        var recordRequest = eventBuilder.buildExceptionRequest(recorded, exception, subProcess, related);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordTechnicalEvent(IntegrationProcess process, String record,
+        HttpStatusCodeException exception, IntegrationSubProcess subProcess, String related) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildExceptionRequest(record, exception, subProcess, related);
+        cloudEventRecordService.record(recordRequest);
+
+    }
+
+    private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
+        IntegrationSubProcess subProcess, String related, IntegrationProcess process) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, TECHNICAL_EXCEPTION_1SOURCE)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordTechnicalEvent(process, record, exception, subProcess, related)
+            );
+    }
+
+    public void recordCancelPendingEvent(Contract contract) {
+        final String positionId = String.valueOf(contract.getMatchingSpirePositionId());
+        createBusinessEvent(contract.getContractId(), LOAN_CONTRACT_CANCEL_PENDING, positionId,
+            LOAN_CONTRACT_PROPOSAL_CANCEL_PENDING, CONTRACT_CANCELLATION);
     }
 
     private Contract saveContractAsMatched(Contract contract, Position position) {
