@@ -1,0 +1,54 @@
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('33545', 'CONTRACT_CANCEL_PENDING', now(), 'contracts/32b71278-9ad2-445a-bfb0-b5ada72f33545');
+
+-- INSERT INTO internal_ref (id, broker, account_id, internal_id)
+-- VALUES (2378, 'testLenderBroker', '2378', '2378'),
+--        (4198, 'testBorrowerBroker', '4198', '4198');
+--
+-- INSERT INTO party (id, party_id, party_name, gleif_lei, internal_id)
+-- VALUES (2378, 2378, 'LENDER', '2378', '2378'),
+--        (4198, 4198, 'BORROWER', '4198', '4198');
+--
+-- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code)
+-- VALUES  (2378, '234', '02318091106', 'US023180911067', '2000019', '457'),
+--         (4198, '234', '02318091107', 'US023180911068', '2000010', '457');
+--
+-- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
+-- VALUES (2378, 0.05, 0, '2023-10-25 13:50:41.633000', '0'),
+--        (4198, 0.05, 0, '2023-10-25 13:50:41.633000', '0');
+--
+-- INSERT INTO rebate (id, fixed)
+-- VALUES (2378, 2378), (4198, 4198);
+--
+-- INSERT INTO rate (id, rebate)
+-- VALUES  (2378, 2378), (4198, 4198);
+--
+-- INSERT INTO collateral (id, contract_price, collateral_value, currency,
+--                         type, margin, rounding_rule, rounding_mode)
+-- VALUES (2378, 119.57, 1798091.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
+--        (4198, 119.57, 1798091.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
+--
+-- INSERT INTO trade (id, instrument_id, rate_id, quantity, currency,
+--                    dividend_rate, trade_date, term_type, term_date, settlement_date,
+--                    settlement_type, collateral)
+-- VALUES  (4198, 4198, 4198, 11000.0, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 4198),
+--         (2378, 2378, 2378, 15000, 'USD',
+--          85.0, '2024-02-21 13:50:41.633000', 'OPEN', '2024-02-21 13:50:41.633000', '2023-10-25 13:50:41.633000',
+--          'DVP', 2378);
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key, trade_id)
+-- VALUES (2378, '2378', 'ONPLATFORM', 'testLenderVenueName', '2378', 2378),
+--        (4198, '4198', 'ONPLATFORM', 'testBorrowerVenueName', '4198', 4198);
+--
+-- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (2378, '32b71278-9ad2-445a-bfb0-b5ada72f2378', 'PENDING', 2378, '2378', 'CREATED'),
+--        (4198, '32b71278-9ad2-445a-bfb0-b5ada72f4198', 'PENDING', 4198, '4198', 'CREATED');
+--
+-- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
+-- VALUES (2378, 'LENDER', 2378, 2378, 4198);
+--
+-- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
+--                       matching_spire_position_id, matching_spire_trade_id)
+-- VALUES (4198, '32b71278-9ad2-445a-bfb0-b5ada72f33545', 'PENDING', 4198, 'APPROVED', 4198, 4198);

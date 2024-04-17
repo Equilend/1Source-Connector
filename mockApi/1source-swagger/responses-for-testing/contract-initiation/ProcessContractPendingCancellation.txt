@@ -1,0 +1,8 @@
+Prepared local migration data: V2024.04.16.13.00__EINT23-628_process_contract_pending_cancellation.sql
+
+1. Proposal test:
+    a) Insert to the database event
+        - eventType = 'CONTRACT_CANCEL_PENDING';
+        - resourceUri should contain the id of the persisted contract
+
+    b) Insert to the database the loan contract
