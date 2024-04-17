@@ -207,12 +207,6 @@ public class EntityTestFactory {
             .build();
     }
 
-    public static Agreement buildAgreement() {
-        var agreementDto = DtoTestFactory.buildAgreementDto();
-        var om = createTestObjectMapper();
-        return om.convertValue(agreementDto, Agreement.class);
-    }
-
     public static Position buildPosition() {
         return buildPosition(null);
     }

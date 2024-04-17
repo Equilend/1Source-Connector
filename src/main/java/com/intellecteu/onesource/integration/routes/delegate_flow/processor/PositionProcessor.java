@@ -321,17 +321,6 @@ public class PositionProcessor {
         }
     }
 
-    public ProcessingStatus reconcileWithAgreement(Position position) {
-//        if (position.getMatching1SourceTradeAgreementId() == null || position.getProcessingStatus() != SI_FETCHED) {
-//            return position.getProcessingStatus();
-//        }
-        return agreementService.findByAgreementId(position.getMatching1SourceTradeAgreementId())
-            .map(agreement -> agreementService.reconcile(agreement, position))
-            .map(agreementService::saveAgreement)
-            .map(agreement -> retrieveProcessingStatus(position, agreement))
-            .orElse(position.getProcessingStatus());
-    }
-
     private ProcessingStatus retrieveProcessingStatus(Position position, Agreement agreement) {
 //        if (agreement.getProcessingStatus().equals(RECONCILED)) {
 //            return TRADE_RECONCILED;

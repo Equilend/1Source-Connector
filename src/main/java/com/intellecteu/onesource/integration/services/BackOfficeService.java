@@ -18,9 +18,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Re
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
@@ -38,7 +36,6 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
-import com.intellecteu.onesource.integration.mapper.SpireMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -102,34 +99,8 @@ public class BackOfficeService {
     private final InstructionSpireApiClient instructionClient;
     private final Integer userId;
     private final String userName;
-    private final SpireMapper spireMapper;
     private final BackOfficeMapper backOfficeMapper;
     private final CloudEventRecordService cloudEventRecordService;
-
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public List<Position> getNewSpirePositionsObsolete(String lastPositionId) {
-        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewPositions(lastPositionId));
-        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
-        try {
-            ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
-                nQueryRequest);
-            if (responseHasData(response)) {
-                List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
-                return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
-            }
-        } catch (RestClientException e) {
-            if (e instanceof HttpStatusCodeException exception) {
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION, exception.getStatusCode());
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
-        }
-        return List.of();
-    }
 
     public void instructUpdatePosition(PositionConfirmationRequest confirmationRequest) {
         final OneSourceConfimationDTO confirmationDto = backOfficeMapper.toRequestDto(confirmationRequest);
@@ -208,42 +179,6 @@ public class BackOfficeService {
         return new NQueryRequest().nQuery(nQuery);
     }
 
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public List<Position> getNewSpirePositionsObsolete(LocalDateTime lastUpdate, List<Position> positionList) {
-        String commaSeparatedIdList = positionList.stream()
-            .map(Position::getPositionId)
-            .map(String::valueOf)
-            .collect(Collectors.joining(COMMA_DELIMITER));
-        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(
-            createTuplesGetNewPositionsByIdList(formattedDateTime(lastUpdate), commaSeparatedIdList));
-        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
-        try {
-            ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
-                nQueryRequest);
-            if (responseHasData(response)) {
-                List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
-                return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
-            }
-        } catch (RestClientException e) {
-            if (e instanceof HttpStatusCodeException exception) {
-                log.warn("SPIRE error response for {} subprocess. Details: {}",
-                    GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, exception.getStatusCode());
-                if (Set.of(ProcessingStatus.CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
-        }
-        return List.of();
-    }
-
-    private List<NQueryTuple> createTuplesGetNewPositionsByIdList(String lastUpdate, String commaSeparatedIdList) {
-        List<NQueryTuple> tuples = new ArrayList<>();
-        tuples.add(new NQueryTuple().lValue("positionId").operator(IN).rValue1(commaSeparatedIdList));
-        tuples.add(new NQueryTuple().lValue("lastModTs").operator(OperatorEnum.GREATER_THAN).rValue1(lastUpdate));
-        return tuples;
-    }
-
     private static Long retrieveLatestTradeId(List<Position> positions) {
         return positions.stream()
             .map(Position::getTradeId)
@@ -261,30 +196,6 @@ public class BackOfficeService {
         return response.getBody() != null && response.getBody().getData() != null
             && response.getBody().getData().getTotalRows() != null
             && response.getBody().getData().getTotalRows() > 0;
-    }
-
-    public List<Position> getPositionByVenueRefId(String venueRefId) {
-        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
-            .tuples(createTuplesGetPositionsByCustomeValue2(venueRefId));
-        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
-        try {
-            ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient.getPositions(
-                nQueryRequest);
-            if (response.getBody().getData() != null
-                && response.getBody().getData().getTotalRows() != null
-                && response.getBody().getData().getTotalRows() > 0) {
-                List<PositionOutDTO> positionOutDTOList = response.getBody().getData().getBeans();
-                return positionOutDTOList.stream().map(spireMapper::toPosition).collect(Collectors.toList());
-            }
-        } catch (RestClientException e) {
-            if (e instanceof HttpStatusCodeException exception) {
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
-                    log.error("SPIRE error response for getting position by venueRefId. Details: {}",
-                        exception.getStatusCode());
-                }
-            }
-        }
-        return List.of();
     }
 
     public List<Position> retrieveUpdatedOpenedPositions(List<Position> capturedPositions) {
@@ -314,6 +225,7 @@ public class BackOfficeService {
             .tuples(createTuplesGetPositionsByPositionStatus(positionList, OPEN));
         return new NQueryRequest().nQuery(nQuery);
     }
+
     private NQueryRequest buildRetrieveCancelledPositionsRequest(List<Position> positionList) {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND).empty(true)
             .tuples(createTuplesGetPositionsByPositionStatus(positionList, CANCELLED));
@@ -336,24 +248,13 @@ public class BackOfficeService {
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
-        try {
-            ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
-            if (response.getBody().getData() != null
-                && response.getBody().getData().getTotalRows() != null
-                && response.getBody().getData().getTotalRows() > 0) {
-                List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
-                return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
-                    .collect(Collectors.toList());
-            }
-        } catch (RestClientException e) {
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatusCode statusCode = exception.getStatusCode();
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_TRADE_EVENTS_PENDING_CONFIRMATION, statusCode);
-                    recordTradeEventExceptionEvent(exception);
-                }
-            }
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
+                .collect(Collectors.toList());
         }
         return List.of();
     }
@@ -419,31 +320,6 @@ public class BackOfficeService {
         instruction.setAccountDTO(accountDTO);
         instruction.setAgentBicDTO(swiftBic);
         return instruction;
-    }
-
-    public Optional<Position> getPositionForTrade(String venueRefId) {
-        NQuery nquery = new NQuery().andOr(NQuery.AndOrEnum.AND).tuples(createTuplesGetPositionByTradeLink(venueRefId));
-        NQueryRequest request = new NQueryRequest().nQuery(nquery);
-        try {
-            log.debug("Retrieving Spire Position by venueRefId={}", venueRefId);
-            ResponseEntity<SResponseNQueryResponsePositionOutDTO> response = positionSpireApiClient
-                .getPositions(request);
-            if (responseHasData(response)) {
-                if (response.getBody().getData() != null
-                    && response.getBody().getData().getTotalRows() != null
-                    && response.getBody().getData().getTotalRows() > 1) {
-                    log.warn("Multiple response found! Getting the first element");
-                }
-                var positionResponse = response.getBody().getData().getBeans().get(0);
-                return Optional.of(spireMapper.toPosition(positionResponse));
-            }
-        } catch (RestClientException e) {
-            log.warn("Unexpected exception on position retrievement by linked trade: {}", venueRefId);
-            if (e instanceof HttpStatusCodeException exception) {
-                throw new PositionRetrievementException(exception);
-            }
-        }
-        return Optional.empty();
     }
 
     public Boolean update1SourceLoanContractIdentifier(Position position) {
@@ -605,22 +481,14 @@ public class BackOfficeService {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordTradeEventExceptionEvent(HttpStatusCodeException exception) {
-        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
-        final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(exception,
-            IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION);
-        cloudEventRecordService.record(recordRequest);
-    }
-
     public BackOfficeService(PositionSpireApiClient positionSpireApiClient, TradeSpireApiClient tradeSpireApiClient,
-        InstructionSpireApiClient instructionClient, Integer userId, String userName, SpireMapper spireMapper,
+        InstructionSpireApiClient instructionClient, Integer userId, String userName,
         BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         this.positionSpireApiClient = positionSpireApiClient;
         this.tradeSpireApiClient = tradeSpireApiClient;
         this.instructionClient = instructionClient;
         this.userId = userId;
         this.userName = userName;
-        this.spireMapper = spireMapper;
         this.backOfficeMapper = backOfficeMapper;
         this.cloudEventRecordService = cloudEventRecordService;
     }

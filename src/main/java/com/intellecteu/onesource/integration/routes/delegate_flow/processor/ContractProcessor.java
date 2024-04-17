@@ -299,7 +299,7 @@ public class ContractProcessor {
     }
 
     private static boolean isNgtTradeContract(Contract contract) {
-        return contract.getTrade().getVenues() != null 
+        return contract.getTrade().getVenues() != null
             && contract.getTrade().getVenues().get(0) != null
             && contract.getTrade().getVenues().get(0).getVenueRefKey() != null;
     }

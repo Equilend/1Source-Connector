@@ -8,7 +8,7 @@ import static com.intellecteu.onesource.integration.constant.AuthConstant.REFRES
 import static com.intellecteu.onesource.integration.constant.AuthConstant.SECRET;
 import static com.intellecteu.onesource.integration.constant.AuthConstant.TOKEN_PATH;
 
-import com.intellecteu.onesource.integration.dto.AuthToken;
+import com.intellecteu.onesource.integration.model.AuthToken;
 import com.intellecteu.onesource.integration.mapper.AuthMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

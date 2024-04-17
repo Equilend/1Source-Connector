@@ -7,8 +7,6 @@ import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BO
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static java.lang.String.format;
 
-import com.intellecteu.onesource.integration.dto.TransactingPartyDto;
-import com.intellecteu.onesource.integration.dto.spire.PositionDto;
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
@@ -30,27 +28,6 @@ public class IntegrationUtils {
     public static String formattedDateTime(LocalDateTime localDateTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_PATTERN);
         return localDateTime.format(formatter);
-    }
-
-    /**
-     * Deprecated since Flow II was implemented. See position.positiontypeDTO.positionType field to retrieve Lender or
-     * Borrower role. Retrieve party role from Transacting party's `gleifLei` and Position's `lei` fields. The legal
-     * identity identifier (lei) from transactingParties.party.gleiflei shall match with positionOutDTO.lei field to
-     * retrieve the PartyRole.
-     *
-     * @param transactingParties List<TransactingPartyDto>
-     * @param positionLei String
-     * @return PartyRole for matched fields or null if there are no matches
-     */
-    @Deprecated(since = "Flow II", forRemoval = true)
-    public static PartyRole extractPartyRole(List<TransactingPartyDto> transactingParties, String positionLei) {
-        final PartyRole partyRole = transactingParties.stream()
-            .filter(t -> positionLei.equals(t.getParty().getGleifLei()))
-            .map(TransactingPartyDto::getPartyRole)
-            .findAny()
-            .orElse(null);
-        log.debug("Position lei: {} matches with party role: {}", positionLei, partyRole);
-        return partyRole;
     }
 
     /**
@@ -91,19 +68,6 @@ public class IntegrationUtils {
 
     public static boolean isBorrower(Position position) {
         return extractPartyRole(position).filter(role -> role == BORROWER).isPresent();
-    }
-
-    /**
-     * Retrieve Lender or Borrower or throw NoRequiredPartyRoleException exception otherwise.
-     *
-     * @param positionDto PositionDto
-     * @return Lender or Borrower PartyRole
-     */
-    public static PartyRole extractLenderOrBorrower(@Nullable PositionDto positionDto) {
-        if (positionDto == null) {
-            throw new NoRequiredPartyRoleException();
-        }
-        return extractLenderOrBorrower(positionDto.unwrapPositionType(), positionDto.getPositionId());
     }
 
     /**

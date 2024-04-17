@@ -1,8 +1,10 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_TRADE_CONFIRMATION;
@@ -42,6 +44,9 @@ import static com.intellecteu.onesource.integration.services.systemevent.RerateC
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.POSITION_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -50,6 +55,7 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.CorrectionInstruction;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineInstruction;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.CorrectionInstructionService;
@@ -68,8 +74,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -89,7 +98,8 @@ public class RerateProcessor {
     private final RerateCloudEventBuilder eventBuilder;
 
     @Autowired
-    public RerateProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService, RerateTradeService rerateTradeService,
+    public RerateProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
+        RerateTradeService rerateTradeService,
         RerateService rerateService,
         RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
         CorrectionInstructionService correctionInstructionService, CloudEventRecordService cloudEventRecordService) {
@@ -152,7 +162,16 @@ public class RerateProcessor {
 
     public List<RerateTrade> fetchNewRerateTrades() {
         Optional<Long> lastTradeId = rerateTradeService.getMaxTradeId();
-        List<RerateTrade> rerateTradeList = backOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId);
+        List<RerateTrade> rerateTradeList = new ArrayList<>();
+        try {
+            rerateTradeList = backOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId);
+        } catch (HttpStatusCodeException exception) {
+            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
+                log.warn("SPIRE error response for {} subprocess. Details: {}",
+                    GET_TRADE_EVENTS_PENDING_CONFIRMATION, exception.getStatusCode());
+                recordTradeEventExceptionEvent(exception);
+            }
+        }
         return rerateTradeList;
     }
 
@@ -181,10 +200,12 @@ public class RerateProcessor {
             rerateTrade.setProcessingStatus(SUBMITTED);
         } catch (HttpStatusCodeException codeException) {
             if (codeException.getStatusCode().value() != 400) {
-                rerateTrade.setProcessingStatus(WAITING_PROPOSAL);
                 recordHttpExceptionCloudEvent(POST_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
                     codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
                     rerateTrade.getRelatedPositionId());
+                throw codeException;
+            } else {
+                rerateTrade.setProcessingStatus(WAITING_PROPOSAL);
             }
         }
         return rerateTrade;
@@ -247,6 +268,7 @@ public class RerateProcessor {
             recordHttpExceptionCloudEvent(APPROVE_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
                 codeException, rerate.getRerateId(), rerate.getMatchingSpireTradeId(),
                 rerate.getRelatedSpirePositionId());
+            throw codeException;
         }
         return rerate;
     }
@@ -259,6 +281,7 @@ public class RerateProcessor {
             recordHttpExceptionCloudEvent(POST_RERATE_TRADE_CONFIRMATION, TECHNICAL_EXCEPTION_SPIRE,
                 codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
                 rerateTrade.getRelatedPositionId());
+            throw codeException;
         }
         return rerateTrade;
     }
@@ -369,6 +392,13 @@ public class RerateProcessor {
             return Optional.of(rerate.getRerate().getRebate().getFloating().getEffectiveDate());
         }
         return Optional.empty();
+    }
+
+    private void recordTradeEventExceptionEvent(HttpStatusCodeException exception) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(GENERIC);
+        final CloudEventBuildRequest recordRequest = eventBuilder.buildExceptionRequest(exception,
+            IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION);
+        cloudEventRecordService.record(recordRequest);
     }
 
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,

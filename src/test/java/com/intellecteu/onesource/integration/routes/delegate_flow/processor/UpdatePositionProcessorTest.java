@@ -28,6 +28,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
@@ -56,7 +57,7 @@ class UpdatePositionProcessorTest {
     @Mock
     private ContractService contractService;
     @Mock
-    private OneSourceApiClient oneSourceApiClient;
+    private OneSourceService oneSourceService;
     @Mock
     private CloudEventRecordService cloudEventRecordService;
 
@@ -153,7 +154,7 @@ class UpdatePositionProcessorTest {
 
         service.executeCancelRequest(position);
 
-        verify(oneSourceApiClient).cancelContract(contract);
+        verify(oneSourceService).instructCancelLoanContract(contract.getContractId());
     }
 
     @Test
@@ -170,7 +171,7 @@ class UpdatePositionProcessorTest {
 
         service.executeCancelRequest(position);
 
-        verify(oneSourceApiClient, never()).cancelContract(contract);
+        verify(oneSourceService, never()).instructCancelLoanContract(any());
     }
 
     @Test
@@ -192,7 +193,7 @@ class UpdatePositionProcessorTest {
 
         service.cancelContractForCancelLoanTrade(position);
 
-        verify(oneSourceApiClient).cancelContract(contract);
+        verify(oneSourceService).instructCancelLoanContract(contract.getContractId());
         verify(cloudEventRecordService).record(any(CloudEventBuildRequest.class));
     }
 
@@ -210,7 +211,7 @@ class UpdatePositionProcessorTest {
 
         service.cancelContractForCancelLoanTrade(position);
 
-        verify(oneSourceApiClient, never()).cancelContract(contract);
+        verify(oneSourceService, never()).instructCancelLoanContract(any());
         verify(cloudEventRecordService, never()).record(any(CloudEventBuildRequest.class));
     }
 
@@ -229,7 +230,7 @@ class UpdatePositionProcessorTest {
 
         service.cancelContractForCancelLoanTrade(position);
 
-        verify(oneSourceApiClient, never()).cancelContract(contract);
+        verify(oneSourceService, never()).instructCancelLoanContract(any());
         verify(cloudEventRecordService, never()).record(any(CloudEventBuildRequest.class));
     }
 
@@ -247,7 +248,7 @@ class UpdatePositionProcessorTest {
 
         service.cancelContractForCancelLoanTrade(position);
 
-        verify(oneSourceApiClient, never()).cancelContract(contract);
+        verify(oneSourceService, never()).instructCancelLoanContract(contract.getContractId());
         verify(cloudEventRecordService, never()).record(any(CloudEventBuildRequest.class));
     }
 
