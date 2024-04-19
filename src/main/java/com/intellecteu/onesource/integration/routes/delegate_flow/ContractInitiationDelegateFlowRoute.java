@@ -13,12 +13,14 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.CO
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_OPENED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
+import com.intellecteu.onesource.integration.routes.delegate_flow.processor.AgreementProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.ContractProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;
@@ -65,12 +67,13 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
     private final ContractProcessor contractProcessor;
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
+    private final AgreementProcessor agreementProcessor;
 
     public ContractInitiationDelegateFlowRoute(
         @Value("${route.delegate-flow.update-position.timer}") long updateTimer, BackOfficeMapper backOfficeMapper,
         OneSourceMapper oneSourceMapper, DeclineInstructionMapper declineInstructionMapper,
         ContractProcessor contractProcessor, PositionProcessor positionProcessor,
-        EventProcessor eventProcessor) {
+        EventProcessor eventProcessor, AgreementProcessor agreementProcessor) {
         this.updateTimer = updateTimer;
         this.backOfficeMapper = backOfficeMapper;
         this.oneSourceMapper = oneSourceMapper;
@@ -78,11 +81,27 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         this.contractProcessor = contractProcessor;
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
+        this.agreementProcessor = agreementProcessor;
     }
 
     @Override
     //@formatter:off
     public void configure() throws Exception {
+
+        from(buildGetNotProcessedTradeEventQuery(TRADE_AGREED))
+            .routeId("GetTradeAgreement")
+            .log(">>> Started GET_TRADE_AGREEMENT subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(agreementProcessor, "getAgreementDetails")
+                .choice()
+                    .when(body().isNotNull())
+                        .bean(agreementProcessor, "createAgreement")
+                .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished GET_TRADE_AGREEMENT subprocess "
+                + "with expected processing statuses: TradeEvent[PROCESSED], Agreement[CREATED]")
+        .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_PROPOSED))
             .routeId("GetLoanContractDetails")

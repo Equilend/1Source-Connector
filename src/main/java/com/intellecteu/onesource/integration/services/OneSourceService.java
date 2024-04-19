@@ -10,15 +10,16 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
+import com.intellecteu.onesource.integration.services.client.onesource.AgreementsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.ContractsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.EventsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
@@ -40,7 +41,6 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Venue
 import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -60,6 +60,7 @@ public class OneSourceService {
     private final EventsApi eventsApi;
     private final ReratesApi reratesApi;
     private final ContractsApi contractsApi;
+    private final AgreementsApi agreementsApi;
     private final OneSourceMapper oneSourceMapper;
 
     @Autowired
@@ -67,11 +68,12 @@ public class OneSourceService {
         OneSourceMapper oneSourceMapper,
         @Value("${onesource.base-endpoint}") String onesourceBasePath,
         @Value("${onesource.version}") String onesourceVersion,
-        ContractsApi contractsApi) {
+        ContractsApi contractsApi, AgreementsApi agreementsApi) {
         this.oneSourceApiClient = oneSourceApiClient;
         this.eventsApi = eventsApi;
         this.reratesApi = reratesApi;
         this.contractsApi = contractsApi;
+        this.agreementsApi = agreementsApi;
         this.contractsApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
         this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
         this.oneSourceMapper = oneSourceMapper;
@@ -82,12 +84,14 @@ public class OneSourceService {
         return oneSourceMapper.toTradeEventModelList(eventDTOS);
     }
 
-    public Optional<Agreement> retrieveTradeAgreement(String eventUri, EventType eventType) {
-        return oneSourceApiClient.findTradeAgreement(eventUri, eventType);
+    public Agreement retrieveTradeAgreementDetails(String agreementId) {
+        log.debug("Sending HTTP request to get agreement details: /agreements/{}", agreementId);
+        final AgreementDTO agreementDTO = agreementsApi.ledgerAgreementsAgreementIdGet(agreementId);
+        return oneSourceMapper.toModel(agreementDTO);
     }
 
     public Contract retrieveContractDetails(String contractId) {
-        log.debug("Sending HTTP request to get contract details for contract id = {}", contractId);
+        log.debug("Sending HTTP request to get contract details: /contracts/{}", contractId);
         final ContractDTO contractDetailsResponse = contractsApi.ledgerContractsContractIdGet(contractId);
         ContractDetails contractDetails = oneSourceMapper.toModel(contractDetailsResponse);
         return oneSourceMapper.toModel(contractDetails);

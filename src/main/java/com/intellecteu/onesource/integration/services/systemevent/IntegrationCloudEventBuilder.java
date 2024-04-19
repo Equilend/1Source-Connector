@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_PROPOSAL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SHARED_TRADE_TICKET;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -133,6 +134,12 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
     protected List<RelatedObject> getTradeAgreementRelatedToPosition(String agreementInfo, String positionInfo) {
         var tradeAgreement = new RelatedObject(agreementInfo, ONESOURCE_TRADE_AGREEMENT);
         var relatedPosition = new RelatedObject(positionInfo, POSITION);
+        return List.of(tradeAgreement, relatedPosition);
+    }
+
+    protected List<RelatedObject> getTradeAgreementRelatedToSharedTradeTicket(String agreementInfo, String ticket) {
+        var tradeAgreement = new RelatedObject(agreementInfo, ONESOURCE_TRADE_AGREEMENT);
+        var relatedPosition = new RelatedObject(ticket, SHARED_TRADE_TICKET);
         return List.of(tradeAgreement, relatedPosition);
     }
 

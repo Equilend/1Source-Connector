@@ -38,7 +38,7 @@ public class ContractService {
      * Update last update date time and persist a contract.
      *
      * @param contract Contract model
-     * @return Contract model
+     * @return Contract persisted model
      */
     @Transactional
     public Contract save(Contract contract) {

@@ -1,0 +1,2 @@
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('33545', 'TRADE_AGREED', '2024-04-19 16:18:25.000000', 'agreements/3aef8f6a-b483-4c42-ad4d-7907d0e13cbd');

@@ -570,7 +570,6 @@ public class ContractProcessor {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
         var recordRequest = eventBuilder.buildExceptionRequest(record, exception, subProcess, related);
         cloudEventRecordService.record(recordRequest);
-
     }
 
     private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
@@ -592,8 +591,7 @@ public class ContractProcessor {
         contract.setMatchingSpirePositionId(position.getPositionId());
         contract.setMatchingSpireTradeId(position.getTradeId());
         contract.setProcessingStatus(MATCHED);
-        contract.setLastUpdateDateTime(LocalDateTime.now());
-        return contractService.save(contract);
+        return saveContract(contract);
     }
 
     private void createBusinessEvent(String record, RecordType recordType,

@@ -85,6 +85,7 @@ public class RecordMessageConstant {
             public static final String TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s";
             public static final String TRADE_AGREEMENT_CANCELED_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
+            public static final String TRADE_AGREEMENT_UNMATCHED_POSITION_SUBJECT = "Spire trade ticket id - %s";
             public static final String TRADE_AGREEMENT_MATCHED_CANCELED_POSITION = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION = "Position - %s";
@@ -249,6 +250,9 @@ public class RecordMessageConstant {
 
             public static final String TRADE_AGREEMENT_CANCELED_EVENT_MSG = """
                 The trade agreement %s has been canceled""";
+
+            public static final String TRADE_AGREEMENT_UNMATCHED_MSG = """
+                A new trade agreement %s has been captured but not yet matched with a position""";
 
             public static final String VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG = """
                 The Lender's loan contract proposal, contractId %s, is matching the canceled positionId %s""";

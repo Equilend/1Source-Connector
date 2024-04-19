@@ -49,6 +49,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CANCELED_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_CREATE_EVENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.TRADE_AGREEMENT_UNMATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.DataMsg.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.APPROVE_LOAN_CONTRACT_PROPOSAL_EXCEPTION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE;
@@ -88,6 +89,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_MATCHED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_RECONCILED;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.TRADE_AGREEMENT_UNMATCHED_POSITION_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.VALIDATE_LOAN_CONTRACT_PROPOSAL_CANCELED_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.ContractInitiation.Subject.VALIDATE_LOAN_CONTRACT_PROPOSAL_VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
@@ -214,6 +216,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
                 recordType, related);
             case TRADE_AGREEMENT_RECONCILED -> tradeAgreementReconciledEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_MATCHED_POSITION -> tradeMatchedPositionEvent(recorded, recordType, related);
+            case TRADE_AGREEMENT_UNMATCHED -> tradeUnMatchedPositionEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_CANCELED -> tradeCancellationEvent(recorded, recordType, related);
             case LOAN_CONTRACT_PROPOSAL_MATCHED -> loanProposalMatchedPositionEvent(recorded, recordType, related);
             default -> null;
@@ -581,6 +584,18 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
+    private CloudEventBuildRequest tradeUnMatchedPositionEvent(String recorded, RecordType recordType,
+        String related) {
+        String dataMessage = format(TRADE_AGREEMENT_UNMATCHED_MSG, recorded);
+        return createRecordRequest(
+            recordType,
+            format(TRADE_AGREEMENT_UNMATCHED_POSITION_SUBJECT, related),
+            CONTRACT_INITIATION,
+            GET_TRADE_AGREEMENT,
+            createEventData(dataMessage, getTradeAgreementRelatedToSharedTradeTicket(recorded, related))
+        );
+    }
+
     private CloudEventBuildRequest tradeCancellationEvent(String recorded, RecordType recordType,
         String related) {
         String dataMessage = related == null
@@ -762,22 +777,15 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         );
     }
 
-    private CloudEventBuildRequest tradeAgreementExceptionRequest(HttpStatusCodeException exception, String resource,
-        String event) {
-        var exceptionMessage = switch (exception.getStatusCode().value()) {
-            case 401 -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
-                "Not Authorized to do this operation");
-            case 404 -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
-                "Resource not found");
-            default -> format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, resource,
-                "An error occurred");
-        };
+    private CloudEventBuildRequest tradeAgreementExceptionRequest(HttpStatusCodeException exception, String record,
+        String related) {
+        String message = format(GET_TRADE_AGREEMENT_EXCEPTION_1SOURCE_MSG, record, exception.getStatusText());
         return createRecordRequest(
             TECHNICAL_EXCEPTION_1SOURCE,
-            format(GET_AGREEMENT_EXCEPTION_1SOURCE, event),
+            format(GET_AGREEMENT_EXCEPTION_1SOURCE, related),
             CONTRACT_INITIATION,
             GET_TRADE_AGREEMENT,
-            createEventData(exceptionMessage, getTradeAgreementRelatedToOnesourceEvent(resource, event))
+            createEventData(message, getTradeAgreementRelatedToOnesourceEvent(record, related))
         );
     }
 }

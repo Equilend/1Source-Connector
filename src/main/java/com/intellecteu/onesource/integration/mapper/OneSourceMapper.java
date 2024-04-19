@@ -18,6 +18,7 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpd
 import com.intellecteu.onesource.integration.model.onesource.TradeAgreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
+import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
@@ -27,6 +28,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalDTO;
@@ -34,10 +36,12 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Event
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FeeRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.InstrumentDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRebateRateRebateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfRerateRerateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfTradeAgreementRateDTODTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfVenueTradeAgreementRateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
@@ -45,6 +49,10 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Rerat
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTradeAgreementDTO;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.mapstruct.AfterMapping;
@@ -84,6 +92,31 @@ public abstract class OneSourceMapper {
     }
 
     public abstract AgreementEntity toEntity(Agreement agreement);
+
+    @Mapping(target = "lastUpdateDateTime", source = "lastUpdateDatetime")
+    public abstract Agreement toModel(AgreementDTO agreementDTO);
+    public abstract AgreementDTO toModel(Agreement agreement);
+
+    @Mapping(target = "venues", source = "executionVenue", qualifiedByName = "toVenueModelFromExecutionVenue")
+    public abstract TradeAgreement toModel(VenueTradeAgreementDTO venueTradeAgreementDTO);
+    public abstract VenueTradeAgreementDTO toModel(TradeAgreement tradeAgreement);
+
+    @Named("toVenueModelFromExecutionVenue")
+    public List<Venue> toModel(VenueDTO executionVenue) {
+        Venue venue = toVenueModel(executionVenue);
+        List<Venue> venueList = new ArrayList<>();
+        venueList.add(venue);
+        return venueList;
+    }
+
+    @Mapping(target = "quickCode", source = "quick")
+    public abstract Instrument toModel(InstrumentDTO instrumentDTO);
+
+    @Mapping(target = "venueId", source = "venuePartyRefKey")
+    public abstract VenueParty toModel(VenuePartyDTO venuePartyDTO);
+
+    @Mapping(target = "transactionDateTime", source = "transactionDatetime")
+    public abstract Venue toVenueModel(VenueDTO venueDTO);
 
     @Mapping(target = "quickCode", source = "quick")
     public abstract Instrument toModel(InstrumentEntity instrumentEntity);
@@ -175,6 +208,15 @@ public abstract class OneSourceMapper {
 
     public abstract TradeAgreement toModel(TradeAgreementDTO tradeAgreementDTO);
 
+    public OneOfVenueTradeAgreementRateDTODTO toVenueTradeRequestDto(Rate rate) {
+        if (rate.getRebate() != null) {
+            return toRequestDto(rate.getRebate());
+        } else if (rate.getFee() != null) {
+            return toRequestDto(rate.getFee());
+        }
+        return null;
+    }
+
     public OneOfTradeAgreementRateDTODTO toRequestDto(Rate rate) {
         if (rate.getRebate() != null) {
             return toRequestDto(rate.getRebate());
@@ -203,6 +245,15 @@ public abstract class OneSourceMapper {
     public abstract FeeRateDTO toRequestDto(FeeRate feeRate);
     public abstract FloatingRateDTO toFloatingRebateDto(RebateRate rebateRate);
     public abstract FixedRateDTO toFixedRebateDto(RebateRate rebateRate);
+
+    public Rate toModel(OneOfVenueTradeAgreementRateDTODTO rateDTO) {
+        if (rateDTO instanceof RebateRateDTO) {
+            return toModel((RebateRateDTO) rateDTO);
+        } else if (rateDTO instanceof FeeRateDTO) {
+            return toModel((FeeRateDTO) rateDTO);
+        }
+        return null;
+    }
 
     public Rate toModel(OneOfTradeAgreementRateDTODTO rateDTO) {
         if (rateDTO instanceof RebateRateDTO) {

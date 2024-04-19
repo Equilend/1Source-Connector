@@ -18,6 +18,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -35,6 +36,13 @@ public class AgreementService {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    /**
+     * Update last update time and persist an agreement.
+     *
+     * @param agreement Agreement
+     * @return Agreement persisted model
+     */
+    @Transactional
     public Agreement saveAgreement(Agreement agreement) {
         agreement.setLastUpdateDateTime(LocalDateTime.now());
         AgreementEntity agreementEntity = agreementRepository.save(oneSourceMapper.toEntity(agreement));
