@@ -51,8 +51,7 @@ public class IntegrationUtils {
     }
 
     public static Optional<PartyRole> extractPartyRole(Position position) {
-        String positionType = position.getPositionType() != null ? position.getPositionType().getPositionType() : null;
-        return extractPartyRole(positionType);
+        return extractPartyRole(position.unwrapPositionType());
     }
 
     public static boolean isLender(Position position) {

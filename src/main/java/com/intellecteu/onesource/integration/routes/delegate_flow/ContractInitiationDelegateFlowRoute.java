@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
+import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -24,7 +25,6 @@ import com.intellecteu.onesource.integration.routes.delegate_flow.processor.Agre
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.ContractProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.PositionProcessor;
-import com.intellecteu.onesource.integration.utils.IntegrationUtils;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import org.apache.camel.builder.RouteBuilder;
@@ -51,6 +51,13 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         ?consumeLockEntity=false&consumeDelete=false&%s\
         &sharedEntityManager=true&joinTransaction=false\
         &query=SELECT p FROM PositionEntity p WHERE p.processingStatus IN ('%s')""";
+
+    private static final String POSITION_BY_PARTICIPANT_SQL_ENDPOINT = """
+        jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity\
+        ?consumeLockEntity=false&consumeDelete=false&%s\
+        &sharedEntityManager=true&joinTransaction=false\
+        &query=SELECT p FROM PositionEntity p WHERE p.processingStatus IN ('%s') \
+        AND p.positionType.positionType = '%s'""";
 
     private static final String NEW_TRADE_EVENT_SQL_ENDPOINT = """
         jpa://com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity\
@@ -117,17 +124,13 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "with expected processing statuses: TradeEvent[PROCESSED], Contract[PROPOSED]")
         .end();
 
-        from(buildGetPositionByStatusQuery(CREATED))
+        from(buildGetPositionByParticipantAndStatusQuery(BORROWER_POSITION_TYPE, CREATED))
             .routeId("GetNewPositionsAndMatchIfBorrower")
             .log(">>> Started GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower.")
             .bean(backOfficeMapper, "toModel")
-                .choice()
-                    .when(method(IntegrationUtils.class, "isBorrower"))
-                        .bean(positionProcessor, "matchContractProposalAsBorrower")
-                .endChoice()
-            .end()
+            .bean(positionProcessor, "matchContractProposalAsBorrower")
             .log("<<< Finished GET_NEW_POSITIONS_PENDING_CONFIRMATION process for borrower "
-                + "with expected processing statuses: Contract[MATCHED]")
+                + "with expected processing statuses: Contract[MATCHED], Agreement[MATCHED]")
             .end();
 
         from(buildLenderPostLoanContractQuery(CREATED, UPDATED))
@@ -391,6 +394,13 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         return String.format(POSITION_SQL_ENDPOINT,
             String.format("delay=%d", updateTimer),
             Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
+    }
+
+    private String buildGetPositionByParticipantAndStatusQuery(String participant, ProcessingStatus... statuses) {
+        return String.format(POSITION_BY_PARTICIPANT_SQL_ENDPOINT,
+            String.format("delay=%d", updateTimer),
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")),
+            participant);
     }
 
     private String buildGetValidatedContractForBorrowerQuery(ProcessingStatus... statuses) {

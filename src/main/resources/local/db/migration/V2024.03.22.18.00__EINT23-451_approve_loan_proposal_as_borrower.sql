@@ -42,9 +42,9 @@
 -- VALUES (899, '899', 'ONPLATFORM', 'testLenderVenueName', '899', 899),
 --        (900, '900', 'ONPLATFORM', 'testBorrowerVenueName', '900', 900);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (899, '32b71278-9ad2-445a-bfb0-b5ada72f899', 'PENDING', 899, '899', 'CREATED'),
---        (900, '32b71278-9ad2-445a-bfb0-b5ada72f900', 'PENDING', 900, '900', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (899, '32b71278-9ad2-445a-bfb0-b5ada72f899', 899, '899', 'CREATED'),
+--        (900, '32b71278-9ad2-445a-bfb0-b5ada72f900', 900, '900', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (899, 'LENDER', 899, 899, 900);

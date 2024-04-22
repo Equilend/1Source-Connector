@@ -104,6 +104,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.RECONCILE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_LOAN_CONTRACT_PROPOSAL;
@@ -215,7 +216,7 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             case TRADE_AGREEMENT_MATCHED_CANCELED_POSITION -> tradeAgreementMatchingCanceledPosition(recorded,
                 recordType, related);
             case TRADE_AGREEMENT_RECONCILED -> tradeAgreementReconciledEvent(recorded, recordType, related);
-            case TRADE_AGREEMENT_MATCHED_POSITION -> tradeMatchedPositionEvent(recorded, recordType, related);
+            case TRADE_AGREEMENT_MATCHED -> tradeMatchedPositionEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_UNMATCHED -> tradeUnMatchedPositionEvent(recorded, recordType, related);
             case TRADE_AGREEMENT_CANCELED -> tradeCancellationEvent(recorded, recordType, related);
             case LOAN_CONTRACT_PROPOSAL_MATCHED -> loanProposalMatchedPositionEvent(recorded, recordType, related);
@@ -573,14 +574,15 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
     }
 
     private CloudEventBuildRequest tradeMatchedPositionEvent(String recorded, RecordType recordType,
-        String related) {
-        String dataMessage = format(MATCHED_POSITION_TRADE_AGREEMENT_MSG, recorded, related);
+        String relatedSequence) {
+        String positionId = relatedSequence.substring(0, relatedSequence.indexOf(","));
+        String dataMessage = format(MATCHED_POSITION_TRADE_AGREEMENT_MSG, recorded, positionId);
         return createRecordRequest(
             recordType,
-            format(TRADE_AGREEMENT_MATCHED_POSITION, related),
+            format(TRADE_AGREEMENT_MATCHED_POSITION, positionId),
             CONTRACT_INITIATION,
-            GET_TRADE_AGREEMENT,
-            createEventData(dataMessage, getTradeAgreementRelatedToPosition(recorded, related))
+            MATCH_TRADE_AGREEMENT,
+            createEventData(dataMessage, getAgreementRelatedToNgtPosition(recorded, relatedSequence))
         );
     }
 

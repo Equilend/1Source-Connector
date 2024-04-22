@@ -1,0 +1,75 @@
+-- INSERT INTO internal_ref (id, broker, account_id, internal_id)
+-- VALUES (369, 'testLenderBroker', '369', '369'),
+--        (405, 'testBorrowerBroker', '405', '405');
+--
+-- INSERT INTO party (id, party_id, party_name, gleif_lei, internal_id)
+-- VALUES (369, 369, 'LENDER', '369', '369'),
+--        (405, 405, 'BORROWER', '405', '4057');
+--
+-- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code)
+-- VALUES  (369, '234', '0231369106', 'US02313691067', '2000019', '457'),
+--         (405, '234', '0231369106', 'US02313691067', '2000019', '457');
+--
+-- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
+-- VALUES (369, 0.05, 0, '4053-10-25 13:50:41.633000', '0'),
+--        (405, 0.05, 0, '4053-10-25 13:50:41.633000', '0');
+--
+--
+-- INSERT INTO rebate (id, fixed)
+-- VALUES (369, 369), (405, 405);
+--
+-- INSERT INTO rate (id, rebate)
+-- VALUES  (369, 369), (405, 405);
+--
+-- INSERT INTO collateral (id, contract_price, contract_value, collateral_value, currency,
+--                         type, margin, rounding_rule, rounding_mode)
+-- VALUES (369, 119.57, 179369.5, 179369.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP'),
+--        (405, 119.57, 179369.5, 179369.5, 'USD', 'CASH', 102.0, 0, 'ALWAYSUP');
+--
+--
+-- INSERT INTO trade (id, instrument_id, rate_id, quantity, currency,
+--                    dividend_rate, trade_date, term_type, term_date, settlement_date,
+--                    settlement_type, collateral)
+-- VALUES  (369, 369, 369, 15000, 'USD',
+--          85.0, '4054-02-21 13:50:41.633000', 'OPEN', '4054-02-21 13:50:41.633000', '4053-10-25 13:50:41.633000',
+--          'DVP', 369),
+--         (405, 405, 405, 15000, 'USD',
+--          85.0, '4054-02-21 13:50:41.633000', 'OPEN', '4054-02-21 13:50:41.633000', '4053-10-25 13:50:41.633000',
+--          'DVP', 405);
+--
+-- INSERT INTO venue (id, party_id, type, venue_name, venue_ref_key, trade_id)
+-- VALUES (369, '369', 'ONPLATFORM', 'testLenderVenueName', '369', 369),
+--        (405, '405', 'ONPLATFORM', 'testBorrowerVenueName', '405', 405);
+--
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (369, '32b71278-9ad2-445a-bfb0-b5ada72f369', 369, '369', 'CREATED'),
+--        (405, '32b71278-9ad2-445a-bfb0-b5ada72f405', 405, '405', 'CREATED');
+--
+-- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
+-- VALUES (369, 'LENDER', 369, 369, 369);
+--
+-- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
+--                       matching_spire_position_id, matching_spire_trade_id)
+-- VALUES (369, '369', 'PROPOSED', 369, 'UNMATCHED', 369, 369),
+--        (405, '405', 'PROPOSED', 405, 'UNMATCHED', 405, 405);
+--
+-- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
+-- VALUES (369, 369, 'lender_acc', '369', 369, 1),
+--        (405, 405, 'borrower_acc', '405', 405, 2);
+--
+-- INSERT INTO position (position_id, custom_value2, ticker, cusip, isin,
+--                       sedol, quick_code, price_factor, rate, end_date,
+--                       quantity, currency, tax_with_holding_rate, trade_date, term_id,
+--                       settle_date, deliver_free, amount, price,
+--                       cp_haircut, cp_mark_round_to, depo_id, position_type, is_cash,
+--                       account_id, cp_id, account_lei, cp_lei, processing_status, status,
+--                       index_id, index_name, spread, accrual_date,
+--                       matching_1source_loan_contract_id, trade_id)
+-- VALUES ('369', '369', '369', '0231369107', 'US02313691068',
+--         '2000010', '456', 0, 0.05, '4053-12-25 13:50:41.633000',
+--         11000.0, 'USD', 85.0, '4053-10-25 13:50:41.633000', 0,
+--         '4053-10-25 13:50:41.633000', false, 179369.5, 119.57,
+--         1.02, 0, 0, 'CASH BORROW', true,
+--         369, 405, '369', '405', 'CREATED', null,
+--         333, 'EFFR', 0.2, '4053-10-25 13:50:41.633000',
+--         null, 369);

@@ -44,9 +44,9 @@
 -- VALUES (890, '890', 'ONPLATFORM', 'testLenderVenueName', '890', 890),
 --        (543, '543', 'ONPLATFORM', 'testBorrowerVenueName', '543', 543);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (890, '32b71278-9ad2-445a-bfb0-b5ada72f890', 'PENDING', 890, '890', 'CREATED'),
---        (543, '32b71278-9ad2-445a-bfb0-b5ada72f543', 'PENDING', 543, '543', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id,trade_id, matching_spire_position_id, processing_status)
+-- VALUES (890, '32b71278-9ad2-445a-bfb0-b5ada72f890', 890, '890', 'CREATED'),
+--        (543, '32b71278-9ad2-445a-bfb0-b5ada72f543', 543, '543', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (890, 'LENDER', 890, 890, 543);

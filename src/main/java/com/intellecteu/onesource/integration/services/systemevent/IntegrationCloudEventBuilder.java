@@ -151,6 +151,28 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return List.of(tradeAgreement, relatedPosition, relatedTrade);
     }
 
+    protected List<RelatedObject> getAgreementRelatedToNgtPosition(String agreementInfo, String relatedSequence) {
+        String[] relatedIds = relatedSequence.split(",");
+        String positionId;
+        String ngtTicket;
+        try {
+            positionId = relatedIds[0];
+            ngtTicket = relatedIds[1];
+        } catch (IndexOutOfBoundsException e) {
+            positionId = "";
+            ngtTicket = "";
+        }
+        return getAgreementRelatedToNgtPosition(agreementInfo, positionId, ngtTicket);
+    }
+
+    protected List<RelatedObject> getAgreementRelatedToNgtPosition(String agreementInfo, String positionInfo,
+        String ngtTicketInfo) {
+        var tradeAgreement = new RelatedObject(agreementInfo, ONESOURCE_TRADE_AGREEMENT);
+        var relatedPosition = new RelatedObject(positionInfo, POSITION);
+        var relatedTrade = new RelatedObject(ngtTicketInfo, SHARED_TRADE_TICKET);
+        return List.of(tradeAgreement, relatedPosition, relatedTrade);
+    }
+
     protected List<RelatedObject> getContractRelatedToPositionWithTrade(String contractInfo, String relatedSequence) {
         String[] relatedIds = relatedSequence.split(",");
         String positionId;

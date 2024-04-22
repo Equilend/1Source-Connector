@@ -92,7 +92,9 @@ public class Position implements Reconcilable {
     }
 
     public void setProcessingStatus(ProcessingStatus processingStatus) {
-        log.debug("Processing status {} was set for positionId={}", processingStatus, positionId);
+        if (positionId != null) {
+            log.debug("Processing status {} was set for positionId: {}", processingStatus, positionId);
+        }
         this.processingStatus = processingStatus;
     }
 
@@ -132,6 +134,10 @@ public class Position implements Reconcilable {
             return null;
         }
         return positionStatus.getStatus();
+    }
+
+    public boolean isNgtPosition() {
+        return customValue2 != null;
     }
 
     @Override

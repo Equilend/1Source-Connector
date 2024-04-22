@@ -42,9 +42,9 @@
 -- VALUES (101, '101', 'ONPLATFORM', 'testLenderVenueName', '101', 101),
 --        (202, '202', 'ONPLATFORM', 'testBorrowerVenueName', '202', 202);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (101, '32b71278-9ad2-445a-bfb0-b5ada72f101', 'PENDING', 101, '101', 'CREATED'),
---        (202, '32b71278-9ad2-445a-bfb0-b5ada72f202', 'PENDING', 202, '202', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (101, '32b71278-9ad2-445a-bfb0-b5ada72f101', 101, '101', 'CREATED'),
+--        (202, '32b71278-9ad2-445a-bfb0-b5ada72f202', 202, '202', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (101, 'LENDER', 101, 101, 202);
