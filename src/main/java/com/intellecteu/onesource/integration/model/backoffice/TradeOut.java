@@ -4,10 +4,11 @@ import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-//@NoArgsConstructor
+@NoArgsConstructor
 @AllArgsConstructor
 public class TradeOut {
 
@@ -24,18 +25,4 @@ public class TradeOut {
     private Integer statusId;
     private Position position;
 
-    public TradeOut() {
-        setIndexForDemo();
-    }
-
-    public void setIndex(Index index) {
-        setIndexForDemo();
-    }
-
-    //TODO hardcode for the demo. Expected to be removed
-    private void setIndexForDemo() {
-        index = new Index();
-        index.setIndexId(12);
-        index.setIndexName("Fixed Rate");
-    }
 }
