@@ -1,7 +1,6 @@
 package com.intellecteu.onesource.integration;
 
 import static com.intellecteu.onesource.integration.EntityTestFactory.createFieldImpacted;
-import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.DISCREPANCY;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
@@ -34,7 +33,6 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
-import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
@@ -59,6 +57,32 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.CollateralDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.CollateralDescriptionDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.CollateralTypeDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.CurrencyCdDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.FixedRateDefDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.InstrumentDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.InternalReferenceDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.LocalVenueFieldDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfVenueTradeAgreementRateDTODTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PriceDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PriceUnitDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RoundingModeDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementTypeDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.TermTypeDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.TransactingPartiesDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.TransactingPartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartiesDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTradeAgreementDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -119,6 +143,143 @@ public class ModelTestFactory {
             .build();
         agreement.setVenues(List.of(buildVenue(agreement.getId())));
         return agreement;
+    }
+    public static AgreementDTO buildAgreementDTO() {
+        final AgreementDTO agreementDTO = new AgreementDTO();
+        agreementDTO.setAgreementId("testAgreement");
+        agreementDTO.setLastUpdateDatetime(LocalDateTime.of(2024, 12, 25, 13, 55));
+        agreementDTO.setTrade(buildVenueTradeDTO());
+        return agreementDTO;
+    }
+
+
+    public static VenueTradeAgreementDTO buildVenueTradeDTO() {
+        VenueTradeAgreementDTO venueTrade = new VenueTradeAgreementDTO();
+        venueTrade.setExecutionVenue(buildExecutionVenue());
+        venueTrade.setInstrument(buildInstrumentDTO());
+        venueTrade.setRate(buildRebateRateDTO());
+        venueTrade.setQuantity(14000);
+        venueTrade.setBillingCurrency(CurrencyCdDTO.USD);
+        venueTrade.dividendRatePct(5.0D);
+        venueTrade.setTradeDate(LocalDate.of(2024, 4, 19));
+        venueTrade.setTermType(TermTypeDTO.TERM);
+        venueTrade.setTermDate(LocalDate.of(2024, 4, 19));
+        venueTrade.setSettlementDate(LocalDate.of(2024, 4, 19));
+        venueTrade.setSettlementType(SettlementTypeDTO.DVP);
+        venueTrade.setCollateral(buildCollateralDTO());
+        venueTrade.setTransactingParties(buildTransactionPartiesDTO());
+        return venueTrade;
+    }
+
+    public static OneOfVenueTradeAgreementRateDTODTO buildRebateRateDTO() {
+        final FixedRateDefDTO fixedRateDefDTO = new FixedRateDefDTO();
+        fixedRateDefDTO.setBaseRate(5.0);
+        FixedRateDTO fixedRate = new FixedRateDTO();
+        fixedRate.setFixed(fixedRateDefDTO);
+
+        RebateRateDTO rebateRate = new RebateRateDTO();
+        rebateRate.setRebate(fixedRate);
+        return rebateRate;
+    }
+
+    public static TransactingPartiesDTO buildTransactionPartiesDTO() {
+        TransactingPartiesDTO tpDto = new TransactingPartiesDTO();
+        tpDto.add(buildTransactionPartyDTO());
+        return tpDto;
+    }
+
+    public static TransactingPartyDTO buildTransactionPartyDTO() {
+        TransactingPartyDTO tpDTO = new TransactingPartyDTO();
+        tpDTO.setParty(buildLenderPartyDTO());
+        tpDTO.setPartyRole(PartyRoleDTO.LENDER);
+        tpDTO.setInternalRef(buildInternalReferenceDTO());
+        return null;
+    }
+
+    private static InternalReferenceDTO buildInternalReferenceDTO() {
+        InternalReferenceDTO internalReferenceDTO = new InternalReferenceDTO();
+        internalReferenceDTO.setAccountId("testAccId");
+        internalReferenceDTO.setInternalRefId("testInternalRefId");
+        return internalReferenceDTO;
+    }
+
+    public PartyDTO buildLenderPartyDTO() {
+        PartyDTO partyDTO = new PartyDTO();
+        partyDTO.setPartyId(UUID.randomUUID().toString());
+        partyDTO.setPartyName("Lender");
+        partyDTO.setGleifLei("lenderLei");
+        partyDTO.setInternalPartyId("internalLenderPartyId");
+        return partyDTO;
+    }
+
+
+    public static CollateralDTO buildCollateralDTO() {
+        CollateralDTO collateralDTO = new CollateralDTO();
+        collateralDTO.setContractPrice(100.0);
+        collateralDTO.setContractValue(4.25);
+        collateralDTO.setCollateralValue(400.33);
+        collateralDTO.setCurrency(CurrencyCdDTO.USD);
+        collateralDTO.setType(CollateralTypeDTO.CASH);
+        collateralDTO.setDescriptionCd(CollateralDescriptionDTO.DEBT);
+        collateralDTO.setMargin(205);
+        collateralDTO.setRoundingRule(1);
+        collateralDTO.setRoundingMode(RoundingModeDTO.ALWAYSUP);
+        return collateralDTO;
+    }
+
+    public static InstrumentDTO buildInstrumentDTO() {
+        InstrumentDTO instrumentDTO = new InstrumentDTO();
+        instrumentDTO.setCusip("testCusip");
+        instrumentDTO.setFigi("testFigi");
+        instrumentDTO.setSedol("testSedol");
+        instrumentDTO.setTicker("testTicker");
+        instrumentDTO.setIsin("testIsin");
+        instrumentDTO.setQuick("testQuick");
+        instrumentDTO.setDescription("testDescription");
+        instrumentDTO.setMarketCd("testMarketCd");
+        instrumentDTO.setPrice(buildPriceDTO());
+        return instrumentDTO;
+    }
+
+    public static PriceDTO buildPriceDTO() {
+        PriceDTO priceDTO = new PriceDTO();
+        priceDTO.setValue(14.0D);
+        priceDTO.setCurrency(CurrencyCdDTO.USD);
+        priceDTO.setUnit(PriceUnitDTO.LOT);
+        priceDTO.setValueDate(LocalDate.of(2024, 4, 27));
+        return priceDTO;
+    }
+
+    private static VenueDTO buildExecutionVenue() {
+        VenueDTO venue = new VenueDTO();
+        venue.setPartyId("testPartyId");
+        venue.setType(VenueTypeDTO.OFFPLATFORM);
+        venue.setVenueName("testVenueName");
+        venue.setVenueRefKey("testVenueRefKey");
+        venue.setTransactionDatetime(LocalDateTime.of(2024, 4, 22, 12, 45));
+        venue.setVenueParties(buildVenuePartiesDTO());
+        venue.localVenueFields(List.of(buildVenueFieldsDTO()));
+        return venue;
+    }
+
+    public static LocalVenueFieldDTO buildVenueFieldsDTO() {
+        LocalVenueFieldDTO localVenueFieldDTO = new LocalVenueFieldDTO();
+        localVenueFieldDTO.setLocalFieldName("testFieldName");
+        localVenueFieldDTO.setLocalFieldValue("testFieldValue");
+        return localVenueFieldDTO;
+    }
+
+    public static VenuePartiesDTO buildVenuePartiesDTO() {
+        VenuePartiesDTO venuePartiesDTO = new VenuePartiesDTO();
+        venuePartiesDTO.add(buildVenuePartyDTO());
+        return venuePartiesDTO;
+    }
+
+    public static VenuePartyDTO buildVenuePartyDTO() {
+        VenuePartyDTO venuePartyDTO = new VenuePartyDTO();
+        venuePartyDTO.setPartyRole(PartyRoleDTO.LENDER);
+        venuePartyDTO.setVenuePartyRefKey("testVenuePartyRefKey");
+        return venuePartyDTO;
     }
 
     public static List<TransactingParty> createTransactionParties() {

@@ -31,17 +31,17 @@ public class Rerate implements Reconcilable {
     @Override
     public void validateForReconciliation() throws ValidationException {
         var missedFields = new LinkedList<String>();
-        if (rate != null && rate.getRebate() != null && rate.getRebate().getFixed() != null
-            && rate.getRebate().getFixed().getBaseRate() == null) {
-            missedFields.add("baseRate");
+        if (rerate != null && rerate.getRebate() != null && rerate.getRebate().getFixed() != null
+            && rerate.getRebate().getFixed().getBaseRate() == null) {
+            missedFields.add("1sourceRerate.rerate.rebate.fixed.baseRate");
         }
-        if (rate != null && rate.getRebate() != null && rate.getRebate().getFloating() != null
-            && rate.getRebate().getFloating().getBenchmark() == null) {
-            missedFields.add("benchmark");
+        if (rerate != null && rerate.getRebate() != null && rerate.getRebate().getFloating() != null
+            && rerate.getRebate().getFloating().getBenchmark() == null) {
+            missedFields.add("1sourceRerate.rerate.rebate.floating.benchmark");
         }
-        if (rate != null && rate.getRebate() != null && rate.getRebate().getFloating() != null
-            && rate.getRebate().getFloating().getEffectiveRate() == null) {
-            missedFields.add("effectiveRate");
+        if (rerate != null && rerate.getRebate() != null && rerate.getRebate().getFloating() != null
+            && rerate.getRebate().getFloating().getEffectiveRate() == null) {
+            missedFields.add("1sourceRerate.rerate.rebate.floating.effectiveDate");
         }
         if (!missedFields.isEmpty()) {
             throw new ValidationException(missedFields);

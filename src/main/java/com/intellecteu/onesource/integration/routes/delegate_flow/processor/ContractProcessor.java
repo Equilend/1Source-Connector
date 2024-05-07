@@ -103,17 +103,13 @@ public class ContractProcessor {
         String resourceUri = event.getResourceUri();
         try {
             String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
-            final Contract contract = oneSourceService.retrieveContractDetails(contractId);
-            return contract;
+            return oneSourceService.retrieveContractDetails(contractId);
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
-            final HttpStatus status = HttpStatus.valueOf(e.getStatusCode().value());
-            if (Set.of(UNAUTHORIZED, NOT_FOUND, INTERNAL_SERVER_ERROR).contains(status)) {
-                var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
-                var recordRequest = eventBuilder.buildExceptionRequest(resourceUri,
-                    e, GET_LOAN_CONTRACT_PROPOSAL, event.getEventId());
-                cloudEventRecordService.record(recordRequest);
-            }
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildExceptionRequest(resourceUri,
+                e, GET_LOAN_CONTRACT_PROPOSAL, event.getEventId());
+            cloudEventRecordService.record(recordRequest);
             return null;
         }
     }
@@ -570,7 +566,6 @@ public class ContractProcessor {
         var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
         var recordRequest = eventBuilder.buildExceptionRequest(record, exception, subProcess, related);
         cloudEventRecordService.record(recordRequest);
-
     }
 
     private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
@@ -592,8 +587,7 @@ public class ContractProcessor {
         contract.setMatchingSpirePositionId(position.getPositionId());
         contract.setMatchingSpireTradeId(position.getTradeId());
         contract.setProcessingStatus(MATCHED);
-        contract.setLastUpdateDateTime(LocalDateTime.now());
-        return contractService.save(contract);
+        return saveContract(contract);
     }
 
     private void createBusinessEvent(String record, RecordType recordType,

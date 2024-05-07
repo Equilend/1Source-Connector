@@ -42,9 +42,9 @@
 -- VALUES (2378, '2378', 'ONPLATFORM', 'testLenderVenueName', '2378', 2378),
 --        (4198, '4198', 'ONPLATFORM', 'testBorrowerVenueName', '4198', 4198);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (2378, '32b71278-9ad2-445a-bfb0-b5ada72f2378', 'PENDING', 2378, '2378', 'CREATED'),
---        (4198, '32b71278-9ad2-445a-bfb0-b5ada72f4198', 'PENDING', 4198, '4198', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (2378, '32b71278-9ad2-445a-bfb0-b5ada72f2378', 2378, '2378', 'CREATED'),
+--        (4198, '32b71278-9ad2-445a-bfb0-b5ada72f4198', 4198, '4198', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (2378, 'LENDER', 2378, 2378, 4198);

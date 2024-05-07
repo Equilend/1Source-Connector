@@ -27,6 +27,9 @@ public class DeclineInstructionListener {
     }
 
     @KafkaHandler
+    /**
+     * There is the listener for messages with header __TypeId__:DeclineInstruction
+     */
     public void handleCorrectionInstruction(DeclineInstructionDTO declineInstructionDTO) {
         declineInstructionService.save(mapper.toModel(declineInstructionDTO));
     }

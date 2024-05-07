@@ -42,9 +42,9 @@
 -- VALUES (8451, '8451', 'ONPLATFORM', 'testLenderVenueName', '8451', 8451),
 --        (1697, '1697', 'ONPLATFORM', 'testBorrowerVenueName', '1697', 1697);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (8451, '32b71278-9ad2-445a-bfb0-b5ada72f8451', 'PENDING', 8451, '8451', 'CREATED'),
---        (1697, '32b71278-9ad2-445a-bfb0-b5ada72f1697', 'PENDING', 1697, '1697', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (8451, '32b71278-9ad2-445a-bfb0-b5ada72f8451', 8451, '8451', 'CREATED'),
+--        (1697, '32b71278-9ad2-445a-bfb0-b5ada72f1697', 1697, '1697', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (8451, 'LENDER', 8451, 8451, 1697);

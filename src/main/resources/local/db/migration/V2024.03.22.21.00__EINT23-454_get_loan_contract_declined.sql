@@ -44,9 +44,9 @@
 -- VALUES (8091, '8091', 'ONPLATFORM', 'testLenderVenueName', '8091', 8091),
 --        (54033, '54033', 'ONPLATFORM', 'testBorrowerVenueName', '54033', 54033);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (8091, '32b71278-9ad2-445a-bfb0-b5ada72f8091', 'PENDING', 8091, '8091', 'CREATED'),
---        (54033, '32b71278-9ad2-445a-bfb0-b5ada72f54033', 'PENDING', 54033, '54033', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id,trade_id, matching_spire_position_id, processing_status)
+-- VALUES (8091, '32b71278-9ad2-445a-bfb0-b5ada72f8091', 8091, '8091', 'CREATED'),
+--        (54033, '32b71278-9ad2-445a-bfb0-b5ada72f54033', 54033, '54033', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (8091, 'LENDER', 8091, 8091, 54033);

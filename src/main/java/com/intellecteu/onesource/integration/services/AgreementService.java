@@ -1,13 +1,17 @@
 package com.intellecteu.onesource.integration.services;
 
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_TRADE_AGREEMENT;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED_POSITION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
+import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -18,6 +22,7 @@ import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @Slf4j
@@ -35,10 +40,31 @@ public class AgreementService {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    /**
+     * Update last update time and persist an agreement.
+     *
+     * @param agreement Agreement
+     * @return Agreement persisted model
+     */
+    @Transactional
     public Agreement saveAgreement(Agreement agreement) {
         agreement.setLastUpdateDateTime(LocalDateTime.now());
         AgreementEntity agreementEntity = agreementRepository.save(oneSourceMapper.toEntity(agreement));
         return oneSourceMapper.toModel(agreementEntity);
+    }
+
+    @Transactional
+    public void matchPosition(Position position) {
+        final String positionId = String.valueOf(position.getPositionId());
+        findByVenueRefKey(position.getCustomValue2())
+            .ifPresent(agreement -> {
+                agreement.setMatchingSpirePositionId(positionId);
+                agreement.setProcessingStatus(MATCHED);
+                saveAgreement(agreement);
+                recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED,
+                    String.format("%s,%s", positionId, position.getCustomValue2()),
+                    MATCH_TRADE_AGREEMENT, CONTRACT_INITIATION);
+            });
     }
 
     public Optional<Agreement> findByVenueRefId(String venueRefId) {
@@ -46,16 +72,13 @@ public class AgreementService {
             .findFirst().map(oneSourceMapper::toModel);
     }
 
-    public Optional<Agreement> findByAgreementId(String agreementId) {
-        return agreementRepository.findByAgreementId(agreementId).stream().findFirst().map(oneSourceMapper::toModel);
+    @Transactional
+    public Optional<Agreement> findByVenueRefKey(String venueRefKey) {
+        return agreementRepository.findByVenueRefKey(venueRefKey).map(oneSourceMapper::toModel);
     }
 
-    public Agreement markAgreementAsMatched(Agreement agreement, String positionId) {
-        agreement.setMatchingSpirePositionId(positionId);
-        agreement.setProcessingStatus(MATCHED_POSITION);
-        createContractInitiationCloudEvent(agreement.getAgreementId(),
-            TRADE_AGREEMENT_MATCHED_POSITION, agreement.getMatchingSpirePositionId());
-        return saveAgreement(agreement);
+    public Optional<Agreement> findByAgreementId(String agreementId) {
+        return agreementRepository.findByAgreementId(agreementId).stream().findFirst().map(oneSourceMapper::toModel);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {
@@ -80,6 +103,19 @@ public class AgreementService {
         var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
             TRADE_AGREEMENT_RECONCILED, agreement.getMatchingSpirePositionId());
         cloudEventRecordService.record(recordRequest);
+    }
+
+
+    private void recordBusinessEvent(String record, RecordType recordType,
+        String related, IntegrationSubProcess subProcess, IntegrationProcess process) {
+        try {
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+            var recordRequest = eventBuilder.buildRequest(record, recordType, related);
+            cloudEventRecordService.record(recordRequest);
+        } catch (Exception e) {
+            log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}, record:{}",
+                recordType, process, subProcess, record);
+        }
     }
 
 }

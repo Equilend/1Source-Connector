@@ -44,9 +44,9 @@
 -- VALUES (7802, '7802', 'ONPLATFORM', 'testLenderVenueName', '7802', 7802),
 --        (4789, '4789', 'ONPLATFORM', 'testBorrowerVenueName', '4789', 4789);
 --
--- INSERT INTO agreement (id, agreement_id, status, trade_id, matching_spire_position_id, processing_status)
--- VALUES (7802, '32b71278-9ad2-445a-bfb0-b5ada72f7802', 'PENDING', 7802, '7802', 'CREATED'),
---        (4789, '32b71278-9ad2-445a-bfb0-b5ada72f4789', 'PENDING', 4789, '4789', 'CREATED');
+-- INSERT INTO agreement (id, agreement_id, trade_id, matching_spire_position_id, processing_status)
+-- VALUES (7802, '32b71278-9ad2-445a-bfb0-b5ada72f7802', 7802, '7802', 'CREATED'),
+--        (4789, '32b71278-9ad2-445a-bfb0-b5ada72f4789', 4789, '4789', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
 -- VALUES (7802, 'LENDER', 7802, 7802, 4789);

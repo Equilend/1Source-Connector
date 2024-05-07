@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.exception.NoRequiredPartyRol
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LENDER;
 import static java.lang.String.format;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 import com.intellecteu.onesource.integration.exception.NoRequiredPartyRoleException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
@@ -13,11 +14,11 @@ import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
+import org.springframework.web.client.HttpServerErrorException;
 
 @UtilityClass
 @Slf4j
@@ -50,8 +51,7 @@ public class IntegrationUtils {
     }
 
     public static Optional<PartyRole> extractPartyRole(Position position) {
-        String positionType = position.getPositionType() != null ? position.getPositionType().getPositionType() : null;
-        return extractPartyRole(positionType);
+        return extractPartyRole(position.unwrapPositionType());
     }
 
     public static boolean isLender(Position position) {
@@ -102,6 +102,36 @@ public class IntegrationUtils {
             resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
         }
         return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
+    }
+
+    /**
+     * Retrieve agreement id from the 1Source event resource Uri. Expected URI format:
+     * /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
+     * The method is duplicate for contract id parsing, but should be the separate as
+     * there are in progress requirements for parsing sub-entities from the resource uri
+     *
+     * @param resourceUri String
+     * @return String agreement id or the initial string if the format is unexpected
+     */
+    public static String parseAgreementIdFrom1SourceResourceUri(String resourceUri) {
+        try {
+            if (!resourceUri.contains("/")) {
+                return resourceUri;
+            }
+            if (resourceUri.endsWith("/")) {
+                resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
+            }
+            return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
+        } catch (RuntimeException e) {
+            String msg = "Error when parsing resource uri:" + resourceUri;
+            log.debug(msg);
+            throw new HttpServerErrorException(INTERNAL_SERVER_ERROR, msg);
+        }
+
+    }
+
+    public static String toStringNullSafe(Object obj){
+        return obj != null ? obj.toString() : null;
     }
 }
 

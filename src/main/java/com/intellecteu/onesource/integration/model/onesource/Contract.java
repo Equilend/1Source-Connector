@@ -75,6 +75,19 @@ public class Contract implements Reconcilable {
             .orElse("");
     }
 
+    public String retrieveVenueRefKey() {
+        if (isNgtTradeContract()) {
+            return trade.getVenues().get(0).getVenueRefKey();
+        }
+        return "";
+    }
+
+    public boolean isNgtTradeContract() {
+        return trade != null && trade.getVenues() != null
+            && trade.getVenues().get(0) != null
+            && trade.getVenues().get(0).getVenueRefKey() != null;
+    }
+
     private boolean isInstrumentAvailable() {
         return trade != null && trade.getInstrument() != null;
     }
