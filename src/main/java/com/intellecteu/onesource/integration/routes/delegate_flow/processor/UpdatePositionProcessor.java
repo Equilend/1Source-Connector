@@ -18,7 +18,6 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -54,12 +53,9 @@ public class UpdatePositionProcessor {
             .orElse(null);
     }
 
-    // commented out for the demo purposes. Expected this method will be returned
     private Position updateInitialPositionForRerate(Position initialPosition, TradeOut tradeUpdateRequest) {
-//        updateFixedRate(initialPosition, tradeUpdateRequest);
-//        updateNotFixedRate(initialPosition, tradeUpdateRequest);
-        initialPosition.setRate(tradeUpdateRequest.getRateOrSpread()); // hardcode only for the demo
-        initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate()); // hardcode only for the demo
+        updateFixedRate(initialPosition, tradeUpdateRequest);
+        updateNotFixedRate(initialPosition, tradeUpdateRequest);
         return initialPosition;
     }
 
@@ -84,12 +80,10 @@ public class UpdatePositionProcessor {
     }
 
     private static void updateNotFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
-        Position updateRequestPosition = tradeUpdateRequest.getPosition();
-        final Index indexUpdateRequest = updateRequestPosition.getIndex();
+        final Index indexUpdateRequest = tradeUpdateRequest.getPosition().getIndex();
         final Index initialIndex = initialPosition.getIndex();
         if (indexUpdateRequest != null && initialIndex != null) {
             final String updateRequestIndexName = indexUpdateRequest.getIndexName();
-            final String initialIndexName = initialIndex.getIndexName();
             if (!"Fixed Rate".equals(updateRequestIndexName)) {
                 initialPosition.setRate(null);
                 initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate());
