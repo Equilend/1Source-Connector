@@ -258,6 +258,7 @@ class RerateProcessorTest {
         DeclineInstruction declineInstruction = new DeclineInstruction();
         Rerate rerate = new Rerate();
         rerate.setRerateId("id");
+        rerate.setProcessingStatus(DISCREPANCIES);
         doReturn(rerate).when(rerateService).getByRerateId(any());
 
         DeclineInstruction result = rerateProcessor.declineRerate(declineInstruction);

@@ -27,6 +27,9 @@ public class CorrectionInstructionListener {
     }
 
     @KafkaHandler
+    /**
+     * There is the listener for messages with header __TypeId__:CorrectionInstruction
+     */
     public void handleCorrectionInstruction(CorrectionInstructionDTO correctionInstructionDTO) {
         correctionInstructionService.save(mapper.toModel(correctionInstructionDTO));
     }

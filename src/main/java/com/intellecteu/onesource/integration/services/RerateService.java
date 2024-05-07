@@ -8,6 +8,7 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.repository.RerateRepository;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,6 +54,15 @@ public class RerateService {
         return rerateOptional;
     }
 
+    public Rerate findRerateByContractIdAndProcessingStatuses(String contractId, List<ProcessingStatus> processingStatuses) {
+        List<Rerate> rerateList = rerateRepository.findByContractIdAndProcessingStatusIn(contractId, processingStatuses).stream().map(oneSourceMapper::toModel)
+                .collect(Collectors.toList());
+        if(rerateList.isEmpty()){
+            throw new EntityNotFoundException();
+        }
+        return rerateList.get(0);
+    }
+
     private Boolean compareEffectiveDate(Rerate rerate, LocalDate effectiveDate) {
         return (rerate.getRerate().getRebate().getFloating() != null && effectiveDate.equals(
             rerate.getRerate().getRebate().getFloating().getEffectiveDate()))
@@ -65,7 +75,7 @@ public class RerateService {
         rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
         rerate.setRelatedSpirePositionId(rerateTrade.getRelatedPositionId());
         rerate.setLastUpdateDatetime(LocalDateTime.now());
-        rerate.setProcessingStatus(ProcessingStatus.MATCHED);
+        rerate.setProcessingStatus(ProcessingStatus.TO_VALIDATE);
         return saveRerate(rerate);
     }
 }

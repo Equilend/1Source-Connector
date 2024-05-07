@@ -129,5 +129,9 @@ public class IntegrationUtils {
         }
 
     }
+
+    public static String toStringNullSafe(Object obj){
+        return obj != null ? obj.toString() : null;
+    }
 }
 

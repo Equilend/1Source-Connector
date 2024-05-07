@@ -1,5 +1,8 @@
 package com.intellecteu.onesource.integration.services.client.onesource.invoker;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +54,8 @@ import com.intellecteu.onesource.integration.services.client.onesource.invoker.a
 import com.intellecteu.onesource.integration.services.client.onesource.invoker.auth.ApiKeyAuth;
 import com.intellecteu.onesource.integration.services.client.onesource.invoker.auth.OAuth;
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-02-22T19:23:00.293794600Z[Europe/London]")
+//@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-02-22T19:23:00.293794600Z[Europe/London]")
+//this#parameterToString was changed
 @Component("com.intellecteu.onesource.integration.services.client.onesource.invoker.ApiClient")
 public class ApiClient {
     public enum CollectionFormat {
@@ -314,6 +318,8 @@ public class ApiClient {
             return "";
         } else if (param instanceof Date) {
             return formatDate( (Date) param);
+        } else if (param instanceof LocalDateTime) {
+            return (((LocalDateTime) param).atOffset(ZoneOffset.UTC)).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
         } else if (param instanceof Collection) {
             StringBuilder b = new StringBuilder();
             for(Object o : (Collection<?>) param) {
