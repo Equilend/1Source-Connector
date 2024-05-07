@@ -315,6 +315,7 @@ public class RecordMessageConstant {
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String APPLIED_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
+            public static final String DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
             public static final String CONFIRM_EXCEPTION_RERATE = "Trade - %s";
@@ -346,8 +347,10 @@ public class RecordMessageConstant {
             public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
             public static final String CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate pending settlement %s has been canceled by one of the two counterparties in 1Source but the rerate pending settlement has not been retrieved in the Integration toolkit.";
             public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has not been retrieved in the Integration toolkit";
+            public static final String DECLINE_RERATE_EXCEPTION_RERATE_MSG = "The rerate %s has not been retrieved in the Integration toolkit";
             public static final String CONFIRM_EXCEPTION_RERATE_MSG = "The rerate trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source rerate is : %s. The reason is: %s";
             public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";
+            public static final String DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE_MSG = "The decline instruction for the 1Source rerate %s is not authorised as not generated from a “RERATE_PROPOSAL_DISCREPANCIES” or “RERATE_PROPOSAL_UNMATCHED” event.";
             public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be canceled for the following reason: %s";
 
         }
