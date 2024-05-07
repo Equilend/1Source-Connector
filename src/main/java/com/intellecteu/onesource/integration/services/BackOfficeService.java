@@ -266,6 +266,9 @@ public class BackOfficeService {
         body.setLedgerId(rerateTrade.getMatchingRerateId());
         body.userId(userId);
         body.setUserName(userName);
+        var instructionDTO = new com.intellecteu.onesource.integration.services.client.spire.dto.InstructionDTO();
+        instructionDTO.accountDTO(new AccountDTO().dtc(0l));
+        body.setInstructions(instructionDTO);
         tradeSpireApiClient.confirmTrade(body);
     }
 

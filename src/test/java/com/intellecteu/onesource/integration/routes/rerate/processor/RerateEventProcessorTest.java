@@ -107,7 +107,7 @@ class RerateEventProcessorTest {
         Rerate rerate = new Rerate();
         rerate.setRerateId("1");
         rerate.setMatchingSpireTradeId(1l);
-        doReturn(rerate).when(rerateService).getByRerateId(any());
+        doReturn(rerate).when(rerateService).findRerateByContractIdAndProcessingStatuses(any(), any());
         doReturn(new CloudEventFactoryImpl(
             Map.of(IntegrationProcess.RERATE, new RerateCloudEventBuilder("1", "http://integration.toolkit")))).when(
             cloudEventRecordService).getFactory();

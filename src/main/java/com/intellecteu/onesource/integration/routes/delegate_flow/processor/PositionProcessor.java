@@ -199,15 +199,6 @@ public class PositionProcessor {
         }
     }
 
-    public Position matchTradeAgreement(Position position) {
-        agreementService.findByVenueRefId(position.getVenueRefId())
-            .ifPresent(agreement -> {
-                position.setMatching1SourceTradeAgreementId(agreement.getAgreementId());
-                agreementService.markAgreementAsMatched(agreement, String.valueOf(position.getPositionId()));
-            });
-        return position;
-    }
-
     public Position updatePositionForInstructedProposal(Position position) {
         if (ProcessingStatus.CREATED == position.getProcessingStatus()) {
             position.setProcessingStatus(SUBMITTED);
@@ -250,19 +241,26 @@ public class PositionProcessor {
         }
     }
 
+    @Transactional
     public void matchContractProposalAsBorrower(Position position) {
         try {
-            Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(UNMATCHED);
+            Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(UNMATCHED); // todo improve move this from position list loop
             if (unmatchedContracts.isEmpty()) {
-                throw new ContractNotFoundException(); // todo should we ignore such cases? A lot of system events will be created
+                throw new ContractNotFoundException();
             }
-            log.debug("Matching position with contracts received ({})", unmatchedContracts.size());
-            Contract matchedContract = retrieveMatchedContract(position, unmatchedContracts);
-            updatePosition(matchedContract, position);
+            log.debug("Matching position: {} with contracts received ({}). Contract ids:{}",
+                position.getPositionId(), unmatchedContracts.size(),
+                unmatchedContracts.stream().map(Contract::getContractId).collect(Collectors.joining(",")));
+            Contract matchedContract = findMatchedContractForBorrower(position, unmatchedContracts);
+            position.setMatching1SourceLoanContractId(matchedContract.getContractId());
+            savePosition(position);
             saveContractAsMatched(matchedContract, position);
             recordContractProposalMatched(matchedContract);
+            if (position.isNgtPosition()) {
+                agreementService.matchPosition(position);
+            }
         } catch (ContractNotFoundException e) {
-            log.debug("No matched contracts found for position Id={}", position.getPositionId());
+            log.debug("No matched contracts found for position Id:{}", position.getPositionId());
             recordSystemEvent(position, GET_NEW_POSITIONS_PENDING_CONFIRMATION, POSITION_UNMATCHED);
         }
     }
@@ -275,14 +273,14 @@ public class PositionProcessor {
                 () -> createContractInitiationCloudEvent(positionId, recordType, null));
     }
 
-    private Contract retrieveMatchedContract(Position position, Set<Contract> unmatchedContracts) {
-        return matchingService.matchPositionWithContracts(position, unmatchedContracts)
-            .orElseThrow(ContractNotFoundException::new);
-    }
+    private Contract findMatchedContractForBorrower(Position position, Set<Contract> unmatchedContracts) {
+        if (position.isNgtPosition()) {
+            return matchingService.matchBorrowerNgtPositionWithContract(position, unmatchedContracts)
+                .orElseThrow(ContractNotFoundException::new);
 
-    private void updatePosition(Contract contract, Position position) {
-        position.setMatching1SourceLoanContractId(contract.getContractId());
-        savePosition(position);
+        }
+        return matchingService.matchBorrowerPositionWithContract(position, unmatchedContracts)
+            .orElseThrow(ContractNotFoundException::new);
     }
 
     public Position fetchSettlementInstruction(Position position) {
@@ -395,4 +393,5 @@ public class PositionProcessor {
         var recordRequest = eventBuilder.buildExceptionRequest(exception, subProcess, recordData);
         cloudEventRecordService.record(recordRequest);
     }
+
 }

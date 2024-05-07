@@ -30,13 +30,13 @@ public class RerateTrade implements Reconcilable {
         var missedFields = new LinkedList<String>();
         if (tradeOut != null && tradeOut.getPosition() != null) {
             if (tradeOut.getRateOrSpread() == null) {
-                missedFields.add("rateOrSpread");
+                missedFields.add("RerateTrade.tradeOut.rateOrSpread");
             }
             if (tradeOut.getAccrualDate() == null) {
-                missedFields.add("accrualDate");
+                missedFields.add("RerateTrade.tradeOut.accrualDate");
             }
             if (tradeOut.getIndex() != null && tradeOut.getIndex().getIndexName() == null) {
-                missedFields.add("indexName");
+                missedFields.add("RerateTrade.tradeOut.index.indexName");
             }
         }
         if (!missedFields.isEmpty()) {

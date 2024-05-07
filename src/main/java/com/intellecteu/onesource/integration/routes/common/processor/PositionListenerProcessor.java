@@ -2,12 +2,12 @@ package com.intellecteu.onesource.integration.routes.common.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 
-import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,7 +29,9 @@ public class PositionListenerProcessor {
         String maxTradeId = positionService.getMaxTradeId();
         List<Position> newSpirePositions = backOfficeService.getNewSpirePositions(maxTradeId);
         if (!newSpirePositions.isEmpty()) {
-            log.debug("{} new positions were retrieved", newSpirePositions.size());
+            log.debug("{} new positions were retrieved. Ids:{}", newSpirePositions.size(),
+            newSpirePositions.stream().map(Position::getPositionId).map(String::valueOf)
+                .collect(Collectors.joining(",")));
         }
         newSpirePositions.forEach(position -> {
             position.setVenueRefId(position.getCustomValue2());

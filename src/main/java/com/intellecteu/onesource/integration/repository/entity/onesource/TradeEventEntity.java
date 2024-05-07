@@ -1,8 +1,7 @@
 package com.intellecteu.onesource.integration.repository.entity.onesource;
 
-import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import java.time.LocalDateTime;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +35,7 @@ public class TradeEventEntity {
     @Enumerated(value = EnumType.STRING)
     private EventType eventType;
     @Column(name = "event_datetime", columnDefinition = "TIMESTAMP")
-    private LocalDateTime eventDatetime;
+    private LocalDateTime eventDateTime;
     @Column(name = "resource_uri")
     private String resourceUri;
     @Column(name = "processing_status")

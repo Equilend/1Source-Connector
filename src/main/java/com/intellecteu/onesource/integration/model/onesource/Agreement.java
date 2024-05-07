@@ -1,12 +1,8 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.model.enums.FlowStatus;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
-import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -25,20 +21,30 @@ public class Agreement implements Reconcilable {
 
     private Long id;
     private String agreementId;
-    private AgreementStatus status;
-    @JsonAlias({"lastUpdateDatetime", "lastUpdateDateTime"})
+    private LocalDateTime createDateTime;
     private LocalDateTime lastUpdateDateTime;
-    private TradeAgreement trade;
-    private EventType eventType;
-    private String matchingSpirePositionId;
-    private String matching1SourceLoanContractId;
-    private FlowStatus flowStatus;
     private ProcessingStatus processingStatus;
+    private String matchingSpirePositionId;
+    private TradeAgreement trade;
+
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
+        if (agreementId != null) {
+            log.debug("ProcessingStatus: {} was set for agreementId: {}", processingStatus, agreementId);
+        }
+        this.processingStatus = processingStatus;
+    }
 
     @Override
     public void validateForReconciliation() throws ValidationException {
 //        throwIfFieldMissedException(trade, TRADE);
 //        trade.validateForReconciliation();
+    }
+
+    public String unwrapVenueRefKey() {
+        if (trade == null) {
+            return null;
+        }
+        return trade.getVenues() == null ? null : trade.getVenues().get(0).getVenueRefKey();
     }
 
 }

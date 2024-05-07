@@ -58,7 +58,7 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 if (onesourceRerate.getRerate().getRebate().getFixed().getBaseRate() != null
                     && backofficeRerate.getTradeOut().getRateOrSpread() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFixed().getBaseRate(),
-                        "baseRate",
+                        "1sourceRerate.rerate.rebate.fixed.baseRate",
                         backofficeRerate.getTradeOut().getRateOrSpread(),
                         "rateOrSpread").ifPresent(failedList::add);
                 }
@@ -66,7 +66,7 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 if (onesourceRerate.getRerate().getRebate().getFixed().getEffectiveDate() != null
                     && backofficeRerate.getTradeOut().getAccrualDate() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFixed().getEffectiveDate(),
-                        "effectiveDate",
+                        "1sourceRerate.rerate.rebate.fixed.effectiveDate",
                         backofficeRerate.getTradeOut().getAccrualDate().toLocalDate(),
                         "accrualDate").ifPresent(failedList::add);
                 }
@@ -80,7 +80,7 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 if (onesourceRerate.getRerate().getRebate().getFloating().getBenchmark() != null
                     && backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getBenchmark().toString(),
-                        "benchmark",
+                        "1sourceRerate.rerate.rebate.floating.benchmark",
                         backofficeRerate.getTradeOut().getPosition().getIndex().getIndexName(),
                         "indexName").ifPresent(failedList::add);
                 }
@@ -88,7 +88,7 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 if (onesourceRerate.getRerate().getRebate().getFloating().getSpread() != null
                     && backofficeRerate.getTradeOut().getRateOrSpread() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getSpread(),
-                        "spread",
+                        "1sourceRerate.rerate.rebate.floating.spread",
                         backofficeRerate.getTradeOut().getRateOrSpread(),
                         "rateOrSpread").ifPresent(failedList::add);
                 }
@@ -96,7 +96,7 @@ public class RerateReconcileService implements ReconcileService<Rerate, RerateTr
                 if (onesourceRerate.getRerate().getRebate().getFloating().getEffectiveDate() != null
                     && backofficeRerate.getTradeOut().getPosition().getSettleDate() != null) {
                     checkEquality(onesourceRerate.getRerate().getRebate().getFloating().getEffectiveDate(),
-                        "effectiveDate",
+                        "1sourceRerate.rerate.rebate.floating.effectiveDate",
                         backofficeRerate.getTradeOut().getAccrualDate().toLocalDate(),
                         "accrualDate").ifPresent(failedList::add);
                 }
