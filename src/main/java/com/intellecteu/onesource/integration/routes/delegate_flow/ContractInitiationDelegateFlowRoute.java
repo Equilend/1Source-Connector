@@ -220,6 +220,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                     .setHeader("contract", body())
                     .bean(positionProcessor, "findByPositionId(${body.matchingSpirePositionId})")
                     .filter(body().isNotNull())
+                    .bean(positionProcessor, "updateCounterparty(${body}, ${header.contract})")
                     .bean(positionProcessor, "updateProcessingStatus(${body}, PROPOSAL_APPROVED)")
                     .bean(contractProcessor, "recordApprovedSystemEvent(${header.contract})")
                     .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")

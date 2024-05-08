@@ -99,6 +99,33 @@ public class PositionProcessor {
         return positionService.savePosition(position);
     }
 
+    @Transactional
+    public Position updateCounterparty(@NonNull Position position, @NonNull Contract contract) {
+        Long dtc = null;
+        if (IntegrationUtils.isLender(position)) {
+            dtc = retrievePartyDtc(contract, PartyRole.LENDER);
+        }
+        if (IntegrationUtils.isBorrower(position)) {
+            dtc = retrievePartyDtc(contract, PartyRole.BORROWER);
+        }
+        position.getPositionCpAccount().setDtc(dtc);
+        return position;
+    }
+
+    private Long retrievePartyDtc(Contract contract, PartyRole partyRole) {
+        try {
+            final Settlement settlement = contract.getSettlement().stream()
+                .filter(s -> partyRole == s.getPartyRole())
+                .findAny()
+                .orElseThrow();
+            final String dtc = settlement.getInstruction().getDtcParticipantNumber();
+            return Long.valueOf(dtc);
+        } catch (Exception e) {
+            log.debug("Couldn't retrieve party's dtc. Details:{}", e.getMessage());
+            return null;
+        }
+    }
+
     public Position updatePositionStatus(Position position, String positionStatus) {
         if (position.getPositionStatus() == null) {
             position.setPositionStatus(new PositionStatus());
