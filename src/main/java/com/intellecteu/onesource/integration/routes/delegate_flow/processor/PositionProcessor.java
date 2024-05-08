@@ -252,8 +252,7 @@ public class PositionProcessor {
                 position.getPositionId(), unmatchedContracts.size(),
                 unmatchedContracts.stream().map(Contract::getContractId).collect(Collectors.joining(",")));
             Contract matchedContract = findMatchedContractForBorrower(position, unmatchedContracts);
-            position.setMatching1SourceLoanContractId(matchedContract.getContractId());
-            savePosition(position);
+            savePositionAsMatched(position, matchedContract);
             saveContractAsMatched(matchedContract, position);
             recordContractProposalMatched(matchedContract);
             if (position.isNgtPosition()) {
@@ -261,7 +260,9 @@ public class PositionProcessor {
             }
         } catch (ContractNotFoundException e) {
             log.debug("No matched contracts found for position Id:{}", position.getPositionId());
-            recordSystemEvent(position, GET_NEW_POSITIONS_PENDING_CONFIRMATION, POSITION_UNMATCHED);
+            position.setProcessingStatus(UNMATCHED);
+            final Position unmatchedPosition = savePosition(position);
+            recordSystemEvent(unmatchedPosition, GET_NEW_POSITIONS_PENDING_CONFIRMATION, POSITION_UNMATCHED);
         }
     }
 
@@ -352,6 +353,13 @@ public class PositionProcessor {
                     () ->  createExceptionCloudEvent(positionId, e, CONTRACT_INITIATION, POST_LOAN_CONTRACT_PROPOSAL));
             return false;
         }
+    }
+
+    private Position savePositionAsMatched(Position position, Contract contract) {
+        position.setLastUpdateDateTime(LocalDateTime.now());
+        position.setProcessingStatus(MATCHED);
+        position.setMatching1SourceLoanContractId(contract.getContractId());
+        return savePosition(position);
     }
 
     private Contract saveContractAsMatched(Contract contract, Position position) {
