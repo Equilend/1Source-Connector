@@ -51,7 +51,7 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
             .when().simple("${body.tradeType} == 'Roll Loan'").to("direct:updatePositionForRollTrade")
             .when().simple("${body.tradeType} == 'Roll Borrow'").to("direct:updatePositionForRollBorrowTrade")
             .when().simple("${body.tradeType} == 'Cancel Loan'").to("direct:updatePositionForCancelLoanTrade")
-            .when().simple("${body.tradeType} == 'Cancel Borrow'").to("direct:updatePositionForCancelBorrowTrade")
+            .when().simple("${body.tradeType} == 'Cancel New Borrow'").to("direct:updatePositionForCancelBorrowTrade")
             .endChoice()
             .end()
             .log("<<< Finished GET_UPDATED_POSITIONS_PENDING_CONFIRMATION subprocess.");
