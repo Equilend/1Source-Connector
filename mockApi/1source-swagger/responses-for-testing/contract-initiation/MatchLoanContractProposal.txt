@@ -106,8 +106,7 @@ BORROWER participant test flow:
 
 2. Insert to the database test position:
     - position type should be 'CASH BORROW' and all ids should match with borrower;
-    - position processing status should be 'CREATED' or 'UPDATED';
-    - position matching1SourceLoanContractId should be NULL.
+    - position processing status should be 'UNMATCHED' or 'UPDATED'.
 
 3. Route for subprocess GET_NEW_POSITIONS_PENDING_CONFIRMATION should be turned off as it can affect this test and
 assing matching_1source_loan_contract_id for the tested position.
