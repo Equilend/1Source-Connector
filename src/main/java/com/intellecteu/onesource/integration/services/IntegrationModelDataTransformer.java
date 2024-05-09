@@ -49,14 +49,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Slf4j
 public class IntegrationModelDataTransformer implements IntegrationDataTransformer {
+
+    private String spireUserId;
+
+    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId) {
+        this.spireUserId = spireUserId;
+    }
 
     @Override
     public ContractProposal toLenderContractProposal(Position position) {
@@ -77,6 +84,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     @Override
     public PositionConfirmationRequest toPositionConfirmationRequest(Position position) {
         return PositionConfirmationRequest.builder()
+            .userId(retrieveOneSourceUserId())
             .userName("1Source")
             .positionId(position.getPositionId())
             .tradeId(position.getTradeId())
@@ -85,9 +93,17 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .build();
     }
 
+    private Integer retrieveOneSourceUserId() {
+        try {
+            return Integer.parseInt(spireUserId);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     private PositionInstruction buildPositionInstructions(Position position) {
         return PositionInstruction.builder()
-            .account(buildPositionAccount(position.getPositionAccount()))
+            .account(buildPositionAccount(position.getPositionCpAccount()))
             .build();
     }
 

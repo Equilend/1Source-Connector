@@ -784,8 +784,8 @@ paths:
                 $ref: '#/components/schemas/PageResponse'
         '401':
           description: Unauthorized
-        '400':
-          description: Bad Request
+        '406':
+          description: Not Acceptable - not expected query param
         '500':
           description: Internal Server Error
 
