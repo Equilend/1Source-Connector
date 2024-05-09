@@ -61,8 +61,14 @@ route:
     timer: ${POSITION_LISTENER_NEW_POSITIONS_TIMER:60000}
     update-timer: ${POSITION_LISTENER_UPDATE_POSITIONS_TIMER:60000}
   rerate:
-    enable: ${RERATE_ROUTE:true}
+    enable: ${RERATE_ROUTE_ENABLE:true}
     timer: ${RERATE_ROUTE_TIMER:5000}
+    redelivery-policy:
+      max-redeliveries: 2
+      delay-pattern: 1:2000;2:30000
+  returns:
+    enable: ${RETURN_ROUTE_ENABLE:true}
+    timer: ${RETURN_ROUTE_TIMER:5000}
     redelivery-policy:
       max-redeliveries: 2
       delay-pattern: 1:2000;2:30000

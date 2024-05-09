@@ -24,5 +24,10 @@ public class TradeOut {
     private String status;
     private Integer statusId;
     private Position position;
-
+    private Double quantity;
+    private Double amount;
+    private Account account;
+    private Account counterParty;
+    private Integer depoId;
+    private String depoKy;
 }

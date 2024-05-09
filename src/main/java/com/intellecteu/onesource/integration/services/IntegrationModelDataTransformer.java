@@ -8,10 +8,10 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
 import static com.intellecteu.onesource.integration.model.onesource.TermType.TERM;
 
+import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
-import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
@@ -91,11 +91,11 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .build();
     }
 
-    private PositionAccount buildPositionAccount(PositionAccount positionAccount) {
+    private Account buildPositionAccount(Account positionAccount) {
         if (positionAccount == null) {
             return null;
         }
-        return PositionAccount.builder()
+        return Account.builder()
             .dtc(positionAccount.getDtc())
             .build();
     }

@@ -141,6 +141,9 @@ Integration tests + skip Unit tests:
 | route.position-listener.timer                                 | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | route.position-listener.update-timer                          | NO       | 60000                                            | A scheduled timer for Apache camel to execute update process in the route, in milliseconds.        |
 | route.rerate.enable                                           | NO       | true                                             | Turn on/off Rerate route                                                                           |
+| route.rerate.timer                                            | NO       | 5000                                             | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
+| route.returns.enable                                          | NO       | true                                             | Turn on/off Returns route                                                                          |
+| route.returns.timer                                           | NO       | 5000                                             | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | spire.base-endpoint                                           | YES      |                                                  | The endpoint for Spire environment.                                                                |
 | spire.kafka.producer.auth.key                                 | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
 | spire.kafka.producer.auth.secret                              | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
@@ -182,7 +185,10 @@ Integration tests + skip Unit tests:
 | route.position-listener.enable                                | POSITION_LISTENER_ENABLE                             |
 | route.position-listener.timer                                 | POSITION_LISTENER_NEW_POSITIONS_TIMER                |
 | route.position-listener.update-timer                          | POSITION_LISTENER_UPDATE_POSITIONS_TIMER             |
-| route.rerate.enable                                           | RERATE_ROUTE                                         |
+| route.rerate.enable                                           | RERATE_ROUTE_ENABLE                                  |
+| route.rerate.timer                                            | RERATE_ROUTE_TIMER                                   |
+| route.returns.enable                                          | RETURN_ROUTE_ENABLE                                  |
+| route.returns.timer                                           | RETURN_ROUTE_TIMER                                   |
 | onesource.auth.api.client-id                                  | 1SOURCE_AUTH_API_CLIENT_ID                           |
 | onesource.auth.api.realm                                      | 1SOURCE_AUTH_API_REALM                               |
 | onesource.auth.api.server-url                                 | 1SOURCE_AUTH_API_URL                                 |
