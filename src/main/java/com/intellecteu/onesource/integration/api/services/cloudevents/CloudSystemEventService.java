@@ -31,6 +31,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.QueryParameterException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -55,7 +56,7 @@ public class CloudSystemEventService {
         Specification<CloudSystemEventEntity> dynamicFieldsFilter = createSpecificationForCloudEvents(parameters);
         final Page<CloudSystemEventEntity> events = cloudEventRepository.findAll(dynamicFieldsFilter, pageable);
         if (!parameters.isEmpty() && events.isEmpty()) {
-            throw new EntityNotFoundException();
+            throw new QueryParameterException("Unexpected query parameter.");
         }
         log.debug("Found {} cloud events", events.getTotalElements());
         final Page<CloudSystemEventDto> pageEvents = events.map(this::mapEvent);
