@@ -24,7 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PositionAccount implements Reconcilable {
+public class Account implements Reconcilable {
 
     @JsonIgnore
     private Long id;

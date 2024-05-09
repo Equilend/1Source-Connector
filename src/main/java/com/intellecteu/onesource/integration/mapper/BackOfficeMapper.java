@@ -1,13 +1,15 @@
 package com.intellecteu.onesource.integration.mapper;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
-import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
+import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.ReturnTradeEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
@@ -28,6 +30,10 @@ public abstract class BackOfficeMapper {
     @Mapping(target = "index", source = "tradeOutDTO.positionOutDTO.indexDTO")
     @Mapping(target = "status", source = "tradeOutDTO.positionOutDTO.statusDTO.status")
     @Mapping(target = "statusId", source = "tradeOutDTO.positionOutDTO.statusDTO.statusId")
+    @Mapping(target = "account", source ="tradeOutDTO.accountDTO")
+    @Mapping(target = "counterParty", source ="tradeOutDTO.counterPartyDTO")
+    @Mapping(target = "depoId", source ="tradeOutDTO.depositoryDTO.depoId")
+    @Mapping(target = "depoKy",  source ="tradeOutDTO.depositoryDTO.depoKy")
     public abstract TradeOut toModel(TradeOutDTO tradeOutDTO);
 
     @Mapping(target = "positionSecurityDetail", source = "securityDetailDTO")
@@ -82,7 +88,10 @@ public abstract class BackOfficeMapper {
     @Mapping(target = "accountDTO", source = "account")
     public abstract InstructionDTO toRequestDto(PositionInstruction positionInstruction);
 
-    public abstract AccountDTO toRequestDto(PositionAccount positionAccount);
+    public abstract AccountDTO toRequestDto(Account positionAccount);
 
+    public abstract ReturnTrade toModel(ReturnTradeEntity returnTradeEntity);
+
+    public abstract ReturnTradeEntity toEntity(ReturnTrade returnTrade);
 
 }

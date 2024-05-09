@@ -17,6 +17,6 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PositionInstruction {
 
-    private PositionAccount account;
+    private Account account;
 
 }

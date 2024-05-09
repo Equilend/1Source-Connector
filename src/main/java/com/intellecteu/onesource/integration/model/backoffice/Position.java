@@ -71,9 +71,9 @@ public class Position implements Reconcilable {
     @JsonProperty("indexDTO")
     private Index index;
     @JsonProperty("accountDTO")
-    private PositionAccount positionAccount;
+    private Account positionAccount;
     @JsonProperty("counterPartyDTO")
-    private PositionAccount positionCpAccount;
+    private Account positionCpAccount;
     @JsonProperty("statusDTO")
     private PositionStatus positionStatus;
 
