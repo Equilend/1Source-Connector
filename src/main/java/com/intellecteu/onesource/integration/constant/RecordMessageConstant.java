@@ -329,6 +329,7 @@ public class RecordMessageConstant {
             public static final String POST_RERATE_EXCEPTION_1SOURCE_MSG = "The rerate proposal instruction (generated from the SPIRE rerate trade: %s) has not been processed by 1Source for the following reason: %s";
             public static final String GET_RERATE_EXCEPTION_1SOURCE_MSG = "The details of rerate proposal %s have not been retrieved from 1Source for the following reason: %s";
             public static final String MATCHED_RERATE_MSG = "The rerate proposal %s has been matched with a SPIRE rerate trade: %s and needs now to be validated.";
+            public static final String MATCHED_FOR_APPROVE_RERATE_MSG = "The rerate proposal %s has been created in 1Source from the SPIRE rerate trade: %s  and needs now to be approved by the counter-party.";
             public static final String CREATED_RERATE_MSG = "A new rerate trade %s has been captured but yet matched with a rerate proposal.";
             public static final String UNMATCHED_RERATE_MSG = "The rerate proposal %s has been captured but not yet matched with a SPIRE trade event";
             public static final String APPROVED_RERATE_MSG = "The rerate proposal %s matching with the SPIRE rerate trade %s has been approved";

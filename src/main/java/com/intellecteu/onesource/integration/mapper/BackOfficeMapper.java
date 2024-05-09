@@ -26,8 +26,8 @@ public abstract class BackOfficeMapper {
     @Mapping(target = "tradeTypeId", source = "tradeOutDTO.tradeTypeDetailDTO.tradeTypeId")
     @Mapping(target = "position", source = "tradeOutDTO.positionOutDTO")
     @Mapping(target = "index", source = "tradeOutDTO.positionOutDTO.indexDTO")
-    @Mapping(target = "status", source = "tradeOutDTO.positionOutDTO.statusDTO.status")
-    @Mapping(target = "statusId", source = "tradeOutDTO.positionOutDTO.statusDTO.statusId")
+    @Mapping(target = "status", source = "tradeOutDTO.statusDTO.status")
+    @Mapping(target = "statusId", source = "tradeOutDTO.statusDTO.statusId")
     public abstract TradeOut toModel(TradeOutDTO tradeOutDTO);
 
     @Mapping(target = "positionSecurityDetail", source = "securityDetailDTO")

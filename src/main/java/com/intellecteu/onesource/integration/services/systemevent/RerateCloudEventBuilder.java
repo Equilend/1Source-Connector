@@ -26,6 +26,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.DECLINE_RERATE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.GET_RERATE_EXCEPTION_1SOURCE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_FOR_APPROVE_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACED_RERATE_TRADE_MSG;
@@ -295,7 +296,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
     private CloudEventBuildRequest createMatchedAndPendingApprovalRecordRequest(IntegrationSubProcess subProcess,
         RecordType recordType,
         Map<String, String> data) {
-        String dataMessage = format(MATCHED_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID));
+        String dataMessage = format(MATCHED_FOR_APPROVE_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID));
         return createRecordRequest(
             recordType,
             format(MATCHED_RERATE, data.get(TRADE_ID)),
