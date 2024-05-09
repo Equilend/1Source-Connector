@@ -9,7 +9,7 @@
 --        (202, 202, 'BORROWER', '202', '2027');
 --
 -- INSERT INTO instrument (id, ticker, cusip, isin, sedol, quick_code)
--- VALUES  (101, '234', '0231101106', 'US02311011067', '2000019', '457'),
+-- VALUES  (101, '234', '0231101107', 'US02311011068', '2000010', '457'),
 --         (202, '234', '0231101107', 'US02311011068', '2000010', '457');
 --
 -- INSERT INTO fixed (id, base_rate, effective_rate, effective_date, cutoff_time)
@@ -47,11 +47,11 @@
 --        (202, '32b71278-9ad2-445a-bfb0-b5ada72f202', 202, '202', 'CREATED');
 --
 -- INSERT INTO transacting_party (id, party_role, party_id, internal_ref_id, transacting_party_id)
--- VALUES (101, 'LENDER', 101, 101, 202);
+-- VALUES (101, 'BORROWER', 101, 101, 101);
 --
 -- INSERT INTO contract (id, contract_id, contract_status, trade_id, processing_status,
 --                       matching_spire_position_id, matching_spire_trade_id)
--- VALUES (202, '202', 'PENDING', 202, 'CREATED', 202, 202);
+-- VALUES (101, '101', 'PENDING', 101, 'UNMATCHED', 101, 101);
 --
 -- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
 -- VALUES (101, 101, 'lender_acc', '101', 101, 1),
@@ -70,6 +70,6 @@
 --         11000.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 179101.5, 119.57,
 --         1.02, 0, 0, 'CASH BORROW', true,
---         202, 101, '101', '101', 'CREATED', null,
+--         202, 101, '101', '101', 'UNMATCHED', null,
 --         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000',
---         null, 202);
+--         '101', 202);

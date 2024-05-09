@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.api.controllers.handlers;
 import com.intellecteu.onesource.integration.api.controllers.CloudSystemEventController;
 import com.intellecteu.onesource.integration.api.controllers.ContractController;
 import jakarta.persistence.EntityNotFoundException;
+import org.hibernate.QueryParameterException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,15 +21,22 @@ public class BasicExceptionHandler {
             .build();
     }
 
+    @ExceptionHandler(QueryParameterException.class)
+    public ResponseEntity<String> handleUnexpectedParameter(QueryParameterException e) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_ACCEPTABLE)
+            .body(e.getMessage());
+    }
+
     @ExceptionHandler(HttpClientErrorException.class)
-    public ResponseEntity<String> handleNotFoundEvent(HttpClientErrorException e) {
+    public ResponseEntity<String> handleClientException(HttpClientErrorException e) {
         return ResponseEntity
             .status(e.getStatusCode())
             .body(e.getMessage());
     }
 
     @ExceptionHandler(HttpServerErrorException.class)
-    public ResponseEntity<String> handleNotFoundEvent(HttpServerErrorException e) {
+    public ResponseEntity<String> handleServerError(HttpServerErrorException e) {
         return ResponseEntity
             .status(e.getStatusCode())
             .body(e.getMessage());
