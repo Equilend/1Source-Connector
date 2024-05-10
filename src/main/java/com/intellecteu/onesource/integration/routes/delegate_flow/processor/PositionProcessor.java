@@ -21,6 +21,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UPDATE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
@@ -378,6 +379,7 @@ public class PositionProcessor {
             eventId.ifPresentOrElse(
                     cloudEventRecordService::updateTime,
                     () ->  createExceptionCloudEvent(positionId, e, CONTRACT_INITIATION, POST_LOAN_CONTRACT_PROPOSAL));
+            throwExceptionForRedeliveryPolicy(e);
             return false;
         }
     }

@@ -36,6 +36,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -110,6 +111,7 @@ public class ContractProcessor {
             var recordRequest = eventBuilder.buildExceptionRequest(resourceUri,
                 e, GET_LOAN_CONTRACT_PROPOSAL, event.getEventId());
             cloudEventRecordService.record(recordRequest);
+            throwExceptionForRedeliveryPolicy(e);
             return null;
         }
     }
@@ -328,6 +330,7 @@ public class ContractProcessor {
                 .contains(HttpStatus.valueOf(statusCode.value()))) {
                 recordTechnicalEvent(contract.getContractId(), e, DECLINE_LOAN_CONTRACT_PROPOSAL, positionId);
             }
+            throwExceptionForRedeliveryPolicy(e);
         }
     }
 
@@ -338,6 +341,7 @@ public class ContractProcessor {
             String record = position.getMatching1SourceLoanContractId();
             String related = String.valueOf(position.getPositionId());
             record1SourceTechnicalEvent(record, e, INSTRUCT_LOAN_CONTRACT_CANCELLATION, related, CONTRACT_CANCELLATION);
+            throwExceptionForRedeliveryPolicy(e);
             return false;
         }
     }

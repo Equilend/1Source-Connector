@@ -75,12 +75,16 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
     private final PositionProcessor positionProcessor;
     private final EventProcessor eventProcessor;
     private final AgreementProcessor agreementProcessor;
+    private final Integer redeliveryPolicyMaxRedeliveries;
+    private final String redeliveryPolicyDelayPattern;
 
     public ContractInitiationDelegateFlowRoute(
         @Value("${route.delegate-flow.update-position.timer}") long updateTimer, BackOfficeMapper backOfficeMapper,
         OneSourceMapper oneSourceMapper, DeclineInstructionMapper declineInstructionMapper,
         ContractProcessor contractProcessor, PositionProcessor positionProcessor,
-        EventProcessor eventProcessor, AgreementProcessor agreementProcessor) {
+        EventProcessor eventProcessor, AgreementProcessor agreementProcessor,
+        @Value("${route.delegate-flow.contract-initiation.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
+        @Value("${route.delegate-flow.contract-initiation.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern) {
         this.updateTimer = updateTimer;
         this.backOfficeMapper = backOfficeMapper;
         this.oneSourceMapper = oneSourceMapper;
@@ -89,11 +93,19 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         this.positionProcessor = positionProcessor;
         this.eventProcessor = eventProcessor;
         this.agreementProcessor = agreementProcessor;
+        this.redeliveryPolicyMaxRedeliveries = redeliveryPolicyMaxRedeliveries;
+        this.redeliveryPolicyDelayPattern = redeliveryPolicyDelayPattern;
     }
 
     @Override
     //@formatter:off
     public void configure() throws Exception {
+        onException(Exception.class)
+            .maximumRedeliveries(redeliveryPolicyMaxRedeliveries)
+            .delayPattern(redeliveryPolicyDelayPattern)
+            .handled(true)
+            .log("Caught an error: ${exception.message}")
+            .end();
 
         from(buildGetNotProcessedTradeEventQuery(TRADE_AGREED))
             .routeId("GetTradeAgreement")
