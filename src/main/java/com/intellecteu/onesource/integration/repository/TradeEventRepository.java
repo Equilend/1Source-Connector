@@ -13,6 +13,8 @@ public interface TradeEventRepository extends JpaRepository<TradeEventEntity, Lo
 
     List<TradeEventEntity> findAllByProcessingStatus(ProcessingStatus status);
 
+    boolean existsByEventId(String eventId);
+
     @Query(nativeQuery = true,
         value = "SELECT event_id FROM trade_event WHERE resource_uri=:resourceUri AND event_type=:eventType")
     Optional<Long> findEventIdByResourceUriAndEventType(String resourceUri, String eventType);

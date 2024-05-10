@@ -271,7 +271,7 @@ CREATE TABLE IF NOT EXISTS trade
 CREATE TABLE IF NOT EXISTS trade_event
 (
     id              SERIAL NOT NULL,
-    event_id        VARCHAR(255)      NULL,
+    event_id        VARCHAR(255) NOT NULL UNIQUE,
     event_type      VARCHAR(255) NULL,
     event_datetime  timestamp    NULL,
     resource_uri    VARCHAR(255) NULL,

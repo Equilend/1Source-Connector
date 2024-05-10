@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -36,23 +37,29 @@ public class TradeEventService {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    @Transactional
     public TradeEvent saveTradeEvent(TradeEvent tradeEvent) {
         TradeEventEntity tradeEventEntity = tradeEventRepository.save(oneSourceMapper.toEntity(tradeEvent));
         return oneSourceMapper.toModel(tradeEventEntity);
     }
 
+    @Transactional
     public List<TradeEvent> saveTradeEvents(List<TradeEvent> tradeEvents) {
-        List<TradeEventEntity> tradeEventEntities = tradeEvents.stream().map(oneSourceMapper::toEntity).collect(
-            Collectors.toList());
-        tradeEventEntities = tradeEventRepository.saveAll(tradeEventEntities);
+        List<TradeEventEntity> tradeEventEntities = tradeEvents.stream()
+            .map(oneSourceMapper::toEntity)
+            .filter(event -> !tradeEventRepository.existsByEventId(event.getEventId()))
+            .map(tradeEventRepository::save)
+            .toList();
         return tradeEventEntities.stream().map(oneSourceMapper::toModel).collect(Collectors.toList());
     }
 
+    @Transactional
     public LocalDateTime getLastEventDatetime() {
         Optional<TimestampEntity> lastEventDatetime = timestampRepository.findById(LAST_TRADE_EVENT_DATETIME);
-        return lastEventDatetime.map(timestamp -> timestamp.getTimestamp()).orElse(startingTradeEventDatetime);
+        return lastEventDatetime.map(TimestampEntity::getTimestamp).orElse(startingTradeEventDatetime);
     }
 
+    @Transactional
     public void updateLastEventDatetime(List<TradeEvent> tradeEventList) {
         if (tradeEventList != null && !tradeEventList.isEmpty()) {
             LocalDateTime lastEventDatetime = tradeEventList.stream()
