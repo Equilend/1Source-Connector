@@ -87,18 +87,18 @@ public class BackOfficeService {
                     .toList();
             }
         } catch (RestClientException e) {
-            log.warn("Rest client exception: {}", e.getMessage());
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatusCode statusCode = exception.getStatusCode();
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION, statusCode);
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
+            recordRestClientException(e, GET_NEW_POSITIONS_PENDING_CONFIRMATION);
         }
         return List.of();
+    }
+
+    private void recordRestClientException(RestClientException e, IntegrationSubProcess subProcess) {
+        log.warn("Rest client exception: {}", e.getMessage());
+        if (e instanceof HttpStatusCodeException exception) {
+            final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
+            log.warn("SPIRE error response for {} subprocess. Details: {}", subProcess, status.value());
+            recordPositionExceptionEvent(exception, CONTRACT_INITIATION, subProcess);
+        }
     }
 
     public List<TradeOut> fetchUpdatesOnPositions(List<Position> positions) {
@@ -109,17 +109,8 @@ public class BackOfficeService {
             if (responseTradeHasData(response)) {
                 return convertResponseToTrades(response.getBody().getData().getBeans());
             }
-        } catch (RestClientException e) {
-            log.warn("Rest client exception: {}", e.getMessage());
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(status)) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, status.value());
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
+        } catch (RestClientException exception) {
+            recordRestClientException(exception, GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
         }
         return List.of();
     }
@@ -317,8 +308,7 @@ public class BackOfficeService {
                 final HttpStatusCode statusCode = exception.getStatusCode();
                 if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND)
                     .contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        POST_POSITION_UPDATE, statusCode);
+                    log.warn("SPIRE error response for {} subprocess. Details: {}", POST_POSITION_UPDATE, statusCode);
                     recordPositionContractIdentifierUpdateExceptionEvent(position, exception);
                 }
             }
