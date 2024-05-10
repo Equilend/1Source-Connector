@@ -26,7 +26,6 @@ import static com.intellecteu.onesource.integration.model.enums.PositionStatusEn
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.EQUALS;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.GREATER_THAN;
 import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.IN;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.formattedDateTime;
 import static java.lang.String.join;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -34,7 +33,6 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
-import com.intellecteu.onesource.integration.exception.PositionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
@@ -43,7 +41,6 @@ import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.PositionStatusEnum;
-import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
@@ -69,7 +66,6 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -124,18 +120,18 @@ public class BackOfficeService {
                     .toList();
             }
         } catch (RestClientException e) {
-            log.warn("Rest client exception: {}", e.getMessage());
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatusCode statusCode = exception.getStatusCode();
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION, statusCode);
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_NEW_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
+            recordRestClientException(e, GET_NEW_POSITIONS_PENDING_CONFIRMATION);
         }
         return List.of();
+    }
+
+    private void recordRestClientException(RestClientException e, IntegrationSubProcess subProcess) {
+        log.warn("Rest client exception: {}", e.getMessage());
+        if (e instanceof HttpStatusCodeException exception) {
+            final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
+            log.warn("SPIRE error response for {} subprocess. Details: {}", subProcess, status.value());
+            recordPositionExceptionEvent(exception, CONTRACT_INITIATION, subProcess);
+        }
     }
 
     public List<TradeOut> fetchUpdatesOnPositions(List<Position> positions) {
@@ -146,17 +142,8 @@ public class BackOfficeService {
             if (responseTradeHasData(response)) {
                 return convertResponseToTrades(response.getBody().getData().getBeans());
             }
-        } catch (RestClientException e) {
-            log.warn("Rest client exception: {}", e.getMessage());
-            if (e instanceof HttpStatusCodeException exception) {
-                final HttpStatus status = HttpStatus.valueOf(exception.getStatusCode().value());
-                if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND).contains(status)) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION, status.value());
-                    recordPositionExceptionEvent(exception, CONTRACT_INITIATION,
-                        GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
-                }
-            }
+        } catch (RestClientException exception) {
+            recordRestClientException(exception, GET_UPDATED_POSITIONS_PENDING_CONFIRMATION);
         }
         return List.of();
     }
@@ -338,8 +325,7 @@ public class BackOfficeService {
                 final HttpStatusCode statusCode = exception.getStatusCode();
                 if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN, NOT_FOUND)
                     .contains(HttpStatus.valueOf(statusCode.value()))) {
-                    log.warn("SPIRE error response for {} subprocess. Details: {}",
-                        POST_POSITION_UPDATE, statusCode);
+                    log.warn("SPIRE error response for {} subprocess. Details: {}", POST_POSITION_UPDATE, statusCode);
                     recordPositionContractIdentifierUpdateExceptionEvent(position, exception);
                 }
             }
