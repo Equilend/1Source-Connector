@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.services.client.spire.PositionSpire
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import java.net.http.HttpClient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +46,11 @@ public class AppConfig {
         restTemplate.setMessageConverters(getHttpMessageConverters());
         restTemplate.setInterceptors(getHttpRequestInterceptors(restTemplate.getInterceptors()));
         return restTemplate;
+    }
+
+    @Bean
+    public HttpClient httpClient() {
+        return HttpClient.newHttpClient();
     }
 
     @Bean
