@@ -374,11 +374,19 @@ CREATE TABLE IF NOT EXISTS trade_out
     index_id                 INTEGER,
     index_name               VARCHAR(255),
     index_spread             DOUBLE PRECISION NULL,
-    "status"                   VARCHAR(255),
+    "status"                 VARCHAR(255),
     status_id                INTEGER,
     position_id              BIGINT NULL,
+    quantity                 DOUBLE PRECISION NULL,
+    amount                   DOUBLE PRECISION NULL,
+    account_id               BIGINT NULL,
+    counter_party_id         BIGINT NULL,
+    depo_id                  INTEGER,
+    depo_ky                  VARCHAR(255),
     CONSTRAINT pk_trade_out PRIMARY KEY (trade_id),
-    CONSTRAINT fk_position_out FOREIGN KEY (position_id) REFERENCES position (position_id)
+    CONSTRAINT fk_position_out FOREIGN KEY (position_id) REFERENCES position (position_id),
+    CONSTRAINT fk_account FOREIGN KEY (account_id) REFERENCES account (id),
+    CONSTRAINT fk_counter_party FOREIGN KEY (counter_party_id) REFERENCES account (id)
     );
 
 CREATE TABLE IF NOT EXISTS rerate_trade
@@ -415,6 +423,20 @@ CREATE TABLE IF NOT EXISTS rerate
     CONSTRAINT fk_rerate_rate_id FOREIGN KEY (rerate_rate_id) REFERENCES rate (id)
     );
 
+CREATE TABLE IF NOT EXISTS return_trade
+(
+    trade_id                  bigint not null,
+    canceling_trade_id        bigint,
+    creation_datetime         timestamp,
+    last_update_datetime      timestamp,
+    related_position_id       bigint,
+    trade_out_trade_id        bigint,
+    matching1source_return_id varchar(255),
+    processing_status         varchar(255),
+    related_contract_id       varchar(255),
+    CONSTRAINT return_trade_pkey PRIMARY KEY (trade_id),
+    CONSTRAINT fk_return_trade_out FOREIGN KEY (trade_out_trade_id) REFERENCES trade_out
+    );
 
 ALTER TABLE agreement DROP CONSTRAINT IF EXISTS FK_AGREEMENT_ON_TRADE;
 ALTER TABLE agreement

@@ -1,6 +1,5 @@
 package com.intellecteu.onesource.integration;
 
-import static com.intellecteu.onesource.integration.TestConfig.createTestObjectMapper;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.DISCREPANCY;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
@@ -16,10 +15,10 @@ import static com.intellecteu.onesource.integration.model.onesource.RoundingMode
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
+import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
-import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -29,7 +28,6 @@ import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
-import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
 import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
@@ -233,8 +231,8 @@ public class EntityTestFactory {
             .positionStatus(positionStatus)
             .exposure(new PositionExposure(11, 0.05d, 10, 12))
             .positionType(new PositionType(22, "CASH BORROW", true))
-            .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", "123L", 123L))
-            .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
+            .positionAccount(new Account(1L, 11L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new Account(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .build();

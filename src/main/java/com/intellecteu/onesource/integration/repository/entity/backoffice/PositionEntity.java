@@ -155,24 +155,22 @@ public class PositionEntity {
     @ManyToOne(fetch = FetchType.EAGER, cascade = {PERSIST, MERGE, REFRESH})
     @JoinColumn(name = "account_id", referencedColumnName = "id")
     @ToString.Exclude
-    private PositionAccountEntity account;
+    private AccountEntity account;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = {PERSIST, MERGE, REFRESH})
     @JoinColumn(name = "cp_id", referencedColumnName = "id")
     @ToString.Exclude
-    private PositionAccountEntity counterParty;
+    private AccountEntity counterParty;
 
     @Embedded
     @JsonProperty("statusDTO")
     private PositionStatusEntity positionStatus;
 
-    public void setAccount(PositionAccountEntity account) {
+    public void setAccount(AccountEntity account) {
         this.account = account;
-        account.getPositionsAccount().add(this);
     }
 
-    public void setCounterParty(PositionAccountEntity counterParty) {
+    public void setCounterParty(AccountEntity counterParty) {
         this.counterParty = counterParty;
-        counterParty.getPositionsAccount().add(this);
     }
 }

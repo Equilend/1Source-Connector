@@ -16,11 +16,11 @@ import static com.intellecteu.onesource.integration.model.onesource.RoundingMode
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
+import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.LoanBorrow;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
-import com.intellecteu.onesource.integration.model.backoffice.PositionAccount;
 import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
@@ -408,8 +408,8 @@ public class ModelTestFactory {
             .build();
     }
 
-    public static PositionAccount buildAccount(TransactingParty party) {
-        PositionAccount account = new PositionAccount();
+    public static Account buildAccount(TransactingParty party) {
+        Account account = new Account();
         account.setLei(retrieveLei(party));
         return account;
     }
@@ -497,8 +497,8 @@ public class ModelTestFactory {
             .positionStatus(positionStatus)
             .exposure(new PositionExposure(46, 0.05d, 10, 12))
             .positionType(new PositionType(11, "CASH BORROW", true))
-            .positionAccount(new PositionAccount(1L, 11L, "testLei", "testLeiName", "123L", 123L))
-            .positionCpAccount(new PositionAccount(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
+            .positionAccount(new Account(1L, 11L, "testLei", "testLeiName", "123L", 123L))
+            .positionCpAccount(new Account(2L, 22L, "testCpLei", "testCpLeiName", "345L", 345L))
             .endDate(LocalDateTime.now())
             .lastUpdateDateTime(LocalDateTime.now().minusDays(1))
             .index(new Index(123, "testIndexName", 4.04))
