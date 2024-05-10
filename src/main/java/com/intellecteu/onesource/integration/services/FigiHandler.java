@@ -32,6 +32,7 @@ public class FigiHandler {
      */
     public String getFigiFromTicker(@NonNull String ticker) {
         // todo extract constants to the app configuration file.
+        // todo handle OpenFigi API limitations
         String requestBody = String.format("""
             [
                 {
