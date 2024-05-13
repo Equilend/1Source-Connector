@@ -600,15 +600,25 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
 
     private CloudEventBuildRequest tradeCancellationEvent(String recorded, RecordType recordType,
         String related) {
-        String dataMessage = related == null
-            ? format(TRADE_AGREEMENT_CANCELED_EVENT_MSG, recorded)
-            : format(TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG, recorded, related);
-        String subject = related == null
-            ? format(TRADE_AGREEMENT_CANCELED, recorded)
-            : format(TRADE_AGREEMENT_CANCELED_MATCHED_POSITION, related);
-        SystemEventData data = related == null
-            ? createEventData(dataMessage, List.of(new RelatedObject(recorded, ONESOURCE_TRADE_AGREEMENT)))
-            : createEventData(dataMessage, getTradeAgreementRelatedToPosition(recorded, related));
+        String[] relatedSequence = related.split(",");
+
+        String positionId = "";
+        String venueRefKey = "";
+        if (relatedSequence.length > 1) {
+            positionId = relatedSequence[1];
+        } else if (relatedSequence.length == 1) {
+            venueRefKey = relatedSequence[0];
+        }
+        String dataMessage = positionId.isEmpty()
+            ? format(TRADE_AGREEMENT_CANCELED_EVENT_MSG, recorded, venueRefKey)
+            : format(TRADE_AGREEMENT_MATCHED_CANCELED_EVENT_MSG, recorded, positionId);
+        String subject = positionId.isEmpty()
+            ? format(TRADE_AGREEMENT_CANCELED, venueRefKey)
+            : format(TRADE_AGREEMENT_CANCELED_MATCHED_POSITION, positionId);
+        SystemEventData data = positionId.isEmpty()
+            ? createEventData(dataMessage, getTradeAgreementRelatedToSharedTradeTicket(recorded, venueRefKey))
+            : createEventData(dataMessage, getTradeAgreementRelatedToPositionAndSharedTradeTicket(recorded, venueRefKey,
+                positionId));
         return createRecordRequest(
             recordType,
             subject,

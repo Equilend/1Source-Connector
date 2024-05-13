@@ -82,7 +82,7 @@ public class RecordMessageConstant {
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
             public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
             public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
-            public static final String TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s";
+            public static final String TRADE_AGREEMENT_CANCELED = "Shared trade ticket id - %s";
             public static final String TRADE_AGREEMENT_CANCELED_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_UNMATCHED_POSITION_SUBJECT = "Spire trade ticket id - %s";
@@ -249,7 +249,7 @@ public class RecordMessageConstant {
                 The trade agreement %s matched with the position %s has been canceled""";
 
             public static final String TRADE_AGREEMENT_CANCELED_EVENT_MSG = """
-                The trade agreement %s has been canceled""";
+                The trade agreement %s related to the shared trade ticket %s has been canceled""";
 
             public static final String TRADE_AGREEMENT_UNMATCHED_MSG = """
                 A new trade agreement %s has been captured but not yet matched with a position""";

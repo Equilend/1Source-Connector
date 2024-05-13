@@ -15,6 +15,7 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.CO
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_CANCELED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
@@ -293,6 +294,23 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "TradeEvent[PROCESSED], Contract[SETTLED]")
         .end();
 
+        from(buildGetNotProcessedTradeEventQuery(TRADE_CANCELED))
+            .routeId("GetTradeCancellation")
+            .log(">>> Started GET_TRADE_CANCELLATION subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(agreementProcessor, "retrieveAgreementFromEvent")
+                .choice()
+                    .when(body().isNull())
+                        .bean(agreementProcessor, "recordAgreementCancelIssue(${header.tradeEvent})")
+                    .otherwise()
+                        .bean(agreementProcessor, "executeCancelUpdate")
+                .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished GET_TRADE_CANCELLATION subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Agreement[CANCELED]")
+        .end();
+
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_CANCELED))
             .routeId("GetLoanContractCanceled")
             .log(">>> Started GET_LOAN_CONTRACT_CANCELED subprocess")
@@ -308,7 +326,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_LOAN_CONTRACT_CANCELED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[CANCELED]")
-            .end();
+        .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_CANCEL_PENDING))
             .routeId("ProcessLoanContractPendingCancellation")
