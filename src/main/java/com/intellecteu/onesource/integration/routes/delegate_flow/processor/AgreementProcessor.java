@@ -4,12 +4,16 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_CANCELATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCELATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.RECONCILE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_UNMATCHED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseAgreementIdFrom1SourceResourceUri;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
@@ -20,6 +24,7 @@ import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.reconciliation.AgreementReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -40,6 +45,7 @@ public class AgreementProcessor {
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
     private final PositionService positionService;
+    private final AgreementReconcileService agreementReconcileService;
 
     @Transactional
     public Agreement getAgreementDetails(TradeEvent event) {
@@ -91,6 +97,30 @@ public class AgreementProcessor {
         matchedPosition.ifPresentOrElse(
             position -> agreementService.matchPosition(agreement, position),
             () -> agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.UNMATCHED));
+    }
+
+    @Transactional
+    public void reconcileAgreementWithPosition(@NonNull Agreement agreement) {
+        Long positionId = Long.valueOf(agreement.getMatchingSpirePositionId());
+        final Optional<Position> matchedPosition = positionService.getByPositionId(positionId);
+        matchedPosition.ifPresent(position -> reconcile(agreement, position));
+    }
+
+    private void reconcile(Agreement agreement, Position position) {
+        try {
+            agreementReconcileService.reconcile(agreement, position);
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.RECONCILED);
+            recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_RECONCILED,
+                agreement.getMatchingSpirePositionId(), RECONCILE_TRADE_AGREEMENT, CONTRACT_INITIATION);
+        } catch (ReconcileException e) {
+            log.debug("Reconciliation exception: {}", e.getMessage());
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.DISCREPANCIES);
+            var eventBuilder = cloudEventRecordService.getFactory()
+                .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
+                agreement.getMatchingSpirePositionId(), e.getErrorList());
+            cloudEventRecordService.record(recordRequest);
+        }
     }
 
     @Transactional

@@ -1,7 +1,11 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.exception.ValidationException;
+import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
@@ -36,8 +40,8 @@ public class Agreement implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-//        throwIfFieldMissedException(trade, TRADE);
-//        trade.validateForReconciliation();
+        throwIfFieldMissedException(trade, TRADE, FieldSource.ONE_SOURCE_TRADE_AGREEMENT);
+        trade.validateForReconciliation();
     }
 
     public String unwrapVenueRefKey() {

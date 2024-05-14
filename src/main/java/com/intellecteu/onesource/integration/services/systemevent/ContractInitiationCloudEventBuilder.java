@@ -128,7 +128,6 @@ import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -227,7 +226,6 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
         };
     }
 
-
     @Override
     public CloudEventBuildRequest buildRequest(RecordType recordType, Contract contract) {
         return switch (recordType) {
@@ -316,6 +314,22 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
             createEventData(dataMessage, getLoanContractProposalRelatedToPosition(recorded, related)));
     }
 
+    private CloudEventBuildRequest tradeAgreementDiscrepancies(String recorded, RecordType recordType,
+        String related, List<ProcessExceptionDetails> exceptionData) {
+        String dataMessage = format(RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG, recorded, related);
+        final List<FieldImpacted> fieldsImpacted = buildDiscrepanciesFieldsImpacted(exceptionData);
+        return createRecordRequest(
+            recordType,
+            format(TRADE_AGREEMENT_RECONCILED, related),
+            CONTRACT_INITIATION,
+            RECONCILE_TRADE_AGREEMENT,
+            createEventData(
+                dataMessage,
+                getTradeAgreementRelatedToPosition(recorded, related),
+                fieldsImpacted)
+        );
+    }
+
     /*
      * RelatedSequence String should contain two comma-separated values matchingPositionId and matchingSpireTradeId
      */
@@ -345,22 +359,6 @@ public class ContractInitiationCloudEventBuilder extends IntegrationCloudEventBu
                 .fieldExceptionType(detail.getFieldExceptionType())
                 .build())
             .toList();
-    }
-
-    private CloudEventBuildRequest tradeAgreementDiscrepancies(String recorded, RecordType recordType,
-        String related, List<ProcessExceptionDetails> exceptionData) {
-        final String formattedExceptions = exceptionData.stream()
-            .map(d -> "- " + d.getFieldValue())
-            .collect(Collectors.joining("\n"));
-        String dataMessage = format(RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG, recorded, related,
-            formattedExceptions);
-        return createRecordRequest(
-            recordType,
-            format(TRADE_AGREEMENT_RECONCILED, related),
-            CONTRACT_INITIATION,
-            RECONCILE_TRADE_AGREEMENT,
-            createEventData(dataMessage, getTradeAgreementRelatedToPosition(recorded, related))
-        );
     }
 
     private CloudEventBuildRequest loanContractProposalApproved(String recorded, RecordType recordType,

@@ -2,11 +2,8 @@ package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_TRADE_AGREEMENT;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 
-import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -102,24 +99,6 @@ public class AgreementService {
         var recordRequest = eventBuilder.buildRequest(recordData, recordType, relatedData);
         cloudEventRecordService.record(recordRequest);
     }
-
-    private void recordFailReconciliationCloudEvent(Agreement agreement, ReconcileException exception) {
-        exception.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
-            agreement.getMatchingSpirePositionId(), exception.getErrorList());
-        cloudEventRecordService.record(recordRequest);
-    }
-
-    private void recordSuccessReconciliationCloudEvent(Agreement agreement) {
-        var eventBuilder = cloudEventRecordService.getFactory()
-            .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
-        var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(),
-            TRADE_AGREEMENT_RECONCILED, agreement.getMatchingSpirePositionId());
-        cloudEventRecordService.record(recordRequest);
-    }
-
 
     private void recordBusinessEvent(String record, RecordType recordType,
         String related, IntegrationSubProcess subProcess, IntegrationProcess process) {

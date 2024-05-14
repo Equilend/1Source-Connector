@@ -123,7 +123,15 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(agreementProcessor, "matchAgreementWithPosition")
             .log("<<< Finished MATCH_TRADE_AGREEMENT subprocess with expected processing statuses: Agreement[MATCHED, UNMATCHED]")
-            .end();
+        .end();
+
+        from(buildGetAgreementByStatusQuery(MATCHED))
+            .routeId("ReconcileTradeAgreement")
+            .log(">>> Started RECONCILE_TRADE_AGREEMENT subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .bean(agreementProcessor, "reconcileAgreementWithPosition")
+            .log("<<< Finished RECONCILE_TRADE_AGREEMENT subprocess with expected processing statuses: Agreement[RECONCILED, DISCREPANCIES]")
+        .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_PROPOSED))
             .routeId("GetLoanContractDetails")

@@ -189,9 +189,7 @@ public class RecordMessageConstant {
                 and the matched SPIRE position %s.""";
 
             public static final String RECONCILE_TRADE_AGREEMENT_DISCREPANCIES_MSG = """
-                The trade agreement %s is in discrepancies with the position %s in SPIRE.
-                List of discrepancies:
-                %s""";
+                Discrepancies have been found between the trade agreement %s and the matched SPIRE position %s""";
 
             public static final String RECONCILE_RERATE_DISCREPANCIES_MSG = """
                 The rerate proposal %s has not been reconciled with a SPIRE rerate trade: %s. Discrepancies must be sort-out""";
