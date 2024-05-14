@@ -2,7 +2,6 @@ package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_TRADE_AGREEMENT;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
@@ -12,6 +11,7 @@ import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.repository.AgreementRepository;
@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,18 +54,32 @@ public class AgreementService {
         return oneSourceMapper.toModel(agreementEntity);
     }
 
+    /**
+     * Update agreement processing status and save the agreement
+     *
+     * @param agreement Agreement
+     * @param processingStatus Processing status
+     * @return Agreement persisted agreement with updated processing status
+     */
+    @Transactional
+    public Agreement updateProcessingStatusAndSave(@NonNull Agreement agreement,
+        @NonNull ProcessingStatus processingStatus) {
+        agreement.setProcessingStatus(processingStatus);
+        return saveAgreement(agreement);
+    }
+
+    @Transactional
+    public void matchPosition(@NonNull Agreement agreement, @NonNull Position position) {
+        agreement.setMatchingSpirePositionId(String.valueOf(position.getPositionId()));
+        updateProcessingStatusAndSave(agreement, ProcessingStatus.MATCHED);
+        recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED,
+            String.format("%s,%s", agreement.getMatchingSpirePositionId(), position.getCustomValue2()),
+            MATCH_TRADE_AGREEMENT, CONTRACT_INITIATION);
+    }
+
     @Transactional
     public void matchPosition(Position position) {
-        final String positionId = String.valueOf(position.getPositionId());
-        findByVenueRefKey(position.getCustomValue2())
-            .ifPresent(agreement -> {
-                agreement.setMatchingSpirePositionId(positionId);
-                agreement.setProcessingStatus(MATCHED);
-                saveAgreement(agreement);
-                recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_MATCHED,
-                    String.format("%s,%s", positionId, position.getCustomValue2()),
-                    MATCH_TRADE_AGREEMENT, CONTRACT_INITIATION);
-            });
+        findByVenueRefKey(position.getCustomValue2()).ifPresent(agreement -> matchPosition(agreement, position));
     }
 
     public Optional<Agreement> findByVenueRefId(String venueRefId) {

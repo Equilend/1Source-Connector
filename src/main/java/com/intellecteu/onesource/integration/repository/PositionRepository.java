@@ -27,9 +27,8 @@ public interface PositionRepository extends JpaRepository<PositionEntity, Long> 
     @Query("select p from PositionEntity p where p.processingStatus <> 'CANCELED' and p.processingStatus <> 'SETTLED'")
     List<PositionEntity> findAllNotCanceledAndSettled();
 
-    Optional<PositionEntity> findByVenueRefId(String venueRefId);
-
-    Optional<PositionEntity> findByCustomValue2(String venueRefId);
+    @Query("select p from PositionEntity p where p.customValue2 = :venueRefKey and p.processingStatus <> 'CANCELED'")
+    Optional<PositionEntity> findByVenueRefKey(String venueRefKey);
 
     List<PositionEntity> findAllByProcessingStatus(ProcessingStatus processingStatus);
 

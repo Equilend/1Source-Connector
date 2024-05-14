@@ -47,6 +47,12 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         &%s\
         &query=%s""";
 
+    private static final String AGREEMENT_SQL_ENDPOINT = """
+        jpa://com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity\
+        ?consumeLockEntity=false&consumeDelete=false&%s\
+        &sharedEntityManager=true&joinTransaction=false\
+        &query=SELECT a FROM AgreementEntity a WHERE a.processingStatus IN ('%s')""";
+
     private static final String POSITION_SQL_ENDPOINT = """
         jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity\
         ?consumeLockEntity=false&consumeDelete=false&%s\
@@ -110,6 +116,14 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .log("<<< Finished GET_TRADE_AGREEMENT subprocess "
                 + "with expected processing statuses: TradeEvent[PROCESSED], Agreement[CREATED]")
         .end();
+
+        from(buildGetAgreementByStatusQuery(CREATED))
+            .routeId("MatchTradeAgreement")
+            .log(">>> Started MATCH_TRADE_AGREEMENT subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .bean(agreementProcessor, "matchAgreementWithPosition")
+            .log("<<< Finished MATCH_TRADE_AGREEMENT subprocess with expected processing statuses: Agreement[MATCHED, UNMATCHED]")
+            .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_PROPOSED))
             .routeId("GetLoanContractDetails")
@@ -407,6 +421,12 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             "com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity",
             String.format("delay=%d", updateTimer),
             query);
+    }
+
+    private String buildGetAgreementByStatusQuery(ProcessingStatus... statuses) {
+        return String.format(AGREEMENT_SQL_ENDPOINT,
+            String.format("delay=%d", updateTimer),
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
     }
 
     private String buildGetPositionByStatusQuery(ProcessingStatus... statuses) {

@@ -46,5 +46,4 @@ public class Agreement implements Reconcilable {
         }
         return trade.getVenues() == null ? null : trade.getVenues().get(0).getVenueRefKey();
     }
-
 }

@@ -10,6 +10,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_UNMATCHED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseAgreementIdFrom1SourceResourceUri;
 
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -18,9 +19,11 @@ import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -36,6 +39,7 @@ public class AgreementProcessor {
     private final AgreementService agreementService;
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final PositionService positionService;
 
     @Transactional
     public Agreement getAgreementDetails(TradeEvent event) {
@@ -69,9 +73,24 @@ public class AgreementProcessor {
     @Transactional
     public Agreement createAgreement(@NonNull Agreement agreement) {
         agreement.setCreateDateTime(LocalDateTime.now());
-        final Agreement savedAgreement = updateProcessingStatusAndSave(agreement, ProcessingStatus.CREATED);
+        final Agreement savedAgreement = agreementService
+            .updateProcessingStatusAndSave(agreement, ProcessingStatus.CREATED);
         recordAgreementUnmatchedEvent(agreement);
         return savedAgreement;
+    }
+
+    @Transactional
+    public void matchAgreementWithPosition(@NonNull Agreement agreement) {
+        final String venueRefKey = agreement.unwrapVenueRefKey();
+        if (venueRefKey == null) {
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.UNMATCHED);
+            return;
+        }
+        log.debug("Matching agreement: {} with position customValue2:{}", agreement.getAgreementId(), venueRefKey);
+        final Optional<Position> matchedPosition = positionService.getByVenueRefKey(venueRefKey);
+        matchedPosition.ifPresentOrElse(
+            position -> agreementService.matchPosition(agreement, position),
+            () -> agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.UNMATCHED));
     }
 
     @Transactional

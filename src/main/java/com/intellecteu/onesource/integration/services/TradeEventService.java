@@ -8,6 +8,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Timesta
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
@@ -64,8 +65,9 @@ public class TradeEventService {
         if (tradeEventList != null && !tradeEventList.isEmpty()) {
             LocalDateTime lastEventDatetime = tradeEventList.stream()
                 .map(TradeEvent::getEventDateTime)
+                .filter(Objects::nonNull)
                 .max(LocalDateTime::compareTo)
-                .get();
+                .orElse(LocalDateTime.now());
             timestampRepository.save(new TimestampEntity(LAST_TRADE_EVENT_DATETIME, lastEventDatetime));
         }
     }
