@@ -78,7 +78,7 @@ public class AgreementService {
     }
 
     public Optional<Agreement> findByAgreementId(String agreementId) {
-        return agreementRepository.findByAgreementId(agreementId).stream().findFirst().map(oneSourceMapper::toModel);
+        return agreementRepository.findByAgreementId(agreementId).map(oneSourceMapper::toModel);
     }
 
     private void createContractInitiationCloudEvent(String recordData, RecordType recordType, String relatedData) {

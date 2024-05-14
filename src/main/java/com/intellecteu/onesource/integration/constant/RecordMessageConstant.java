@@ -79,10 +79,11 @@ public class RecordMessageConstant {
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_CANCELED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_DECLINED_SUBJECT = "1Source Contract - %s";
             public static final String TOOLKIT_ISSUE_GET_LOAN_CONTRACT_SETTLED_SUBJECT = "1Source Contract - %s";
+            public static final String TOOLKIT_ISSUE_PROCESS_TRADE_CANCELATION_SUBJECT = "Trade agreement - %s";
             public static final String TRADE_AGREEMENT_DISCREPANCIES = "Position - %s";
             public static final String TRADE_AGREEMENT_RECONCILED = "Position - %s";
             public static final String TRADE_AGREEMENT_CREATED = "1Source trade agreement - %s";
-            public static final String TRADE_AGREEMENT_CANCELED = "1Source trade agreement - %s";
+            public static final String TRADE_AGREEMENT_CANCELED = "Shared trade ticket id - %s";
             public static final String TRADE_AGREEMENT_CANCELED_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_MATCHED_POSITION = "Position - %s";
             public static final String TRADE_AGREEMENT_UNMATCHED_POSITION_SUBJECT = "Spire trade ticket id - %s";
@@ -242,6 +243,10 @@ public class RecordMessageConstant {
                 The loan contract proposal %s has been declined in 1Source but the loan contract proposal \
                 has not been retrieved in the Integration toolkit.""";
 
+            public static final String TOOLKIT_ISSUE_PROCESS_TRADE_CANCELATION_MSG = """
+                The trade agreement %s has been canceled in 1Source but the trade agreement \
+                has not been retrieved in the Integration toolkit""";
+
             public static final String TRADE_AGREEMENT_CREATE_EVENT_MSG = """
                 A new trade agreement %s has been captured""";
 
@@ -249,7 +254,7 @@ public class RecordMessageConstant {
                 The trade agreement %s matched with the position %s has been canceled""";
 
             public static final String TRADE_AGREEMENT_CANCELED_EVENT_MSG = """
-                The trade agreement %s has been canceled""";
+                The trade agreement %s related to the shared trade ticket %s has been canceled""";
 
             public static final String TRADE_AGREEMENT_UNMATCHED_MSG = """
                 A new trade agreement %s has been captured but not yet matched with a position""";
