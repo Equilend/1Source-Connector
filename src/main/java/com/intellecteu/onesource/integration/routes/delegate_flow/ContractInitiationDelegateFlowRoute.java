@@ -295,8 +295,8 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         .end();
 
         from(buildGetNotProcessedTradeEventQuery(TRADE_CANCELED))
-            .routeId("GetTradeCancellation")
-            .log(">>> Started GET_TRADE_CANCELLATION subprocess")
+            .routeId("GetTradeCancelation")
+            .log(">>> Started GET_TRADE_CANCELATION subprocess")
             .bean(oneSourceMapper, "toModel")
             .setHeader("tradeEvent", body())
             .bean(agreementProcessor, "retrieveAgreementFromEvent")
@@ -307,7 +307,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                         .bean(agreementProcessor, "executeCancelUpdate")
                 .end()
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
-            .log("<<< Finished GET_TRADE_CANCELLATION subprocess with expected processing statuses: "
+            .log("<<< Finished GET_TRADE_CANCELATION subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Agreement[CANCELED]")
         .end();
 

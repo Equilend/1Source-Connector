@@ -2,9 +2,10 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_CANCELLATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCEL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_CANCELATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCELATION;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_UNMATCHED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseAgreementIdFrom1SourceResourceUri;
@@ -54,8 +55,15 @@ public class AgreementProcessor {
     public Agreement retrieveAgreementFromEvent(@NotNull TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
-        String agreementId = parseAgreementIdFrom1SourceResourceUri(resourceUri);
-        return agreementService.findByAgreementId(agreementId).orElse(null);
+        try {
+            String agreementId = parseAgreementIdFrom1SourceResourceUri(resourceUri);
+            return agreementService.findByAgreementId(agreementId).orElse(null);
+        } catch (HttpStatusCodeException e) {
+            log.debug("Agreement {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
+            saveOrUpdateTechnicalEvent(TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri, e,
+                PROCESS_TRADE_CANCELATION, null, CONTRACT_INITIATION);
+            return null;
+        }
     }
 
     @Transactional
@@ -80,7 +88,7 @@ public class AgreementProcessor {
             ? agreement.unwrapVenueRefKey()
             : String.format("%s,%s", agreement.getMatchingSpirePositionId(), agreement.unwrapVenueRefKey());
         recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_CANCELED, related,
-            GET_TRADE_CANCELLATION, CONTRACT_INITIATION);
+            GET_TRADE_CANCELATION, CONTRACT_INITIATION);
     }
 
     /**
@@ -100,8 +108,8 @@ public class AgreementProcessor {
     @Transactional
     public void recordAgreementCancelIssue(@NonNull TradeEvent event) {
         String resourceUri = event.getResourceUri();
-        saveOrUpdateTechnicalEvent(TECHNICAL_EXCEPTION_1SOURCE, resourceUri, null,
-            PROCESS_TRADE_CANCEL, null, CONTRACT_INITIATION);
+        saveOrUpdateTechnicalEvent(TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri, null,
+            PROCESS_TRADE_CANCELATION, null, CONTRACT_INITIATION);
     }
 
     private void recordBusinessEvent(String record, RecordType recordType,
