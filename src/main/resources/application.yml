@@ -53,6 +53,9 @@ route:
     contract-initiation:
       enable: ${CI_DELEGATE_FLOW_ENABLE:true}
       timer: ${CI_DELEGATE_FLOW_TIMER:60000}
+      redelivery-policy:
+        max-redeliveries: 2
+        delay-pattern: 1:2000;2:30000
     update-position:
       enable: ${UP_DELEGATE_FLOW_ENABLE:true}
       timer: ${UP_DELEGATE_FLOW_TIMER:60000}

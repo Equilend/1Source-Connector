@@ -10,6 +10,7 @@ import static com.intellecteu.onesource.integration.services.systemevent.RerateC
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RESOURCE_URI;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
 
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -81,6 +82,7 @@ public class RerateEventProcessor {
         } catch (HttpStatusCodeException e) {
             log.debug("Rerate {} was not found. Details: {} ", resourceUri, e.getMessage());
             recordHttpExceptionCloudEvent(GET_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE, resourceUri, e);
+            throwExceptionForRedeliveryPolicy(e);
         }
         return event;
     }
