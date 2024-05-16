@@ -15,6 +15,7 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.CO
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.CONTRACT_PROPOSED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_AGREED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.TRADE_CANCELED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.DeclineInstructionMapper;
@@ -45,6 +46,12 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
         &sharedEntityManager=true&joinTransaction=false\
         &%s\
         &query=%s""";
+
+    private static final String AGREEMENT_SQL_ENDPOINT = """
+        jpa://com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity\
+        ?consumeLockEntity=false&consumeDelete=false&%s\
+        &sharedEntityManager=true&joinTransaction=false\
+        &query=SELECT a FROM AgreementEntity a WHERE a.processingStatus IN ('%s')""";
 
     private static final String POSITION_SQL_ENDPOINT = """
         jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity\
@@ -120,6 +127,22 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_TRADE_AGREEMENT subprocess "
                 + "with expected processing statuses: TradeEvent[PROCESSED], Agreement[CREATED]")
+        .end();
+
+        from(buildGetAgreementByStatusQuery(CREATED))
+            .routeId("MatchTradeAgreement")
+            .log(">>> Started MATCH_TRADE_AGREEMENT subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .bean(agreementProcessor, "matchAgreementWithPosition")
+            .log("<<< Finished MATCH_TRADE_AGREEMENT subprocess with expected processing statuses: Agreement[MATCHED, UNMATCHED]")
+        .end();
+
+        from(buildGetAgreementByStatusQuery(MATCHED))
+            .routeId("ReconcileTradeAgreement")
+            .log(">>> Started RECONCILE_TRADE_AGREEMENT subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .bean(agreementProcessor, "reconcileAgreementWithPosition")
+            .log("<<< Finished RECONCILE_TRADE_AGREEMENT subprocess with expected processing statuses: Agreement[RECONCILED, DISCREPANCIES]")
         .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_PROPOSED))
@@ -305,6 +328,23 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
                 + "TradeEvent[PROCESSED], Contract[SETTLED]")
         .end();
 
+        from(buildGetNotProcessedTradeEventQuery(TRADE_CANCELED))
+            .routeId("GetTradeCancelation")
+            .log(">>> Started GET_TRADE_CANCELATION subprocess")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(agreementProcessor, "retrieveAgreementFromEvent")
+                .choice()
+                    .when(body().isNull())
+                        .bean(agreementProcessor, "recordAgreementCancelIssue(${header.tradeEvent})")
+                    .otherwise()
+                        .bean(agreementProcessor, "executeCancelUpdate")
+                .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished GET_TRADE_CANCELATION subprocess with expected processing statuses: "
+                + "TradeEvent[PROCESSED], Agreement[CANCELED]")
+        .end();
+
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_CANCELED))
             .routeId("GetLoanContractCanceled")
             .log(">>> Started GET_LOAN_CONTRACT_CANCELED subprocess")
@@ -320,7 +360,7 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished GET_LOAN_CONTRACT_CANCELED subprocess with expected processing statuses: "
                 + "TradeEvent[PROCESSED], Contract[CANCELED]")
-            .end();
+        .end();
 
         from(buildGetNotProcessedTradeEventQuery(CONTRACT_CANCEL_PENDING))
             .routeId("ProcessLoanContractPendingCancellation")
@@ -401,6 +441,12 @@ public class ContractInitiationDelegateFlowRoute extends RouteBuilder {
             "com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity",
             String.format("delay=%d", updateTimer),
             query);
+    }
+
+    private String buildGetAgreementByStatusQuery(ProcessingStatus... statuses) {
+        return String.format(AGREEMENT_SQL_ENDPOINT,
+            String.format("delay=%d", updateTimer),
+            Arrays.stream(statuses).map(ProcessingStatus::toString).collect(Collectors.joining("','")));
     }
 
     private String buildGetPositionByStatusQuery(ProcessingStatus... statuses) {

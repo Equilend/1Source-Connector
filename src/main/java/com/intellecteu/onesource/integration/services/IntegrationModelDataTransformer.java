@@ -49,20 +49,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
-@NoArgsConstructor
 @Slf4j
 public class IntegrationModelDataTransformer implements IntegrationDataTransformer {
 
-    private String spireUserId;
+    private final String spireUserId;
+    private final FigiHandler figiHandler;
 
-    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId) {
+
+    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId, FigiHandler figiHandler) {
         this.spireUserId = spireUserId;
+        this.figiHandler = figiHandler;
     }
 
     @Override
@@ -322,20 +323,18 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         return null;
     }
 
+    /*
+     * Extract figi code from security details ticker.
+     * Examples:
+     * WMT -> BBG000BWXBC2
+     * AAPL -> BBG000B9XRY4
+     */
     private String createFigiFromPositionDetail(PositionSecurityDetail positionSecurityDetail) {
         final String ticker = positionSecurityDetail.getTicker();
         if (StringUtils.isEmpty(ticker)) {
             return null;
         }
-        return switch (ticker) {
-            case "WMT" -> "BBG000BWXBC2";
-            case "AMZN" -> "BBG000BVPV84";
-            case "AAPL" -> "BBG000B9XRY4";
-            case "MSFT" -> "BBG000BPH459";
-            case "CVS" -> "BBG000BGRY34";
-            case "UNH" -> "BBG000CH5208";
-            default -> null;
-        };
+        return figiHandler.getFigiFromTicker(ticker);
     }
 
     private Price buildPriceFromPosition(Position position) {

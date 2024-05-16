@@ -2,10 +2,19 @@ package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_AGREEMENT;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_CANCELATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCELATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.RECONCILE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_RECONCILED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TRADE_AGREEMENT_UNMATCHED;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseAgreementIdFrom1SourceResourceUri;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -14,8 +23,12 @@ import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.PositionService;
+import com.intellecteu.onesource.integration.services.reconciliation.AgreementReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -31,6 +44,8 @@ public class AgreementProcessor {
     private final AgreementService agreementService;
     private final OneSourceService oneSourceService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final PositionService positionService;
+    private final AgreementReconcileService agreementReconcileService;
 
     @Transactional
     public Agreement getAgreementDetails(TradeEvent event) {
@@ -47,11 +62,65 @@ public class AgreementProcessor {
     }
 
     @Transactional
+    public Agreement retrieveAgreementFromEvent(@NotNull TradeEvent event) {
+        // expected format for resourceUri: /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
+        String resourceUri = event.getResourceUri();
+        try {
+            String agreementId = parseAgreementIdFrom1SourceResourceUri(resourceUri);
+            return agreementService.findByAgreementId(agreementId).orElse(null);
+        } catch (HttpStatusCodeException e) {
+            log.debug("Agreement {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
+            saveOrUpdateTechnicalEvent(TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri, e,
+                PROCESS_TRADE_CANCELATION, null, CONTRACT_INITIATION);
+            return null;
+        }
+    }
+
+    @Transactional
     public Agreement createAgreement(@NonNull Agreement agreement) {
         agreement.setCreateDateTime(LocalDateTime.now());
-        final Agreement savedAgreement = updateProcessingStatusAndSave(agreement, ProcessingStatus.CREATED);
+        final Agreement savedAgreement = agreementService
+            .updateProcessingStatusAndSave(agreement, ProcessingStatus.CREATED);
         recordAgreementUnmatchedEvent(agreement);
         return savedAgreement;
+    }
+
+    @Transactional
+    public void matchAgreementWithPosition(@NonNull Agreement agreement) {
+        final String venueRefKey = agreement.unwrapVenueRefKey();
+        if (venueRefKey == null) {
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.UNMATCHED);
+            return;
+        }
+        log.debug("Matching agreement: {} with position customValue2:{}", agreement.getAgreementId(), venueRefKey);
+        final Optional<Position> matchedPosition = positionService.getByVenueRefKey(venueRefKey);
+        matchedPosition.ifPresentOrElse(
+            position -> agreementService.matchPosition(agreement, position),
+            () -> agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.UNMATCHED));
+    }
+
+    @Transactional
+    public void reconcileAgreementWithPosition(@NonNull Agreement agreement) {
+        Long positionId = Long.valueOf(agreement.getMatchingSpirePositionId());
+        final Optional<Position> matchedPosition = positionService.getByPositionId(positionId);
+        matchedPosition.ifPresent(position -> reconcile(agreement, position));
+    }
+
+    private void reconcile(Agreement agreement, Position position) {
+        try {
+            agreementReconcileService.reconcile(agreement, position);
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.RECONCILED);
+            recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_RECONCILED,
+                agreement.getMatchingSpirePositionId(), RECONCILE_TRADE_AGREEMENT, CONTRACT_INITIATION);
+        } catch (ReconcileException e) {
+            log.debug("Reconciliation exception: {}", e.getMessage());
+            agreementService.updateProcessingStatusAndSave(agreement, ProcessingStatus.DISCREPANCIES);
+            var eventBuilder = cloudEventRecordService.getFactory()
+                .eventBuilder(IntegrationProcess.CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildRequest(agreement.getAgreementId(), TRADE_AGREEMENT_DISCREPANCIES,
+                agreement.getMatchingSpirePositionId(), e.getErrorList());
+            cloudEventRecordService.record(recordRequest);
+        }
     }
 
     @Transactional
@@ -59,6 +128,16 @@ public class AgreementProcessor {
         String related = agreement.unwrapVenueRefKey();
         recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_UNMATCHED, related,
             GET_TRADE_AGREEMENT, CONTRACT_INITIATION);
+    }
+
+    @Transactional
+    public void executeCancelUpdate(@NonNull Agreement agreement) {
+        updateProcessingStatusAndSave(agreement, ProcessingStatus.CANCELED);
+        String related = agreement.getMatchingSpirePositionId() == null
+            ? agreement.unwrapVenueRefKey()
+            : String.format("%s,%s", agreement.getMatchingSpirePositionId(), agreement.unwrapVenueRefKey());
+        recordBusinessEvent(agreement.getAgreementId(), TRADE_AGREEMENT_CANCELED, related,
+            GET_TRADE_CANCELATION, CONTRACT_INITIATION);
     }
 
     /**
@@ -73,6 +152,13 @@ public class AgreementProcessor {
         @NonNull ProcessingStatus processingStatus) {
         agreement.setProcessingStatus(processingStatus);
         return agreementService.saveAgreement(agreement);
+    }
+
+    @Transactional
+    public void recordAgreementCancelIssue(@NonNull TradeEvent event) {
+        String resourceUri = event.getResourceUri();
+        saveOrUpdateTechnicalEvent(TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri, null,
+            PROCESS_TRADE_CANCELATION, null, CONTRACT_INITIATION);
     }
 
     private void recordBusinessEvent(String record, RecordType recordType,

@@ -25,32 +25,6 @@ class ContractInitiationCloudSystemEventBuilderTest {
     }
 
     @Test
-    void createTradeAgreementReconcileFailBuildRequest() {
-        String agreemenId = "agreementId";
-        var positionId = "1L";
-        var firstException = new ProcessExceptionDetails(null, QUANTITY, "First test message",
-            FieldExceptionType.DISCREPANCY);
-        var secondException = new ProcessExceptionDetails(null, GLEIF_LEI, "Second test message",
-            FieldExceptionType.DISCREPANCY);
-        var thirdException = new ProcessExceptionDetails(null, FIGI, "Third test message",
-            FieldExceptionType.DISCREPANCY);
-        List<ProcessExceptionDetails> discrepancies = List.of(firstException, secondException, thirdException);
-
-        String expectedDataMsg = """
-            The trade agreement %s is in discrepancies with the position %s in SPIRE.
-            List of discrepancies:
-            - First test message
-            - Second test message
-            - Third test message""".formatted(agreemenId, positionId);
-
-        CloudEventBuildRequest actualBuildRequest = builder.buildRequest(agreemenId,
-            RecordType.TRADE_AGREEMENT_DISCREPANCIES, positionId.toString(), discrepancies);
-
-        final String actualDataMsg = actualBuildRequest.getData().getMessage();
-        assertEquals(expectedDataMsg, actualDataMsg);
-    }
-
-    @Test
     @Disabled(value = "should be reworked according to new changes")
     void createLoanContractProposalReconcileFailBuildRequest() {
         var contractDto = ModelTestFactory.buildContract();

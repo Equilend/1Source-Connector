@@ -172,10 +172,19 @@ public class OneSourceService {
      */
     public boolean instructLoanContractProposal(ContractProposal contractProposal)
         throws RestClientException {
-        final ContractProposalDTO requestDto = oneSourceMapper.toRequestDto(contractProposal);
+        final ContractProposalDTO requestDto = buildInstructContractProposalRequestBody(contractProposal);
         log.debug("Sending a request to create a loan contract proposal.");
         final ResponseEntity<LedgerResponseDTO> response = contractsApi.ledgerContractsPostWithHttpInfo(requestDto);
         return response.getStatusCode().value() == 201;
+    }
+
+    private ContractProposalDTO buildInstructContractProposalRequestBody(ContractProposal contractProposal) {
+        try {
+            return oneSourceMapper.toRequestDto(contractProposal);
+        } catch (Exception e) {
+            log.debug("Failed to build the instruct contract proposal request body. Details:{}", e.getMessage());
+            throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, e.getMessage());
+        }
     }
 
     public boolean instructDeclineLoanProposal(Contract contract) throws RestClientException {
