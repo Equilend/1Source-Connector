@@ -114,7 +114,7 @@ class RerateProcessorTest {
     void instructRerateTrade_Not400Response_RecordTechnicalExceptionEvent() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setProcessingStatus(CREATED);
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService).instructRerate(any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(500))).when(oneSourceService).instructRerate(any());
 
         assertThrows(HttpClientErrorException.class, () -> rerateProcessor.instructRerateTrade(rerateTrade));
 
@@ -223,7 +223,7 @@ class RerateProcessorTest {
     void approve_NotOkResponse_RecordTechnicalExceptionEvent() {
         Rerate rerate = new Rerate();
         rerate.setRerateId("rerateId");
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(oneSourceService)
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(500))).when(oneSourceService)
             .approveRerate(any(), any());
 
         assertThrows(HttpClientErrorException.class, () -> rerateProcessor.approveRerate(rerate));
@@ -245,7 +245,7 @@ class RerateProcessorTest {
     void confirmRerateTrade_NotOkResponse_RecordTechnicalExceptionEvent() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(401))).when(backOfficeService)
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(500))).when(backOfficeService)
             .confirmBackOfficeRerateTrade(any());
 
         assertThrows(HttpClientErrorException.class, () -> rerateProcessor.confirmRerateTrade(rerateTrade));
