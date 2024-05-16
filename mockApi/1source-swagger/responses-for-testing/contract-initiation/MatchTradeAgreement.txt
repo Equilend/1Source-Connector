@@ -1,0 +1,9 @@
+Prepared local migration data: V2024.04.19.19.00__EINT23-561_match_agreement.sql
+
+1. Trade Agreement:
+    - processing status should be CREATED;
+    - tradeAgreement.trade.executionVenue.venueRefKey should match with the position in the database.
+
+2. Position:
+    - position.customValue2 should match with the agreement's venueRefKey;
+    - position processing status should not be CANCELED.
