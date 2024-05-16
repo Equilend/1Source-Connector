@@ -1,5 +1,57 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RERATE;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_TRADE_EVENTS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_TRADE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCEL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_UPDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.REPLACED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.WAITING_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.DECLINE_INSTRUCTION_NOT_AUTHORIZED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_REPLACED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_REPLACE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.CONTRACT_ID;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.POSITION_ID;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.RERATE_ID;
+import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
+import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
@@ -11,31 +63,29 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.DeclineIns
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
-import com.intellecteu.onesource.integration.services.*;
+import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.CorrectionInstructionService;
+import com.intellecteu.onesource.integration.services.DeclineInstructionService;
+import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.RerateService;
+import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.RerateReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
-
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RERATE;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.GENERIC;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.*;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.*;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.*;
-import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.*;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.*;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
 
 @Component
 @Slf4j
@@ -157,7 +207,7 @@ public class RerateProcessor {
                 recordHttpExceptionCloudEvent(POST_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
                     codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
                     rerateTrade.getRelatedPositionId());
-                throw codeException;
+                throwExceptionForRedeliveryPolicy(codeException);
             } else {
                 rerateTrade.setProcessingStatus(WAITING_PROPOSAL);
             }
@@ -197,27 +247,36 @@ public class RerateProcessor {
         }
         rerate.setProcessingStatus(UNMATCHED);
         recordCloudEvent(MATCH_LOAN_RERATE_PROPOSAL, RERATE_PROPOSAL_UNMATCHED,
-                rerate.getRerateId(), rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(),
-                rerate.getContractId(), buildUnmatchedFieldImpactedList(rerate));
+            rerate.getRerateId(), rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(),
+            rerate.getContractId(), buildUnmatchedFieldImpactedList(rerate));
         return rerate;
     }
 
     private List<FieldImpacted> buildUnmatchedFieldImpactedList(Rerate rerate) {
         List<FieldImpacted> unmatchedFieldImpactedList = new ArrayList<>();
-        unmatchedFieldImpactedList.add(new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.contractId", rerate.getContractId(),
-            FieldExceptionType.UNMATCHED));
+        unmatchedFieldImpactedList.add(
+            new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.contractId", rerate.getContractId(),
+                FieldExceptionType.UNMATCHED));
         if (rerate.getRerate() != null && rerate.getRerate().getRebate() != null
             && rerate.getRerate().getRebate().getFixed() != null) {
-            unmatchedFieldImpactedList.add( new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.fixed.effectiveDate",
-                toStringNullSafe(rerate.getRerate().getRebate().getFixed().getEffectiveDate()), FieldExceptionType.UNMATCHED));
-            unmatchedFieldImpactedList.add( new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.fixed.baseRate",
-                toStringNullSafe(rerate.getRerate().getRebate().getFixed().getBaseRate()), FieldExceptionType.UNMATCHED));
-        }else if (rerate.getRerate() != null && rerate.getRerate().getRebate() != null
+            unmatchedFieldImpactedList.add(
+                new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.fixed.effectiveDate",
+                    toStringNullSafe(rerate.getRerate().getRebate().getFixed().getEffectiveDate()),
+                    FieldExceptionType.UNMATCHED));
+            unmatchedFieldImpactedList.add(
+                new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.fixed.baseRate",
+                    toStringNullSafe(rerate.getRerate().getRebate().getFixed().getBaseRate()),
+                    FieldExceptionType.UNMATCHED));
+        } else if (rerate.getRerate() != null && rerate.getRerate().getRebate() != null
             && rerate.getRerate().getRebate().getFloating() != null) {
-            unmatchedFieldImpactedList.add( new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.floating.effectiveDate",
-                toStringNullSafe(rerate.getRerate().getRebate().getFloating().getEffectiveDate()), FieldExceptionType.UNMATCHED));
-            unmatchedFieldImpactedList.add( new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.floating.baseRate",
-                toStringNullSafe(rerate.getRerate().getRebate().getFloating().getBaseRate()), FieldExceptionType.UNMATCHED));
+            unmatchedFieldImpactedList.add(
+                new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.floating.effectiveDate",
+                    toStringNullSafe(rerate.getRerate().getRebate().getFloating().getEffectiveDate()),
+                    FieldExceptionType.UNMATCHED));
+            unmatchedFieldImpactedList.add(
+                new FieldImpacted(ONE_SOURCE_RERATE, "1sourceRerate.rate.rebate.floating.baseRate",
+                    toStringNullSafe(rerate.getRerate().getRebate().getFloating().getBaseRate()),
+                    FieldExceptionType.UNMATCHED));
         }
         return unmatchedFieldImpactedList;
     }
@@ -244,7 +303,7 @@ public class RerateProcessor {
             recordHttpExceptionCloudEvent(APPROVE_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
                 codeException, rerate.getRerateId(), rerate.getMatchingSpireTradeId(),
                 rerate.getRelatedSpirePositionId());
-            throw codeException;
+            throwExceptionForRedeliveryPolicy(codeException);
         }
         return rerate;
     }
@@ -257,7 +316,7 @@ public class RerateProcessor {
             recordHttpExceptionCloudEvent(POST_RERATE_TRADE_CONFIRMATION, TECHNICAL_EXCEPTION_SPIRE,
                 codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
                 rerateTrade.getRelatedPositionId());
-            throw codeException;
+            throwExceptionForRedeliveryPolicy(codeException);
         }
         return rerateTrade;
     }
@@ -272,16 +331,17 @@ public class RerateProcessor {
                     rerateService.saveRerate(rerate);
                 } catch (HttpStatusCodeException codeException) {
                     recordHttpExceptionCloudEvent(DECLINE_RERATE_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE,
-                            codeException, rerate.getRerateId(), rerate.getMatchingSpireTradeId(),
-                            rerate.getRelatedSpirePositionId());
+                        codeException, rerate.getRerateId(), rerate.getMatchingSpireTradeId(),
+                        rerate.getRelatedSpirePositionId());
+                    throwExceptionForRedeliveryPolicy(codeException);
                 }
             } else {
                 recordCloudEvent(DECLINE_RERATE_PROPOSAL, DECLINE_INSTRUCTION_NOT_AUTHORIZED, rerate.getRerateId(),
-                        rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(), rerate.getContractId());
+                    rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(), rerate.getContractId());
             }
         } catch (EntityNotFoundException e) {
             recordRerateEntityNotFoundTechnicalException(DECLINE_RERATE_PROPOSAL,
-                    TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, declineInstruction.getRelatedProposalId());
+                TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, declineInstruction.getRelatedProposalId());
         }
         return declineInstruction;
     }
@@ -358,6 +418,7 @@ public class RerateProcessor {
             recordHttpExceptionCloudEvent(subProcess, TECHNICAL_EXCEPTION_1SOURCE,
                 codeException, rerate.getRerateId(), rerate.getMatchingSpireTradeId(),
                 rerate.getRelatedSpirePositionId());
+            throwExceptionForRedeliveryPolicy(codeException);
         }
         return rerate;
     }
@@ -406,7 +467,7 @@ public class RerateProcessor {
     }
 
     private void recordRerateEntityNotFoundTechnicalException(IntegrationSubProcess subProcess, RecordType recordType,
-                                                              String rerateId) {
+        String rerateId) {
         Map<String, String> data = Map.of(RERATE_ID, rerateId);
         var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
         cloudEventRecordService.record(recordRequest);
@@ -414,12 +475,12 @@ public class RerateProcessor {
 
 
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, String rerateId,
-                                  Long tradeId, Long positionId, String contractId) {
+        Long tradeId, Long positionId, String contractId) {
         recordCloudEvent(subProcess, recordType, rerateId, tradeId, positionId, contractId, List.of());
     }
 
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, String rerateId,
-                                  Long tradeId, Long positionId, String contractId, List<FieldImpacted> fieldImpacteds) {
+        Long tradeId, Long positionId, String contractId, List<FieldImpacted> fieldImpacteds) {
         Map<String, String> data = new HashMap<>();
         if (rerateId != null) {
             data.put(RERATE_ID, rerateId);
@@ -480,16 +541,17 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordOrUpdateCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId, Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
+    private void recordOrUpdateCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
+        Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
         String persistedCloudEventId = null;
         if (tradeId != null) {
             persistedCloudEventId = cloudEventRecordService // temporary hardcoded until related object will be captured
-                    .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
-                    .orElse(null);
+                .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
+                .orElse(null);
         }
         if (persistedCloudEventId == null) {
             var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
-                    data, fieldImpacteds);
+                data, fieldImpacteds);
             cloudEventRecordService.record(recordRequest);
         } else {
             cloudEventRecordService.updateTime(persistedCloudEventId);
