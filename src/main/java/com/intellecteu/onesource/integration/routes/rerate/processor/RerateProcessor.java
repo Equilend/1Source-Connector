@@ -48,9 +48,6 @@ import static com.intellecteu.onesource.integration.services.systemevent.RerateC
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.TRADE_ID;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.FORBIDDEN;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -80,7 +77,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -170,11 +166,9 @@ public class RerateProcessor {
         try {
             rerateTradeList = backOfficeService.getNewBackOfficeRerateTradeEvents(lastTradeId);
         } catch (HttpStatusCodeException exception) {
-            if (Set.of(CREATED, UNAUTHORIZED, FORBIDDEN).contains(exception.getStatusCode())) {
-                log.warn("SPIRE error response for {} subprocess. Details: {}",
-                    GET_TRADE_EVENTS_PENDING_CONFIRMATION, exception.getStatusCode());
-                recordTradeEventExceptionEvent(exception);
-            }
+            log.warn("SPIRE error response for {} subprocess. Details: {}",
+                GET_TRADE_EVENTS_PENDING_CONFIRMATION, exception.getStatusCode());
+            recordTradeEventExceptionEvent(exception);
         }
         return rerateTradeList;
     }
