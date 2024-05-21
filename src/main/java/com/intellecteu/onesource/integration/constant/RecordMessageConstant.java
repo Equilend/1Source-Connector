@@ -364,10 +364,14 @@ public class RecordMessageConstant {
 
         public static class Subject {
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Extract of new return pending conf. - %s";
+            public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
+            public static final String POST_RETURN_SUBMITTED_SBJ = "Trade - %s";
         }
 
         public static class DataMsg {
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG = "New return pending confirmation cannot be extracted from SPIRE for the following reason: %s";
+            public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s) has not been processed by 1Source for the following reason: %s";
+            public static final String POST_RETURN_SUBMITTED_MSG = "The return trade %s has been submitted to 1Source to request the return creation";
         }
     }
 

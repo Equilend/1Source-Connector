@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.model.onesource.FixedRate.FI
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.onesource.Agreement;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
@@ -19,6 +20,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.Contracts
 import com.intellecteu.onesource.integration.services.client.onesource.EventsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
+import com.intellecteu.onesource.integration.services.client.onesource.ReturnsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
@@ -31,10 +33,15 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Float
 import com.intellecteu.onesource.integration.services.client.onesource.dto.FloatingRateDefDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.LedgerResponseDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementTypeDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartiesDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
@@ -43,7 +50,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -61,21 +67,19 @@ public class OneSourceService {
     private final ReratesApi reratesApi;
     private final ContractsApi contractsApi;
     private final AgreementsApi agreementsApi;
+    private final ReturnsApi returnsApi;
     private final OneSourceMapper oneSourceMapper;
 
     @Autowired
     public OneSourceService(OneSourceApiClient oneSourceApiClient, EventsApi eventsApi, ReratesApi reratesApi,
-        OneSourceMapper oneSourceMapper,
-        @Value("${onesource.base-endpoint}") String onesourceBasePath,
-        @Value("${onesource.version}") String onesourceVersion,
-        ContractsApi contractsApi, AgreementsApi agreementsApi) {
+        ContractsApi contractsApi, AgreementsApi agreementsApi, ReturnsApi returnsApi,
+        OneSourceMapper oneSourceMapper) {
         this.oneSourceApiClient = oneSourceApiClient;
         this.eventsApi = eventsApi;
         this.reratesApi = reratesApi;
         this.contractsApi = contractsApi;
         this.agreementsApi = agreementsApi;
-        this.contractsApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
-        this.reratesApi.getApiClient().setBasePath(onesourceBasePath.concat(onesourceVersion));
+        this.returnsApi = returnsApi;
         this.oneSourceMapper = oneSourceMapper;
     }
 
@@ -208,4 +212,32 @@ public class OneSourceService {
         contractsApi.ledgerContractsContractIdPatch(contractId, requestDto);
     }
 
+    public void postReturnTrade(ReturnTrade returnTrade) {
+        ReturnProposalDTO body = buildReturnProposal(returnTrade);
+        returnsApi.ledgerContractsContractIdReturnsPost(body, returnTrade.getRelatedContractId());
+    }
+
+    private ReturnProposalDTO buildReturnProposal(ReturnTrade returnTrade) {
+        ReturnProposalDTO returnProposalDTO = new ReturnProposalDTO();
+        VenuePartiesDTO venueParties = new VenuePartiesDTO();
+        venueParties.add(new VenuePartyDTO().partyRole(PartyRoleDTO.BORROWER)
+            .venuePartyRefKey(String.valueOf(returnTrade.getTradeId())));
+        venueParties.add(new VenuePartyDTO().partyRole(PartyRoleDTO.LENDER));
+        PartySettlementInstructionDTO settlementInstructionDTO = new PartySettlementInstructionDTO()
+            .partyRole(PartyRoleDTO.BORROWER)
+            .settlementStatus(SettlementStatusDTO.NONE)
+            .internalAcctCd(String.valueOf(returnTrade.getTradeOut().getAccount().getAccountId()))
+            .instruction(new SettlementInstructionDTO().settlementBic("DTCYUS33").localAgentBic("ZYXXUS02XXX")
+                .localAgentName("678XYZ").localAgentAcct("XYZ678")
+                .dtcParticipantNumber(String.valueOf(returnTrade.getTradeOut().getAccount().getDtc())));
+        returnProposalDTO.executionVenue(new VenueDTO().type(VenueTypeDTO.OFFPLATFORM).venueParties(venueParties))
+            .quantity(returnTrade.getTradeOut().getQuantity().intValue())
+            .returnDate(returnTrade.getTradeOut().getTradeDate().toLocalDate())
+            .returnSettlementDate(returnTrade.getTradeOut().getSettleDate().toLocalDate())
+            .collateralValue(returnTrade.getTradeOut().getAmount())
+            .settlementType(returnTrade.getTradeOut().getPosition().getDeliverFree() ? SettlementTypeDTO.FOP
+                : SettlementTypeDTO.DVP)
+            .settlement(settlementInstructionDTO);
+        return returnProposalDTO;
+    }
 }
