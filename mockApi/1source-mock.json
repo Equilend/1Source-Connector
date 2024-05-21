@@ -1762,6 +1762,116 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "5ba4a39a-7e3d-4023-90cb-a40a28981cae",
+      "type": "http",
+      "documentation": "Instruct recall",
+      "method": "post",
+      "endpoint": "contracts/:contractId/recalls",
+      "responses": [
+        {
+          "uuid": "96f79d27-e11d-4e34-834f-5f7dff799d6e",
+          "body": "{\n  \"code\": 201,\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"resouceUri\": \"string\",\n  \"responseDateTime\": \"2024-05-20T09:05:34.756Z\"\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "The contract corresponding to the provided \"contractId\" is approved",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "ae2be69c-23c8-4aeb-a5b4-5594a058b8bb",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:32:19.016Z\",\r\n  \"status\": 500,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 500,
+          "label": "An error occurred",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a7953619-ef37-4ce0-8367-c910ad99c5d1",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:32:19.016Z\",\r\n  \"status\": 401,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 401,
+          "label": "Not authorized to do this operation",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "7a6cc17a-5760-42b7-a38d-f3b711110f1d",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:32:19.016Z\",\r\n  \"status\": 404,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Resource not found",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "27881623-fd06-4731-97f6-ab5d2e6653b2",
+          "body": "{\r\n  \"timestamp\": \"2023-07-27T17:32:19.016Z\",\r\n  \"status\": 409,\r\n  \"message\": \"string\",\r\n  \"path\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 409,
+          "label": "Conflict with the state of the resource",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -1852,6 +1962,10 @@
     {
       "type": "route",
       "uuid": "be66d8fb-0be7-4079-bd3b-78e21d3a7967"
+    },
+    {
+      "type": "route",
+      "uuid": "5ba4a39a-7e3d-4023-90cb-a40a28981cae"
     }
   ],
   "proxyMode": false,

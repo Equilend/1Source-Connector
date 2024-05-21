@@ -77,6 +77,7 @@ services:
         condition: service_healthy
 
   zookeeper:
+    container_name: zookeper
     image: confluentinc/cp-zookeeper:7.4.4
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -85,6 +86,7 @@ services:
       - 22181:2181
 
   kafka:
+    container_name: kafka
     image: confluentinc/cp-kafka:7.4.4
     depends_on:
       - zookeeper
@@ -107,3 +109,14 @@ services:
         org.apache.kafka.common.security.plain.PlainLoginModule required
         username="kafka-user"
         password="kafka-password";
+
+  kafka-ui:
+    container_name: kafka-ui
+    image: provectuslabs/kafka-ui:latest
+    ports:
+      - 8282:8080
+    depends_on:
+      - kafka
+    environment:
+      DYNAMIC_CONFIG_ENABLED: 'true'
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092

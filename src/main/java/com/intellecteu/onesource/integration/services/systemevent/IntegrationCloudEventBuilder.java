@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SHARED_TRADE_TICKET;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -171,6 +172,28 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
             ngtTicket = "";
         }
         return getAgreementRelatedToNgtPosition(agreementInfo, positionId, ngtTicket);
+    }
+
+    protected List<RelatedObject> getRecallRelatedToPositionAndContract(String recallInfo, String relatedSequence) {
+        String[] relatedIds = relatedSequence.split(",");
+        String positionId;
+        String contractId;
+        try {
+            positionId = relatedIds[0];
+            contractId = relatedIds[1];
+        } catch (IndexOutOfBoundsException e) {
+            positionId = "";
+            contractId = "";
+        }
+        return getRecallRelatedToPositionAndContract(recallInfo, positionId, contractId);
+    }
+
+    protected List<RelatedObject> getRecallRelatedToPositionAndContract(String recallInfo, String positionInfo,
+        String contractInfo) {
+        var tradeAgreement = new RelatedObject(recallInfo, SPIRE_RECALL);
+        var relatedPosition = new RelatedObject(positionInfo, POSITION);
+        var relatedTrade = new RelatedObject(contractInfo, ONESOURCE_LOAN_CONTRACT);
+        return List.of(tradeAgreement, relatedPosition, relatedTrade);
     }
 
     protected List<RelatedObject> getAgreementRelatedToNgtPosition(String agreementInfo, String positionInfo,

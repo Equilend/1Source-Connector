@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.model.onesource.RoundingMode
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
+import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
 import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
@@ -25,7 +26,10 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.backoffice.Recall;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.enums.RecallInstructionType;
+import com.intellecteu.onesource.integration.model.enums.RecallStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
@@ -144,6 +148,7 @@ public class ModelTestFactory {
         agreement.setVenues(List.of(buildVenue(agreement.getId())));
         return agreement;
     }
+
     public static AgreementDTO buildAgreementDTO() {
         final AgreementDTO agreementDTO = new AgreementDTO();
         agreementDTO.setAgreementId("testAgreement");
@@ -618,6 +623,35 @@ public class ModelTestFactory {
             .trade(buildTradeAgreement())
             .settlementList(List.of(buildSettlement()))
             .build();
+    }
 
+    public static Recall buildRecall(String recallId, Long relatedPositionId) {
+        return Recall.builder()
+            .recallId(recallId)
+            .relatedPositionId(relatedPositionId)
+            .matching1SourceRecallId("matching1SourceRecallId")
+            .relatedContractId("testContractId")
+            .status(RecallStatus.OPEN)
+            .creationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33))
+            .lastUpdateDateTime(LocalDateTime.now())
+            .openQuantity(123)
+            .quantity(456)
+            .recallDate(LocalDate.of(2024, 5, 16))
+            .recallDueDate(LocalDate.of(2025, 5, 16))
+            .build();
+    }
+
+    public static RecallInstructionDTO buildRecallInstruction(String instructionId) {
+        return RecallInstructionDTO.builder()
+            .instructionId(instructionId)
+            .instructionType(RecallInstructionType.RECALL)
+            .spireRecallId(55L)
+            .relatedContractId("testContractId")
+            .relatedPositionId(77L)
+            .creationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33))
+            .quantity(456)
+            .recallDate(LocalDate.of(2024, 5, 16))
+            .recallDueDate(LocalDate.of(2025, 5, 16))
+            .build();
     }
 }

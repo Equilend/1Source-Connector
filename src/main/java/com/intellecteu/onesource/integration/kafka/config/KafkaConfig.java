@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.kafka.config;
 
 import com.intellecteu.onesource.integration.kafka.dto.CorrectionInstructionDTO;
 import com.intellecteu.onesource.integration.kafka.dto.DeclineInstructionDTO;
+import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
 import java.util.HashMap;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.config.SaslConfigs;
@@ -47,7 +48,8 @@ public class KafkaConfig {
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
         props.put(JsonDeserializer.TYPE_MAPPINGS,
             "CorrectionInstruction:com.intellecteu.onesource.integration.kafka.dto.CorrectionInstructionDTO, "
-                + "DeclineInstruction:com.intellecteu.onesource.integration.kafka.dto.DeclineInstructionDTO");
+                + "DeclineInstruction:com.intellecteu.onesource.integration.kafka.dto.DeclineInstructionDTO, "
+                + "RecallInstructionDTO:com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO");
         props.put(SaslConfigs.SASL_MECHANISM, "PLAIN");
         props.put(SaslConfigs.SASL_JAAS_CONFIG, saslConfig);
         return new DefaultKafkaConsumerFactory<>(props);
@@ -61,8 +63,15 @@ public class KafkaConfig {
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, DeclineInstructionDTO> declineInstructionInstructionContainerFactory() {
+    public ConcurrentKafkaListenerContainerFactory<String, DeclineInstructionDTO> declineInstructionContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, DeclineInstructionDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerFactory());
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, RecallInstructionDTO> recallInstructionContainerFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, RecallInstructionDTO> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }

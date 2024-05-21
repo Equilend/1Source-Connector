@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
-@KafkaListener(id = "${spire.kafka.consumer.listener.decline-instruction.group-id}", topics = "${spire.kafka.consumer.listener.decline-instruction.topic}", containerFactory = "declineInstructionInstructionContainerFactory")
+@KafkaListener(id = "${spire.kafka.consumer.listener.decline-instruction.group-id}", topics = "${spire.kafka.consumer.listener.decline-instruction.topic}", containerFactory = "declineInstructionContainerFactory")
 @Profile("!local")
 public class DeclineInstructionListener {
 
