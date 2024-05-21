@@ -6,6 +6,7 @@ public enum IntegrationProcess {
     CONTRACT_CANCELLATION,
     CONTRACT_INITIATION,
     CONTRACT_SETTLEMENT,
+    RECALL,
     RERATE,
     RETURN
 }

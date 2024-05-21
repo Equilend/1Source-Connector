@@ -19,6 +19,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.Agreement
 import com.intellecteu.onesource.integration.services.client.onesource.ContractsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.EventsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
+import com.intellecteu.onesource.integration.services.client.onesource.RecallsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
 import com.intellecteu.onesource.integration.services.client.onesource.ReturnsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
@@ -35,6 +36,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Ledge
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnProposalDTO;
@@ -65,6 +67,7 @@ public class OneSourceService {
     private final OneSourceApiClient oneSourceApiClient;
     private final EventsApi eventsApi;
     private final ReratesApi reratesApi;
+    private final RecallsApi recallsApi;
     private final ContractsApi contractsApi;
     private final AgreementsApi agreementsApi;
     private final ReturnsApi returnsApi;
@@ -72,11 +75,12 @@ public class OneSourceService {
 
     @Autowired
     public OneSourceService(OneSourceApiClient oneSourceApiClient, EventsApi eventsApi, ReratesApi reratesApi,
-        ContractsApi contractsApi, AgreementsApi agreementsApi, ReturnsApi returnsApi,
+        RecallsApi recallsApi, ContractsApi contractsApi, AgreementsApi agreementsApi, ReturnsApi returnsApi,
         OneSourceMapper oneSourceMapper) {
         this.oneSourceApiClient = oneSourceApiClient;
         this.eventsApi = eventsApi;
         this.reratesApi = reratesApi;
+        this.recallsApi = recallsApi;
         this.contractsApi = contractsApi;
         this.agreementsApi = agreementsApi;
         this.returnsApi = returnsApi;
@@ -122,6 +126,10 @@ public class OneSourceService {
         RerateProposalDTO body = buildRerateProposal(rerateTrade);
         reratesApi.ledgerContractsContractIdReratesPost(body,
             rerateTrade.getRelatedContractId());
+    }
+
+    public void instructRecall(String contractId, RecallProposalDTO recallProposal) {
+        recallsApi.ledgerContractsContractIdRecallsPost(recallProposal, contractId);
     }
 
     public void approveRerate(String contractId, String rerateId) {

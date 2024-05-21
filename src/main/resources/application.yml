@@ -3,7 +3,6 @@ camel:
   newPositionTimer: ${CAMEL_TIMER:600000}
   positionTimer: ${CAMEL_TIMER:600000}
   newBackOfficeTradeEventTimer: ${CAMEL_TIMER:600000}
-  partyTimer: ${PARTY_TIMER:0+0+6+*+*+?}
   timestamp: ${CAMEL_TIMESTAMP:2023-06-25T09:51:16.111Z}
   route:
     autostart: ${CAMEL_AUTOSTART:true}
@@ -75,6 +74,13 @@ route:
     redelivery-policy:
       max-redeliveries: 2
       delay-pattern: 1:2000;2:30000
+  unilateral-flow:
+    recall-confirmation:
+      timer: ${RC_UNILATERAL_FLOW_TIMER:60000}
+      enable: ${RC_UNILATERAL_FLOW_ENABLE:true}
+      redelivery-policy:
+        max-redeliveries: 2
+        delay-pattern: 1:2000;2:30000
 spire:
   base-endpoint: ${SPIRE_BASE_ENDPOINT}
   kafka:
@@ -95,6 +101,9 @@ spire:
         decline-instruction:
           group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID:it-di}
           topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC:declineInstruction}
+        recall-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID:it-ri}
+          topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC:recallInstruction}
   password: ${SPIRE_PASSWORD}
   user-id: ${SPIRE_USER_ID:1}
   username: ${SPIRE_USERNAME}

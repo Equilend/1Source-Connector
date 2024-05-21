@@ -6,11 +6,13 @@ import lombok.experimental.UtilityClass;
 public class RecordMessageConstant {
 
     public static final String NOT_APPLICABLE = "N/A";
+
     public static class ContractCancellation {
 
         public static class Subject {
+
             public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT = """
-            Capture of canceled positions - %s""";
+                Capture of canceled positions - %s""";
             public static final String INSTRUCT_CONTRACT_CANCEL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_CANCEL_PENDING_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_CANCELED_SUBJECT = "Position - %s";
@@ -19,6 +21,7 @@ public class RecordMessageConstant {
         }
 
         public static class DataMsg {
+
             public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_MSG = """
                 Canceled positions cannot be captured from SPIRE for the following reason: %s""";
 
@@ -296,6 +299,24 @@ public class RecordMessageConstant {
         }
     }
 
+    public static class Recall {
+
+        public static class Subject {
+
+            public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
+            public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+        }
+
+        public static class DataMsg {
+
+            public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
+                + "has not been processed by 1Source for the following reason: %s";
+
+            public static final String RECALL_SUBMITTED_MSG = "The recall %s has been submitted "
+                + "to 1Source to request the recall creation";
+        }
+    }
+
     public static class Rerate {
 
         public static class Subject {
@@ -363,12 +384,14 @@ public class RecordMessageConstant {
     public static class Return {
 
         public static class Subject {
+
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Extract of new return pending conf. - %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
             public static final String POST_RETURN_SUBMITTED_SBJ = "Trade - %s";
         }
 
         public static class DataMsg {
+
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG = "New return pending confirmation cannot be extracted from SPIRE for the following reason: %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s) has not been processed by 1Source for the following reason: %s";
             public static final String POST_RETURN_SUBMITTED_MSG = "The return trade %s has been submitted to 1Source to request the return creation";
