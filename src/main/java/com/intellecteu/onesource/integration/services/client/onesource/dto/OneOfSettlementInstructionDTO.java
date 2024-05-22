@@ -12,39 +12,14 @@
 
 package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
- * Gets or Sets TermType
- */
-public enum TermTypeDTO {
-  OPEN("OPEN"),
-  FIXED("FIXED");
+* OneOfSettlementInstructionDTO
+*/
+@JsonTypeInfo(
+    use = Id.DEDUCTION)
+public interface OneOfSettlementInstructionDTO {
 
-  private String value;
-
-  TermTypeDTO(String value) {
-    this.value = value;
-  }
-
-  @JsonValue
-  public String getValue() {
-    return value;
-  }
-
-  @Override
-  public String toString() {
-    return String.valueOf(value);
-  }
-
-  @JsonCreator
-  public static TermTypeDTO fromValue(String input) {
-    for (TermTypeDTO b : TermTypeDTO.values()) {
-      if (b.value.equals(input)) {
-        return b;
-      }
-    }
-    return null;
-  }
 }

@@ -11,6 +11,7 @@ import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
+import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.model.onesource.Settlement;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstruction;
 import com.intellecteu.onesource.integration.model.onesource.SettlementInstructionUpdate;
@@ -23,6 +24,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Agreeme
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.ReturnEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementInstructionUpdateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
@@ -46,6 +48,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Party
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateStatusDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusUpdateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.TradeAgreementDTO;
@@ -190,7 +193,7 @@ public abstract class OneSourceMapper {
 
     public abstract List<Settlement> toModelList(List<SettlementEntity> settlement);
 
-    @Mapping(target = "eventDateTime", source = "eventDatetime")
+    @Mapping(target = "eventDateTime", source = "eventDateTime")
     public abstract TradeEvent toModel(EventDTO eventDTO);
 
     public abstract List<TradeEvent> toTradeEventModelList(List<EventDTO> eventsDTO);
@@ -271,6 +274,14 @@ public abstract class OneSourceMapper {
     public abstract TradeEventEntity toEntity(TradeEvent tradeEvent);
 
     public abstract SettlementInstructionUpdateEntity toEntity(SettlementInstructionUpdate settlementInstructionUpdate);
+
+    @Mapping(target = "returnStatus", source = "status")
+    public abstract Return toModel(ReturnDTO returnDTO);
+
+    public abstract Return toModel(ReturnEntity returnEntity);
+
+    public abstract ReturnEntity toEntity(Return oneSpurceEntity);
+
 
     @Named("mapIntegerToDouble")
     public Double mapIntegerToDouble(Integer integer) {

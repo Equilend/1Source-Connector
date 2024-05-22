@@ -167,7 +167,7 @@ public class ModelTestFactory {
         venueTrade.setBillingCurrency(CurrencyCdDTO.USD);
         venueTrade.dividendRatePct(5.0D);
         venueTrade.setTradeDate(LocalDate.of(2024, 4, 19));
-        venueTrade.setTermType(TermTypeDTO.TERM);
+        venueTrade.setTermType(TermTypeDTO.FIXED);
         venueTrade.setTermDate(LocalDate.of(2024, 4, 19));
         venueTrade.setSettlementDate(LocalDate.of(2024, 4, 19));
         venueTrade.setSettlementType(SettlementTypeDTO.DVP);
@@ -226,7 +226,7 @@ public class ModelTestFactory {
         collateralDTO.setCurrency(CurrencyCdDTO.USD);
         collateralDTO.setType(CollateralTypeDTO.CASH);
         collateralDTO.setDescriptionCd(CollateralDescriptionDTO.DEBT);
-        collateralDTO.setMargin(205);
+        collateralDTO.setMargin(205.5);
         collateralDTO.setRoundingRule(1);
         collateralDTO.setRoundingMode(RoundingModeDTO.ALWAYSUP);
         return collateralDTO;

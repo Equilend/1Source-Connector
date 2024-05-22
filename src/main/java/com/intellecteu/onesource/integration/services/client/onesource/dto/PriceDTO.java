@@ -17,9 +17,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
- * PriceDTO
+ * Price is ignored for trade agreements and contract proposals
  */
-
+@Schema(description = "Price is ignored for trade agreements and contract proposals")
 
 
 public class PriceDTO {

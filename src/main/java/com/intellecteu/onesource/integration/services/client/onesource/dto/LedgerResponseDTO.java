@@ -23,52 +23,94 @@ import java.util.Objects;
 
 
 public class LedgerResponseDTO {
-  @JsonProperty("timestamp")
-  private LocalDateTime timestamp = null;
+  @JsonProperty("code")
+  private String code = null;
 
-  @JsonProperty("status")
-  private Integer status = null;
+  @JsonProperty("type")
+  private String type = null;
+
+  @JsonProperty("responseDateTime")
+  private LocalDateTime responseDateTime = null;
+
+  @JsonProperty("requestId")
+  private String requestId = null;
 
   @JsonProperty("message")
   private String message = null;
 
-  @JsonProperty("path")
-  private String path = null;
+  @JsonProperty("resourceUri")
+  private String resourceUri = null;
 
-  public LedgerResponseDTO timestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
+  public LedgerResponseDTO code(String code) {
+    this.code = code;
     return this;
   }
 
    /**
-   * Get timestamp
-   * @return timestamp
+   * Get code
+   * @return code
   **/
   @Schema(description = "")
-  public LocalDateTime getTimestamp() {
-    return timestamp;
+  public String getCode() {
+    return code;
   }
 
-  public void setTimestamp(LocalDateTime timestamp) {
-    this.timestamp = timestamp;
+  public void setCode(String code) {
+    this.code = code;
   }
 
-  public LedgerResponseDTO status(Integer status) {
-    this.status = status;
+  public LedgerResponseDTO type(String type) {
+    this.type = type;
     return this;
   }
 
    /**
-   * Get status
-   * @return status
+   * Get type
+   * @return type
   **/
   @Schema(description = "")
-  public Integer getStatus() {
-    return status;
+  public String getType() {
+    return type;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public LedgerResponseDTO responseDateTime(LocalDateTime responseDateTime) {
+    this.responseDateTime = responseDateTime;
+    return this;
+  }
+
+   /**
+   * Get responseDateTime
+   * @return responseDateTime
+  **/
+  @Schema(description = "")
+  public LocalDateTime getResponseDateTime() {
+    return responseDateTime;
+  }
+
+  public void setResponseDateTime(LocalDateTime responseDateTime) {
+    this.responseDateTime = responseDateTime;
+  }
+
+  public LedgerResponseDTO requestId(String requestId) {
+    this.requestId = requestId;
+    return this;
+  }
+
+   /**
+   * Get requestId
+   * @return requestId
+  **/
+  @Schema(description = "")
+  public String getRequestId() {
+    return requestId;
+  }
+
+  public void setRequestId(String requestId) {
+    this.requestId = requestId;
   }
 
   public LedgerResponseDTO message(String message) {
@@ -89,22 +131,22 @@ public class LedgerResponseDTO {
     this.message = message;
   }
 
-  public LedgerResponseDTO path(String path) {
-    this.path = path;
+  public LedgerResponseDTO resourceUri(String resourceUri) {
+    this.resourceUri = resourceUri;
     return this;
   }
 
    /**
-   * Get path
-   * @return path
+   * Get resourceUri
+   * @return resourceUri
   **/
   @Schema(description = "")
-  public String getPath() {
-    return path;
+  public String getResourceUri() {
+    return resourceUri;
   }
 
-  public void setPath(String path) {
-    this.path = path;
+  public void setResourceUri(String resourceUri) {
+    this.resourceUri = resourceUri;
   }
 
 
@@ -117,15 +159,17 @@ public class LedgerResponseDTO {
       return false;
     }
     LedgerResponseDTO ledgerResponse = (LedgerResponseDTO) o;
-    return Objects.equals(this.timestamp, ledgerResponse.timestamp) &&
-        Objects.equals(this.status, ledgerResponse.status) &&
+    return Objects.equals(this.code, ledgerResponse.code) &&
+        Objects.equals(this.type, ledgerResponse.type) &&
+        Objects.equals(this.responseDateTime, ledgerResponse.responseDateTime) &&
+        Objects.equals(this.requestId, ledgerResponse.requestId) &&
         Objects.equals(this.message, ledgerResponse.message) &&
-        Objects.equals(this.path, ledgerResponse.path);
+        Objects.equals(this.resourceUri, ledgerResponse.resourceUri);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(timestamp, status, message, path);
+    return Objects.hash(code, type, responseDateTime, requestId, message, resourceUri);
   }
 
 
@@ -134,10 +178,12 @@ public class LedgerResponseDTO {
     StringBuilder sb = new StringBuilder();
     sb.append("class LedgerResponseDTO {\n");
     
-    sb.append("    timestamp: ").append(toIndentedString(timestamp)).append("\n");
-    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    code: ").append(toIndentedString(code)).append("\n");
+    sb.append("    type: ").append(toIndentedString(type)).append("\n");
+    sb.append("    responseDateTime: ").append(toIndentedString(responseDateTime)).append("\n");
+    sb.append("    requestId: ").append(toIndentedString(requestId)).append("\n");
     sb.append("    message: ").append(toIndentedString(message)).append("\n");
-    sb.append("    path: ").append(toIndentedString(path)).append("\n");
+    sb.append("    resourceUri: ").append(toIndentedString(resourceUri)).append("\n");
     sb.append("}");
     return sb.toString();
   }

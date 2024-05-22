@@ -41,7 +41,7 @@ public class CollateralDTO {
   private CollateralDescriptionDTO descriptionCd = null;
 
   @JsonProperty("margin")
-  private Integer margin = null;
+  private Double margin = null;
 
   @JsonProperty("roundingRule")
   private Integer roundingRule = null;
@@ -157,7 +157,7 @@ public class CollateralDTO {
     this.descriptionCd = descriptionCd;
   }
 
-  public CollateralDTO margin(Integer margin) {
+  public CollateralDTO margin(Double margin) {
     this.margin = margin;
     return this;
   }
@@ -167,11 +167,11 @@ public class CollateralDTO {
    * @return margin
   **/
   @Schema(description = "")
-  public Integer getMargin() {
+  public Double getMargin() {
     return margin;
   }
 
-  public void setMargin(Integer margin) {
+  public void setMargin(Double margin) {
     this.margin = margin;
   }
 

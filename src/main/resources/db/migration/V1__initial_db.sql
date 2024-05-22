@@ -218,7 +218,13 @@ CREATE TABLE IF NOT EXISTS settlement
     settlement_status   VARCHAR(255) NULL,
     instruction         BIGINT       NULL,
     contract_id         BIGINT       NULL,
-    internal_acct_cd   VARCHAR(255)  NULL
+    internal_acct_cd    VARCHAR(255)  NULL,
+    dtc_participant_number VARCHAR(255) NULL,
+    cds_customer_unit_id   VARCHAR(255) NULL,
+    custodian_name         VARCHAR(255) NULL,
+    custodian_bic          VARCHAR(255) NULL,
+    custodian_acct         VARCHAR(255) NULL,
+    return_id           VARCHAR(255) NULL
 );
 
 CREATE TABLE IF NOT EXISTS settlement_instruction_update
@@ -319,14 +325,6 @@ CREATE TABLE IF NOT EXISTS local_venue_field
     CONSTRAINT pk_local_venue_field PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS settlement_temp
-(
-    id            SERIAL NOT NULL,
-    contract_id    VARCHAR(255) NULL,
-    settlement_id    BIGINT NULL,
-    CONSTRAINT pk_settlement_temp PRIMARY KEY (id)
-);
-
 CREATE TABLE IF NOT EXISTS participant
 (
     id          SERIAL NOT NULL,
@@ -425,18 +423,43 @@ CREATE TABLE IF NOT EXISTS rerate
 
 CREATE TABLE IF NOT EXISTS return_trade
 (
-    trade_id                  bigint not null,
-    canceling_trade_id        bigint,
-    creation_datetime         timestamp,
-    last_update_datetime      timestamp,
-    related_position_id       bigint,
-    trade_out_trade_id        bigint,
-    matching1source_return_id varchar(255),
-    processing_status         varchar(255),
-    related_contract_id       varchar(255),
+    trade_id                  BIGINT NOT NULL,
+    canceling_trade_id        BIGINT,
+    creation_datetime         TIMESTAMP,
+    last_update_datetime      TIMESTAMP,
+    related_position_id       BIGINT,
+    trade_out_trade_id        BIGINT,
+    matching1source_return_id VARCHAR(255),
+    processing_status         VARCHAR(255),
+    related_contract_id       VARCHAR(255),
     CONSTRAINT return_trade_pkey PRIMARY KEY (trade_id),
     CONSTRAINT fk_return_trade_out FOREIGN KEY (trade_out_trade_id) REFERENCES trade_out
     );
+
+CREATE TABLE IF NOT EXISTS return
+(
+    return_id                 VARCHAR(255) NOT NULL,
+    acknowledgement_type      VARCHAR(255),
+    contract_id               VARCHAR(255),
+    create_update_datetime    TIMESTAMP(6),
+    description               VARCHAR(255),
+    last_update_datetime      TIMESTAMP(6),
+    matching_spire_trade_id   BIGINT,
+    processing_status         VARCHAR(255),
+    quantity                  INTEGER,
+    related_spire_position_id BIGINT,
+    return_settlement_date    TIMESTAMP(6),
+    return_status             VARCHAR(255),
+    settlement_type           SMALLINT,
+    collateral_id             BIGINT,
+    venue_id                  BIGINT,
+    CONSTRAINT return_pkey PRIMARY KEY (return_id),
+    CONSTRAINT fk_return_collateral FOREIGN KEY (collateral_id) REFERENCES collateral,
+    CONSTRAINT fk_return_venue FOREIGN KEY (venue_id) REFERENCES venue
+    );
+
+ALTER TABLE settlement DROP CONSTRAINT IF EXISTS fk_settlement_return;
+ALTER TABLE settlement ADD CONSTRAINT fk_settlement_return FOREIGN KEY (return_id) REFERENCES return;
 
 ALTER TABLE agreement DROP CONSTRAINT IF EXISTS FK_AGREEMENT_ON_TRADE;
 ALTER TABLE agreement
@@ -502,7 +525,6 @@ ALTER TABLE transacting_party
 ALTER TABLE venue_party
     ADD CONSTRAINT FK_VENUE_PARTY_ON_VENUE_PARTY FOREIGN KEY (venue_party_id) REFERENCES venue (id);
 ALTER TABLE venue_party DROP CONSTRAINT IF EXISTS FK_VENUE_PARTY_ON_VENUE_PARTY;
-ALTER TABLE settlement_temp DROP CONSTRAINT IF EXISTS FK_SETTLEMENT_ON_SETTLEMENT_TEMP;
 
 ALTER TABLE local_venue_field DROP CONSTRAINT IF EXISTS FK_LOCAL_VENUE_FIELD_ON_VENUE;
 ALTER TABLE local_venue_field
@@ -514,9 +536,6 @@ ALTER TABLE position
 ADD CONSTRAINT FK_POSITION_ACCOUNT FOREIGN KEY (account_id) REFERENCES account (id);
 ALTER TABLE position
 ADD CONSTRAINT FK_POSITION_CP FOREIGN KEY (cp_id) REFERENCES account (id);
-
-ALTER TABLE settlement_temp
-    ADD CONSTRAINT FK_SETTLEMENT_ON_SETTLEMENT_TEMP FOREIGN KEY (settlement_id) REFERENCES settlement (id);
 
 ALTER TABLE participant DROP CONSTRAINT IF EXISTS FK_PARTICIPANT_HOLDER;
 ALTER TABLE participant add participant_holder_id BIGINT NULL;

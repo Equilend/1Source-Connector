@@ -316,7 +316,7 @@ public class AgreementReconcileService implements ReconcileService<Agreement, Po
     private Optional<ProcessExceptionDetails> reconcileTermType(TermType termType, Integer termId) {
         if (termType != null && termId != null) {
             if ((termId.equals(1) && termType != TermType.OPEN)
-                || (termId.equals(2) && termType != TermType.TERM)) {
+                || (termId.equals(2) && termType != TermType.FIXED)) {
                 var exceptionDto = ProcessExceptionDetails.builder()
                     .source(ONE_SOURCE_TRADE_AGREEMENT)
                     .fieldName(TERM_TYPE)

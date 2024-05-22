@@ -46,6 +46,16 @@ public class SettlementEntity {
     private SettlementInstructionEntity instruction;
     @Column(name = "internal_acct_cd")
     private String internalAcctCd;
+    @Column(name = "dtc_participant_number")
+    private String dtcParticipantNumber;
+    @Column(name = "cds_customer_unit_id")
+    private String cdsCustomerUnitId;
+    @Column(name = "custodian_name")
+    private String custodianName;
+    @Column(name = "custodian_bic")
+    private String custodianBic;
+    @Column(name = "custodian_acct")
+    private String custodianAcct;
 
 //    @ManyToOne(fetch = FetchType.EAGER)
 //    @JoinColumn(name = "contract_id", referencedColumnName = "id")

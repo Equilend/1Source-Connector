@@ -642,7 +642,7 @@ class ContractReconcileServiceTest {
     @DisplayName("Should throw exception if position.termId is 1 and "
         + "trade.termType is not OPEN")
     void reconcile_shouldThrowException_whenTermTypeIsNotOpen() {
-        contract.getTrade().setTermType(TermType.TERM);
+        contract.getTrade().setTermType(TermType.FIXED);
         position.setTermId(1);
 
         verifyReconciliationFailure();
