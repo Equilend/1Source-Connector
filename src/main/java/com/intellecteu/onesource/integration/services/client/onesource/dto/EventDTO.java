@@ -24,18 +24,18 @@ import java.util.Objects;
 
 public class EventDTO {
   @JsonProperty("eventId")
-  private Integer eventId = null;
+  private Long eventId = null;
 
   @JsonProperty("eventType")
   private EventTypeDTO eventType = null;
 
-  @JsonProperty("eventDatetime")
-  private LocalDateTime eventDatetime = null;
+  @JsonProperty("eventDateTime")
+  private LocalDateTime eventDateTime = null;
 
   @JsonProperty("resourceUri")
   private String resourceUri = null;
 
-  public EventDTO eventId(Integer eventId) {
+  public EventDTO eventId(Long eventId) {
     this.eventId = eventId;
     return this;
   }
@@ -45,11 +45,11 @@ public class EventDTO {
    * @return eventId
   **/
   @Schema(required = true, description = "")
-  public Integer getEventId() {
+  public Long getEventId() {
     return eventId;
   }
 
-  public void setEventId(Integer eventId) {
+  public void setEventId(Long eventId) {
     this.eventId = eventId;
   }
 
@@ -71,22 +71,22 @@ public class EventDTO {
     this.eventType = eventType;
   }
 
-  public EventDTO eventDatetime(LocalDateTime eventDatetime) {
-    this.eventDatetime = eventDatetime;
+  public EventDTO eventDateTime(LocalDateTime eventDateTime) {
+    this.eventDateTime = eventDateTime;
     return this;
   }
 
    /**
-   * Get eventDatetime
-   * @return eventDatetime
+   * Get eventDateTime
+   * @return eventDateTime
   **/
   @Schema(description = "")
-  public LocalDateTime getEventDatetime() {
-    return eventDatetime;
+  public LocalDateTime getEventDateTime() {
+    return eventDateTime;
   }
 
-  public void setEventDatetime(LocalDateTime eventDatetime) {
-    this.eventDatetime = eventDatetime;
+  public void setEventDateTime(LocalDateTime eventDateTime) {
+    this.eventDateTime = eventDateTime;
   }
 
   public EventDTO resourceUri(String resourceUri) {
@@ -119,13 +119,13 @@ public class EventDTO {
     EventDTO event = (EventDTO) o;
     return Objects.equals(this.eventId, event.eventId) &&
         Objects.equals(this.eventType, event.eventType) &&
-        Objects.equals(this.eventDatetime, event.eventDatetime) &&
+        Objects.equals(this.eventDateTime, event.eventDateTime) &&
         Objects.equals(this.resourceUri, event.resourceUri);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(eventId, eventType, eventDatetime, resourceUri);
+    return Objects.hash(eventId, eventType, eventDateTime, resourceUri);
   }
 
 
@@ -136,7 +136,7 @@ public class EventDTO {
     
     sb.append("    eventId: ").append(toIndentedString(eventId)).append("\n");
     sb.append("    eventType: ").append(toIndentedString(eventType)).append("\n");
-    sb.append("    eventDatetime: ").append(toIndentedString(eventDatetime)).append("\n");
+    sb.append("    eventDateTime: ").append(toIndentedString(eventDateTime)).append("\n");
     sb.append("    resourceUri: ").append(toIndentedString(resourceUri)).append("\n");
     sb.append("}");
     return sb.toString();

@@ -318,7 +318,7 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
     private Optional<ProcessExceptionDetails> reconcileTermType(TermType termType, Integer termId) {
         if (termType != null && termId != null) {
             if ((termId.equals(1) && termType != TermType.OPEN)
-                || (termId.equals(2) && termType != TermType.TERM)) {
+                || (termId.equals(2) && termType != TermType.FIXED)) {
                 var exceptionDto = ProcessExceptionDetails.builder()
                     .source(ONE_SOURCE_LOAN_CONTRACT)
                     .fieldName(TERM_TYPE)

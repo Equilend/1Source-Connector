@@ -1872,7 +1872,41 @@
         }
       ],
       "responseMode": null
-    }
+    },
+      {
+          "uuid": "14da6415-06ca-4a7a-b4e0-0a084e5fd492",
+          "type": "http",
+          "documentation": "",
+          "method": "get",
+          "endpoint": "returns/93f834ff-66b5-4195-892b-8f316ed77006",
+          "responses": [
+              {
+                  "uuid": "9e81da18-4c0a-4ab4-871b-e986776f38a0",
+                  "body": "{\n  \"returnId\": \"string\",\n  \"contractId\": \"string\",\n  \"status\": \"PENDING\",\n  \"executionVenue\": {\n    \"partyId\": \"string\",\n    \"type\": \"ONPLATFORM\",\n    \"venueName\": \"string\",\n    \"venueRefKey\": \"string\",\n    \"transactionDatetime\": \"2019-08-24T14:15:22Z\",\n    \"venueParties\": [\n      {\n        \"partyRole\": \"BORROWER\",\n        \"venuePartyRefKey\": \"string\"\n      }\n    ],\n    \"localVenueFields\": [\n      {\n        \"localFieldName\": \"string\",\n        \"localFieldValue\": \"string\"\n      }\n    ]\n  },\n  \"quantity\": 0,\n  \"collateral\": {\n    \"contractPrice\": 0,\n    \"contractValue\": 0,\n    \"collateralValue\": 0,\n    \"currency\": \"USD\",\n    \"type\": \"CASH\",\n    \"descriptionCd\": \"NONUSAGENCIES\",\n    \"margin\": 0,\n    \"roundingRule\": 0,\n    \"roundingMode\": \"ALWAYSUP\"\n  },\n  \"settlementType\": \"DVP\",\n  \"returnDate\": \"2019-08-24\",\n  \"returnSettlementDate\": \"2019-08-24\",\n  \"acknowledgementType\": \"POSITIVE\",\n  \"description\": \"string\",\n  \"settlement\": [\n    {\n      \"partyRole\": \"BORROWER\",\n      \"settlementStatus\": \"NONE\",\n      \"internalAcctCd\": \"string\",\n      \"instruction\": {\n        \"settlementBic\": \"settlementBic_89df394a1e97\",\n        \"localAgentBic\": \"localAgentBic_6be174d0caf3\",\n        \"localAgentName\": \"localAgentName_ef372780d9cd\",\n        \"localAgentAcct\": \"localAgentAcct_1c15218208eb\",\n        \"dtcParticipantNumber\": \"dtcParticipantNumber_cc86bde75009\",\n        \"cdsCustomerUnitId\": \"cdsCustomerUnitId_9d213865e0b7\",\n        \"custodianName\": \"custodianName_82f92dba06e1\",\n        \"custodianBic\": \"custodianBic_d23b5e0e1cda\",\n        \"custodianAcct\": \"custodianAcct_5f5a8dca767c\"\n      }\n    }\n  ],\n  \"lastUpdateDatetime\": \"2019-08-24T14:15:22Z\"\n}",
+                  "latency": 0,
+                  "statusCode": 200,
+                  "label": "Rerate proposed details",
+                  "headers": [
+                      {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                      }
+                  ],
+                  "bodyType": "INLINE",
+                  "filePath": "",
+                  "databucketID": "",
+                  "sendFileAsBody": false,
+                  "rules": [],
+                  "rulesOperator": "OR",
+                  "disableTemplating": false,
+                  "fallbackTo404": false,
+                  "default": true,
+                  "crudKey": "id",
+                  "callbacks": []
+              }
+          ],
+          "responseMode": null
+      }
   ],
   "rootChildren": [
     {

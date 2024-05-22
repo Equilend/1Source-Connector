@@ -23,5 +23,9 @@ public class SettlementInstruction {
     private String localAgentName;
     private String localAgentAcct;
     private String dtcParticipantNumber;
+    private String cdsCustomerUnitId;
+    private String custodianName;
+    private String custodianBic;
+    private String custodianAcct;
 
 }

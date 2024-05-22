@@ -310,7 +310,7 @@ public abstract class OneSourceSpireReconcileService<T extends Reconcilable, R e
     private Optional<ProcessExceptionDetails> reconcileTermType(TermType termType, Integer termId) {
         if (termType != null && termId != null) {
             if ((termId.equals(1) && termType != TermType.OPEN)
-                || (termId.equals(2) && termType != TermType.TERM)) {
+                || (termId.equals(2) && termType != TermType.FIXED)) {
                 var exceptionDto = new ProcessExceptionDetails();
                 exceptionDto.setFieldName(TERM_TYPE);
                 exceptionDto.setFieldValue(String.format(RECONCILE_MISMATCH, TERM_TYPE, termType,

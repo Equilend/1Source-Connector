@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
+import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
@@ -39,6 +40,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Rebat
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementStatusDTO;
@@ -117,6 +119,15 @@ public class OneSourceService {
         RerateDTO rerateDTO = oneSourceApiClient.retrieveRerate(eventUri);
         if (rerateDTO != null) {
             return oneSourceMapper.toModel(rerateDTO);
+        } else {
+            throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public Return retrieveReturn(String eventUri) {
+        ReturnDTO returnDTO = oneSourceApiClient.retrieveReturn(eventUri);
+        if (returnDTO != null) {
+            return oneSourceMapper.toModel(returnDTO);
         } else {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }

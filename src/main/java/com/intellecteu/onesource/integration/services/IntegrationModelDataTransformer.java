@@ -5,8 +5,8 @@ import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LE
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
+import static com.intellecteu.onesource.integration.model.onesource.TermType.FIXED;
 import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
-import static com.intellecteu.onesource.integration.model.onesource.TermType.TERM;
 
 import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
@@ -216,7 +216,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         if (termId == 1) {
             return OPEN;
         } else if (termId == 2) {
-            return TERM;
+            return FIXED;
         }
         return null;
     }

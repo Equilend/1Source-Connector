@@ -4,10 +4,14 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_RETURN_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_PENDING_CONFIRMATION_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_RETURN_EXCEPTION_1SOURCE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_PENDING_CONFIRMATION_TE_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_SUBMITTED_SBJ;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static java.lang.String.format;
 
@@ -80,6 +84,13 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                     default -> null;
                 };
             }
+            case GET_RETURN:{
+                return switch (recordType) {
+                    case TECHNICAL_EXCEPTION_1SOURCE ->
+                        createGetReturnTechnicalExceptionCR(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
         }
         return null;
     }
@@ -114,12 +125,25 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
         String dataMessage = format(POST_RETURN_SUBMITTED_MSG, data.get(TRADE_ID));
         return createRecordRequest(
             recordType,
-            format(POST_RETURN_SUBMITTED_MSG, data.get(TRADE_ID)),
+            format(POST_RETURN_SUBMITTED_SBJ, data.get(TRADE_ID)),
             RETURN,
             subProcess,
             createEventData(dataMessage, List.of(new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
                 new RelatedObject(data.get(POSITION_ID), POSITION),
                 new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createGetReturnTechnicalExceptionCR(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(GET_RETURN_EXCEPTION_1SOURCE_MSG, data.get(RESOURCE_URI),
+            data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(GET_RETURN_EXCEPTION_1SOURCE_SBJ, data.get(RESOURCE_URI)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), SPIRE_TRADE)))
         );
     }
 }
