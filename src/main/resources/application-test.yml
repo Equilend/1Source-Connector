@@ -83,6 +83,21 @@ spire:
         secret: ${SPIRE_KAFKA_SECRET:test}
       bootstrap-server: ${SPIRE_KAFKA_BOOTSTRAP_SERVER:localhost:9092}
       topic: ${SPIRE_KAFKA_TOPIC:TEST.TOPIC}
+    consumer:
+      bootstrap-server: ${SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER:localhost:29092}
+      username: ${SPIRE_KAFKA_CONSUMER_USERNAME:kafka-user}
+      password: ${SPIRE_KAFKA_CONSUMER_PASSWORD:kafka-password}
+      listener:
+        correction-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID:it-ci}
+          topic: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC:correctionInstruction}
+        decline-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID:it-di}
+          topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC:declineInstruction}
+        recall-instruction:
+          enable: ${SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE:false}
+          group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID:it-ri}
+          topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC:recallInstruction}
   password: ${SPIRE_PASSWORD:12345}
   user-id: ${SPIRE_USER_ID:1}
   username: ${SPIRE_USERNAME:test-user}

@@ -102,6 +102,7 @@ spire:
           group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID:it-di}
           topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC:declineInstruction}
         recall-instruction:
+          enable: ${SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE:false}
           group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID:it-ri}
           topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC:recallInstruction}
   password: ${SPIRE_PASSWORD}

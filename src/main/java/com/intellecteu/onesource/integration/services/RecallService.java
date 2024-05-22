@@ -44,13 +44,12 @@ public class RecallService {
     }
 
     /**
-     * Update last update date time and persist a recall.
+     * Persist a recall. The lastUpdateDateTime is updated on persisting.
      *
      * @param recall Recall model
      * @return Recall persisted model
      */
     public Recall save(Recall recall) {
-        recall.setLastUpdateDateTime(LocalDateTime.now());
         final RecallEntity persistedEntity = recallRepository.save(mapper.toEntity(recall));
         log.debug("Recall with recallId:{} was saved", persistedEntity.getRecallId());
         return mapper.toModel(persistedEntity);

@@ -5,7 +5,7 @@ import com.intellecteu.onesource.integration.services.RecallService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Profile;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.kafka.annotation.KafkaHandler;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -17,16 +17,16 @@ import org.springframework.stereotype.Component;
     id = "${spire.kafka.consumer.listener.recall-instruction.group-id}",
     topics = "${spire.kafka.consumer.listener.recall-instruction.topic}",
     containerFactory = "recallInstructionContainerFactory")
-@Profile("!local")
+@ConditionalOnProperty(value = "spire.kafka.consumer.listener.recall-instruction.enable")
 public class RecallInstructionListener {
 
     private final RecallService recallService;
 
     /**
-     * There is the listener for messages with header __TypeId__:RecallInstruction
+     * There is the listener for messages with header __TypeId__:RecallInstructionDTO
      */
     @KafkaHandler
-    public void handleCorrectionInstruction(@Valid RecallInstructionDTO recallInstructionDTO) {
+    public void handleRecallInstruction(@Valid RecallInstructionDTO recallInstructionDTO) {
         recallService.createRecall(recallInstructionDTO);
     }
 
