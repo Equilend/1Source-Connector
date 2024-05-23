@@ -158,6 +158,7 @@ Integration tests + skip Unit tests:
 | spire.kafka.consumer.listener.correction-instruction.topic                 | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
 | spire.kafka.consumer.listener.decline-instruction.group-id                 | YES      | it-di                                            | Kafka group-id  for decline instruction                                                            |
 | spire.kafka.consumer.listener.decline-instruction.topic                    | YES      | declineInstruction                               | Kafka topic for decline instruction                                                                |
+| spire.kafka.consumer.listener.recall-instruction.enable                    | YES      | false                                            | Enable Kafka listener for recall instructions. Should be enabled only for the Lender participant.  |
 | spire.kafka.consumer.listener.recall-instruction.group-id                  | YES      | it-ri                                            | Kafka group-id  for recall instruction                                                             |
 | spire.kafka.consumer.listener.recall-instruction.topic                     | YES      | recallInstruction                                | Kafka topic for recall instruction                                                                 |
 | spire.kafka.consumer.password                                              | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
@@ -221,6 +222,7 @@ Integration tests + skip Unit tests:
 | spire.kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
 | spire.kafka.consumer.listener.decline-instruction.group-id    | SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID    |
 | spire.kafka.consumer.listener.decline-instruction.topic       | SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC       |
+| spire.kafka.consumer.listener.recall-instruction.enable       | SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE          |
 | spire.kafka.consumer.listener.recall-instruction.group-id     | SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID     |
 | spire.kafka.consumer.listener.recall-instruction.topic        | SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC        |
 | spire.kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |

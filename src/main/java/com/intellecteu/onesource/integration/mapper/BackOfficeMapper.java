@@ -97,6 +97,7 @@ public abstract class BackOfficeMapper {
 
     public abstract ReturnTradeEntity toEntity(ReturnTrade returnTrade);
 
+    @Mapping(target = "lastUpdateDateTime", ignore = true)
     public abstract RecallEntity toEntity(Recall recall);
 
     public abstract Recall toModel(RecallEntity recallEntity);

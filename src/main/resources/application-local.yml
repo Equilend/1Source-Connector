@@ -102,20 +102,21 @@ spire:
         secret: ${SPIRE_KAFKA_SECRET_LOCAL:test}
       bootstrap-server: ${SPIRE_KAFKA_BOOTSTRAP_SERVER_LOCAL:localhost:9092}
       topic: ${SPIRE_KAFKA_TOPIC_LOCAL:TEST.TOPIC}
-  consumer:
-    bootstrap-server: ${SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER_LOCAL:localhost:29092}
-    username: ${SPIRE_KAFKA_CONSUMER_USERNAME_LOCAL:kafka-user}
-    password: ${SPIRE_KAFKA_CONSUMER_PASSWORD_LOCAL:kafka-password}
-    listener:
-      correction-instruction:
-        group-id: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID_LOCAL:it-ci}
-        topic: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC_LOCAL:correctionInstruction}
-      decline-instruction:
-        group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID_LOCAL:it-di}
-        topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC_LOCAL:declineInstruction}
-      recall-instruction:
-        group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID_LOCAL:it-ri}
-        topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC_LOCAL:recallInstruction}
+    consumer:
+      bootstrap-server: ${SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER_LOCAL:localhost:29092}
+      username: ${SPIRE_KAFKA_CONSUMER_USERNAME_LOCAL:kafka-user}
+      password: ${SPIRE_KAFKA_CONSUMER_PASSWORD_LOCAL:kafka-password}
+      listener:
+        correction-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID_LOCAL:it-ci}
+          topic: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC_LOCAL:correctionInstruction}
+        decline-instruction:
+          group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID_LOCAL:it-di}
+          topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC_LOCAL:declineInstruction}
+        recall-instruction:
+          enable: ${SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE_LOCAL:false}
+          group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID_LOCAL:it-ri}
+          topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC_LOCAL:recallInstruction}
   password: ${SPIRE_PASSWORD_LOCAL:12345}
   user-id: ${SPIRE_USER_ID_LOCAL:-1}
   username: ${SPIRE_USERNAME_LOCAL:test-user}
