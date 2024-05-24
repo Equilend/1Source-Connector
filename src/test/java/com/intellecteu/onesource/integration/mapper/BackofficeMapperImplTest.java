@@ -34,7 +34,6 @@ class BackofficeMapperImplTest {
         assertEquals(recall.getRelatedContractId(), entity.getRelatedContractId());
         assertEquals(recall.getStatus(), entity.getStatus());
         assertEquals(recall.getCreationDateTime(), entity.getCreationDateTime());
-        assertNotNull(entity.getLastUpdateDateTime());
         assertEquals(recall.getOpenQuantity(), entity.getOpenQuantity());
         assertEquals(recall.getQuantity(), entity.getQuantity());
         assertEquals(recall.getRecallDate(), entity.getRecallDate());

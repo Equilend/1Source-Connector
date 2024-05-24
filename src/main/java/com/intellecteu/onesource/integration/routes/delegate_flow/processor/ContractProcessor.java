@@ -37,7 +37,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseIdFrom1SourceResourceUri;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -103,7 +103,7 @@ public class ContractProcessor {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
-            String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+            String contractId = parseIdFrom1SourceResourceUri(resourceUri);
             return oneSourceService.retrieveContractDetails(contractId);
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
@@ -148,7 +148,7 @@ public class ContractProcessor {
     public Contract retrieveContractFromEvent(@NonNull TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
-        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        String contractId = parseIdFrom1SourceResourceUri(resourceUri);
         return contractService.findContractById(contractId).orElse(null);
     }
 
@@ -185,7 +185,7 @@ public class ContractProcessor {
     public void updateSettledContract(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
-        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        String contractId = parseIdFrom1SourceResourceUri(resourceUri);
         final Optional<Contract> contractOptional = contractService.findContractById(contractId);
         contractOptional.ifPresentOrElse(
             this::updateAndRecordSystemEvent,
@@ -210,7 +210,7 @@ public class ContractProcessor {
     }
 
     public Contract declineCapturedContract(TradeEvent event) {
-        String contractId = parseContractIdFrom1SourceResourceUri(event.getResourceUri());
+        String contractId = parseIdFrom1SourceResourceUri(event.getResourceUri());
         return contractService.findContractById(contractId)
             .map(this::declineContract)
             .orElse(null);

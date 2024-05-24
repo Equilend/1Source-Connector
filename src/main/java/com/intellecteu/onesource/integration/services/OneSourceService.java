@@ -11,6 +11,7 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractDetails;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
+import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
@@ -37,6 +38,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Ledge
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
@@ -258,5 +260,11 @@ public class OneSourceService {
                 : SettlementTypeDTO.DVP)
             .settlement(settlementInstructionDTO);
         return returnProposalDTO;
+    }
+
+    public Recall1Source retrieveRecallDetails(String recallId) {
+        log.debug("Sending HTTP request to get recall details: /recalls/{}", recallId);
+        final RecallDTO recallDTO = recallsApi.ledgerRecallsRecallIdGet(recallId);
+        return oneSourceMapper.toModel(recallDTO);
     }
 }

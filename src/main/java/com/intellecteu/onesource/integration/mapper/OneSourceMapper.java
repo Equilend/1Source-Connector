@@ -9,6 +9,7 @@ import com.intellecteu.onesource.integration.model.onesource.FeeRate;
 import com.intellecteu.onesource.integration.model.onesource.Instrument;
 import com.intellecteu.onesource.integration.model.onesource.Rate;
 import com.intellecteu.onesource.integration.model.onesource.RebateRate;
+import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.RerateStatus;
 import com.intellecteu.onesource.integration.model.onesource.Return;
@@ -23,6 +24,7 @@ import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.repository.entity.onesource.AgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.InstrumentEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.Recall1SourceEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.RerateEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ReturnEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.SettlementEntity;
@@ -46,6 +48,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOf
 import com.intellecteu.onesource.integration.services.client.onesource.dto.OneOfVenueTradeAgreementRateDTODTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartySettlementInstructionDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RebateRateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateStatusDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnDTO;
@@ -98,10 +101,12 @@ public abstract class OneSourceMapper {
 
     @Mapping(target = "lastUpdateDateTime", source = "lastUpdateDatetime")
     public abstract Agreement toModel(AgreementDTO agreementDTO);
+
     public abstract AgreementDTO toModel(Agreement agreement);
 
     @Mapping(target = "venues", source = "executionVenue", qualifiedByName = "toVenueModelFromExecutionVenue")
     public abstract TradeAgreement toModel(VenueTradeAgreementDTO venueTradeAgreementDTO);
+
     public abstract VenueTradeAgreementDTO toModel(TradeAgreement tradeAgreement);
 
     @Named("toVenueModelFromExecutionVenue")
@@ -115,7 +120,6 @@ public abstract class OneSourceMapper {
     @Mapping(target = "quickCode", source = "quick")
     public abstract Instrument toModel(InstrumentDTO instrumentDTO);
 
-    @Mapping(target = "venueId", source = "venuePartyRefKey")
     public abstract VenueParty toModel(VenuePartyDTO venuePartyDTO);
 
     @Mapping(target = "transactionDateTime", source = "transactionDatetime")
@@ -246,7 +250,9 @@ public abstract class OneSourceMapper {
     }
 
     public abstract FeeRateDTO toRequestDto(FeeRate feeRate);
+
     public abstract FloatingRateDTO toFloatingRebateDto(RebateRate rebateRate);
+
     public abstract FixedRateDTO toFixedRebateDto(RebateRate rebateRate);
 
     public Rate toModel(OneOfVenueTradeAgreementRateDTODTO rateDTO) {
@@ -290,4 +296,13 @@ public abstract class OneSourceMapper {
         }
         return integer.doubleValue();
     }
+
+    @Mapping(target = "lastUpdateDateTime", ignore = true)
+    public abstract Recall1SourceEntity toEntity(Recall1Source recall1Source);
+
+    public abstract Recall1Source toModel(Recall1SourceEntity recall1SourceEntity);
+
+    @Mapping(target = "recallStatus", source = "status")
+    @Mapping(target = "lastUpdateDateTime", source = "lastUpdateDatetime")
+    public abstract Recall1Source toModel(RecallDTO recallDTO);
 }
