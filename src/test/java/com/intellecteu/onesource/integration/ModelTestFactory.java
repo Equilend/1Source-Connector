@@ -555,7 +555,7 @@ public class ModelTestFactory {
     public static VenueParty buildVenueParty() {
         return VenueParty.builder()
             .partyRole(LENDER)
-            .venueId("testVenuePartyRefKey")
+            .venuePartyRefKey("testVenuePartyRefKey")
             .build();
     }
 

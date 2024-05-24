@@ -1,0 +1,36 @@
+Prepared local migration data:  V2024.05.23.18.00__EINT23-875_get_recall_1source_details.sql
+
+1. Insert to the database event with 'RECALL_OPENED' eventType and
+resourceUri: '/ledger/recalls/444'
+
+2. Add response for the `recalls/444`
+Recall response
+{
+  "recallId": "{{urlParam 'recallId'}}",
+  "contractId": "{{faker 'string.uuid'}}",
+  "status": "OPEN",
+  "executionVenue": {
+    "partyId": "{{faker 'string.alpha' 6}}",
+    "type": "OFFPLATFORM",
+    "venueName": "venueName",
+    "venueRefKey": "venueRefKey",
+    "transactionDatetime": "2024-05-23T14:52:16.955Z",
+    "venueParties": [
+      {
+        "partyRole": "BORROWER",
+        "venuePartyRefKey": "venuePartyRefKey"
+      }
+    ],
+    "localVenueFields": [
+      {
+        "localFieldName": "localFieldName",
+        "localFieldValue": "localFieldValue"
+      }
+    ]
+  },
+  "openQuantity": 100,
+  "quantity": 5,
+  "recallDate": "2024-05-23",
+  "recallDueDate": "2024-05-23",
+  "lastUpdateDatetime": "2024-05-23T14:52:16.955Z"
+}

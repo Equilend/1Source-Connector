@@ -303,11 +303,16 @@ public class RecordMessageConstant {
 
         public static class Subject {
 
+            public static final String GET_RECALL_DETAILS_SUBJECT = "1SourceRecall - %s";
             public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
             public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
         }
 
         public static class DataMsg {
+
+            public static final String GET_RECALL_DETAILS_MSG = """
+                The details of the 1Source recall %s have not been retrieved from 1Source \
+                for the following reason: %s""";
 
             public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
                 + "has not been processed by 1Source for the following reason: %s";

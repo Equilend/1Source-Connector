@@ -1,17 +1,18 @@
-package com.intellecteu.onesource.integration.repository.entity.backoffice;
+package com.intellecteu.onesource.integration.repository.entity.onesource;
 
 
-import com.intellecteu.onesource.integration.model.backoffice.RecallId;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecallStatus;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
-import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -27,27 +28,25 @@ import org.hibernate.annotations.UpdateTimestamp;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "recall")
-@IdClass(RecallId.class)
-public class RecallEntity {
+@Table(name = "recall_1source")
+public class Recall1SourceEntity {
 
     @Id
     private String recallId;
-    @Id
-    private Long relatedPositionId;
-    @Column(name = "matching_1source_recall_id")
-    private String matching1SourceRecallId;
-    @NotNull
-    private String relatedContractId;
+    @Column(unique = true)
+    private String contractId;
+    @Enumerated(value = EnumType.STRING)
+    private RecallStatus recallStatus;
     @Enumerated(value = EnumType.STRING)
     private ProcessingStatus processingStatus;
-    @Enumerated(value = EnumType.STRING)
-    private RecallStatus status;
-    @NotNull
-    private LocalDateTime creationDateTime;
-    @NotNull
+    private Long matchingSpireRecallId;
+    private Long relatedSpirePositionId;
+    private LocalDateTime createUpdateDateTime;
     @UpdateTimestamp
     private LocalDateTime lastUpdateDateTime;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "venue_id")
+    private VenueEntity executionVenue;
     private Integer openQuantity;
     private Integer quantity;
     private LocalDate recallDate;

@@ -1,8 +1,11 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.GET_RECALL_DETAILS_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.PROCESS_SPIRE_RECALL_INSTR_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.GET_RECALL_DETAILS_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.PROCESS_SPIRE_RECALL_INSTR_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_SUBMITTED_SUBJECT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RECALL;
@@ -50,6 +53,7 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
     public CloudEventBuildRequest buildExceptionRequest(String record, HttpStatusCodeException e,
         IntegrationSubProcess subProcess, String related) {
         return switch (subProcess) {
+            case GET_RECALL_DETAILS -> getRecallDetailsRequest(record, e, subProcess);
             case PROCESS_SPIRE_RECALL_INSTRUCTION -> processSpireRecallInstructionExceptionRequest(record, e);
             default -> null;
         };
@@ -72,6 +76,18 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
     @Override
     public CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess) {
         return null;
+    }
+
+    private CloudEventBuildRequest getRecallDetailsRequest(String record, HttpStatusCodeException e,
+        IntegrationSubProcess subProcess) {
+        String message = format(GET_RECALL_DETAILS_MSG, record, e.getStatusText());
+        return createRecordRequest(
+            RecordType.TECHNICAL_EXCEPTION_1SOURCE,
+            format(GET_RECALL_DETAILS_SUBJECT, record),
+            RECALL,
+            subProcess,
+            createEventData(message, List.of(new RelatedObject(record, ONESOURCE_RECALL)))
+        );
     }
 
     /*
@@ -101,6 +117,5 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
             PROCESS_SPIRE_RECALL_INSTRUCTION,
             createEventData(message, List.of(new RelatedObject(record, SPIRE_RECALL)))
         );
-
     }
 }

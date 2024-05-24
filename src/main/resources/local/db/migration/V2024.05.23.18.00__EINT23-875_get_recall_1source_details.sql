@@ -1,0 +1,2 @@
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('11', 'RECALL_OPENED', now(), '/ledger/recalls/444')
