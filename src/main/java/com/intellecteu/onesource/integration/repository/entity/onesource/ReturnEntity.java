@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -47,7 +48,8 @@ public class ReturnEntity {
     @JoinColumn(name = "collateral_id")
     private CollateralEntity collateral;
     private SettlementType settlementType;
-    private LocalDateTime returnSettlementDate;
+    private LocalDate returnSettlementDate;
+    private LocalDate returnDate;
     @Enumerated(value = EnumType.STRING)
     private AcknowledgementType acknowledgementType;
     private String description;

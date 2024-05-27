@@ -394,6 +394,8 @@ public class RecordMessageConstant {
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
             public static final String POST_RETURN_SUBMITTED_SBJ = "Trade - %s";
             public static final String GET_RETURN_EXCEPTION_1SOURCE_SBJ = "Trade - %s";
+            public static final String RETURN_MATCHED_SBJ = "Trade - %s";
+            public static final String RETURN_UNMATCHED_SBJ = "1Source Return - %s";
         }
 
         public static class DataMsg {
@@ -402,6 +404,8 @@ public class RecordMessageConstant {
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s) has not been processed by 1Source for the following reason: %s";
             public static final String POST_RETURN_SUBMITTED_MSG = "The return trade %s has been submitted to 1Source to request the return creation";
             public static final String GET_RETURN_EXCEPTION_1SOURCE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";
+            public static final String RETURN_MATCHED_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be be validated";
+            public static final String RETURN_UNMATCHED_MSG = "The return %s has been captured but not matched with a return trade.";
         }
     }
 
