@@ -286,7 +286,7 @@ public abstract class OneSourceMapper {
 
     public abstract Return toModel(ReturnEntity returnEntity);
 
-    public abstract ReturnEntity toEntity(Return oneSpurceEntity);
+    public abstract ReturnEntity toEntity(Return oneSourceEntity);
 
 
     @Named("mapIntegerToDouble")

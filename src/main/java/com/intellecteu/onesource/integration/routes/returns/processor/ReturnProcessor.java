@@ -1,25 +1,37 @@
 package com.intellecteu.onesource.integration.routes.returns.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.CONTRACT_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.POSITION_ID;
+import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.RETURN_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.TRADE_ID;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
 
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
+import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
+import com.intellecteu.onesource.integration.model.onesource.Return;
+import com.intellecteu.onesource.integration.repository.ReturnRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
@@ -38,21 +50,27 @@ import org.springframework.web.client.HttpStatusCodeException;
 @Slf4j
 public class ReturnProcessor {
 
+    private final ReturnRepository returnRepository;
+
     private final BackOfficeService backOfficeService;
     private final OneSourceService oneSourceService;
     private final ReturnTradeService returnTradeService;
+    private final ReturnService returnService;
     private final CloudEventRecordService cloudEventRecordService;
     private final ReturnCloudEventBuilder eventBuilder;
 
     @Autowired
     public ReturnProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
-        ReturnTradeService returnTradeService,
-        CloudEventRecordService cloudEventRecordService) {
+        ReturnTradeService returnTradeService, ReturnService returnService,
+        CloudEventRecordService cloudEventRecordService,
+        ReturnRepository returnRepository) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.returnTradeService = returnTradeService;
+        this.returnService = returnService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
+        this.returnRepository = returnRepository;
     }
 
     public ReturnTrade saveReturnTrade(ReturnTrade returnTrade) {
@@ -68,6 +86,11 @@ public class ReturnProcessor {
     public ReturnTrade updateReturnTradeCreationDatetime(ReturnTrade returnTrade) {
         returnTrade.setCreationDatetime(LocalDateTime.now());
         return returnTrade;
+    }
+
+    public Return saveReturn(Return oneSourceReturn) {
+        oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+        return returnService.saveReturn(oneSourceReturn);
     }
 
     public List<ReturnTrade> fetchNewReturnTrades() {
@@ -86,7 +109,7 @@ public class ReturnProcessor {
         try {
             oneSourceService.postReturnTrade(returnTrade);
             recordCloudEvent(POST_RETURN, RETURN_TRADE_SUBMITTED, returnTrade.getTradeId(),
-                returnTrade.getRelatedPositionId(), returnTrade.getRelatedContractId(), List.of());
+                returnTrade.getRelatedPositionId(), returnTrade.getRelatedContractId(), null, List.of());
         } catch (HttpStatusCodeException exception) {
             recordHttpExceptionCloudEvent(POST_RETURN, TECHNICAL_EXCEPTION_1SOURCE, exception,
                 returnTrade.getTradeId(), null);
@@ -95,8 +118,44 @@ public class ReturnProcessor {
         return returnTrade;
     }
 
+    public Return matchingReturn(Return oneSourceReturn) {
+        ReturnTrade returnTrade = returnTradeService.findUnmatchedReturnTrade(oneSourceReturn.getContractId(),
+            oneSourceReturn.getReturnDate(), oneSourceReturn.getQuantity(), CREATED).orElse(null);
+        if (returnTrade != null) {
+            oneSourceReturn.setMatchingSpireTradeId(returnTrade.getTradeId());
+            oneSourceReturn.setRelatedSpirePositionId(returnTrade.getRelatedPositionId());
+            oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+            oneSourceReturn.setProcessingStatus(TO_VALIDATE);
+            returnTradeService.markReturnTradeAsMatched(returnTrade, oneSourceReturn);
+            recordCloudEvent(MATCH_RETURN, RETURN_MATCHED, oneSourceReturn.getMatchingSpireTradeId(),
+                oneSourceReturn.getRelatedSpirePositionId(), oneSourceReturn.getContractId(),
+                oneSourceReturn.getReturnId(), List.of());
+        } else {
+            oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+            oneSourceReturn.setProcessingStatus(UNMATCHED);
+            recordCloudEvent(MATCH_RETURN, RETURN_UNMATCHED, oneSourceReturn.getMatchingSpireTradeId(),
+                oneSourceReturn.getRelatedSpirePositionId(), oneSourceReturn.getContractId(),
+                oneSourceReturn.getReturnId(), buildUnmatchedFieldImpactedList(oneSourceReturn));
+        }
+        return oneSourceReturn;
+    }
+
+    private List<FieldImpacted> buildUnmatchedFieldImpactedList(Return oneSourceReturn) {
+        List<FieldImpacted> unmatchedFieldImpactedList = new ArrayList<>();
+        unmatchedFieldImpactedList.add(
+            new FieldImpacted(ONE_SOURCE_RETURN, "Loan Contract Id", oneSourceReturn.getContractId(),
+                FieldExceptionType.UNMATCHED));
+        unmatchedFieldImpactedList.add(
+            new FieldImpacted(ONE_SOURCE_RETURN, "Return Date", String.valueOf(oneSourceReturn.getReturnDate()),
+                FieldExceptionType.UNMATCHED));
+        unmatchedFieldImpactedList.add(
+            new FieldImpacted(ONE_SOURCE_RETURN, "Quantity", String.valueOf(oneSourceReturn.getQuantity()),
+                FieldExceptionType.UNMATCHED));
+        return unmatchedFieldImpactedList;
+    }
+
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
-        Long positionId, String contractId, List<FieldImpacted> fieldImpacteds) {
+        Long positionId, String contractId, String returnId, List<FieldImpacted> fieldImpacteds) {
         Map<String, String> data = new HashMap<>();
         if (tradeId != null) {
             data.put(TRADE_ID, toStringNullSafe(tradeId));
@@ -106,6 +165,9 @@ public class ReturnProcessor {
         }
         if (contractId != null) {
             data.put(CONTRACT_ID, contractId);
+        }
+        if (returnId != null) {
+            data.put(RETURN_ID, returnId);
         }
         //var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
         //cloudEventRecordService.record(recordRequest);

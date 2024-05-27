@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,8 @@ public class Return {
     private Integer quantity;
     private Collateral collateral;
     private SettlementType settlementType;
-    private LocalDateTime returnSettlementDate;
+    private LocalDate returnSettlementDate;
+    private LocalDate returnDate;
     private AcknowledgementType acknowledgementType;
     private String description;
     private List<Settlement> settlement;

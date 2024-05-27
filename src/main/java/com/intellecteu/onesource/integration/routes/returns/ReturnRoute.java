@@ -37,7 +37,13 @@ public class ReturnRoute extends RouteBuilder {
             + "query=SELECT r FROM ReturnTradeEntity r WHERE r.processingStatus = '%s' "
             + "AND (r.tradeOut.tradeType LIKE '%%Return Borrow%%' OR r.tradeOut.tradeType LIKE '%%Return Borrow (Full)%%') ";
 
-    private final ReturnProcessor returnsProcessor;
+    public static final String RETURN_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.ReturnEntity?"
+            + "%s&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT r FROM ReturnEntity r WHERE r.processingStatus = '%s'";
+
+    private final ReturnProcessor returnProcessor;
     private final ReturnEventProcessor returnEventProcessor;
     private final BackOfficeMapper backOfficeMapper;
     private final OneSourceMapper oneSourceMapper;
@@ -46,13 +52,13 @@ public class ReturnRoute extends RouteBuilder {
     private final long updateTimer;
 
     @Autowired
-    public ReturnRoute(ReturnProcessor returnsProcessor, ReturnEventProcessor returnEventProcessor,
+    public ReturnRoute(ReturnProcessor returnProcessor, ReturnEventProcessor returnEventProcessor,
         BackOfficeMapper backOfficeMapper,
         OneSourceMapper oneSourceMapper,
         @Value("${route.returns.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
         @Value("${route.returns.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern,
         @Value("${route.returns.timer}") long updateTimer) {
-        this.returnsProcessor = returnsProcessor;
+        this.returnProcessor = returnProcessor;
         this.returnEventProcessor = returnEventProcessor;
         this.backOfficeMapper = backOfficeMapper;
         this.oneSourceMapper = oneSourceMapper;
@@ -73,7 +79,7 @@ public class ReturnRoute extends RouteBuilder {
 
         from(String.format("timer://eventTimer?period=%d", updateTimer))
                 .log(">>> Started GET_NEW_RETURN_PENDING_CONFIRMATION for ReturnTrades")
-                .bean(returnsProcessor, "fetchNewReturnTrades")
+                .bean(returnProcessor, "fetchNewReturnTrades")
                 .split(body())
                 .to("direct:recordReturnTrade")
                 .end()
@@ -81,15 +87,15 @@ public class ReturnRoute extends RouteBuilder {
 
         from("direct:recordReturnTrade")
             .log(">>> Started PROCESS_RETURN_PENDING_CONFIRMATION for ReturnTrade: ${body.tradeId}")
-            .bean(returnsProcessor, "updateReturnTradeCreationDatetime")
-            .bean(returnsProcessor, "saveReturnTradeWithProcessingStatus(${body}, CREATED)")
+            .bean(returnProcessor, "updateReturnTradeCreationDatetime")
+            .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, CREATED)")
             .log("<<< Finished PROCESS_RETURN_PENDING_CONFIRMATION for ReturnTrade: ${body.tradeId} with expected statuses: ReturnTrade[CREATED]");
 
         from(createBorrowerReturnTradeSQLEndpoint(CREATED))
             .log(">>> Started POST_RETURN for ReturnTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
-            .bean(returnsProcessor, "postReturnTrade")
-            .bean(returnsProcessor, "saveReturnTradeWithProcessingStatus(${body}, SUBMITTED)")
+            .bean(returnProcessor, "postReturnTrade")
+            .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, SUBMITTED)")
             .log("<<< Finished POST_RETURN for ReturnTrade: ${body.tradeId} with expected statuses: ReturnTrade[SUBMITTED]");
 
         from(createTradeEventSQLEndpoint(CREATED, RETURN_PENDING))
@@ -97,7 +103,14 @@ public class ReturnRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(returnEventProcessor, "processReturnPendingEvent")
             .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
-            .log("<<< Finished GET_RETURN for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], ReturnTrade[]");
+            .log("<<< Finished GET_RETURN for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[CREATED]");
+
+        from(createReturnSQLEndpoint(CREATED))
+            .log(">>> Started MATCH_RETURN for Return: ${body.returnId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnProcessor, "matchingReturn")
+            .bean(returnProcessor, "saveReturn")
+            .log("<<< Finished MATCH_RETURN for Return: ${body.returnId} with expected statuses: Return[TO_VALIDATE, UNMATCHED]");
 
     }
     //@formatter:on
@@ -112,5 +125,9 @@ public class ReturnRoute extends RouteBuilder {
             Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
     }
 
+    private String createReturnSQLEndpoint(ProcessingStatus processingStatus) {
+        return String.format(RETURN_SQL_ENDPOINT, String.format("delay=%d", updateTimer),
+            processingStatus);
+    }
 
 }

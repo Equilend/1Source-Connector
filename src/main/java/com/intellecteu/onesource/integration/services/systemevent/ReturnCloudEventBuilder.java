@@ -1,16 +1,21 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RETURN;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_RETURN_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_PENDING_CONFIRMATION_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_MATCHED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_UNMATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_RETURN_EXCEPTION_1SOURCE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_PENDING_CONFIRMATION_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_SUBMITTED_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_MATCHED_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_UNMATCHED_SBJ;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static java.lang.String.format;
@@ -35,6 +40,7 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
     public static final String TRADE_ID = "tradeId";
     public static final String CONTRACT_ID = "contractId";
     public static final String POSITION_ID = "positionId";
+    public static final String RETURN_ID = "returnId";
     public static final String RESOURCE_URI = "resourceURI";
     public static final String HTTP_STATUS_TEXT = "httpStatusText";
 
@@ -84,10 +90,17 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                     default -> null;
                 };
             }
-            case GET_RETURN:{
+            case GET_RETURN: {
                 return switch (recordType) {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
                         createGetReturnTechnicalExceptionCR(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case MATCH_RETURN: {
+                return switch (recordType) {
+                    case RETURN_MATCHED -> createReturnMatchedCR(subProcess, recordType, data, fieldImpacteds);
+                    case RETURN_UNMATCHED -> createReturnUnmatchedCR(subProcess, recordType, data, fieldImpacteds);
                     default -> null;
                 };
             }
@@ -144,6 +157,34 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createReturnMatchedCR(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data, List<FieldImpacted> fieldsImpacted) {
+        String dataMessage = format(RETURN_MATCHED_MSG, data.get(RETURN_ID), data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(RETURN_MATCHED_SBJ, data.get(TRADE_ID)),
+            RETURN,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createReturnUnmatchedCR(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data, List<FieldImpacted> fieldsImpacted) {
+        String dataMessage = format(RETURN_UNMATCHED_MSG, data.get(RETURN_ID));
+        return createRecordRequest(
+            recordType,
+            format(RETURN_UNMATCHED_SBJ, data.get(RETURN_ID)),
+            RETURN,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)), fieldsImpacted)
         );
     }
 }
