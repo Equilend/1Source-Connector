@@ -1,4 +1,4 @@
--- INSERT INTO recall (recall_id, related_position_id, matching_1source_recall_id,
+-- INSERT INTO recall_spire (recall_id, related_position_id, matching_1source_recall_id,
 --                     related_contract_id, processing_status, status, creation_date_time, last_update_date_time,
 --                     open_quantity, quantity, recall_date, recall_due_date)
 -- VALUES ('1111', 222, '555',

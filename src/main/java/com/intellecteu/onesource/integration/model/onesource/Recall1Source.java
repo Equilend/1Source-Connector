@@ -40,4 +40,21 @@ public class Recall1Source {
             log.debug("Updated processing status to {} for recallId: {}", processingStatus, recallId);
         }
     }
+
+    /**
+     * Get VenuePartyRefKey by the role.
+     *
+     * @param role PartyRole
+     * @return String or null if there is no VenuePartyRefKey for this party for the venue.
+     */
+    public String getVenuePartyRefKeyByRole(@NotNull PartyRole role) {
+        if (executionVenue == null) {
+            return null;
+        }
+        return executionVenue.getVenueParties().stream()
+            .filter(party -> role == party.getPartyRole())
+            .findAny()
+            .map(VenueParty::getVenuePartyRefKey)
+            .orElse(null);
+    }
 }

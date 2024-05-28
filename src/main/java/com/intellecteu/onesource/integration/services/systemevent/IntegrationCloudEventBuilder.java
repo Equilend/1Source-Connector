@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_PROPOSAL;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SHARED_TRADE_TICKET;
@@ -27,6 +28,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -186,6 +188,24 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
             contractId = "";
         }
         return getRecallRelatedToPositionAndContract(recallInfo, positionId, contractId);
+    }
+
+    protected List<RelatedObject> getRecall1SourceRelatedToRecallSpire(String recall1sourceId, String recallSpireId,
+        String positionId, String contractId) {
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        if (recall1sourceId != null) {
+            relatedObjects.add(new RelatedObject(recall1sourceId, ONESOURCE_RECALL));
+        }
+        if (contractId != null) {
+            relatedObjects.add(new RelatedObject(contractId, ONESOURCE_LOAN_CONTRACT));
+        }
+        if (recallSpireId != null) {
+            relatedObjects.add(new RelatedObject(recallSpireId, SPIRE_RECALL));
+        }
+        if (positionId != null) {
+            relatedObjects.add(new RelatedObject(positionId, POSITION));
+        }
+        return relatedObjects;
     }
 
     protected List<RelatedObject> getRecallRelatedToPositionAndContract(String recallInfo, String positionInfo,

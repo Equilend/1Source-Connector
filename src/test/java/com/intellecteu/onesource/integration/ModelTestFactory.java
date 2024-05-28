@@ -26,7 +26,7 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.RecallInstructionType;
 import com.intellecteu.onesource.integration.model.enums.RecallStatus;
@@ -625,8 +625,8 @@ public class ModelTestFactory {
             .build();
     }
 
-    public static Recall buildRecall(String recallId, Long relatedPositionId) {
-        return Recall.builder()
+    public static RecallSpire buildRecall(Long recallId, Long relatedPositionId) {
+        return RecallSpire.builder()
             .recallId(recallId)
             .relatedPositionId(relatedPositionId)
             .matching1SourceRecallId("matching1SourceRecallId")
@@ -641,11 +641,11 @@ public class ModelTestFactory {
             .build();
     }
 
-    public static RecallInstructionDTO buildRecallInstruction(String instructionId) {
+    public static RecallInstructionDTO buildRecallInstruction(String instructionId, Long spireRecallId) {
         return RecallInstructionDTO.builder()
             .instructionId(instructionId)
             .instructionType(RecallInstructionType.RECALL)
-            .spireRecallId(55L)
+            .spireRecallId(spireRecallId)
             .relatedContractId("testContractId")
             .relatedPositionId(77L)
             .creationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33))

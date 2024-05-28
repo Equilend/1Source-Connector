@@ -32,6 +32,7 @@ import com.intellecteu.onesource.integration.repository.entity.onesource.Settlem
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeAgreementEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.TradeEventEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.VenueEntity;
+import com.intellecteu.onesource.integration.repository.entity.onesource.VenuePartyEntity;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractProposalApprovalDTO;
@@ -90,6 +91,12 @@ public abstract class OneSourceMapper {
     public abstract Venue toVenueModel(VenueEntity venueEntity);
 
     public abstract VenueEntity toModel(Venue venueModel);
+
+    @Mapping(target = "venuePartyRefKey", source = "venueId")
+    public abstract VenueParty toModel(VenuePartyEntity venuePartyEntity);
+
+    @Mapping(source = "venuePartyRefKey", target = "venueId")
+    public abstract VenuePartyEntity toEntity(VenueParty venueParty);
 
     @AfterMapping
     public void setTradeId(Object anySource, @MappingTarget TradeAgreement tradeAgreement) {

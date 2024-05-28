@@ -22,10 +22,10 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Slf4j
-public class Recall {
+public class RecallSpire {
 
     @NotNull
-    private String recallId;
+    private Long recallId;
     @NotNull
     private Long relatedPositionId;
     private String matching1SourceRecallId;

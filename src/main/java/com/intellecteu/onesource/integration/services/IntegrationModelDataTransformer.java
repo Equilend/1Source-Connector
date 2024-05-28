@@ -15,7 +15,7 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
@@ -102,22 +102,23 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     }
 
     @Override
-    public RecallProposalDTO to1SourceRecallProposal(Recall recall) {
+    public RecallProposalDTO to1SourceRecallProposal(RecallSpire recallSpire) {
         RecallProposalDTO recallInstruction = new RecallProposalDTO();
-        final VenueDTO venue = buildVenueForRecallInstruction(recall);
+        final VenueDTO venue = buildVenueForRecallInstruction(recallSpire);
         recallInstruction.executionVenue(venue);
-        recallInstruction.quantity(recall.getQuantity());
-        recallInstruction.recallDate(recall.getRecallDate());
-        recallInstruction.recallDueDate(recall.getRecallDueDate());
+        recallInstruction.quantity(recallSpire.getQuantity());
+        recallInstruction.recallDate(recallSpire.getRecallDate());
+        recallInstruction.recallDueDate(recallSpire.getRecallDueDate());
         return recallInstruction;
     }
 
-    private VenueDTO buildVenueForRecallInstruction(Recall recall) {
+    private VenueDTO buildVenueForRecallInstruction(RecallSpire recallSpire) {
         VenueDTO venue = new VenueDTO();
         venue.setType(VenueTypeDTO.OFFPLATFORM);
         VenuePartyDTO venueParty = new VenuePartyDTO();
         venueParty.setPartyRole(PartyRoleDTO.LENDER);
-        venueParty.setVenuePartyRefKey(String.format("%s-%d", recall.getRecallId(), recall.getRelatedPositionId()));
+        venueParty.setVenuePartyRefKey(
+            String.format("%d-%d", recallSpire.getRecallId(), recallSpire.getRelatedPositionId()));
         VenuePartiesDTO venueParties = new VenuePartiesDTO();
         venueParties.add(venueParty);
         venue.setVenueParties(venueParties);

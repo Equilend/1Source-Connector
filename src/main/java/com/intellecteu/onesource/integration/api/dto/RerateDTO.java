@@ -80,6 +80,8 @@ public class RerateDTO {
     public enum ProcessingStatusEnum {
         APPROVED("APPROVED"),
         CANCELED("CANCELED"),
+        CONFIRMED_BORROWER("CONFIRMED_BORROWER"),
+        CONFIRMED_LENDER("CONFIRMED_LENDER"),
         CREATED("CREATED"),
         DECLINED("DECLINED"),
         DISCREPANCIES("DISCREPANCIES"),

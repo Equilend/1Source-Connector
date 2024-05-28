@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum FieldExceptionType {
 
     DISCREPANCY("Discrepancy"),
+    INFORMATIONAL("Informational"),
     MISSING("Missing"),
     UNMATCHED("Unmatched");
 
