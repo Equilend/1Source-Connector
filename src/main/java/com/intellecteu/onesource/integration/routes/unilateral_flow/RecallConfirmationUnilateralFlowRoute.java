@@ -39,13 +39,13 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
-        from(getRecallByProcessingStatusSqlRequest(ProcessingStatus.CREATED))
+        from(buildSpireRecallByProcessingStatusSqlRequest(ProcessingStatus.CREATED))
             .routeId("ProcessSpireRecallInstruction")
-            .log(">>> Started PROCESS_SPIRE_RECALL_INSTRUCTION for Recall: ${body.recallId}")
+            .log(">>> Started PROCESS_SPIRE_RECALL_INSTRUCTION for RecallSpire: ${body.recallId}")
             .bean(backOfficeMapper, "toModel")
             .bean(recallProcessor, "processRecallInstruction")
-            .log("<<< Finished PROCESS_SPIRE_RECALL_INSTRUCTION for Recall: "
-                + "${body.recallId} with expected statuses: Recall[SUBMITTED]")
+            .log("<<< Finished PROCESS_SPIRE_RECALL_INSTRUCTION for RecallSpire: "
+                + "${body.recallId} with expected statuses: RecallSpire[SUBMITTED]")
             .end();
 
         from(getNotProcessedTradeEvent(RECALL_OPENED))
@@ -62,13 +62,30 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
             .log("<<< Finished GET_RECALL_DETAILS for Trade Event: "
                 + "${body.eventId} with expected statuses: Recall1Source[CREATED], TradeEvent[PROCESSED]")
             .end();
+
+        from(build1SourceRecallByProcessingStatusSqlRequest(ProcessingStatus.CREATED))
+            .routeId("MatchRecall")
+            .log(">>> Started MATCH_RECALL for Recall1Source: ${body.recallId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(recallProcessor, "matchRecalls")
+            .log("<<< Finished MATCH_RECALL for Recall1Source: "
+                + "${body.recallId} with expected statuses: Recall1Source[CONFIRMED_LENDER, CONFIRMED_BORROWER]")
+            .end();
     }
 
-    private String getRecallByProcessingStatusSqlRequest(ProcessingStatus processingStatus) {
-        String request = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RecallEntity?"
+    private String buildSpireRecallByProcessingStatusSqlRequest(ProcessingStatus processingStatus) {
+        String request = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity?"
             + "%s&"
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT r FROM RecallEntity r WHERE r.processingStatus = '%s'";
+            + "query=SELECT r FROM RecallSpireEntity r WHERE r.processingStatus = '%s'";
+        return String.format(request, String.format("delay=%d", updateTimer), processingStatus);
+    }
+
+    private String build1SourceRecallByProcessingStatusSqlRequest(ProcessingStatus processingStatus) {
+        String request = "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.Recall1SourceEntity?"
+            + "%s&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT r FROM Recall1SourceEntity r WHERE r.processingStatus = '%s'";
         return String.format(request, String.format("delay=%d", updateTimer), processingStatus);
     }
 

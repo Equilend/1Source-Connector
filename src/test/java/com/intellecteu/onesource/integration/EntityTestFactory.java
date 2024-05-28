@@ -31,7 +31,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
-import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.FeeRateEntity;
@@ -337,8 +337,8 @@ public class EntityTestFactory {
             .build();
     }
 
-    public static RecallEntity buildRecallEntity(String recallId, Long relatedPositionId) {
-        RecallEntity entity = new RecallEntity();
+    public static RecallSpireEntity buildRecallEntity(Long recallId, Long relatedPositionId) {
+        RecallSpireEntity entity = new RecallSpireEntity();
         entity.setRecallId(recallId);
         entity.setRelatedPositionId(relatedPositionId);
         entity.setMatching1SourceRecallId("matching1SourceRecallId");

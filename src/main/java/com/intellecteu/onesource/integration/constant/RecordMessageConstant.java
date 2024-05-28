@@ -305,6 +305,8 @@ public class RecordMessageConstant {
 
             public static final String GET_RECALL_DETAILS_SUBJECT = "1SourceRecall - %s";
             public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
+            public static final String RECALL_CONFIRMED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CONFIRMED_SUBJECT_NO_POSITION = "1Source Recall id %s - ContractId %s";
             public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
         }
 
@@ -316,6 +318,9 @@ public class RecordMessageConstant {
 
             public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
                 + "has not been processed by 1Source for the following reason: %s";
+
+            public static final String RECALL_CONFIRMED_MSG = "The recall %s, confirmed within 1Source, "
+                + "has been recorded";
 
             public static final String RECALL_SUBMITTED_MSG = "The recall %s has been submitted "
                 + "to 1Source to request the recall creation";

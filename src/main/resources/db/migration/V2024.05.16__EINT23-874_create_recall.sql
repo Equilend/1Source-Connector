@@ -1,6 +1,6 @@
-CREATE TABLE IF NOT EXISTS recall
+CREATE TABLE IF NOT EXISTS recall_spire
 (
-    recall_id                VARCHAR(255) NOT NULL,
+    recall_id                BIGINT NOT NULL,
     related_position_id       BIGINT NOT NULL,
     matching_1source_recall_id VARCHAR(255) NULL,
     related_contract_id       VARCHAR(255) NOT NULL,

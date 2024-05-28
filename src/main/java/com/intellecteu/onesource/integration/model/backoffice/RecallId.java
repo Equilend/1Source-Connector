@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class RecallId implements Serializable {
 
-    private String recallId;
+    private Long recallId;
     private Long relatedPositionId;
 
     @Override
@@ -27,8 +27,8 @@ public class RecallId implements Serializable {
             return false;
         }
         RecallId recallId1 = (RecallId) o;
-        return Objects.equals(recallId, recallId1.recallId) && Objects.equals(relatedPositionId,
-            recallId1.relatedPositionId);
+        return Objects.equals(recallId, recallId1.getRecallId()) && Objects.equals(relatedPositionId,
+            recallId1.getRelatedPositionId());
     }
 
     @Override

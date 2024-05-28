@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposal;
 import com.intellecteu.onesource.integration.model.onesource.ContractProposalApproval;
@@ -16,6 +16,6 @@ public interface IntegrationDataTransformer {
 
     PositionConfirmationRequest toPositionConfirmationRequest(Position position);
 
-    RecallProposalDTO to1SourceRecallProposal(Recall recall);
+    RecallProposalDTO to1SourceRecallProposal(RecallSpire recallSpire);
 
 }

@@ -27,12 +27,12 @@ import org.hibernate.annotations.UpdateTimestamp;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "recall")
+@Table(name = "recall_spire")
 @IdClass(RecallId.class)
-public class RecallEntity {
+public class RecallSpireEntity {
 
     @Id
-    private String recallId;
+    private Long recallId;
     @Id
     private Long relatedPositionId;
     @Column(name = "matching_1source_recall_id")

@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import com.intellecteu.onesource.integration.EntityTestFactory;
 import com.intellecteu.onesource.integration.ModelTestFactory;
 import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
-import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallEntity;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -23,53 +23,53 @@ class BackofficeMapperImplTest {
 
     @Test
     void testModelToEntity() {
-        final Recall recall = ModelTestFactory.buildRecall("111", 111L);
+        final RecallSpire recallSpire = ModelTestFactory.buildRecall(111L, 111L);
 
-        final RecallEntity entity = mapper.toEntity(recall);
+        final RecallSpireEntity entity = mapper.toEntity(recallSpire);
 
         assertNotNull(entity);
-        assertEquals(recall.getRecallId(), entity.getRecallId());
-        assertEquals(recall.getRelatedPositionId(), entity.getRelatedPositionId());
-        assertEquals(recall.getMatching1SourceRecallId(), entity.getMatching1SourceRecallId());
-        assertEquals(recall.getRelatedContractId(), entity.getRelatedContractId());
-        assertEquals(recall.getStatus(), entity.getStatus());
-        assertEquals(recall.getCreationDateTime(), entity.getCreationDateTime());
-        assertEquals(recall.getOpenQuantity(), entity.getOpenQuantity());
-        assertEquals(recall.getQuantity(), entity.getQuantity());
-        assertEquals(recall.getRecallDate(), entity.getRecallDate());
-        assertEquals(recall.getRecallDueDate(), entity.getRecallDueDate());
+        assertEquals(recallSpire.getRecallId(), entity.getRecallId());
+        assertEquals(recallSpire.getRelatedPositionId(), entity.getRelatedPositionId());
+        assertEquals(recallSpire.getMatching1SourceRecallId(), entity.getMatching1SourceRecallId());
+        assertEquals(recallSpire.getRelatedContractId(), entity.getRelatedContractId());
+        assertEquals(recallSpire.getStatus(), entity.getStatus());
+        assertEquals(recallSpire.getCreationDateTime(), entity.getCreationDateTime());
+        assertEquals(recallSpire.getOpenQuantity(), entity.getOpenQuantity());
+        assertEquals(recallSpire.getQuantity(), entity.getQuantity());
+        assertEquals(recallSpire.getRecallDate(), entity.getRecallDate());
+        assertEquals(recallSpire.getRecallDueDate(), entity.getRecallDueDate());
     }
 
     @Test
     void testEntityToModel() {
-        final RecallEntity entity = EntityTestFactory.buildRecallEntity("testId", 222L);
-        final Recall recall = mapper.toModel(entity);
+        final RecallSpireEntity entity = EntityTestFactory.buildRecallEntity(888L, 222L);
+        final RecallSpire recallSpire = mapper.toModel(entity);
 
-        assertNotNull(recall);
-        assertEquals(recall.getRecallId(), entity.getRecallId());
-        assertEquals(recall.getRelatedPositionId(), entity.getRelatedPositionId());
-        assertEquals(recall.getMatching1SourceRecallId(), entity.getMatching1SourceRecallId());
-        assertEquals(recall.getRelatedContractId(), entity.getRelatedContractId());
-        assertEquals(recall.getStatus(), entity.getStatus());
-        assertEquals(recall.getCreationDateTime(), entity.getCreationDateTime());
+        assertNotNull(recallSpire);
+        assertEquals(recallSpire.getRecallId(), entity.getRecallId());
+        assertEquals(recallSpire.getRelatedPositionId(), entity.getRelatedPositionId());
+        assertEquals(recallSpire.getMatching1SourceRecallId(), entity.getMatching1SourceRecallId());
+        assertEquals(recallSpire.getRelatedContractId(), entity.getRelatedContractId());
+        assertEquals(recallSpire.getStatus(), entity.getStatus());
+        assertEquals(recallSpire.getCreationDateTime(), entity.getCreationDateTime());
         assertNotNull(entity.getLastUpdateDateTime());
-        assertEquals(recall.getOpenQuantity(), entity.getOpenQuantity());
-        assertEquals(recall.getQuantity(), entity.getQuantity());
-        assertEquals(recall.getRecallDate(), entity.getRecallDate());
-        assertEquals(recall.getRecallDueDate(), entity.getRecallDueDate());
+        assertEquals(recallSpire.getOpenQuantity(), entity.getOpenQuantity());
+        assertEquals(recallSpire.getQuantity(), entity.getQuantity());
+        assertEquals(recallSpire.getRecallDate(), entity.getRecallDate());
+        assertEquals(recallSpire.getRecallDueDate(), entity.getRecallDueDate());
     }
 
     @Test
     void testRecallInstructionToModel() {
-        final RecallInstructionDTO instruction = ModelTestFactory.buildRecallInstruction("5");
-        final Recall recall = mapper.toModel(instruction);
+        final RecallInstructionDTO instruction = ModelTestFactory.buildRecallInstruction("5", 55L);
+        final RecallSpire recallSpire = mapper.toModel(instruction);
 
-        assertNotNull(recall);
-        assertEquals(recall.getRecallId(), String.valueOf(instruction.getSpireRecallId()));
-        assertEquals(recall.getRelatedContractId(), instruction.getRelatedContractId());
-        assertEquals(recall.getRelatedPositionId(), instruction.getRelatedPositionId());
-        assertEquals(recall.getQuantity(), instruction.getQuantity());
-        assertEquals(recall.getRecallDate(), instruction.getRecallDate());
-        assertEquals(recall.getRecallDueDate(), instruction.getRecallDueDate());
+        assertNotNull(recallSpire);
+        assertEquals(recallSpire.getRecallId(), instruction.getSpireRecallId());
+        assertEquals(recallSpire.getRelatedContractId(), instruction.getRelatedContractId());
+        assertEquals(recallSpire.getRelatedPositionId(), instruction.getRelatedPositionId());
+        assertEquals(recallSpire.getQuantity(), instruction.getQuantity());
+        assertEquals(recallSpire.getRecallDate(), instruction.getRecallDate());
+        assertEquals(recallSpire.getRecallDueDate(), instruction.getRecallDueDate());
     }
 }

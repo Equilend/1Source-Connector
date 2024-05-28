@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.intellecteu.onesource.integration.ModelTestFactory;
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
@@ -28,18 +28,18 @@ class IntegrationModelDataTransformerTest {
 
     @Test
     void test_to1SourceRecallProposal() {
-        final Recall recall = ModelTestFactory.buildRecall("recallId", 123L);
-        final RecallProposalDTO proposal = dataTransformer.to1SourceRecallProposal(recall);
+        final RecallSpire recallSpire = ModelTestFactory.buildRecall(8888L, 123L);
+        final RecallProposalDTO proposal = dataTransformer.to1SourceRecallProposal(recallSpire);
 
         assertNotNull(proposal);
         assertNotNull(proposal.getExecutionVenue());
         assertNotNull(proposal.getExecutionVenue().getVenueParties());
         assertEquals(PartyRoleDTO.LENDER, proposal.getExecutionVenue().getVenueParties().get(0).getPartyRole());
-        assertEquals("recallId-123",
+        assertEquals("8888-123",
             proposal.getExecutionVenue().getVenueParties().get(0).getVenuePartyRefKey());
         assertEquals(VenueTypeDTO.OFFPLATFORM, proposal.getExecutionVenue().getType());
-        assertEquals(recall.getQuantity(), proposal.getQuantity());
-        assertEquals(recall.getRecallDate(), proposal.getRecallDate());
-        assertEquals(recall.getRecallDueDate(), proposal.getRecallDueDate());
+        assertEquals(recallSpire.getQuantity(), proposal.getQuantity());
+        assertEquals(recallSpire.getRecallDate(), proposal.getRecallDate());
+        assertEquals(recallSpire.getRecallDueDate(), proposal.getRecallDueDate());
     }
 }

@@ -1,17 +1,27 @@
 package com.intellecteu.onesource.integration.routes.unilateral_flow.pocessor;
 
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RECALL;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL;
+import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.INFORMATIONAL;
+import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RECALL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RECALL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RECALL_DETAILS;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_SPIRE_RECALL_INSTRUCTION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_BORROWER;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_LENDER;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 
-import com.intellecteu.onesource.integration.model.backoffice.Recall;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecallStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
@@ -20,8 +30,13 @@ import com.intellecteu.onesource.integration.services.RecallService;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
@@ -61,34 +76,107 @@ public class RecallProcessor {
     }
 
     @Transactional
-    public void processRecallInstruction(Recall recall) {
+    public void processRecallInstruction(RecallSpire recallSpire) {
         try {
-            final RecallProposalDTO recallProposal = dataTransformer.to1SourceRecallProposal(recall);
-            oneSourceService.instructRecall(recall.getRelatedContractId(), recallProposal);
-            updateRecallProcessingStatus(recall, ProcessingStatus.SUBMITTED);
-            var relatedSequence = String.format("%d,%s", recall.getRelatedPositionId(), recall.getRelatedContractId());
-            recordBusinessEvent(recall.getRecallId(), RECALL_SUBMITTED, relatedSequence,
+            final RecallProposalDTO recallProposal = dataTransformer.to1SourceRecallProposal(recallSpire);
+            oneSourceService.instructRecall(recallSpire.getRelatedContractId(), recallProposal);
+            updateRecallProcessingStatus(recallSpire, ProcessingStatus.SUBMITTED);
+            var relatedSequence = String.format("%d,%s", recallSpire.getRelatedPositionId(),
+                recallSpire.getRelatedContractId());
+            recordBusinessEvent(String.valueOf(recallSpire.getRecallId()), RECALL_SUBMITTED, relatedSequence,
                 PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
         } catch (HttpStatusCodeException e) {
-            record1SourceTechnicalEvent(recall.getRecallId(), e, PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
+            record1SourceTechnicalEvent(String.valueOf(recallSpire.getRecallId()), e,
+                PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
         }
     }
 
-    /**
-     * Update recall processing status and save the recall
-     *
-     * @param recall Recall
-     * @param processingStatus Processing status
-     * @return Persisted recall with updated processing status
-     */
     @Transactional
-    public Recall updateRecallProcessingStatus(@NonNull Recall recall, @NonNull ProcessingStatus processingStatus) {
-        recall.setProcessingStatus(processingStatus);
-        return saveRecall(recall);
+    public void matchRecalls(@NotNull Recall1Source recall1Source) {
+        try {
+            final RecallSpire recallSpire = recallService.getMatchedSpireRecall(recall1Source)
+                .orElseThrow(EntityNotFoundException::new);
+            recall1Source.setMatchingSpireRecallId(Long.valueOf(recallSpire.getRecallId()));
+            recall1Source.setRelatedSpirePositionId(recallSpire.getRelatedPositionId());
+            updateRecall1SourceProcessingStatus(recall1Source, CONFIRMED_LENDER);
+            recallSpire.setMatching1SourceRecallId(recall1Source.getRecallId());
+            saveSpireRecall(recallSpire);
+            createRecallConfirmedRecord(recall1Source, recallSpire);
+        } catch (RuntimeException e) {
+            log.debug("No matching SPIRE recalls were found for Recall 1Source:{}", recall1Source.getRecallId());
+            updateRecall1SourceProcessingStatus(recall1Source, CONFIRMED_BORROWER);
+            createRecallConfirmedRecord(recall1Source);
+        }
     }
 
-    public Recall saveRecall(@NonNull Recall recall) {
-        return recallService.save(recall);
+    private void createRecallConfirmedRecord(Recall1Source recall1Source) {
+        createRecallConfirmedRecord(recall1Source, null);
+    }
+
+    private void createRecallConfirmedRecord(Recall1Source recall1Source, RecallSpire recallSpire) {
+        Map<String, String> recordData = new HashMap<>();
+        List<FieldImpacted> fieldsImpacted = new ArrayList<>();
+        if (recall1Source != null) {
+            if (recall1Source.getRecallId() != null) {
+                recordData.put(ONESOURCE_RECALL, recall1Source.getRecallId());
+            }
+            if (recall1Source.getContractId() != null) {
+                recordData.put(ONESOURCE_LOAN_CONTRACT, recall1Source.getContractId());
+            }
+            fieldsImpacted.add(buildFieldImpacted("Quantity",
+                String.valueOf(recall1Source.getQuantity())));
+            fieldsImpacted.add(buildFieldImpacted("Recall Date",
+                String.valueOf(recall1Source.getRecallDate())));
+            fieldsImpacted.add(buildFieldImpacted("Recall Due Date",
+                String.valueOf(recall1Source.getRecallDueDate())));
+        }
+        if (recallSpire != null) {
+            if (recallSpire.getRecallId() != null) {
+                recordData.put(SPIRE_RECALL, String.valueOf(recallSpire.getRecallId()));
+            }
+            if (recallSpire.getRelatedPositionId() != null) {
+                recordData.put(POSITION, String.valueOf(recallSpire.getRelatedPositionId()));
+            }
+        }
+        recordBusinessEvent(GET_RECALL_DETAILS, RECALL_CONFIRMED, recordData, fieldsImpacted, RECALL);
+    }
+
+    private FieldImpacted buildFieldImpacted(String fieldName, String fieldValue) {
+        return FieldImpacted.builder()
+            .fieldSource(ONE_SOURCE_RECALL)
+            .fieldName(fieldName)
+            .fieldValue(fieldValue)
+            .fieldExceptionType(INFORMATIONAL)
+            .build();
+    }
+
+    /**
+     * Update recallSpire processing status and save the recallSpire
+     *
+     * @param recallSpire RecallSpire
+     * @param processingStatus Processing status
+     * @return Persisted recallSpire with updated processing status
+     */
+    @Transactional
+    public RecallSpire updateRecallProcessingStatus(@NonNull RecallSpire recallSpire,
+        @NonNull ProcessingStatus processingStatus) {
+        recallSpire.setProcessingStatus(processingStatus);
+        return saveSpireRecall(recallSpire);
+    }
+
+    @Transactional
+    public Recall1Source updateRecall1SourceProcessingStatus(@NonNull Recall1Source recall1Source,
+        @NonNull ProcessingStatus processingStatus) {
+        recall1Source.setProcessingStatus(processingStatus);
+        return save1SourceRecall(recall1Source);
+    }
+
+    public RecallSpire saveSpireRecall(@NonNull RecallSpire recallSpire) {
+        return recallService.save(recallSpire);
+    }
+
+    public Recall1Source save1SourceRecall(@NonNull Recall1Source recall1Source) {
+        return recallService.save(recall1Source);
     }
 
     private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
@@ -121,6 +209,18 @@ public class RecallProcessor {
         } catch (Exception e) {
             log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}, record:{}",
                 recordType, process, subProcess, record);
+        }
+    }
+
+    private void recordBusinessEvent(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data, List<FieldImpacted> fieldsImpacted, IntegrationProcess process) {
+        try {
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+            var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, fieldsImpacted);
+            cloudEventRecordService.record(recordRequest);
+        } catch (Exception e) {
+            log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}",
+                recordType, process, subProcess);
         }
     }
 }

@@ -7,6 +7,7 @@ public class PositionConstant {
 
     public final static String LENDER_POSITION_TYPE = "CASH LOAN";
     public final static String BORROWER_POSITION_TYPE = "CASH BORROW";
+    public final static String SPIRE_RECALL_SPLIT = "-";
 
     public static class Field {
 
