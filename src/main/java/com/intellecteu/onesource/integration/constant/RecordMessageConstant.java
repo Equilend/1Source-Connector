@@ -401,6 +401,7 @@ public class RecordMessageConstant {
             public static final String GET_RETURN_EXCEPTION_1SOURCE_SBJ = "Trade - %s";
             public static final String RETURN_MATCHED_SBJ = "Trade - %s";
             public static final String RETURN_UNMATCHED_SBJ = "1Source Return - %s";
+            public static final String RETURN_PENDING_ACKNOWLEDGEMENT_SBJ = "Trade - %s";
         }
 
         public static class DataMsg {
@@ -411,6 +412,7 @@ public class RecordMessageConstant {
             public static final String GET_RETURN_EXCEPTION_1SOURCE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";
             public static final String RETURN_MATCHED_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be be validated";
             public static final String RETURN_UNMATCHED_MSG = "The return %s has been captured but not matched with a return trade.";
+            public static final String RETURN_PENDING_ACKNOWLEDGEMENT_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be acknowledged by the counterparty";
         }
     }
 
