@@ -110,7 +110,7 @@ public class ReturnRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(returnProcessor, "matchingReturn")
             .bean(returnProcessor, "saveReturn")
-            .log("<<< Finished MATCH_RETURN for Return: ${body.returnId} with expected statuses: Return[TO_VALIDATE, UNMATCHED]");
+            .log("<<< Finished MATCH_RETURN for Return: ${body.returnId} with expected statuses: Return[TO_VALIDATE, UNMATCHED, CONFIRMED], ReturnTrade[TO_CONFIRM]");
 
     }
     //@formatter:on

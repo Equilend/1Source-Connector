@@ -19,5 +19,8 @@ public interface ReturnTradeRepository extends JpaRepository<ReturnTradeEntity, 
             relatedContractId, processingStatus);
     }
 
+    Optional<ReturnTradeEntity> findByTradeIdAndProcessingStatusAndMatching1SourceReturnIdNull(Long tradeId,
+        ProcessingStatus processingStatus);
+
     ;
 }

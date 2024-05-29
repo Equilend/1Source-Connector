@@ -5,14 +5,19 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.CONTRACT_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.POSITION_ID;
@@ -28,7 +33,6 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.onesource.Return;
-import com.intellecteu.onesource.integration.repository.ReturnRepository;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
@@ -50,8 +54,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 @Slf4j
 public class ReturnProcessor {
 
-    private final ReturnRepository returnRepository;
-
     private final BackOfficeService backOfficeService;
     private final OneSourceService oneSourceService;
     private final ReturnTradeService returnTradeService;
@@ -62,15 +64,13 @@ public class ReturnProcessor {
     @Autowired
     public ReturnProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
         ReturnTradeService returnTradeService, ReturnService returnService,
-        CloudEventRecordService cloudEventRecordService,
-        ReturnRepository returnRepository) {
+        CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.returnTradeService = returnTradeService;
         this.returnService = returnService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
-        this.returnRepository = returnRepository;
     }
 
     public ReturnTrade saveReturnTrade(ReturnTrade returnTrade) {
@@ -119,6 +119,38 @@ public class ReturnProcessor {
     }
 
     public Return matchingReturn(Return oneSourceReturn) {
+        if(isBorrower(oneSourceReturn)){
+            oneSourceReturn = matchingBorrowerReturn(oneSourceReturn);
+        }
+        if(!oneSourceReturn.getProcessingStatus().equals(CONFIRMED)){
+            oneSourceReturn = matchingLenderReturn(oneSourceReturn);
+        }
+        return oneSourceReturn;
+    }
+
+    public boolean isBorrower(Return oneSourceReturn) {
+        return oneSourceReturn.getExecutionVenue().getVenueParties().stream()
+            .anyMatch(venueParty -> venueParty.getPartyRole().equals(BORROWER));
+    }
+
+    private Return matchingBorrowerReturn(Return oneSourceReturn) {
+        String tradeIdStr = oneSourceReturn.getExecutionVenue().getVenueRefKey();
+        ReturnTrade returnTrade = returnTradeService.findUnmatchedReturnTrade(Long.valueOf(tradeIdStr), SUBMITTED)
+            .orElse(null);
+        if (returnTrade != null) {
+            oneSourceReturn.setMatchingSpireTradeId(returnTrade.getTradeId());
+            oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+            oneSourceReturn.setProcessingStatus(CONFIRMED);
+            returnTrade.setProcessingStatus(TO_CONFIRM);
+            returnTradeService.markReturnTradeAsMatched(returnTrade, oneSourceReturn);
+            recordCloudEvent(MATCH_RETURN, RETURN_PENDING_ACKNOWLEDGEMENT, oneSourceReturn.getMatchingSpireTradeId(),
+                oneSourceReturn.getRelatedSpirePositionId(), oneSourceReturn.getContractId(),
+                oneSourceReturn.getReturnId(), List.of());
+        }
+        return oneSourceReturn;
+    }
+
+    private Return matchingLenderReturn(Return oneSourceReturn) {
         ReturnTrade returnTrade = returnTradeService.findUnmatchedReturnTrade(oneSourceReturn.getContractId(),
             oneSourceReturn.getReturnDate(), oneSourceReturn.getQuantity(), CREATED).orElse(null);
         if (returnTrade != null) {

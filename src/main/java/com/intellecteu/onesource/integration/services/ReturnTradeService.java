@@ -45,6 +45,12 @@ public class ReturnTradeService {
             .map(backOfficeMapper::toModel).findFirst();
     }
 
+    public Optional<ReturnTrade> findUnmatchedReturnTrade(Long tradeId, ProcessingStatus status){
+        Optional<ReturnTradeEntity> unmatchedReturnTradeEntities = returnTradeRepository.findByTradeIdAndProcessingStatusAndMatching1SourceReturnIdNull(
+            tradeId, status);
+        return unmatchedReturnTradeEntities.map(backOfficeMapper::toModel);
+    }
+
     public ReturnTrade markReturnTradeAsMatched(ReturnTrade returnTrade, Return oneSourceReturn) {
         returnTrade.setMatching1SourceReturnId(oneSourceReturn.getReturnId());
         returnTrade.setLastUpdateDatetime(LocalDateTime.now());
