@@ -45,7 +45,7 @@ public class RecallSpire {
     public void setProcessingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
         if (recallId != null) {
-            log.debug("Updated processing status to {} for recallId: {}", processingStatus, recallId);
+            log.debug("Updated processing status to {} for SPIRE recallId: {}", processingStatus, recallId);
         }
     }
 }

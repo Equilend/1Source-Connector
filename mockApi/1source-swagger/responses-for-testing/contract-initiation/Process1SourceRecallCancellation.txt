@@ -1,0 +1,11 @@
+Prepared local migration data: V2024.05.30.17.00__EINT23-878_process_1source_recall_cancellation.sql
+
+1. Insert to the database trade_event
+    - eventType should be 'RECALL_CANCELED';
+    - resourceUri should match with the 1Source recallId.
+
+2. Insert to the database recall_1source:
+    - matchingSpireRecallId should be matched with the SPIRE recallId;
+    - relatedSpirePositionId should be matched with the SPIRE relatedPositionId;
+
+3. Insert to the database recall_spire with matched fields mentioned above.
