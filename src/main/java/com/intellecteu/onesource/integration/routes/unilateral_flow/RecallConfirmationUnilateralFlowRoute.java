@@ -118,7 +118,7 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
         String sql = String.format("""
             SELECT i FROM RecallSpireInstructionEntity i \
             join RecallSpireEntity r on i.spireRecallId = r.recallId \
-            WHERE r.processingStatus = 'CONFIRMED' and i.instructionType = '%s' \
+            WHERE r.processingStatus = 'CONFIRMED_LENDER' and i.instructionType = '%s' \
             and (i.processingStatus IS NULL OR i.processingStatus = 'CREATED')""", type);
         String request = """
             jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireInstructionEntity\

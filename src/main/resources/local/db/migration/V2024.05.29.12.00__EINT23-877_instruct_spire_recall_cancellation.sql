@@ -7,5 +7,5 @@
 --                           processing_status, status, creation_date_time, last_update_date_time, open_quantity, quantity,
 --                           recall_date, recall_due_date)
 -- VALUES (123, 444, '90807', '1111-2222-3333-4444',
---         'CONFIRMED', 'OPEN', '2024-05-20 13:50:41.633000', '2024-05-20 13:50:41.633000', 40, 100,
+--         'CONFIRMED_LENDER', 'OPEN', '2024-05-20 13:50:41.633000', '2024-05-20 13:50:41.633000', 40, 100,
 --         '2024-05-29', '2024-05-29');
