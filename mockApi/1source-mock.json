@@ -1906,6 +1906,64 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0",
+      "type": "http",
+      "documentation": "instruct spire recall cancellation",
+      "method": "post",
+      "endpoint": "contracts/:contractId/recalls/:recallId/cancel",
+      "responses": [
+        {
+          "uuid": "e7278bed-9361-4e12-9f85-2e8867115eeb",
+          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.293Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Operation was successful",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a6951178-530d-4145-959f-ffba02a58827",
+          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.296Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Resource not found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -2004,6 +2062,10 @@
     {
       "type": "route",
       "uuid": "14da6415-06ca-4a7a-b4e0-0a084e5fd492"
+    },
+    {
+      "type": "route",
+      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0"
     }
   ],
   "proxyMode": false,

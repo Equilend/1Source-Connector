@@ -6,12 +6,15 @@ import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpireInstruction;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.repository.Recall1SourceRepository;
+import com.intellecteu.onesource.integration.repository.RecallSpireInstructionRepository;
 import com.intellecteu.onesource.integration.repository.RecallSpireRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireInstructionEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.Recall1SourceEntity;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
@@ -29,6 +32,7 @@ public class RecallService {
 
     private final RecallSpireRepository recallSpireRepository;
     private final Recall1SourceRepository recall1SourceRepository;
+    private final RecallSpireInstructionRepository recallSpireInstructionRepository;
     private final BackOfficeMapper backOfficeMapper;
     private final OneSourceMapper oneSourceMapper;
 
@@ -79,11 +83,12 @@ public class RecallService {
     }
 
     /**
-     * Persist a SPIRE recall.
+     * Persist a SPIRE recall. The last update timestamp is updated during the persist process.
      *
      * @param recallSpire RecallSpire model
      * @return RecallSpire persisted model
      */
+    @Transactional
     public RecallSpire save(RecallSpire recallSpire) {
         final RecallSpireEntity persistedEntity = recallSpireRepository.save(backOfficeMapper.toEntity(recallSpire));
         log.debug("RecallSpire with recallId:{} was saved", persistedEntity.getRecallId());
@@ -96,10 +101,33 @@ public class RecallService {
      * @param recall1Source Recall1Source model
      * @return Recall1Source persisted model
      */
+    @Transactional
     public Recall1Source save(Recall1Source recall1Source) {
         final Recall1SourceEntity recall1SourceEntity = recall1SourceRepository.save(oneSourceMapper.toEntity(
             recall1Source));
         log.debug("Recall1Source with recallId:{} was saved", recall1SourceEntity.getRecallId());
         return oneSourceMapper.toModel(recall1SourceEntity);
+    }
+
+    @Transactional
+    public RecallSpireInstruction save(RecallSpireInstruction instruction) {
+        final RecallSpireInstructionEntity entity = recallSpireInstructionRepository.save(
+            backOfficeMapper.toEntity(instruction));
+        log.debug("RecallSpireInstruction with id:{} was saved", instruction.getInstructionId());
+        return backOfficeMapper.toModel(entity);
+    }
+
+    @Transactional
+    public void saveRecallInstruction(RecallInstructionDTO recallInstruction) {
+        log.debug("Saving recall instruction: {} with type: {}", recallInstruction.getInstructionId(),
+            recallInstruction.getInstructionType());
+        final RecallSpireInstructionEntity entity = backOfficeMapper.toEntity(recallInstruction);
+        recallSpireInstructionRepository.save(entity);
+    }
+
+    @Transactional
+    public Optional<RecallSpire> getSpireRecallByIdAndPosition(Long spireRecallId, Long relatedPositionId) {
+        return recallSpireRepository.findByRecallIdAndRelatedPositionId(spireRecallId, relatedPositionId)
+            .map(backOfficeMapper::toModel);
     }
 }

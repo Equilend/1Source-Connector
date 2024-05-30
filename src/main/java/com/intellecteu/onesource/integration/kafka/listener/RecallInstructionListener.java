@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.kafka.listener;
 
 import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
+import com.intellecteu.onesource.integration.model.enums.RecallInstructionType;
 import com.intellecteu.onesource.integration.services.RecallService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,11 @@ public class RecallInstructionListener {
      */
     @KafkaHandler
     public void handleRecallInstruction(@Valid RecallInstructionDTO recallInstructionDTO) {
-        recallService.createRecall(recallInstructionDTO);
+        if (recallInstructionDTO.getInstructionType() == RecallInstructionType.RECALL_CANCELLATION) {
+            recallService.saveRecallInstruction(recallInstructionDTO);
+        } else {
+            recallService.createRecall(recallInstructionDTO);
+        }
     }
 
     @KafkaHandler(isDefault = true)

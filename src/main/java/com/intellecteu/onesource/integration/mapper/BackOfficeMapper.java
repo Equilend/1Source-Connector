@@ -6,11 +6,13 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpireInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireInstructionEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.ReturnTradeEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
@@ -104,5 +106,11 @@ public abstract class BackOfficeMapper {
 
     @Mapping(target = "recallId", source = "spireRecallId")
     public abstract RecallSpire toModel(RecallInstructionDTO recallInstructionDTO);
+
+    public abstract RecallSpireInstructionEntity toEntity(RecallInstructionDTO recallInstruction);
+
+    public abstract RecallSpireInstructionEntity toEntity(RecallSpireInstruction recallInstruction);
+
+    public abstract RecallSpireInstruction toModel(RecallSpireInstructionEntity recallInstruction);
 
 }

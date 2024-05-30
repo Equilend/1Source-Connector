@@ -62,6 +62,11 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     public abstract CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess);
 
+    public CloudEventBuildRequest buildToolkitIssueRequest(IntegrationSubProcess subProcess,
+        Map<String, String> data) {
+        return null;
+    }
+
     public CloudEventBuildRequest buildExceptionRequest(String recorded, HttpStatusCodeException e,
         IntegrationSubProcess subProcess, String related) {
         return null;
