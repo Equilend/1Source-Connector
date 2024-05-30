@@ -305,9 +305,13 @@ public class RecordMessageConstant {
 
             public static final String GET_RECALL_DETAILS_SUBJECT = "1SourceRecall - %s";
             public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
+            public static final String RECALL_CANCEL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
             public static final String RECALL_CONFIRMED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
             public static final String RECALL_CONFIRMED_SUBJECT_NO_POSITION = "1Source Recall id %s - ContractId %s";
             public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_SUBJECT = "SPIRE Recall id %s - "
+                + "PositionId %s";
         }
 
         public static class DataMsg {
@@ -319,11 +323,25 @@ public class RecordMessageConstant {
             public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
                 + "has not been processed by 1Source for the following reason: %s";
 
+            public static final String RECALL_CANCEL_SUBMITTED_MSG = """
+                The cancellation of the 1Source recall: %s (created from the SPIRE recall: %s) \
+                has been submitted to 1Source""";
+
             public static final String RECALL_CONFIRMED_MSG = "The recall %s, confirmed within 1Source, "
                 + "has been recorded";
 
             public static final String RECALL_SUBMITTED_MSG = "The recall %s has been submitted "
                 + "to 1Source to request the recall creation";
+
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_MSG = """
+                The recall cancellation instruction (cancelling the recall instruction %s) \
+                has not been processed by 1Source for the following reason: %s""";
+
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_MSG = """
+                The recall cancellation instruction (cancelling the recall instruction %s) \
+                has not been processed by 1Source because either the SPIRE recall trade \
+                has not been retrieved in the Integration toolkit or the matching 1Source Recall id \
+                has not been cross-referenced in the recorded SPIRE recall trade.""";
         }
     }
 

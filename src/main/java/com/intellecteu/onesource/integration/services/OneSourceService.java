@@ -267,4 +267,10 @@ public class OneSourceService {
         final RecallDTO recallDTO = recallsApi.ledgerRecallsRecallIdGet(recallId);
         return oneSourceMapper.toModel(recallDTO);
     }
+
+    public void instructRecallCancellation(String recall1SourceId, String contractId) {
+        log.debug("Sending recall cancellation instruction to 1Source for recallId:{}, contractId:{} ",
+            recall1SourceId, contractId);
+        recallsApi.ledgerContractsContractIdRecallsRecallIdCancelPost(contractId, recall1SourceId);
+    }
 }

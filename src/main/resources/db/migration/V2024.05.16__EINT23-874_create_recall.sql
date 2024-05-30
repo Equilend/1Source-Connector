@@ -32,3 +32,17 @@ CREATE TABLE IF NOT EXISTS recall_1source
     recall_due_date           TIMESTAMP NULL,
     CONSTRAINT fk_venue FOREIGN KEY (venue_id) REFERENCES venue
 );
+
+CREATE TABLE IF NOT EXISTS recall_spire_instruction
+(
+    instruction_id          VARCHAR(255) PRIMARY KEY,
+    instruction_type        VARCHAR(255) NOT NULL,
+    spire_recall_id         BIGINT NOT NULL,
+    related_contract_id     VARCHAR(255) NOT NULL,
+    related_position_id     BIGINT NOT NULL,
+    creation_date_time      TIMESTAMP NOT NULL,
+    quantity                INT NULL,
+    recall_date             TIMESTAMP NULL,
+    recall_due_date         TIMESTAMP NULL,
+    processing_status       VARCHAR(255) NULL
+);

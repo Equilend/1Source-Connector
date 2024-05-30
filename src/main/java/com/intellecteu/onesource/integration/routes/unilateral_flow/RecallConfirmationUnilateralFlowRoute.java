@@ -5,6 +5,7 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.RE
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
+import com.intellecteu.onesource.integration.model.enums.RecallInstructionType;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.EventProcessor;
 import com.intellecteu.onesource.integration.routes.unilateral_flow.pocessor.RecallProcessor;
@@ -71,6 +72,19 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
             .log("<<< Finished MATCH_RECALL for Recall1Source: "
                 + "${body.recallId} with expected statuses: Recall1Source[CONFIRMED_LENDER, CONFIRMED_BORROWER]")
             .end();
+
+        from(getNewRecallInstructionForConfirmedRecallSpire(RecallInstructionType.RECALL_CANCELLATION))
+            .routeId("SpireRecallCancellationInstruction")
+            .log(
+                ">>> Started PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION for RecallSpireInstruction: ${body.instructionId}")
+            .bean(backOfficeMapper, "toModel")
+            .setHeader("recallInstruction", body())
+            .bean(recallProcessor, "getRecallToCancel")
+            .bean(recallProcessor, "instructRecallCancellation(${header.recallInstruction}, ${body})")
+            .bean(recallProcessor, "updateInstructionStatus(${header.recallInstruction}, PROCESSED)")
+            .log("<<< Finished PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION for RecallSpireInstruction: "
+                + "${header.recallInstruction} with expected statuses: RecallSpire[CANCEL_SUBMITTED], RecallSpireInstruction[PROCESSED]")
+            .end();
     }
 
     private String buildSpireRecallByProcessingStatusSqlRequest(ProcessingStatus processingStatus) {
@@ -98,5 +112,20 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
             &query=SELECT e FROM TradeEventEntity e WHERE e.eventType = '%s' \
             and (e.processingStatus IS NULL OR e.processingStatus = 'CREATED')""";
         return String.format(request, String.format("delay=%d", updateTimer), eventType);
+    }
+
+    private String getNewRecallInstructionForConfirmedRecallSpire(RecallInstructionType type) {
+        String sql = String.format("""
+            SELECT i FROM RecallSpireInstructionEntity i \
+            join RecallSpireEntity r on i.spireRecallId = r.recallId \
+            WHERE r.processingStatus = 'CONFIRMED' and i.instructionType = '%s' \
+            and (i.processingStatus IS NULL OR i.processingStatus = 'CREATED')""", type);
+        String request = """
+            jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireInstructionEntity\
+            ?consumeLockEntity=false&consumeDelete=false\
+            &%s\
+            &sharedEntityManager=true&joinTransaction=false\
+            &query=%s""";
+        return String.format(request, String.format("delay=%d", updateTimer), sql);
     }
 }

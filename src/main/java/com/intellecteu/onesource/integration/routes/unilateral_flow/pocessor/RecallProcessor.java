@@ -4,18 +4,25 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL_INSTRUCTION;
 import static com.intellecteu.onesource.integration.model.enums.FieldExceptionType.INFORMATIONAL;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RECALL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RECALL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RECALL_DETAILS;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_SPIRE_RECALL_INSTRUCTION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_BORROWER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_LENDER;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
+import static java.lang.String.format;
 
 import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpireInstruction;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -40,6 +47,7 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -81,7 +89,7 @@ public class RecallProcessor {
             final RecallProposalDTO recallProposal = dataTransformer.to1SourceRecallProposal(recallSpire);
             oneSourceService.instructRecall(recallSpire.getRelatedContractId(), recallProposal);
             updateRecallProcessingStatus(recallSpire, ProcessingStatus.SUBMITTED);
-            var relatedSequence = String.format("%d,%s", recallSpire.getRelatedPositionId(),
+            var relatedSequence = format("%d,%s", recallSpire.getRelatedPositionId(),
                 recallSpire.getRelatedContractId());
             recordBusinessEvent(String.valueOf(recallSpire.getRecallId()), RECALL_SUBMITTED, relatedSequence,
                 PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
@@ -107,6 +115,74 @@ public class RecallProcessor {
             updateRecall1SourceProcessingStatus(recall1Source, CONFIRMED_BORROWER);
             createRecallConfirmedRecord(recall1Source);
         }
+    }
+
+    @Transactional
+    public RecallSpire getRecallToCancel(RecallSpireInstruction instruction) {
+        return recallService.getSpireRecallByIdAndPosition(instruction.getSpireRecallId(),
+            instruction.getRelatedPositionId()).orElse(null);
+    }
+
+    @Transactional
+    public void instructRecallCancellation(@NotNull RecallSpireInstruction instruction,
+        @Nullable RecallSpire recallSpire) {
+        if (recallSpire == null || recallSpire.getMatching1SourceRecallId() == null) {
+            recordRecallCancellationToolkitIssue(instruction);
+            return;
+        }
+        try {
+            oneSourceService.instructRecallCancellation(recallSpire.getMatching1SourceRecallId(),
+                recallSpire.getRelatedContractId());
+            recallSpire.setStatus(RecallStatus.CANCELED);
+            updateRecallProcessingStatus(recallSpire, CANCEL_SUBMITTED);
+            recordCancelSubmittedEvent(instruction.getInstructionId(), recallSpire);
+        } catch (HttpStatusCodeException e) {
+            log.debug("Exception on instruct SPIRE recall cancellation, recallId:{}, details:{}",
+                recallSpire.getRecallId(), e.getMessage());
+            recordCancelSubmittedTechnicalEvent(instruction.getInstructionId(), recallSpire, e);
+        }
+    }
+
+    @Transactional
+    public void updateInstructionStatus(RecallSpireInstruction instruction, ProcessingStatus processingStatus) {
+        instruction.setProcessingStatus(processingStatus);
+        saveSpireInstruction(instruction);
+    }
+
+    private void recordCancelSubmittedTechnicalEvent(String instructionId, RecallSpire recallSpire,
+        HttpStatusCodeException e) {
+        String oneSourceRecallId = String.valueOf(recallSpire.getMatching1SourceRecallId());
+        String spireRecallId = String.valueOf(recallSpire.getRecallId());
+        String positionId = String.valueOf(recallSpire.getRelatedPositionId());
+        String contractId = recallSpire.getRelatedContractId();
+        String relatedSequence = format("%s,%s,%s,%s", oneSourceRecallId, spireRecallId, positionId, contractId);
+        record1SourceTechnicalEvent(instructionId, e, PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION,
+            relatedSequence, RECALL);
+    }
+
+    private void recordRecallCancellationToolkitIssue(@NotNull RecallSpireInstruction instruction) {
+        String spireRecallInstructionId = instruction.getInstructionId();
+        Map<String, String> data = new HashMap<>();
+        data.put(SPIRE_RECALL_INSTRUCTION, spireRecallInstructionId);
+        data.put(SPIRE_RECALL, String.valueOf(instruction.getSpireRecallId()));
+        data.put(POSITION, String.valueOf(instruction.getRelatedPositionId()));
+        data.put(ONESOURCE_LOAN_CONTRACT, instruction.getRelatedContractId());
+        recordIntegrationToolkitIssueEvent(spireRecallInstructionId, PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION,
+            RECALL, data);
+    }
+
+    private void recordCancelSubmittedEvent(@NotNull String instructionId, @NotNull RecallSpire recallSpire) {
+        String oneSourceRecall = recallSpire.getMatching1SourceRecallId();
+        String spireRecallId = String.valueOf(recallSpire.getRecallId());
+        String positionId = String.valueOf(recallSpire.getRelatedPositionId());
+        String contractId = recallSpire.getRelatedContractId();
+        Map<String, String> data = new HashMap<>();
+        data.put(SPIRE_RECALL_INSTRUCTION, instructionId);
+        data.put(ONESOURCE_RECALL, oneSourceRecall);
+        data.put(SPIRE_RECALL, spireRecallId);
+        data.put(POSITION, positionId);
+        data.put(ONESOURCE_LOAN_CONTRACT, contractId);
+        recordBusinessEvent(PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION, RECALL_CANCEL_SUBMITTED, data, RECALL);
     }
 
     private void createRecallConfirmedRecord(Recall1Source recall1Source) {
@@ -179,6 +255,10 @@ public class RecallProcessor {
         return recallService.save(recall1Source);
     }
 
+    public RecallSpireInstruction saveSpireInstruction(RecallSpireInstruction instruction) {
+        return recallService.save(instruction);
+    }
+
     private void record1SourceTechnicalEvent(String record, HttpStatusCodeException exception,
         IntegrationSubProcess subProcess, IntegrationProcess process) {
         record1SourceTechnicalEvent(record, exception, subProcess, null, process);
@@ -191,6 +271,22 @@ public class RecallProcessor {
                 cloudEventRecordService::updateTime,
                 () -> recordTechnicalEvent(process, record, exception, subProcess, related)
             );
+    }
+
+    private void recordIntegrationToolkitIssueEvent(String record, IntegrationSubProcess subProcess,
+        IntegrationProcess process, Map<String, String> data) {
+        cloudEventRecordService.getToolkitCloudEventId(record, subProcess, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT)
+            .ifPresentOrElse(
+                cloudEventRecordService::updateTime,
+                () -> recordToolkitTechnicalEvent(process, subProcess, data)
+            );
+    }
+
+    private void recordToolkitTechnicalEvent(IntegrationProcess process,
+        IntegrationSubProcess subProcess, Map<String, String> data) {
+        var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(process);
+        var recordRequest = eventBuilder.buildToolkitIssueRequest(subProcess, data);
+        cloudEventRecordService.record(recordRequest);
     }
 
     private void recordTechnicalEvent(IntegrationProcess process, String record,
@@ -210,6 +306,11 @@ public class RecallProcessor {
             log.warn("Cloud event cannot be recorded for recordType:{}, process:{}, subProcess:{}, record:{}",
                 recordType, process, subProcess, record);
         }
+    }
+
+    private void recordBusinessEvent(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data, IntegrationProcess process) {
+        recordBusinessEvent(subProcess, recordType, data, null, process);
     }
 
     private void recordBusinessEvent(IntegrationSubProcess subProcess, RecordType recordType,
