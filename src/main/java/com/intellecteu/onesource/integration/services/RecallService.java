@@ -130,4 +130,10 @@ public class RecallService {
         return recallSpireRepository.findByRecallIdAndRelatedPositionId(spireRecallId, relatedPositionId)
             .map(backOfficeMapper::toModel);
     }
+
+    @Transactional
+    public Recall1Source find1SourceRecallById(String recallId) {
+        final Recall1SourceEntity entity = recall1SourceRepository.getReferenceById(recallId);
+        return oneSourceMapper.toModel(entity);
+    }
 }

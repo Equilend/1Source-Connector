@@ -1,0 +1,16 @@
+-- INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri)
+-- VALUES ('99', 'RECALL_CANCELED', now(), '/ledger/contracts/2222-4444-5555-7777/recalls/999');
+--
+--
+-- INSERT INTO recall_1source (recall_id, contract_id, recall_status, matching_spire_recall_id,
+--                             related_spire_position_id, quantity, recall_date, recall_due_date)
+-- VALUES (999, '2222-4444-5555-7777', 'OPEN', 888,
+--         9988, 100, '2024-05-30', '2024-05-31');
+--
+--
+-- INSERT INTO recall_spire (recall_id, related_position_id, matching_1source_recall_id, related_contract_id,
+--                           processing_status, status, creation_date_time, last_update_date_time, open_quantity, quantity,
+--                           recall_date, recall_due_date)
+-- VALUES (888, 9988, '999', '2222-4444-5555-7777',
+--         'CONFIRMED_LENDER', 'OPEN', '2024-05-29 13:50:41.633000', '2024-05-29 13:50:41.633000', 40, 100,
+--         '2024-05-29', '2024-05-29');

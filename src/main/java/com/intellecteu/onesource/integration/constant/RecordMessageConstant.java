@@ -306,10 +306,13 @@ public class RecordMessageConstant {
             public static final String GET_RECALL_DETAILS_SUBJECT = "1SourceRecall - %s";
             public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
             public static final String RECALL_CANCEL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CANCELED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CANCELED_NO_SPIRE_RECALL_SUBJECT = "1Source Recall id %s - ContractId %s";
             public static final String RECALL_CONFIRMED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
             public static final String RECALL_CONFIRMED_SUBJECT_NO_POSITION = "1Source Recall id %s - ContractId %s";
             public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
             public static final String SPIRE_RECALL_CANCELLATION_INSTR_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String ONESOURCE_RECALL_CANCELLATION_ISSUE_SUBJECT = "1Source Recall - %s";
             public static final String SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_SUBJECT = "SPIRE Recall id %s - "
                 + "PositionId %s";
         }
@@ -320,12 +323,22 @@ public class RecordMessageConstant {
                 The details of the 1Source recall %s have not been retrieved from 1Source \
                 for the following reason: %s""";
 
+            public static final String ONESOURCE_RECALL_CANCELLATION_ISSUE_MSG = """
+                The 1Source Recall %s has been marked as canceled in 1Source \
+                but the 1Source Recall has not been retrieved in the Integration toolkit.""";
+
             public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
                 + "has not been processed by 1Source for the following reason: %s";
 
             public static final String RECALL_CANCEL_SUBMITTED_MSG = """
                 The cancellation of the 1Source recall: %s (created from the SPIRE recall: %s) \
                 has been submitted to 1Source""";
+
+            public static final String RECALL_CANCELED_MSG = """
+                The recall %s (created from the SPIRE recall: %s) has been canceled in 1Source""";
+
+            public static final String RECALL_CANCELED_NO_SPIRE_RECALL_MSG = """
+                The recall %s has been canceled in 1Source""";
 
             public static final String RECALL_CONFIRMED_MSG = "The recall %s, confirmed within 1Source, "
                 + "has been recorded";
