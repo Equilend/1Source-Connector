@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.unilateral_flow;
 
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RECALL_CANCELED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RECALL_CLOSED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RECALL_OPENED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -100,6 +101,21 @@ public class RecallConfirmationUnilateralFlowRoute extends RouteBuilder {
             .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
             .log("<<< Finished PROCESS_1SOURCE_RECALL_CANCELLATION for Trade Event: "
                 + "${body.eventId} with expected statuses: Recall1Source[CANCELED], RecallSpire[CANCELED] TradeEvent[PROCESSED]")
+            .end();
+
+        from(getNotProcessedTradeEvent(RECALL_CLOSED))
+            .routeId("Process1SourceRecallClosure")
+            .log(">>> Started PROCESS_1SOURCE_RECALL_CLOSURE for Trade Event: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .setHeader("tradeEvent", body())
+            .bean(recallProcessor, "retrieve1SourceRecall")
+            .choice()
+            .when(body().isNotNull())
+            .bean(recallProcessor, "markRecallsClosed")
+            .end()
+            .bean(eventProcessor, "updateEventStatus(${header.tradeEvent}, PROCESSED)")
+            .log("<<< Finished PROCESS_1SOURCE_RECALL_CLOSURE for Trade Event: "
+                + "${body.eventId} with expected statuses: Recall1Source[CLOSED], RecallSpire[CLOSED] TradeEvent[PROCESSED]")
             .end();
     }
 
