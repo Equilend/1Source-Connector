@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_RETURN_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_PENDING_CONFIRMATION_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RECONCILE_RETURN_DISCREPANCIES_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_MATCHED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_PENDING_ACKNOWLEDGEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_UNMATCHED_MSG;
@@ -15,6 +16,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_RETURN_EXCEPTION_1SOURCE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_PENDING_CONFIRMATION_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_SUBMITTED_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RECONCILE_RETURN_DISCREPANCIES_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_MATCHED_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_PENDING_ACKNOWLEDGEMENT_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_UNMATCHED_SBJ;
@@ -103,7 +105,15 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                 return switch (recordType) {
                     case RETURN_MATCHED -> createReturnMatchedCR(subProcess, recordType, data, fieldImpacteds);
                     case RETURN_UNMATCHED -> createReturnUnmatchedCR(subProcess, recordType, data, fieldImpacteds);
-                    case RETURN_PENDING_ACKNOWLEDGEMENT -> createReturnPendingAckCR(subProcess, recordType, data, fieldImpacteds);
+                    case RETURN_PENDING_ACKNOWLEDGEMENT ->
+                        createReturnPendingAckCR(subProcess, recordType, data, fieldImpacteds);
+                    default -> null;
+                };
+            }
+            case VALIDATE_RETURN: {
+                return switch (recordType) {
+                    case RETURN_DISCREPANCIES ->
+                        createReturnDiscrepanciesCR(subProcess, recordType, data, fieldImpacteds);
                     default -> null;
                 };
             }
@@ -203,6 +213,22 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                 new RelatedObject(data.get(POSITION_ID), POSITION),
                 new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
                 new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createReturnDiscrepanciesCR(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data, List<FieldImpacted> fieldsImpacted) {
+        String dataMessage = format(RECONCILE_RETURN_DISCREPANCIES_MSG, data.get(RETURN_ID), data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(RECONCILE_RETURN_DISCREPANCIES_SBJ, data.get(TRADE_ID)),
+            RETURN,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),
+                    new RelatedObject(data.get(POSITION_ID), POSITION),
+                    new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                    new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)),
+                fieldsImpacted)
         );
     }
 }

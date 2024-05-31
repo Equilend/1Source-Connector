@@ -2,10 +2,14 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
@@ -23,6 +27,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.openMocks;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Return;
@@ -32,6 +38,7 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
@@ -56,6 +63,8 @@ class ReturnProcessorTest {
     @Mock
     private ReturnService returnService;
     @Mock
+    private ReturnReconcileService returnReconcileService;
+    @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private ReturnCloudEventBuilder eventBuilder;
@@ -67,7 +76,7 @@ class ReturnProcessorTest {
         doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         returnProcessor = new ReturnProcessor(backOfficeService, oneSourceService, returnTradeService, returnService,
-            cloudEventRecordService);
+            returnReconcileService, cloudEventRecordService);
     }
 
     @Test
@@ -173,6 +182,34 @@ class ReturnProcessorTest {
         assertEquals(UNMATCHED, result.getProcessingStatus());
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(MATCH_RETURN), eq(RETURN_UNMATCHED),
+            any(), any());
+    }
+
+    @Test
+    void validateReturn_ValidReturn_VALIDATEDStatus() throws ReconcileException {
+        Return oneSourceReturn = new Return();
+        oneSourceReturn.setMatchingSpireTradeId(1l);
+        ReturnTrade returnTrade = new ReturnTrade();
+        doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
+
+        Return result = returnProcessor.validateReturn(oneSourceReturn);
+
+        assertEquals(VALIDATED, result.getProcessingStatus());
+    }
+
+    @Test
+    void validateReturn_NotValidReturn_DISCREPANCIESStatusAndRecordCloudEvent() throws ReconcileException {
+        Return oneSourceReturn = new Return();
+        oneSourceReturn.setMatchingSpireTradeId(1l);
+        ReturnTrade returnTrade = new ReturnTrade();
+        doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
+        doThrow(new ReconcileException(List.of(new ProcessExceptionDetails()))).when(returnReconcileService).reconcile(any(), any());
+
+        Return result = returnProcessor.validateReturn(oneSourceReturn);
+
+        assertEquals(DISCREPANCIES, result.getProcessingStatus());
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(VALIDATE_RETURN), eq(RETURN_DISCREPANCIES),
             any(), any());
     }
 }

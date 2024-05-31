@@ -30,6 +30,11 @@ public class ReturnTradeService {
         return backOfficeMapper.toModel(returnTradeEntity);
     }
 
+    public ReturnTrade getByTradeId(Long tradeId) {
+        ReturnTradeEntity returnTradeEntity = returnTradeRepository.getReferenceById(tradeId);
+        return backOfficeMapper.toModel(returnTradeEntity);
+    }
+
     public Optional<Long> getMaxTradeId() {
         Optional<ReturnTradeEntity> lastReturnTrade = returnTradeRepository.findTopByOrderByTradeIdDesc();
         return lastReturnTrade.map(returnTrade -> returnTrade.getTradeId());

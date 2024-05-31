@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.returns;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -111,6 +112,13 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnProcessor, "matchingReturn")
             .bean(returnProcessor, "saveReturn")
             .log("<<< Finished MATCH_RETURN for Return: ${body.returnId} with expected statuses: Return[TO_VALIDATE, UNMATCHED, CONFIRMED], ReturnTrade[TO_CONFIRM]");
+
+        from(createReturnSQLEndpoint(TO_VALIDATE))
+            .log(">>> Started VALIDATE_RETURN for Return: ${body.returnId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnProcessor, "validateReturn")
+            .bean(returnProcessor, "saveReturn")
+            .log("<<< Finished VALIDATE_RETURN for Return: ${body.returnId} with expected statuses: Return[VALIDATED, DISCREPANCIES]");
 
     }
     //@formatter:on
