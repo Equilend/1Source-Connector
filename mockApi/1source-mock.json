@@ -109,7 +109,7 @@
       "responses": [
         {
           "uuid": "bcdd1f13-6bc2-4533-98be-2e74fba21175",
-          "body": "[\r\n\r\n]",
+          "body": "[\r\n]",
           "latency": 0,
           "statusCode": 200,
           "label": "Read collection of events. With no parameters returns events since start of current day.",

@@ -5,12 +5,16 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
@@ -26,6 +30,7 @@ import static com.intellecteu.onesource.integration.services.systemevent.ReturnC
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
 
+import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
@@ -37,6 +42,7 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
+import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
 import java.time.LocalDateTime;
@@ -45,6 +51,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -58,17 +65,20 @@ public class ReturnProcessor {
     private final OneSourceService oneSourceService;
     private final ReturnTradeService returnTradeService;
     private final ReturnService returnService;
+    private final ReturnReconcileService returnReconcileService;
     private final CloudEventRecordService cloudEventRecordService;
     private final ReturnCloudEventBuilder eventBuilder;
 
     @Autowired
     public ReturnProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
         ReturnTradeService returnTradeService, ReturnService returnService,
+        ReturnReconcileService returnReconcileService,
         CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.returnTradeService = returnTradeService;
         this.returnService = returnService;
+        this.returnReconcileService = returnReconcileService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
     }
@@ -119,10 +129,10 @@ public class ReturnProcessor {
     }
 
     public Return matchingReturn(Return oneSourceReturn) {
-        if(isBorrower(oneSourceReturn)){
+        if (isBorrower(oneSourceReturn)) {
             oneSourceReturn = matchingBorrowerReturn(oneSourceReturn);
         }
-        if(!oneSourceReturn.getProcessingStatus().equals(CONFIRMED)){
+        if (!oneSourceReturn.getProcessingStatus().equals(CONFIRMED)) {
             oneSourceReturn = matchingLenderReturn(oneSourceReturn);
         }
         return oneSourceReturn;
@@ -186,6 +196,20 @@ public class ReturnProcessor {
         return unmatchedFieldImpactedList;
     }
 
+    public Return validateReturn(Return oneSourceReturn) {
+        ReturnTrade returnTrade = returnTradeService.getByTradeId(oneSourceReturn.getMatchingSpireTradeId());
+        try {
+            returnReconcileService.reconcile(oneSourceReturn, returnTrade);
+            oneSourceReturn.setProcessingStatus(VALIDATED);
+        } catch (ReconcileException e) {
+            log.error("Reconciliation fails with message: {} ", e.getMessage());
+            e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
+            createFailedReconciliationEvent(oneSourceReturn, e);
+            oneSourceReturn.setProcessingStatus(DISCREPANCIES);
+        }
+        return oneSourceReturn;
+    }
+
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
         Long positionId, String contractId, String returnId, List<FieldImpacted> fieldImpacteds) {
         Map<String, String> data = new HashMap<>();
@@ -231,6 +255,15 @@ public class ReturnProcessor {
         data.put(POSITION_ID, toStringNullSafe(positionId));
         var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
         cloudEventRecordService.record(recordRequest);
+    }
+
+    private void createFailedReconciliationEvent(Return oneSourceReturn, ReconcileException e) {
+        List<FieldImpacted> fieldImpacteds = e.getErrorList().stream().map(
+                ed -> new FieldImpacted(ed.getSource(), ed.getFieldName(), ed.getFieldValue(), ed.getFieldExceptionType()))
+            .collect(Collectors.toList());
+        recordCloudEvent(VALIDATE_RETURN, RETURN_DISCREPANCIES, oneSourceReturn.getMatchingSpireTradeId(),
+            oneSourceReturn.getRelatedSpirePositionId(), oneSourceReturn.getContractId(), oneSourceReturn.getReturnId(),
+            fieldImpacteds);
     }
 
 }

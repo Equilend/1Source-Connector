@@ -10,7 +10,8 @@ public enum FieldSource {
     ONE_SOURCE_RETURN("1SourceReturn"),
     ONE_SOURCE_TRADE_AGREEMENT("1sourceTradeAgreement"),
     BACKOFFICE_POSITION("Position"),
-    BACKOFFICE_RERATE("BackOficeRerate");
+    BACKOFFICE_RERATE("BackOfficeRerate"),
+    BACKOFFICE_RETURN("BackOfficeReturn");
 
     private final String value;
 
