@@ -81,6 +81,7 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return buildRequest(recorded, recordType, null);
     }
 
+    // todo rework or add Map<String,String> relatedData as an object instead of String related
     public abstract CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related);
 
     public CloudEventBuildRequest buildRequest(IntegrationSubProcess subProcess, RecordType recordType,
@@ -181,18 +182,21 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return getAgreementRelatedToNgtPosition(agreementInfo, positionId, ngtTicket);
     }
 
-    protected List<RelatedObject> getRecallRelatedToPositionAndContract(String recallInfo, String relatedSequence) {
+    protected List<RelatedObject> getSpireRecallRelatedToPositionAndContract(String relatedSequence) {
         String[] relatedIds = relatedSequence.split(",");
+        String recallId;
         String positionId;
         String contractId;
         try {
-            positionId = relatedIds[0];
-            contractId = relatedIds[1];
+            recallId = relatedIds[0];
+            positionId = relatedIds[1];
+            contractId = relatedIds[2];
         } catch (IndexOutOfBoundsException e) {
+            recallId = "";
             positionId = "";
             contractId = "";
         }
-        return getRecallRelatedToPositionAndContract(recallInfo, positionId, contractId);
+        return getSpireRecallRelatedToPositionAndContract(recallId, positionId, contractId);
     }
 
     protected List<RelatedObject> getRecall1SourceRelatedToRecallSpire(String recall1sourceId, String recallSpireId,
@@ -213,7 +217,7 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return relatedObjects;
     }
 
-    protected List<RelatedObject> getRecallRelatedToPositionAndContract(String recallInfo, String positionInfo,
+    protected List<RelatedObject> getSpireRecallRelatedToPositionAndContract(String recallInfo, String positionInfo,
         String contractInfo) {
         var tradeAgreement = new RelatedObject(recallInfo, SPIRE_RECALL);
         var relatedPosition = new RelatedObject(positionInfo, POSITION);
