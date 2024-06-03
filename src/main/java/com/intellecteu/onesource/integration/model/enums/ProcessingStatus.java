@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum ProcessingStatus {
+    ACK_SUBMITTED("ACK_SUBMITTED"),
     APPLIED("APPLIED"),
     APPROVAL_SUBMITTED("APPROVAL_SUBMITTED"),
     APPROVED("APPROVED"),

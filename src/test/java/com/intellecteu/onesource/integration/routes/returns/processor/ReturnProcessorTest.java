@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.routes.returns.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
@@ -210,6 +211,34 @@ class ReturnProcessorTest {
         assertEquals(DISCREPANCIES, result.getProcessingStatus());
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(VALIDATE_RETURN), eq(RETURN_DISCREPANCIES),
+            any(), any());
+    }
+
+    @Test
+    void sendPositiveAck_ValidReturn_SentAck() {
+        Return oneSourceReturn = new Return();
+        oneSourceReturn.setMatchingSpireTradeId(1l);
+        ReturnTrade returnTrade = new ReturnTrade();
+        doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
+
+        Return result = returnProcessor.sendPositiveAck(oneSourceReturn);
+
+        verify(oneSourceService, times(1)).sendPositiveAck(any(), any());
+        verify(cloudEventRecordService, times(0)).record(any());
+    }
+
+    @Test
+    void sendPositiveAck_ThrownHttpClientErrorException_SavedCloudEvent() {
+        Return oneSourceReturn = new Return();
+        oneSourceReturn.setMatchingSpireTradeId(1l);
+        ReturnTrade returnTrade = new ReturnTrade();
+        doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(oneSourceService).sendPositiveAck(any(), any());
+
+        Return result = returnProcessor.sendPositiveAck(oneSourceReturn);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_POSITIVELY), eq(TECHNICAL_EXCEPTION_1SOURCE),
             any(), any());
     }
 }

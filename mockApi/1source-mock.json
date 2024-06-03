@@ -1908,24 +1908,19 @@
       "responseMode": null
     },
     {
-      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0",
+      "uuid": "d9383092-aef8-4854-b710-14bc16e2a746",
       "type": "http",
-      "documentation": "instruct spire recall cancellation",
+      "documentation": "",
       "method": "post",
-      "endpoint": "contracts/:contractId/recalls/:recallId/cancel",
+      "endpoint": "contracts/:contractId/returns/:returnId/acknowledge",
       "responses": [
         {
-          "uuid": "e7278bed-9361-4e12-9f85-2e8867115eeb",
-          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.293Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
+          "uuid": "ad792ad1-aebb-494b-913c-c70a603e8f0a",
+          "body": "{}",
           "latency": 0,
           "statusCode": 200,
-          "label": "Operation was successful",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
+          "label": "",
+          "headers": [],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
@@ -1935,30 +1930,6 @@
           "disableTemplating": false,
           "fallbackTo404": false,
           "default": true,
-          "crudKey": "id",
-          "callbacks": []
-        },
-        {
-          "uuid": "a6951178-530d-4145-959f-ffba02a58827",
-          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.296Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
-          "latency": 0,
-          "statusCode": 404,
-          "label": "Resource not found",
-          "headers": [
-            {
-              "key": "Content-Type",
-              "value": "application/json"
-            }
-          ],
-          "bodyType": "INLINE",
-          "filePath": "",
-          "databucketID": "",
-          "sendFileAsBody": false,
-          "rules": [],
-          "rulesOperator": "OR",
-          "disableTemplating": false,
-          "fallbackTo404": false,
-          "default": false,
           "crudKey": "id",
           "callbacks": []
         }
@@ -2065,7 +2036,7 @@
     },
     {
       "type": "route",
-      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0"
+      "uuid": "d9383092-aef8-4854-b710-14bc16e2a746"
     }
   ],
   "proxyMode": false,

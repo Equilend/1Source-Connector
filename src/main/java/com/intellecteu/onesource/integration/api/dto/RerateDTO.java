@@ -78,6 +78,7 @@ public class RerateDTO {
      * Processing status of the rerate.
      */
     public enum ProcessingStatusEnum {
+        ACK_SUBMITTED("ACK_SUBMITTED"),
         APPROVED("APPROVED"),
         CANCELED("CANCELED"),
         CONFIRMED_BORROWER("CONFIRMED_BORROWER"),

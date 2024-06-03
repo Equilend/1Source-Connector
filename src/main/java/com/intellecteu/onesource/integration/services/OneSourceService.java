@@ -24,6 +24,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.OneSource
 import com.intellecteu.onesource.integration.services.client.onesource.RecallsApi;
 import com.intellecteu.onesource.integration.services.client.onesource.ReratesApi;
 import com.intellecteu.onesource.integration.services.client.onesource.ReturnsApi;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.AcknowledgementTypeDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.AgreementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.BenchmarkCdDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ContractDTO;
@@ -42,6 +43,7 @@ import com.intellecteu.onesource.integration.services.client.onesource.dto.Recal
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnAcknowledgementDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnProposalDTO;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.SettlementInstructionDTO;
@@ -260,6 +262,29 @@ public class OneSourceService {
                 : SettlementTypeDTO.DVP)
             .settlement(settlementInstructionDTO);
         return returnProposalDTO;
+    }
+
+    public void sendPositiveAck(Return oneSourceReturn, ReturnTrade returnTrade) {
+        ReturnAcknowledgementDTO returnAcknowledgement = buildReturnAcknowledgement(returnTrade);
+        returnsApi.ledgerContractsContractIdReturnsReturnIdAcknowledgePost(returnAcknowledgement,
+            oneSourceReturn.getContractId(), oneSourceReturn.getReturnId());
+    }
+
+    private ReturnAcknowledgementDTO buildReturnAcknowledgement(ReturnTrade returnTrade) {
+        ReturnAcknowledgementDTO returnAcknowledgement = new ReturnAcknowledgementDTO();
+        returnAcknowledgement.acknowledgementType(AcknowledgementTypeDTO.POSITIVE)
+            .settlement(new PartySettlementInstructionDTO().partyRole(PartyRoleDTO.LENDER)
+                .internalAcctCd(
+                    String.valueOf(returnTrade.getTradeOut().getPosition().getPositionAccount().getAccountId()))
+                .instruction(new SettlementInstructionDTO().dtcParticipantNumber(
+                        String.valueOf(returnTrade.getTradeOut().getPosition().getPositionAccount().getDtc()))
+                    //TODO: Next values are only for demo
+                    .settlementBic("DTCYUS33")
+                    .localAgentBic("ZYXXUS01XXX")
+                    .localAgentName("ABC1234")
+                    .localAgentAcct("1234ABC")
+                ));
+        return returnAcknowledgement;
     }
 
     public Recall1Source retrieveRecallDetails(String recallId) {
