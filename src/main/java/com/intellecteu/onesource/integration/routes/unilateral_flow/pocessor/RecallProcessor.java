@@ -10,14 +10,17 @@ import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RECALL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RECALL_DETAILS;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_1SOURCE_RECALL_CANCELLATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_1SOURCE_RECALL_CLOSURE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_SPIRE_RECALL_INSTRUCTION;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CLOSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_BORROWER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_LENDER;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CANCEL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CLOSED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
@@ -32,6 +35,7 @@ import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecallStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
+import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
@@ -87,8 +91,13 @@ public class RecallProcessor {
             return recallService.find1SourceRecallById(recallId);
         } catch (EntityNotFoundException | IndexOutOfBoundsException e) {
             log.debug("No 1Source Recall was retrieved for the resource:{}", resourceUri);
-            recordIntegrationToolkitIssueEvent(resourceUri, PROCESS_1SOURCE_RECALL_CANCELLATION,
-                RECALL, Map.of(ONESOURCE_RECALL, resourceUri));
+            IntegrationSubProcess subProcess;
+            if (event.getEventType() == EventType.RECALL_CANCELED) {
+                subProcess = PROCESS_1SOURCE_RECALL_CANCELLATION;
+            } else {
+                subProcess = PROCESS_1SOURCE_RECALL_CLOSURE;
+            }
+            recordIntegrationToolkitIssueEvent(resourceUri, subProcess, RECALL, Map.of(ONESOURCE_RECALL, resourceUri));
             return null;
         }
     }
@@ -177,6 +186,16 @@ public class RecallProcessor {
         record1SourceRecallCancellation(recall1Source, spireRecallOptional);
     }
 
+    @Transactional
+    public void markRecallsClosed(@NotNull Recall1Source recall1Source) {
+        recall1Source.setRecallStatus(RecallStatus.CLOSED);
+        updateRecall1SourceProcessingStatus(recall1Source, CLOSED);
+        final Optional<RecallSpire> spireRecallOptional = recallService.getSpireRecallByIdAndPosition(
+            recall1Source.getMatchingSpireRecallId(), recall1Source.getRelatedSpirePositionId());
+        spireRecallOptional.ifPresent(spireRecall -> updateRecallProcessingStatus(spireRecall, CLOSED));
+        record1SourceRecallClosedEvent(recall1Source, spireRecallOptional);
+    }
+
     private void record1SourceRecallCancellation(Recall1Source recall1Source,
         Optional<RecallSpire> spireRecallOptional) {
         Map<String, String> data = new HashMap<>();
@@ -188,6 +207,20 @@ public class RecallProcessor {
             data.put(ONESOURCE_LOAN_CONTRACT, spireRecall.getRelatedContractId());
         });
         recordBusinessEvent(PROCESS_1SOURCE_RECALL_CANCELLATION, RECALL_CANCELED, data, RECALL);
+    }
+
+
+    private void record1SourceRecallClosedEvent(Recall1Source recall1Source,
+        Optional<RecallSpire> spireRecallOptional) {
+        Map<String, String> data = new HashMap<>();
+        data.put(ONESOURCE_RECALL, recall1Source.getRecallId());
+        data.put(ONESOURCE_LOAN_CONTRACT, recall1Source.getContractId());
+        spireRecallOptional.ifPresent(spireRecall -> {
+            data.put(POSITION, String.valueOf(recall1Source.getRelatedSpirePositionId()));
+            data.put(SPIRE_RECALL, String.valueOf(spireRecall.getRecallId()));
+            data.put(ONESOURCE_LOAN_CONTRACT, spireRecall.getRelatedContractId());
+        });
+        recordBusinessEvent(PROCESS_1SOURCE_RECALL_CLOSURE, RECALL_CLOSED, data, RECALL);
     }
 
     private void recordCancelSubmittedTechnicalEvent(String instructionId, RecallSpire recallSpire,

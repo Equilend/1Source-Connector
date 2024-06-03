@@ -8,20 +8,26 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL_INSTRUCTION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.GET_RECALL_DETAILS_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.ONESOURCE_RECALL_CANCELLATION_ISSUE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.ONESOURCE_RECALL_CLOSURE_ISSUE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.PROCESS_SPIRE_RECALL_INSTR_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CANCELED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CANCELED_NO_SPIRE_RECALL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CANCEL_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CLOSED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CLOSED_NO_SPIRE_RECALL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_CONFIRMED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.RECALL_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.DataMsg.SPIRE_RECALL_CANCELLATION_INSTR_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.GET_RECALL_DETAILS_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.ONESOURCE_RECALL_CANCELLATION_ISSUE_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.ONESOURCE_RECALL_CLOSURE_ISSUE_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.PROCESS_SPIRE_RECALL_INSTR_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CANCELED_NO_SPIRE_RECALL_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CANCELED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CANCEL_SUBMITTED_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CLOSED_NO_SPIRE_RECALL_SUBJECT;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CLOSED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CONFIRMED_SUBJECT;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_CONFIRMED_SUBJECT_NO_POSITION;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Recall.Subject.RECALL_SUBMITTED_SUBJECT;
@@ -98,6 +104,7 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         Map<String, String> data, List<FieldImpacted> fieldsImpacted) {
         return switch (recordType) {
             case RECALL_CANCELED -> recall1SourceCanceled(data, recordType, subProcess);
+            case RECALL_CLOSED -> recall1SourceClosed(data, recordType, subProcess);
             case RECALL_CONFIRMED -> recallConfirmed(data, recordType, fieldsImpacted);
             case RECALL_CANCEL_SUBMITTED -> recallCancelSubmitted(data, recordType);
             default -> null;
@@ -120,6 +127,7 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         return switch (subProcess) {
             case PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION -> recallCancellationIssueRequest(subProcess, data);
             case PROCESS_1SOURCE_RECALL_CANCELLATION -> recall1SourceCancellationIssueRequest(subProcess, data);
+            case PROCESS_1SOURCE_RECALL_CLOSURE -> recall1SourceClosureIssueRequest(subProcess, data);
             default -> null;
         };
     }
@@ -159,6 +167,20 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         String recallId = data.get(ONESOURCE_RECALL);
         String subject = format(ONESOURCE_RECALL_CANCELLATION_ISSUE_SUBJECT, recallId);
         String message = format(ONESOURCE_RECALL_CANCELLATION_ISSUE_MSG, recallId);
+        return createRecordRequest(
+            TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
+            subject,
+            RECALL,
+            subProcess,
+            createEventData(message, List.of(new RelatedObject(recallId, ONESOURCE_RECALL)))
+        );
+    }
+
+    private CloudEventBuildRequest recall1SourceClosureIssueRequest(IntegrationSubProcess subProcess,
+        Map<String, String> data) {
+        String recallId = data.get(ONESOURCE_RECALL);
+        String subject = format(ONESOURCE_RECALL_CLOSURE_ISSUE_SUBJECT, recallId);
+        String message = format(ONESOURCE_RECALL_CLOSURE_ISSUE_MSG, recallId);
         return createRecordRequest(
             TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
             subject,
@@ -264,6 +286,37 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         } else {
             message = format(RECALL_CANCELED_NO_SPIRE_RECALL_MSG, recall1Source);
             subject = format(RECALL_CANCELED_NO_SPIRE_RECALL_SUBJECT, recall1Source, contractId);
+            relatedObjects.add(new RelatedObject(recall1Source, ONESOURCE_RECALL));
+            relatedObjects.add(new RelatedObject(contractId, ONESOURCE_LOAN_CONTRACT));
+        }
+        return createRecordRequest(
+            recordType,
+            subject,
+            RECALL,
+            subProcess,
+            createEventData(message, relatedObjects)
+        );
+    }
+
+    private CloudEventBuildRequest recall1SourceClosed(Map<String, String> data, RecordType recordType,
+        IntegrationSubProcess subProcess) {
+        String message;
+        String subject;
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        final String recall1Source = data.get(ONESOURCE_RECALL);
+        final String contractId = data.get(ONESOURCE_LOAN_CONTRACT);
+        if (data.containsKey(SPIRE_RECALL)) {
+            final String recallSpire = data.get(SPIRE_RECALL);
+            final String instructionId = data.get(SPIRE_RECALL_INSTRUCTION);
+            final String positionId = data.get(POSITION);
+            message = format(RECALL_CLOSED_MSG, recall1Source, recallSpire);
+            subject = format(RECALL_CLOSED_SUBJECT, recallSpire, positionId);
+            relatedObjects.add(new RelatedObject(instructionId, SPIRE_RECALL_INSTRUCTION));
+            relatedObjects.addAll(getRecall1SourceRelatedToRecallSpire(recall1Source, recallSpire,
+                positionId, contractId));
+        } else {
+            message = format(RECALL_CLOSED_NO_SPIRE_RECALL_MSG, recall1Source);
+            subject = format(RECALL_CLOSED_NO_SPIRE_RECALL_SUBJECT, recall1Source, contractId);
             relatedObjects.add(new RelatedObject(recall1Source, ONESOURCE_RECALL));
             relatedObjects.add(new RelatedObject(contractId, ONESOURCE_LOAN_CONTRACT));
         }
