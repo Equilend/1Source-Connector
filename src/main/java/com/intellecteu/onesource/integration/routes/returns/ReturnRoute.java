@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.returns;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -79,12 +80,12 @@ public class ReturnRoute extends RouteBuilder {
                 .end();
 
         from(String.format("timer://eventTimer?period=%d", updateTimer))
-                .log(">>> Started GET_NEW_RETURN_PENDING_CONFIRMATION for ReturnTrades")
-                .bean(returnProcessor, "fetchNewReturnTrades")
-                .split(body())
-                .to("direct:recordReturnTrade")
-                .end()
-                .log("<<< Finished GET_NEW_RETURN_PENDING_CONFIRMATION for ReturnTrades");
+            .log(">>> Started GET_NEW_RETURN_PENDING_CONFIRMATION for ReturnTrades")
+            .bean(returnProcessor, "fetchNewReturnTrades")
+            .split(body())
+            .to("direct:recordReturnTrade")
+            .end()
+            .log("<<< Finished GET_NEW_RETURN_PENDING_CONFIRMATION for ReturnTrades");
 
         from("direct:recordReturnTrade")
             .log(">>> Started PROCESS_RETURN_PENDING_CONFIRMATION for ReturnTrade: ${body.tradeId}")
@@ -119,6 +120,13 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnProcessor, "validateReturn")
             .bean(returnProcessor, "saveReturn")
             .log("<<< Finished VALIDATE_RETURN for Return: ${body.returnId} with expected statuses: Return[VALIDATED, DISCREPANCIES]");
+
+        from(createReturnSQLEndpoint(VALIDATED))
+            .log(">>> Started ACKNOWLEDGE_RETURN_POSITIVELY for Return: ${body.returnId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnProcessor, "sendPositiveAck")
+            .bean(returnProcessor, "saveReturnWithProcessingStatus(${body}, ACK_SUBMITTED)")
+            .log("<<< Finished ACKNOWLEDGE_RETURN_POSITIVELY for Return: ${body.returnId} with expected statuses: Return[ACK_SUBMITTED]");
 
     }
     //@formatter:on

@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
@@ -100,6 +101,12 @@ public class ReturnProcessor {
 
     public Return saveReturn(Return oneSourceReturn) {
         oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+        return returnService.saveReturn(oneSourceReturn);
+    }
+
+    public Return saveReturnWithProcessingStatus(Return oneSourceReturn, ProcessingStatus processingStatus) {
+        oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+        oneSourceReturn.setProcessingStatus(processingStatus);
         return returnService.saveReturn(oneSourceReturn);
     }
 
@@ -206,6 +213,22 @@ public class ReturnProcessor {
             e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
             createFailedReconciliationEvent(oneSourceReturn, e);
             oneSourceReturn.setProcessingStatus(DISCREPANCIES);
+        }
+        return oneSourceReturn;
+    }
+
+    public Return sendPositiveAck(Return oneSourceReturn) {
+        ReturnTrade returnTrade = returnTradeService.getByTradeId(oneSourceReturn.getMatchingSpireTradeId());
+        try {
+            oneSourceService.sendPositiveAck(oneSourceReturn, returnTrade);
+        } catch (HttpStatusCodeException exception) {
+            recordOrUpdateCloudEvent(ACKNOWLEDGE_RETURN_POSITIVELY, TECHNICAL_EXCEPTION_1SOURCE,
+                oneSourceReturn.getMatchingSpireTradeId(),
+                new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
+                    .putReturnId(oneSourceReturn.getReturnId()).putTradeId(oneSourceReturn.getMatchingSpireTradeId())
+                    .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
+                    .putContractId(oneSourceReturn.getContractId()).getData(), List.of());
+            throwExceptionForRedeliveryPolicy(exception);
         }
         return oneSourceReturn;
     }
