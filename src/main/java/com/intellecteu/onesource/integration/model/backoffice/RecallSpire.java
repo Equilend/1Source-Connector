@@ -28,6 +28,8 @@ public class RecallSpire {
     private Long recallId;
     @NotNull
     private Long relatedPositionId;
+    @NotNull
+    private String instructionId;
     private String matching1SourceRecallId;
     @NotNull
     private String relatedContractId;

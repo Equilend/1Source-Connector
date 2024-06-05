@@ -1,5 +1,5 @@
--- INSERT INTO recall_spire (recall_id, related_position_id, matching_1source_recall_id, related_contract_id, processing_status, status, creation_date_time, last_update_date_time, open_quantity, quantity, recall_date, recall_due_date)
--- VALUES (123, 789, null, 'qwer-tyui-333', 'CREATED', 'OPEN', '2024-05-20 13:50:41.633000', '2024-05-20 13:50:41.633000', 40, 99, '2024-05-20', '2024-05-25');
+-- INSERT INTO recall_spire (recall_id, related_position_id, instruction_id, matching_1source_recall_id, related_contract_id, processing_status, status, creation_date_time, last_update_date_time, open_quantity, quantity, recall_date, recall_due_date)
+-- VALUES (123, 789, 'test_instruction', null, 'qwer-tyui-333', 'CREATED', 'OPEN', '2024-05-20 13:50:41.633000', '2024-05-20 13:50:41.633000', 40, 99, '2024-05-20', '2024-05-25');
 --
 -- INSERT INTO venue (id, type, venue_name, venue_ref_key)
 -- VALUES (101, 'OFFPLATFORM', 'testLenderVenueName', '123-789');

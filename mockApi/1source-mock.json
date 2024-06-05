@@ -1935,6 +1935,98 @@
         }
       ],
       "responseMode": null
+    },
+    {
+      "uuid": "7283869a-a7ea-4109-b933-a655e2a7c3a2",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "recalls/:recallId",
+      "responses": [
+        {
+          "uuid": "0f376b0e-b5b1-4514-9a91-5f163e163d76",
+          "body": "{\r\n  \"recallId\": \"{{urlParam 'recallId'}}\",\r\n  \"contractId\": \"1222-2333-3444-4555\",\r\n  \"status\": \"OPEN\",\r\n  \"executionVenue\": {\r\n    \"partyId\": \"string\",\r\n    \"type\": \"ONPLATFORM\",\r\n    \"venueName\": \"string\",\r\n    \"venueRefKey\": \"string\",\r\n    \"transactionDatetime\": \"2024-06-03T20:14:03.478Z\",\r\n    \"venueParties\": [\r\n      {\r\n        \"partyRole\": \"BORROWER\",\r\n        \"venuePartyRefKey\": \"string\"\r\n      }\r\n    ],\r\n    \"localVenueFields\": [\r\n      {\r\n        \"localFieldName\": \"string\",\r\n        \"localFieldValue\": \"string\"\r\n      }\r\n    ]\r\n  },\r\n  \"openQuantity\": 0,\r\n  \"quantity\": 0,\r\n  \"recallDate\": \"2024-06-03\",\r\n  \"recallDueDate\": \"2024-06-03\",\r\n  \"lastUpdateDatetime\": \"2024-06-03T20:14:03.478Z\"\r\n}\r\n",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Rerate proposed details",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
+    },
+    {
+      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0",
+      "type": "http",
+      "documentation": "instruct spire recall cancellation",
+      "method": "post",
+      "endpoint": "contracts/:contractId/recalls/:recallId/cancel",
+      "responses": [
+        {
+          "uuid": "e7278bed-9361-4e12-9f85-2e8867115eeb",
+          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.293Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Operation was successful",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": []
+        },
+        {
+          "uuid": "a6951178-530d-4145-959f-ffba02a58827",
+          "body": "{\r\n  \"code\": \"string\",\r\n  \"type\": \"string\",\r\n  \"responseDateTime\": \"2024-05-29T13:04:22.296Z\",\r\n  \"requestId\": \"string\",\r\n  \"message\": \"string\",\r\n  \"resourceUri\": \"string\"\r\n}",
+          "latency": 0,
+          "statusCode": 404,
+          "label": "Resource not found",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": []
+        }
+      ],
+      "responseMode": null
     }
   ],
   "rootChildren": [
@@ -2037,6 +2129,14 @@
     {
       "type": "route",
       "uuid": "d9383092-aef8-4854-b710-14bc16e2a746"
+    },
+    {
+      "type": "route",
+      "uuid": "7283869a-a7ea-4109-b933-a655e2a7c3a2"
+    },
+    {
+      "type": "route",
+      "uuid": "2807faf5-2b13-43c0-ada1-5ea48d0b63d0"
     }
   ],
   "proxyMode": false,

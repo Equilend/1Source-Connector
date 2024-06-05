@@ -85,7 +85,7 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         IntegrationSubProcess subProcess, String related) {
         return switch (subProcess) {
             case GET_RECALL_DETAILS -> getRecallDetailsRequest(record, e, subProcess);
-            case PROCESS_SPIRE_RECALL_INSTRUCTION -> processSpireRecallInstructionExceptionRequest(record, e);
+            case PROCESS_SPIRE_RECALL_INSTRUCTION -> processSpireRecallInstructionExceptionRequest(record, e, related);
             case PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION -> spireRecallCancellation(record, e, related);
             default -> null;
         };
@@ -204,6 +204,7 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest recallConfirmed(Map<String, String> data, RecordType recordType,
         List<FieldImpacted> fieldsImpacted) {
+        String instructionId = data.get(SPIRE_RECALL_INSTRUCTION);
         String recall1SourceId = data.get(ONESOURCE_RECALL);
         String contractId = data.get(ONESOURCE_LOAN_CONTRACT);
         String spireRecallId = data.get(SPIRE_RECALL);
@@ -215,15 +216,18 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
             subject = format(RECALL_CONFIRMED_SUBJECT, spireRecallId, spirePositionId);
         }
         String message = format(RECALL_CONFIRMED_MSG, recall1SourceId);
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        if (instructionId != null) {
+            relatedObjects.add(new RelatedObject(instructionId, SPIRE_RECALL_INSTRUCTION));
+        }
+        relatedObjects.addAll(getRecall1SourceRelatedToRecallSpire(recall1SourceId, spireRecallId, spirePositionId,
+            contractId));
         return createRecordRequest(
             recordType,
             subject,
             RECALL,
             GET_RECALL_DETAILS,
-            createEventData(
-                message,
-                getRecall1SourceRelatedToRecallSpire(recall1SourceId, spireRecallId, spirePositionId, contractId),
-                fieldsImpacted)
+            createEventData(message, relatedObjects, fieldsImpacted)
         );
     }
 
@@ -251,19 +255,23 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
     }
 
     /*
-     * Expected relatedSequence in format: "positionId,contractId"
+     * Expected relatedSequence in format: "spireRecallId,positionId,contractId"
      */
     private CloudEventBuildRequest recallSubmitted(String record, RecordType recordType, String relatedSequence) {
         String[] positionAndContractIds = relatedSequence.split(",");
-        String relatedPositionId = positionAndContractIds[0];
-        String message = format(RECALL_SUBMITTED_MSG, record);
-        String subject = format(RECALL_SUBMITTED_SUBJECT, record, relatedPositionId);
+        String recallId = positionAndContractIds[0];
+        String relatedPositionId = positionAndContractIds[1];
+        String message = format(RECALL_SUBMITTED_MSG, recallId);
+        String subject = format(RECALL_SUBMITTED_SUBJECT, recallId, relatedPositionId);
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        relatedObjects.add(new RelatedObject(record, SPIRE_RECALL_INSTRUCTION));
+        relatedObjects.addAll(getSpireRecallRelatedToPositionAndContract(relatedSequence));
         return createRecordRequest(
             recordType,
             subject,
             RECALL,
             PROCESS_SPIRE_RECALL_INSTRUCTION,
-            createEventData(message, getRecallRelatedToPositionAndContract(record, relatedSequence))
+            createEventData(message, relatedObjects)
         );
     }
 
@@ -329,15 +337,27 @@ public class RecallCloudEventBuilder extends IntegrationCloudEventBuilder {
         );
     }
 
+    /*
+     * Expected related sequence: "spireRecallId,relatedPositionId,relatedContractId"
+     */
     private CloudEventBuildRequest processSpireRecallInstructionExceptionRequest(String record,
-        HttpStatusCodeException e) {
+        HttpStatusCodeException e, String relatedSequence) {
         String message = format(PROCESS_SPIRE_RECALL_INSTR_MSG, record, e.getStatusText());
+        String[] relatedArray = relatedSequence.split(",");
+        String spireRecallId = relatedArray[0];
+        String spirePositionId = relatedArray[1];
+        String spireContractId = relatedArray[2];
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        relatedObjects.add(new RelatedObject(SPIRE_RECALL_INSTRUCTION, record));
+        relatedObjects.add(new RelatedObject(SPIRE_RECALL, spireRecallId));
+        relatedObjects.add(new RelatedObject(POSITION, spirePositionId));
+        relatedObjects.add(new RelatedObject(ONESOURCE_LOAN_CONTRACT, spireContractId));
         return createRecordRequest(
             RecordType.TECHNICAL_EXCEPTION_1SOURCE,
             format(PROCESS_SPIRE_RECALL_INSTR_SUBJECT, record),
             RECALL,
             PROCESS_SPIRE_RECALL_INSTRUCTION,
-            createEventData(message, List.of(new RelatedObject(record, SPIRE_RECALL)))
+            createEventData(message, relatedObjects)
         );
     }
 

@@ -35,6 +35,8 @@ public class RecallSpireEntity {
     private Long recallId;
     @Id
     private Long relatedPositionId;
+    @NotNull
+    private String instructionId;
     @Column(name = "matching_1source_recall_id")
     private String matching1SourceRecallId;
     @NotNull

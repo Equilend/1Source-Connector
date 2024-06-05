@@ -111,18 +111,20 @@ public class RecallProcessor {
     }
 
     @Transactional
-    public void processRecallInstruction(RecallSpire recallSpire) {
+    public void processRecallInstruction(@NotNull RecallSpire recallSpire) {
         try {
             final RecallProposalDTO recallProposal = dataTransformer.to1SourceRecallProposal(recallSpire);
             oneSourceService.instructRecall(recallSpire.getRelatedContractId(), recallProposal);
             updateRecallProcessingStatus(recallSpire, ProcessingStatus.SUBMITTED);
-            var relatedSequence = format("%d,%s", recallSpire.getRelatedPositionId(),
+            var relatedSequence = format("%d,%d,%s", recallSpire.getRecallId(), recallSpire.getRelatedPositionId(),
                 recallSpire.getRelatedContractId());
-            recordBusinessEvent(String.valueOf(recallSpire.getRecallId()), RECALL_SUBMITTED, relatedSequence,
+            recordBusinessEvent(recallSpire.getInstructionId(), RECALL_SUBMITTED, relatedSequence,
                 PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
         } catch (HttpStatusCodeException e) {
-            record1SourceTechnicalEvent(String.valueOf(recallSpire.getRecallId()), e,
-                PROCESS_SPIRE_RECALL_INSTRUCTION, RECALL);
+            String relatedSequence = String.format("%d,%d,%s", recallSpire.getRecallId(),
+                recallSpire.getRelatedPositionId(), recallSpire.getRelatedContractId());
+            record1SourceTechnicalEvent(recallSpire.getInstructionId(), e,
+                PROCESS_SPIRE_RECALL_INSTRUCTION, relatedSequence, RECALL);
         }
     }
 
@@ -162,11 +164,11 @@ public class RecallProcessor {
                 recallSpire.getRelatedContractId());
             recallSpire.setStatus(RecallStatus.CANCELED);
             updateRecallProcessingStatus(recallSpire, CANCEL_SUBMITTED);
-            recordCancelSubmittedEvent(instruction.getInstructionId(), recallSpire);
+            recordCancelSubmittedEvent(recallSpire);
         } catch (HttpStatusCodeException e) {
             log.debug("Exception on instruct SPIRE recall cancellation, recallId:{}, details:{}",
                 recallSpire.getRecallId(), e.getMessage());
-            recordCancelSubmittedTechnicalEvent(instruction.getInstructionId(), recallSpire, e);
+            recordCancelSubmittedTechnicalEvent(recallSpire, e);
         }
     }
 
@@ -202,6 +204,7 @@ public class RecallProcessor {
         data.put(ONESOURCE_RECALL, recall1Source.getRecallId());
         data.put(ONESOURCE_LOAN_CONTRACT, recall1Source.getContractId());
         spireRecallOptional.ifPresent(spireRecall -> {
+            data.put(SPIRE_RECALL_INSTRUCTION, spireRecall.getInstructionId());
             data.put(POSITION, String.valueOf(recall1Source.getRelatedSpirePositionId()));
             data.put(SPIRE_RECALL, String.valueOf(spireRecall.getRecallId()));
             data.put(ONESOURCE_LOAN_CONTRACT, spireRecall.getRelatedContractId());
@@ -209,13 +212,13 @@ public class RecallProcessor {
         recordBusinessEvent(PROCESS_1SOURCE_RECALL_CANCELLATION, RECALL_CANCELED, data, RECALL);
     }
 
-
     private void record1SourceRecallClosedEvent(Recall1Source recall1Source,
         Optional<RecallSpire> spireRecallOptional) {
         Map<String, String> data = new HashMap<>();
         data.put(ONESOURCE_RECALL, recall1Source.getRecallId());
         data.put(ONESOURCE_LOAN_CONTRACT, recall1Source.getContractId());
         spireRecallOptional.ifPresent(spireRecall -> {
+            data.put(SPIRE_RECALL_INSTRUCTION, spireRecall.getInstructionId());
             data.put(POSITION, String.valueOf(recall1Source.getRelatedSpirePositionId()));
             data.put(SPIRE_RECALL, String.valueOf(spireRecall.getRecallId()));
             data.put(ONESOURCE_LOAN_CONTRACT, spireRecall.getRelatedContractId());
@@ -223,14 +226,14 @@ public class RecallProcessor {
         recordBusinessEvent(PROCESS_1SOURCE_RECALL_CLOSURE, RECALL_CLOSED, data, RECALL);
     }
 
-    private void recordCancelSubmittedTechnicalEvent(String instructionId, RecallSpire recallSpire,
+    private void recordCancelSubmittedTechnicalEvent(RecallSpire recallSpire,
         HttpStatusCodeException e) {
         String oneSourceRecallId = String.valueOf(recallSpire.getMatching1SourceRecallId());
         String spireRecallId = String.valueOf(recallSpire.getRecallId());
         String positionId = String.valueOf(recallSpire.getRelatedPositionId());
         String contractId = recallSpire.getRelatedContractId();
         String relatedSequence = format("%s,%s,%s,%s", oneSourceRecallId, spireRecallId, positionId, contractId);
-        record1SourceTechnicalEvent(instructionId, e, PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION,
+        record1SourceTechnicalEvent(recallSpire.getInstructionId(), e, PROCESS_SPIRE_RECALL_CANCELLATION_INSTRUCTION,
             relatedSequence, RECALL);
     }
 
@@ -245,7 +248,8 @@ public class RecallProcessor {
             RECALL, data);
     }
 
-    private void recordCancelSubmittedEvent(@NotNull String instructionId, @NotNull RecallSpire recallSpire) {
+    private void recordCancelSubmittedEvent(@NotNull RecallSpire recallSpire) {
+        String instructionId = recallSpire.getInstructionId();
         String oneSourceRecall = recallSpire.getMatching1SourceRecallId();
         String spireRecallId = String.valueOf(recallSpire.getRecallId());
         String positionId = String.valueOf(recallSpire.getRelatedPositionId());
@@ -281,6 +285,9 @@ public class RecallProcessor {
                 String.valueOf(recall1Source.getRecallDueDate())));
         }
         if (recallSpire != null) {
+            if (recallSpire.getInstructionId() != null) {
+                recordData.put(SPIRE_RECALL_INSTRUCTION, recallSpire.getInstructionId());
+            }
             if (recallSpire.getRecallId() != null) {
                 recordData.put(SPIRE_RECALL, String.valueOf(recallSpire.getRecallId()));
             }
