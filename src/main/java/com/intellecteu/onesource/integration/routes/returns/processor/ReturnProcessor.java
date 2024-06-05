@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
@@ -10,11 +11,13 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NACK_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
@@ -22,14 +25,9 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RETUR
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
-import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.CONTRACT_ID;
-import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.HTTP_STATUS_TEXT;
-import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.POSITION_ID;
-import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.RETURN_ID;
-import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.TRADE_ID;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStringNullSafe;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
@@ -37,18 +35,22 @@ import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.NackInstruction;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.NackInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
+import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.DataBuilder;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,18 +70,21 @@ public class ReturnProcessor {
     private final ReturnService returnService;
     private final ReturnReconcileService returnReconcileService;
     private final CloudEventRecordService cloudEventRecordService;
+    private final NackInstructionService nackInstructionService;
     private final ReturnCloudEventBuilder eventBuilder;
 
     @Autowired
     public ReturnProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
         ReturnTradeService returnTradeService, ReturnService returnService,
         ReturnReconcileService returnReconcileService,
+        NackInstructionService nackInstructionService,
         CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.returnTradeService = returnTradeService;
         this.returnService = returnService;
         this.returnReconcileService = returnReconcileService;
+        this.nackInstructionService = nackInstructionService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
     }
@@ -108,6 +113,11 @@ public class ReturnProcessor {
         oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
         oneSourceReturn.setProcessingStatus(processingStatus);
         return returnService.saveReturn(oneSourceReturn);
+    }
+
+    public NackInstruction saveNackInstructionWithProcessingStatus(NackInstruction nackInstruction, ProcessingStatus processingStatus) {
+        nackInstruction.setProcessingStatus(processingStatus);
+        return nackInstructionService.save(nackInstruction);
     }
 
     public List<ReturnTrade> fetchNewReturnTrades() {
@@ -222,8 +232,7 @@ public class ReturnProcessor {
         try {
             oneSourceService.sendPositiveAck(oneSourceReturn, returnTrade);
         } catch (HttpStatusCodeException exception) {
-            recordOrUpdateCloudEvent(ACKNOWLEDGE_RETURN_POSITIVELY, TECHNICAL_EXCEPTION_1SOURCE,
-                oneSourceReturn.getMatchingSpireTradeId(),
+            recordCloudEvent(ACKNOWLEDGE_RETURN_POSITIVELY, TECHNICAL_EXCEPTION_1SOURCE,
                 new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
                     .putReturnId(oneSourceReturn.getReturnId()).putTradeId(oneSourceReturn.getMatchingSpireTradeId())
                     .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
@@ -233,49 +242,63 @@ public class ReturnProcessor {
         return oneSourceReturn;
     }
 
-    private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
-        Long positionId, String contractId, String returnId, List<FieldImpacted> fieldImpacteds) {
-        Map<String, String> data = new HashMap<>();
-        if (tradeId != null) {
-            data.put(TRADE_ID, toStringNullSafe(tradeId));
+    public NackInstruction sendNegativeAck(NackInstruction nackInstruction) {
+        try {
+            CloudSystemEvent cloudSystemEvent = cloudEventRecordService.getCloudSystemEvent(
+                nackInstruction.getRelatedCloudEventId());
+            if (RETURN_DISCREPANCIES.name().equals(cloudSystemEvent.getType()) || RETURN_UNMATCHED.name()
+                .equals(cloudSystemEvent.getType())) {
+                Return oneSourceReturn = returnService.getByReturnId(nackInstruction.getRelatedReturnId());
+                try {
+                    oneSourceService.sendNegativeAck(oneSourceReturn, nackInstruction.getNackReasonCode(),
+                        nackInstruction.getNackReasonText());
+                    saveReturnWithProcessingStatus(oneSourceReturn, NACK_SUBMITTED);
+                } catch (HttpStatusCodeException exception) {
+                    recordCloudEvent(ACKNOWLEDGE_RETURN_NEGATIVELY, TECHNICAL_EXCEPTION_1SOURCE,
+                        new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
+                            .putReturnId(oneSourceReturn.getReturnId())
+                            .putTradeId(oneSourceReturn.getMatchingSpireTradeId())
+                            .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
+                            .putContractId(oneSourceReturn.getContractId()).getData(), List.of());
+                    throwExceptionForRedeliveryPolicy(exception);
+                }
+            } else {
+                recordCloudEvent(ACKNOWLEDGE_RETURN_NEGATIVELY, NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED,
+                    new ReturnCloudEventBuilder.DataBuilder().putReturnId(nackInstruction.getRelatedReturnId())
+                        .getData(),
+                    List.of());
+            }
+        } catch (EntityNotFoundException e) {
+            recordCloudEvent(ACKNOWLEDGE_RETURN_NEGATIVELY, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT,
+                new ReturnCloudEventBuilder.DataBuilder().putReturnId(nackInstruction.getRelatedReturnId()).getData(),
+                List.of());
         }
-        if (positionId != null) {
-            data.put(POSITION_ID, toStringNullSafe(positionId));
-        }
-        if (contractId != null) {
-            data.put(CONTRACT_ID, contractId);
-        }
-        if (returnId != null) {
-            data.put(RETURN_ID, returnId);
-        }
-        //var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
-        //cloudEventRecordService.record(recordRequest);
-        recordOrUpdateCloudEvent(subProcess, recordType, tradeId, data, fieldImpacteds);
+        return nackInstruction;
     }
 
-    private void recordOrUpdateCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
+    private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
-        String persistedCloudEventId = null;
-        if (tradeId != null) {
-            persistedCloudEventId = cloudEventRecordService // temporary hardcoded until related object will be captured
-                .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
-                .orElse(null);
-        }
-        if (persistedCloudEventId == null) {
-            var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
-                data, fieldImpacteds);
-            cloudEventRecordService.record(recordRequest);
-        } else {
-            cloudEventRecordService.updateTime(persistedCloudEventId);
-        }
+        var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, fieldImpacteds);
+        cloudEventRecordService.record(recordRequest);
+    }
+
+    private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
+        Long positionId, String contractId, String returnId, List<FieldImpacted> fieldImpacteds) {
+        Map<String, String> data = new DataBuilder()
+            .putTradeId(tradeId)
+            .putPositionId(positionId)
+            .putContractId(contractId)
+            .putReturnId(returnId).getData();
+        recordCloudEvent(subProcess, recordType, data, fieldImpacteds);
     }
 
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         HttpStatusCodeException e, Long tradeId, Long positionId) {
-        Map<String, String> data = new HashMap<>();
-        data.put(HTTP_STATUS_TEXT, e.getStatusText());
-        data.put(TRADE_ID, toStringNullSafe(tradeId));
-        data.put(POSITION_ID, toStringNullSafe(positionId));
+        Map<String, String> data = new DataBuilder()
+            .putHttpStatusText(e.getStatusText())
+            .putPositionId(positionId)
+            .putTradeId(tradeId)
+            .getData();
         var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
         cloudEventRecordService.record(recordRequest);
     }

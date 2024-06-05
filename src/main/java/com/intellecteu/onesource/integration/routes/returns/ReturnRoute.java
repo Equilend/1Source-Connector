@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.mapper.NackInstructionMapper;
 import com.intellecteu.onesource.integration.mapper.OneSourceMapper;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
@@ -49,6 +50,7 @@ public class ReturnRoute extends RouteBuilder {
     private final ReturnEventProcessor returnEventProcessor;
     private final BackOfficeMapper backOfficeMapper;
     private final OneSourceMapper oneSourceMapper;
+    private final NackInstructionMapper nackInstructionMapper;
     private final Integer redeliveryPolicyMaxRedeliveries;
     private final String redeliveryPolicyDelayPattern;
     private final long updateTimer;
@@ -56,7 +58,7 @@ public class ReturnRoute extends RouteBuilder {
     @Autowired
     public ReturnRoute(ReturnProcessor returnProcessor, ReturnEventProcessor returnEventProcessor,
         BackOfficeMapper backOfficeMapper,
-        OneSourceMapper oneSourceMapper,
+        OneSourceMapper oneSourceMapper, NackInstructionMapper nackInstructionMapper,
         @Value("${route.returns.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
         @Value("${route.returns.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern,
         @Value("${route.returns.timer}") long updateTimer) {
@@ -64,6 +66,7 @@ public class ReturnRoute extends RouteBuilder {
         this.returnEventProcessor = returnEventProcessor;
         this.backOfficeMapper = backOfficeMapper;
         this.oneSourceMapper = oneSourceMapper;
+        this.nackInstructionMapper = nackInstructionMapper;
         this.redeliveryPolicyMaxRedeliveries = redeliveryPolicyMaxRedeliveries;
         this.redeliveryPolicyDelayPattern = redeliveryPolicyDelayPattern;
         this.updateTimer = updateTimer;
@@ -128,6 +131,14 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnProcessor, "saveReturnWithProcessingStatus(${body}, ACK_SUBMITTED)")
             .log("<<< Finished ACKNOWLEDGE_RETURN_POSITIVELY for Return: ${body.returnId} with expected statuses: Return[ACK_SUBMITTED]");
 
+        from(createUnprocessedNackInstructionSQLEndpoint())
+            .log(">>> Started ACKNOWLEDGE_RETURN_NEGATIVELY for NackInstruction: ${body.nackInstructionId}")
+            .bean(nackInstructionMapper, "toModel")
+            .bean(returnProcessor, "sendNegativeAck")
+            .bean(returnProcessor, "saveNackInstructionWithProcessingStatus(${body}, PROCESSED)")
+            .log("<<< Finished ACKNOWLEDGE_RETURN_NEGATIVELY for NackInstruction: ${body.nackInstructionId} with expected statuses: NackInstruction[PROCESSED], Return[NACK_SUBMITTED]");
+
+
     }
     //@formatter:on
 
@@ -144,6 +155,15 @@ public class ReturnRoute extends RouteBuilder {
     private String createReturnSQLEndpoint(ProcessingStatus processingStatus) {
         return String.format(RETURN_SQL_ENDPOINT, String.format("delay=%d", updateTimer),
             processingStatus);
+    }
+
+    private String createUnprocessedNackInstructionSQLEndpoint() {
+        String nackInstructionSQL =
+            "jpa://com.intellecteu.onesource.integration.repository.entity.toolkit.NackInstructionEntity?"
+                + "%s&"
+                + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+                + "query=SELECT d FROM NackInstructionEntity d WHERE d.processingStatus IS NULL";
+        return String.format(nackInstructionSQL, String.format("delay=%d", updateTimer));
     }
 
 }

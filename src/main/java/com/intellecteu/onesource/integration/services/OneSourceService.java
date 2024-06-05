@@ -287,6 +287,17 @@ public class OneSourceService {
         return returnAcknowledgement;
     }
 
+    public void sendNegativeAck(Return oneSourceReturn, String nackReasonCode, String nackReasonText) {
+        ReturnAcknowledgementDTO returnAcknowledgement = new ReturnAcknowledgementDTO();
+        returnAcknowledgement.setAcknowledgementType(AcknowledgementTypeDTO.NEGATIVE);
+        String description = String.format(
+            "Negative Acknowledgement code: %s - Negative Acknowledgement description: %s",
+            nackReasonCode, nackReasonText);
+        returnAcknowledgement.setDescription(description);
+        returnsApi.ledgerContractsContractIdReturnsReturnIdAcknowledgePost(returnAcknowledgement,
+            oneSourceReturn.getContractId(), oneSourceReturn.getReturnId());
+    }
+
     public Recall1Source retrieveRecallDetails(String recallId) {
         log.debug("Sending HTTP request to get recall details: /recalls/{}", recallId);
         final RecallDTO recallDTO = recallsApi.ledgerRecallsRecallIdGet(recallId);

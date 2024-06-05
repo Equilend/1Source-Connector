@@ -1,5 +1,6 @@
 package com.intellecteu.onesource.integration.routes.returns.processor;
 
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
@@ -7,9 +8,11 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NACK_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
@@ -31,11 +34,14 @@ import static org.mockito.MockitoAnnotations.openMocks;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.NackInstruction;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
+import com.intellecteu.onesource.integration.services.NackInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
@@ -66,6 +72,8 @@ class ReturnProcessorTest {
     @Mock
     private ReturnReconcileService returnReconcileService;
     @Mock
+    private NackInstructionService nackInstructionService;
+    @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private ReturnCloudEventBuilder eventBuilder;
@@ -77,7 +85,7 @@ class ReturnProcessorTest {
         doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         returnProcessor = new ReturnProcessor(backOfficeService, oneSourceService, returnTradeService, returnService,
-            returnReconcileService, cloudEventRecordService);
+            returnReconcileService, nackInstructionService, cloudEventRecordService);
     }
 
     @Test
@@ -204,7 +212,8 @@ class ReturnProcessorTest {
         oneSourceReturn.setMatchingSpireTradeId(1l);
         ReturnTrade returnTrade = new ReturnTrade();
         doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
-        doThrow(new ReconcileException(List.of(new ProcessExceptionDetails()))).when(returnReconcileService).reconcile(any(), any());
+        doThrow(new ReconcileException(List.of(new ProcessExceptionDetails()))).when(returnReconcileService)
+            .reconcile(any(), any());
 
         Return result = returnProcessor.validateReturn(oneSourceReturn);
 
@@ -233,12 +242,61 @@ class ReturnProcessorTest {
         oneSourceReturn.setMatchingSpireTradeId(1l);
         ReturnTrade returnTrade = new ReturnTrade();
         doReturn(returnTrade).when(returnTradeService).getByTradeId(any());
-        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(oneSourceService).sendPositiveAck(any(), any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(oneSourceService)
+            .sendPositiveAck(any(), any());
 
         Return result = returnProcessor.sendPositiveAck(oneSourceReturn);
 
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_POSITIVELY), eq(TECHNICAL_EXCEPTION_1SOURCE),
+            any(), any());
+    }
+
+    @Test
+    void sendNegativeAck_ValidNackInstruction_OneSourceReturnWithNACKSUBMITTEDStatus() {
+        NackInstruction nackInstruction = new NackInstruction();
+        CloudSystemEvent cloudSystemEvent = new CloudSystemEvent();
+        cloudSystemEvent.setType("RETURN_DISCREPANCIES");
+        doReturn(cloudSystemEvent).when(cloudEventRecordService).getCloudSystemEvent(any());
+        Return oneSourceReturn = new Return();
+        doReturn(oneSourceReturn).when(returnService).getByReturnId(any());
+
+        NackInstruction result = returnProcessor.sendNegativeAck(nackInstruction);
+
+        assertEquals(NACK_SUBMITTED, oneSourceReturn.getProcessingStatus());
+    }
+
+    @Test
+    void sendNegativeAck_NackInstructionWithWrongCloudEventType_SavedCloudEvent() {
+        NackInstruction nackInstruction = new NackInstruction();
+        CloudSystemEvent cloudSystemEvent = new CloudSystemEvent();
+        cloudSystemEvent.setType("WRONG_TYPE");
+        doReturn(cloudSystemEvent).when(cloudEventRecordService).getCloudSystemEvent(any());
+        Return oneSourceReturn = new Return();
+        doReturn(oneSourceReturn).when(returnService).getByReturnId(any());
+
+        NackInstruction result = returnProcessor.sendNegativeAck(nackInstruction);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_NEGATIVELY), eq(NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED),
+            any(), any());
+    }
+
+    @Test
+    void sendNegativeAck_ThrownHttpClientErrorException_SavedCloudEvent() {
+        NackInstruction nackInstruction = new NackInstruction();
+        CloudSystemEvent cloudSystemEvent = new CloudSystemEvent();
+        cloudSystemEvent.setType("RETURN_DISCREPANCIES");
+        doReturn(cloudSystemEvent).when(cloudEventRecordService).getCloudSystemEvent(any());
+        Return oneSourceReturn = new Return();
+        doReturn(oneSourceReturn).when(returnService).getByReturnId(any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(oneSourceService)
+            .sendNegativeAck(any(), any(), any());
+
+        NackInstruction result = returnProcessor.sendNegativeAck(nackInstruction);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_NEGATIVELY), eq(TECHNICAL_EXCEPTION_1SOURCE),
             any(), any());
     }
 }

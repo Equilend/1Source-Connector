@@ -96,15 +96,21 @@ spire:
       password: ${SPIRE_KAFKA_CONSUMER_PASSWORD:kafka-password}
       listener:
         correction-instruction:
+          enable: true
           group-id: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID:it-ci}
           topic: ${SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC:correctionInstruction}
         decline-instruction:
+          enable: true
           group-id: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID:it-di}
           topic: ${SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC:declineInstruction}
         recall-instruction:
           enable: ${SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE:false}
           group-id: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID:it-ri}
           topic: ${SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC:recallInstruction}
+        nack-instruction:
+          enable: true
+          group-id: ${SPIRE_KAFKA_CONSUMER_NACK_INSTRUCTION_GROUP_ID:it-ni}
+          topic: ${SPIRE_KAFKA_CONSUMER_NACK_INSTRUCTION_TOPIC:nackInstruction}
   password: ${SPIRE_PASSWORD}
   user-id: ${SPIRE_USER_ID:1}
   username: ${SPIRE_USERNAME}

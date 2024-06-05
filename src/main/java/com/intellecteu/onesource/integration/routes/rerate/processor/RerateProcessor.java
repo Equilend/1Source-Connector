@@ -442,6 +442,12 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
+    private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
+        var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, fieldImpacteds);
+        cloudEventRecordService.record(recordRequest);
+    }
+
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         HttpStatusCodeException e, String rerateId, Long tradeId, Long positionId) {
         Map<String, String> data = new HashMap<>();
@@ -455,9 +461,7 @@ public class RerateProcessor {
         if (positionId != null) {
             data.put(POSITION_ID, toStringNullSafe(positionId));
         }
-        //var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
-        //cloudEventRecordService.record(recordRequest);
-        recordOrUpdateCloudEvent(subProcess, recordType, tradeId, data, List.of());
+        recordCloudEvent(subProcess, recordType, data, List.of());
     }
 
     private void recordRerateEntityNotFoundTechnicalException(IntegrationSubProcess subProcess, RecordType recordType,
@@ -488,9 +492,7 @@ public class RerateProcessor {
         if (contractId != null) {
             data.put(CONTRACT_ID, contractId);
         }
-        //var recordRequest = eventBuilder.buildRequest(subProcess, recordType, data, List.of());
-        //cloudEventRecordService.record(recordRequest);
-        recordOrUpdateCloudEvent(subProcess, recordType, tradeId, data, fieldImpacteds);
+        recordCloudEvent(subProcess, recordType, data, fieldImpacteds);
     }
 
     private void recordRerateTradeReplaceSubmittedCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
@@ -535,20 +537,4 @@ public class RerateProcessor {
         cloudEventRecordService.record(recordRequest);
     }
 
-    private void recordOrUpdateCloudEvent(IntegrationSubProcess subProcess, RecordType recordType, Long tradeId,
-        Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
-        String persistedCloudEventId = null;
-        if (tradeId != null) {
-            persistedCloudEventId = cloudEventRecordService // temporary hardcoded until related object will be captured
-                .getToolkitCloudEventIdForRerateWorkaround("Trade - " + tradeId, subProcess, recordType)
-                .orElse(null);
-        }
-        if (persistedCloudEventId == null) {
-            var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
-                data, fieldImpacteds);
-            cloudEventRecordService.record(recordRequest);
-        } else {
-            cloudEventRecordService.updateTime(persistedCloudEventId);
-        }
-    }
 }
