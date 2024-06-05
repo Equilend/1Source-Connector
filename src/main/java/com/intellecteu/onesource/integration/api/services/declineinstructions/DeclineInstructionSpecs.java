@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.api.services.declineinstructions;
 import static com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionFields.CREATION_DATE;
 import static com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionFields.DECLINE_INSTRUCTION_ID;
 import static com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionFields.EXCEPTION_EVENT_ID;
+import static com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionFields.RELATED_PROPOSAL_ID;
 import static com.intellecteu.onesource.integration.api.services.declineinstructions.DeclineInstructionFields.USER_ID;
 
 import com.intellecteu.onesource.integration.repository.entity.toolkit.DeclineInstructionEntity;
@@ -31,7 +32,7 @@ class DeclineInstructionSpecs {
         return (root, query, builder) ->
             relatedProposalId == null ?
                 builder.conjunction() :
-                builder.equal(root.get(EXCEPTION_EVENT_ID), relatedProposalId);
+                builder.equal(root.get(RELATED_PROPOSAL_ID), relatedProposalId);
     }
 
     static Specification<DeclineInstructionEntity> sinceCreationDate(LocalDate sinceCreationDate) {
