@@ -136,6 +136,7 @@ public class ContractProcessor {
             positionService.getByPositionIdAndRole(contract.getMatchingSpirePositionId(), PartyRole.BORROWER)
                 .ifPresent(position -> {
                     position.setMatching1SourceLoanContractId(null);
+                    position.setProcessingStatus(UNMATCHED);
                     positionService.savePosition(position);
                     String record = contract.getContractId();
                     String related = String.format("%d,%d", position.getPositionId(), position.getTradeId());
@@ -229,6 +230,7 @@ public class ContractProcessor {
         positionService.getByPositionId(positionId)
             .ifPresent(position -> {
                 position.setMatching1SourceLoanContractId(null);
+                position.setProcessingStatus(UNMATCHED);
                 positionService.savePosition(position);
             });
     }
@@ -261,19 +263,20 @@ public class ContractProcessor {
 
     public void matchBorrowerPosition(@NonNull Contract contract) {
         final Set<Position> notMatchedPositions = positionService.getNotMatched();
-//        if (isNgtTradeContract(contract)) { todo waiting for story update if we still need this logic
-//            matchNgtTradeContractForBorrower(contract, notMatchedPositions);
-//        } else {
-        matchContractForBorrower(contract, notMatchedPositions);
-//        }
+        if (isNgtTradeContract(contract)) {
+            matchNgtTradeContractForBorrower(contract, notMatchedPositions);
+        } else {
+            matchContractForBorrower(contract, notMatchedPositions);
+        }
     }
 
     private void matchNgtTradeContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
-//        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
-//        notMatchedPositions.stream()
-//            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
-//            .findAny()
-//            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
+        String positionCustomValue2 = contract.getTrade().getVenues().get(0)
+            .getVenueRefKey(); // todo waiting for the information how to iterate through venues
+        notMatchedPositions.stream()
+            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
+            .findAny()
+            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
     }
 
     private void matchContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
@@ -305,6 +308,7 @@ public class ContractProcessor {
     private Position updateMatchedContractAndPosition(Contract contract, Position position) {
         saveContractAsMatched(contract, position);
         position.setMatching1SourceLoanContractId(contract.getContractId());
+        position.setProcessingStatus(MATCHED);
         return positionService.savePosition(position);
     }
 
