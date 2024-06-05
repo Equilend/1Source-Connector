@@ -459,6 +459,19 @@ CREATE TABLE IF NOT EXISTS return
     CONSTRAINT fk_return_venue FOREIGN KEY (venue_id) REFERENCES venue
     );
 
+CREATE TABLE nack_instruction
+(
+    nack_instruction_id    VARCHAR(255) NOT NULL,
+    related_cloud_event_id VARCHAR(255),
+    related_return_id      VARCHAR(255),
+    creation_date_time     TIMESTAMP (6),
+    user_id                VARCHAR(255),
+    nack_reason_code       VARCHAR(255),
+    nack_reason_text       VARCHAR(255),
+    processing_status      VARCHAR(255),
+    CONSTRAINT pk_nack_instruction PRIMARY KEY (nack_instruction_id)
+);
+
 ALTER TABLE settlement DROP CONSTRAINT IF EXISTS fk_settlement_return;
 ALTER TABLE settlement ADD CONSTRAINT fk_settlement_return FOREIGN KEY (return_id) REFERENCES return;
 

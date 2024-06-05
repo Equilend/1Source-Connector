@@ -18,7 +18,10 @@ import org.springframework.stereotype.Component;
     id = "${spire.kafka.consumer.listener.recall-instruction.group-id}",
     topics = "${spire.kafka.consumer.listener.recall-instruction.topic}",
     containerFactory = "recallInstructionContainerFactory")
-@ConditionalOnProperty(value = "spire.kafka.consumer.listener.recall-instruction.enable")
+@ConditionalOnProperty(
+    value = "spire.kafka.consumer.listener.recall-instruction.enable",
+    havingValue = "true",
+    matchIfMissing = true)
 public class RecallInstructionListener {
 
     private final RecallService recallService;

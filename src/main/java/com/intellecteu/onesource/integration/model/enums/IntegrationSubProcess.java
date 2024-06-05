@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.model.enums;
 
 public enum IntegrationSubProcess {
     ACKNOWLEDGE_RETURN_POSITIVELY,
+    ACKNOWLEDGE_RETURN_NEGATIVELY,
     APPROVE_LOAN_CONTRACT_PROPOSAL,
     CANCEL_LOAN_CONTRACT_PROPOSAL,
     CAPTURE_POSITION_CANCELED,

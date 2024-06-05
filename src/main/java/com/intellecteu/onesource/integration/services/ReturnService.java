@@ -19,9 +19,13 @@ public class ReturnService {
         this.oneSourceMapper = oneSourceMapper;
     }
 
+    public Return getByReturnId(String relatedReturnId) {
+        ReturnEntity returnEntity = returnRepository.getReferenceById(relatedReturnId);
+        return oneSourceMapper.toModel(returnEntity);
+    }
+
     public Return saveReturn(Return oneSourceReturn) {
         ReturnEntity returnEntity = returnRepository.save(oneSourceMapper.toEntity(oneSourceReturn));
         return oneSourceMapper.toModel(returnEntity);
     }
-
 }

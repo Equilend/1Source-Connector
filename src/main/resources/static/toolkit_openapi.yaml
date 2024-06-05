@@ -18,6 +18,13 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/DeclineInstruction'
+    NackInstruction:
+      required: true
+      description: Negative Acknowledge to be created
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/NackInstruction'
   schemas:
     Rerate:
       type: object
@@ -287,6 +294,29 @@ components:
           type: string
         declineReasonText:
           type: string
+    NackInstruction:
+      required:
+        - relatedCloudEventId
+        - relatedReturnId
+      type: object
+      properties:
+        nackInstructionId:
+          type: string
+        relatedCloudEventId:
+          type: string
+        relatedReturnId:
+          type: string
+        creationDateTime:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        nackReasonCode:
+          type: string
+        nackReasonText:
+          type: string
+        processingStatus:
+          $ref: '#/components/schemas/ProcessingStatus'
     EventType:
       type: string
       enum:
@@ -452,6 +482,7 @@ components:
               - $ref: '#/components/schemas/Contract'
               - $ref: '#/components/schemas/DeclineInstruction'
               - $ref: '#/components/schemas/Rerate'
+              - $ref: '#/components/schemas/NackInstruction'
     Party:
       required:
         - gleifLei
@@ -1078,6 +1109,51 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeclineInstruction'
+        '400':
+          description: Bad request. Check the response body
+        '401':
+          description: The access to the API is not authorized
+        '500':
+          description: The API is not getting the data due to a technical error
+
+  /nack-instructions:
+    get:
+      summary: Retrieve a list of Negative Acknowledge instructions information
+      description: >
+        Retrieve Negative Acknowledge instructions information based on various query parameters. 
+        Supports filtering by each field separately or in combination, date range queries, sorting, and pagination.
+      parameters:
+        - name: returnId
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Negative Acknowledge instructions retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageResponse'
+
+        '400':
+          description: Bad request. Check the query.
+        '401':
+          description: The access to the API is not authorized
+        '404':
+          description: No Decline instructions are matching the selection criteria
+        '500':
+          description: The API is not getting the data due to a technical error
+    post:
+      summary: Create a Negative Acknowledge instruction
+      requestBody:
+        $ref: '#/components/requestBodies/NackInstruction'
+      responses:
+        '202':
+          description: Negative Acknowledge instruction creation action accepted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NackInstruction'
         '400':
           description: Bad request. Check the response body
         '401':

@@ -23,7 +23,7 @@ import java.util.Objects;
  * RerateDTO
  */
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-03-22T08:22:20.593613900Z[Europe/London]")
+//@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-03-22T08:22:20.593613900Z[Europe/London]")
 
 public class RerateDTO {
 
@@ -90,6 +90,7 @@ public class RerateDTO {
         PROPOSED("PROPOSED"),
         MATCHED_CANCELED_POSITION("MATCHED_CANCELED_POSITION"),
         MATCHED_POSITION("MATCHED_POSITION"),
+        NACK_SUBMITTED("NACK_SUBMITTED"),
         NEW("NEW"),
         ONESOURCE_ISSUE("ONESOURCE_ISSUE"),
         PROCESSED("PROCESSED"),

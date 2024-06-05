@@ -4,6 +4,7 @@ import com.intellecteu.onesource.integration.mapper.CloudSystemEventMapper;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import com.intellecteu.onesource.integration.repository.CloudEventRepository;
 import com.intellecteu.onesource.integration.repository.entity.toolkit.CloudSystemEventEntity;
@@ -76,5 +77,11 @@ public class CloudEventRecordServiceImpl implements CloudEventRecordService {
     public void updateTime(@NonNull String eventId) {
         eventRepository.updateTime(eventId);
         log.debug("The timestamp is updated for the event id = {}", eventId);
+    }
+
+    @Override
+    public CloudSystemEvent getCloudSystemEvent(String eventId) {
+        CloudSystemEventEntity cloudSystemEventEntity = eventRepository.getReferenceById(eventId);
+        return systemEventMapper.toCloudEvent(cloudSystemEventEntity);
     }
 }

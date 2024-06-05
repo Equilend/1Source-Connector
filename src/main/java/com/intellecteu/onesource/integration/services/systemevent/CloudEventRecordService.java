@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.services.systemevent;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventBuildRequest;
+import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.IntegrationCloudEvent;
 import java.util.Optional;
 import org.springframework.lang.NonNull;
@@ -40,5 +41,7 @@ public interface CloudEventRecordService extends RecordService<CloudEventBuildRe
      * @param eventId String
      */
     void updateTime(@NonNull String eventId);
+
+    CloudSystemEvent getCloudSystemEvent(String eventId);
 
 }
