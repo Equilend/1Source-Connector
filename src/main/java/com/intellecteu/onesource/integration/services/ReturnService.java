@@ -28,4 +28,18 @@ public class ReturnService {
         ReturnEntity returnEntity = returnRepository.save(oneSourceMapper.toEntity(oneSourceReturn));
         return oneSourceMapper.toModel(returnEntity);
     }
+
+    public Return merge(Return oneSourceReturn, Return oneSourceReturnUpdate) {
+        oneSourceReturn.setReturnStatus(oneSourceReturnUpdate.getReturnStatus());
+        oneSourceReturn.setExecutionVenue(oneSourceReturnUpdate.getExecutionVenue());
+        oneSourceReturn.setQuantity(oneSourceReturnUpdate.getQuantity());
+        oneSourceReturn.setCollateral(oneSourceReturnUpdate.getCollateral());
+        oneSourceReturn.setSettlementType(oneSourceReturnUpdate.getSettlementType());
+        oneSourceReturn.setReturnSettlementDate(oneSourceReturnUpdate.getReturnSettlementDate());
+        oneSourceReturn.setReturnDate(oneSourceReturnUpdate.getReturnDate());
+        oneSourceReturn.setAcknowledgementType(oneSourceReturnUpdate.getAcknowledgementType());
+        oneSourceReturn.setDescription(oneSourceReturnUpdate.getDescription());
+        oneSourceReturn.setSettlement(oneSourceReturnUpdate.getSettlement());
+        return oneSourceReturn;
+    }
 }

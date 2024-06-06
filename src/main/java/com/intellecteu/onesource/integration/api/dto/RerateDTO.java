@@ -15,6 +15,7 @@ package com.intellecteu.onesource.integration.api.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -155,7 +156,7 @@ public class RerateDTO {
     }
 
     @JsonProperty("processingStatus")
-    private ProcessingStatusEnum processingStatus = null;
+    private ProcessingStatus processingStatus = null;
 
     @JsonProperty("matchingSpireTradeId")
     private String matchingSpireTradeId = null;
@@ -229,7 +230,7 @@ public class RerateDTO {
         this.rerateStatus = rerateStatus;
     }
 
-    public RerateDTO processingStatus(ProcessingStatusEnum processingStatus) {
+    public RerateDTO processingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
         return this;
     }
@@ -240,11 +241,11 @@ public class RerateDTO {
      * @return processingStatus
      **/
     @Schema(required = true, description = "Processing status of the rerate.")
-    public ProcessingStatusEnum getProcessingStatus() {
+    public ProcessingStatus getProcessingStatus() {
         return processingStatus;
     }
 
-    public void setProcessingStatus(ProcessingStatusEnum processingStatus) {
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
     }
 

@@ -3,6 +3,7 @@ package com.intellecteu.onesource.integration.routes.returns;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -138,6 +139,12 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnProcessor, "saveNackInstructionWithProcessingStatus(${body}, PROCESSED)")
             .log("<<< Finished ACKNOWLEDGE_RETURN_NEGATIVELY for NackInstruction: ${body.nackInstructionId} with expected statuses: NackInstruction[PROCESSED], Return[NACK_SUBMITTED]");
 
+        from(createTradeEventSQLEndpoint(CREATED, RETURN_ACKNOWLEDGED))
+            .log(">>> Started CAPTURE_RETURN_ACKNOWLEDGEMENT for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnEventProcessor, "processReturnAcknowledgedEvent")
+            .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
+            .log("<<< Finished CAPTURE_RETURN_ACKNOWLEDGEMENT for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[CREATED]");
 
     }
     //@formatter:on
