@@ -219,7 +219,7 @@ public class RerateRoute extends RouteBuilder {
             .bean(rerateProcessor, "amendRerateTrade")
             .bean(rerateProcessor, "updateCorrectionInstructionProcessingStatus(${body}, PROCESSED)")
             .bean(rerateProcessor, "saveCorrectionInstruction")
-            .log("<<< Finished PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], Rerate[PROPOSED, TO_VALIDATE], RerateTrade[REPLACED]");
+            .log("<<< Finished PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], Rerate[PROPOSED, CANCEL_SUBMITTED], RerateTrade[REPLACED]");
 
         from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_CANCELLED))
             .log(">>> Started PROCESS_TRADE_CANCEL for CorrectionInstruction: ${body.instructionId}")

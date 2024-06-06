@@ -351,7 +351,7 @@ public class RerateProcessor {
             recordRerateTradeReplacedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACED, rerateTrade.getTradeId(),
                 correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId());
             if (StringUtils.isNotBlank(rerateTrade.getMatchingRerateId())) {
-                processLinkedRerate(correctionInstruction, rerateTrade);
+                cancelLinkedRerate(correctionInstruction, rerateTrade);
             }
         } catch (EntityNotFoundException e) {
             recordCloudEvent(PROCESS_TRADE_UPDATE, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, null,
@@ -360,7 +360,7 @@ public class RerateProcessor {
         return correctionInstruction;
     }
 
-    private void processLinkedRerate(CorrectionInstruction correctionInstruction, RerateTrade rerateTrade) {
+    private void cancelLinkedRerate(CorrectionInstruction correctionInstruction, RerateTrade rerateTrade) {
         Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
         if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
             cancelRerate(rerate, PROCESS_TRADE_UPDATE);

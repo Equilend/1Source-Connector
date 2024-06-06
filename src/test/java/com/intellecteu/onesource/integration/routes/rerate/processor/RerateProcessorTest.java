@@ -283,8 +283,8 @@ class RerateProcessorTest {
 
     @Test
     void amendRerateTrade_existRerateTrade_REPLACEDStatus() {
-        long oldTradeId = 1l;
-        long amendedTradeId = 2l;
+        long oldTradeId = 1L;
+        long amendedTradeId = 2L;
         CorrectionInstruction correctionInstruction = new CorrectionInstruction();
         correctionInstruction.setOldTradeId(oldTradeId);
         correctionInstruction.setAmendedTradeId(amendedTradeId);
@@ -296,7 +296,7 @@ class RerateProcessorTest {
         doReturn(rerateTrade).when(rerateTradeService).getByTradeId(oldTradeId);
         doReturn(newRerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
 
-        CorrectionInstruction result = rerateProcessor.amendRerateTrade(correctionInstruction);
+        rerateProcessor.amendRerateTrade(correctionInstruction);
 
         assertEquals(ProcessingStatus.REPLACED, rerateTrade.getProcessingStatus());
     }

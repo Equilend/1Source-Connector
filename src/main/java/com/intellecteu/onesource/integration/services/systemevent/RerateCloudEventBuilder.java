@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_RERATE_PROPOSAL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_EXCEPTION_RERATE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_EXCEPTION_RERATE_PROCESS_TRADE_UPDATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CANCEL_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.CONFIRM_EXCEPTION_RERATE_MSG;
@@ -194,7 +195,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             case PROCESS_TRADE_UPDATE: {
                 return switch (recordType) {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
-                        createCancelRerateExceptionCloudRequest(subProcess, recordType, data);
+                        createProcessTradeUpdateCancelRerateExceptionCloudRequest(subProcess, recordType, data);
                     case RERATE_TRADE_REPLACED -> createRerateTradeReplacedCloudRequest(subProcess, recordType, data);
                     case RERATE_TRADE_REPLACE_SUBMITTED ->
                         createRerateTradeReplaceSubmittedCloudRequest(subProcess, recordType, data);
@@ -415,6 +416,22 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         RecordType recordType, Map<String, String> data) {
         String dataMessage = format(CANCEL_EXCEPTION_RERATE_MSG, data.get(RERATE_ID), data.get(TRADE_ID),
             data.get(HTTP_STATUS_TEXT));
+        return createRecordRequest(
+            recordType,
+            format(CANCEL_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createProcessTradeUpdateCancelRerateExceptionCloudRequest(
+        IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(CANCEL_EXCEPTION_RERATE_PROCESS_TRADE_UPDATE_MSG, data.get(RERATE_ID),
+            data.get(TRADE_ID), data.get(HTTP_STATUS_TEXT));
         return createRecordRequest(
             recordType,
             format(CANCEL_EXCEPTION_RERATE, data.get(TRADE_ID)),
