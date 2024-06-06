@@ -430,6 +430,7 @@ public class RecordMessageConstant {
             public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";
             public static final String DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE_MSG = "The decline instruction for the 1Source rerate %s is not authorised as not generated from a “RERATE_PROPOSAL_DISCREPANCIES” or “RERATE_PROPOSAL_UNMATCHED” event.";
             public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be canceled for the following reason: %s";
+            public static final String CANCEL_EXCEPTION_RERATE_PROCESS_TRADE_UPDATE_MSG = "The rerate proposal %s (generated from the SPIRE rerate trade: %s) cannot be canceled for the following reason: %s";
 
         }
     }
