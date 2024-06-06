@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
@@ -69,6 +70,7 @@ import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.RerateReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -77,6 +79,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -342,39 +345,32 @@ public class RerateProcessor {
 
     public CorrectionInstruction amendRerateTrade(CorrectionInstruction correctionInstruction) {
         try {
-            RerateTrade rerateTrade = rerateTradeService.getByTradeId(
-                correctionInstruction.getOldTradeId());
+            RerateTrade rerateTrade = rerateTradeService.getByTradeId(correctionInstruction.getOldTradeId());
             rerateTrade.setProcessingStatus(REPLACED);
             saveRerateTrade(rerateTrade);
             recordRerateTradeReplacedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACED, rerateTrade.getTradeId(),
                 correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId());
-            if (rerateTrade.getMatchingRerateId() != null && !rerateTrade.getMatchingRerateId().isEmpty()) {
-                Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
-                if (MATCHED.equals(rerate.getProcessingStatus())) {
-                    rerate = cancelRerate(rerate, PROCESS_TRADE_UPDATE);
-                    recordRerateTradeReplaceSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
-                        correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), rerate);
-                } else if (!CANCELED.equals(rerate.getProcessingStatus())
-                    && !DECLINED.equals(rerate.getProcessingStatus())
-                    && !APPROVED.equals(rerate.getProcessingStatus())) {
-                    rerate = delinkRerate(rerate);
-                    recordCloudEvent(MATCH_LOAN_RERATE_PROPOSAL, RERATE_PROPOSAL_UNMATCHED, rerate.getRerateId(),
-                        rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(), rerate.getContractId());
-                    rerateTrade = rerateTradeService.getByTradeId(correctionInstruction.getAmendedTradeId());
-                    rerateTrade.setMatchingRerateId(rerate.getRerateId());
-                    saveRerateTrade(rerateTrade);
-                    rerate.setMatchingSpireTradeId(rerateTrade.getTradeId());
-                    rerate.setProcessingStatus(TO_VALIDATE);
-                    saveRerate(rerate);
-                    recordCloudEvent(PROCESS_RERATE_PENDING_CONFIRMATION, RERATE_PROPOSAL_MATCHED, rerate.getRerateId(),
-                        rerate.getMatchingSpireTradeId(), rerate.getRelatedSpirePositionId(), rerate.getContractId());
-                }
+            if (StringUtils.isNotBlank(rerateTrade.getMatchingRerateId())) {
+                processLinkedRerate(correctionInstruction, rerateTrade);
             }
         } catch (EntityNotFoundException e) {
             recordCloudEvent(PROCESS_TRADE_UPDATE, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, null,
                 correctionInstruction.getOldTradeId(), null, null);
         }
         return correctionInstruction;
+    }
+
+    private void processLinkedRerate(CorrectionInstruction correctionInstruction, RerateTrade rerateTrade) {
+        Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
+        if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
+            cancelRerate(rerate, PROCESS_TRADE_UPDATE);
+            rerate.setProcessingStatus(CANCEL_SUBMITTED);
+            saveRerate(rerate);
+            recordRerateTradeReplaceSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
+                correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), rerate);
+        } else if (DISCREPANCIES == rerate.getProcessingStatus()) {
+            delinkRerate(rerate);
+        }
     }
 
     public CorrectionInstruction cancelRerateTrade(CorrectionInstruction correctionInstruction) {
@@ -389,7 +385,7 @@ public class RerateProcessor {
             if (rerateTrade.getMatchingRerateId() != null && !rerateTrade.getMatchingRerateId().isEmpty()) {
                 Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
                 if (MATCHED.equals(rerate.getProcessingStatus()) || APPROVED.equals(rerate.getProcessingStatus())) {
-                    rerate = cancelRerate(rerate, PROCESS_TRADE_CANCEL);
+                    cancelRerate(rerate, PROCESS_TRADE_CANCEL);
                     rerate.setProcessingStatus(CANCEL_SUBMITTED);
                     saveRerate(rerate);
                 } else if (!CANCELED.equals(rerate.getProcessingStatus())
@@ -405,7 +401,7 @@ public class RerateProcessor {
         return correctionInstruction;
     }
 
-    private Rerate cancelRerate(Rerate rerate, IntegrationSubProcess subProcess) {
+    private void cancelRerate(Rerate rerate, IntegrationSubProcess subProcess) {
         try {
             oneSourceService.cancelRerate(rerate.getContractId(), rerate.getRerateId());
         } catch (HttpStatusCodeException codeException) {
@@ -414,14 +410,12 @@ public class RerateProcessor {
                 rerate.getRelatedSpirePositionId());
             throwExceptionForRedeliveryPolicy(codeException);
         }
-        return rerate;
     }
 
     private Rerate delinkRerate(Rerate rerate) {
         rerate.setMatchingSpireTradeId(null);
-        rerate.setLastUpdateDatetime(LocalDateTime.now());
         rerate.setProcessingStatus(PROPOSED);
-        return rerateService.saveRerate(rerate);
+        return saveRerate(rerate);
     }
 
     private Optional<LocalDate> getRerateEffectiveDate(Rerate rerate) {

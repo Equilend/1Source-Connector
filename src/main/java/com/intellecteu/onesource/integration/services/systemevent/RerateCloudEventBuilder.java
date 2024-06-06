@@ -185,9 +185,9 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
                         createDeclineRerateExceptionCloudRequest(subProcess, recordType, data);
                     case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
-                            createDeclineEntityExceptionCloudRequest(subProcess, recordType, data);
+                        createDeclineEntityExceptionCloudRequest(subProcess, recordType, data);
                     case DECLINE_INSTRUCTION_NOT_AUTHORIZED ->
-                            createDeclineNotAuthorizedExceptionCloudRequest(subProcess, recordType, data);
+                        createDeclineNotAuthorizedExceptionCloudRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -397,16 +397,17 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
         );
     }
 
-    private CloudEventBuildRequest createDeclineNotAuthorizedExceptionCloudRequest(IntegrationSubProcess subProcess, RecordType recordType, Map<String, String> data) {
+    private CloudEventBuildRequest createDeclineNotAuthorizedExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
         String dataMessage = format(DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE_MSG, data.get(RERATE_ID));
         return createRecordRequest(
-                recordType,
-                format(DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE, data.get(RERATE_ID)),
-                RERATE,
-                subProcess,
-                createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
-                        new RelatedObject(data.get(POSITION_ID), POSITION),
-                        new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT))));
+            recordType,
+            format(DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE, data.get(RERATE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT))));
     }
 
 
@@ -452,7 +453,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createRerateTradeReplaceSubmittedCloudRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(CANCEL_RERATE_MSG, data.get("oldTradeId"), data.get(TRADE_ID),
+        String dataMessage = format(CANCEL_RERATE_MSG, data.get("oldTradeId"), data.get("amendedTradeId"),
             data.get(RERATE_ID));
         return createRecordRequest(
             recordType,

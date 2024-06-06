@@ -79,10 +79,13 @@ public class RerateRoute extends RouteBuilder {
     private final long updateTimer;
 
     @Autowired
-    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
+    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor,
+        OneSourceMapper oneSourceMapper,
         BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper,
-        CorrectionInstructionMapper correctionInstructionMapper,@Value("${route.rerate.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
-        @Value("${route.rerate.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern, @Value("${route.rerate.timer}") long updateTimer) {
+        CorrectionInstructionMapper correctionInstructionMapper,
+        @Value("${route.rerate.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
+        @Value("${route.rerate.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern,
+        @Value("${route.rerate.timer}") long updateTimer) {
         this.rerateProcessor = rerateProcessor;
         this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
@@ -210,6 +213,7 @@ public class RerateRoute extends RouteBuilder {
             .log("<<< Finished PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[DECLINED]");
 
         from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_AMEND))
+            .routeId("ProcessTradeUpdate_RerateAmend")
             .log(">>> Started PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId}")
             .bean(correctionInstructionMapper, "toModel")
             .bean(rerateProcessor, "amendRerateTrade")
@@ -249,12 +253,13 @@ public class RerateRoute extends RouteBuilder {
             Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
     }
 
-    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status){
-        var unmatchedRerateTradeSQLEndpoint = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
-            + "%s&"
-            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
-        return String.format(unmatchedRerateTradeSQLEndpoint, String.format("delay=%d",updateTimer), status);
+    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status) {
+        var unmatchedRerateTradeSQLEndpoint =
+            "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
+                + "%s&"
+                + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+                + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
+        return String.format(unmatchedRerateTradeSQLEndpoint, String.format("delay=%d", updateTimer), status);
     }
 
     private String createRerateTradeSQLEndpoint(ProcessingStatus status) {
@@ -265,11 +270,11 @@ public class RerateRoute extends RouteBuilder {
         return String.format(RERATE_SQL_ENDPOINT, String.format("delay=%d", updateTimer), status);
     }
 
-    private String createUnprocessedDeclineInstructionSQLEndpoint(){
+    private String createUnprocessedDeclineInstructionSQLEndpoint() {
         return String.format(DECLINE_INSTRUCTION_SQL_ENDPOINT, String.format("delay=%d", updateTimer));
     }
 
-    private String createUnprocessedCorrectionInstructionSQLEndpoint(CorrectionInstructionType type){
+    private String createUnprocessedCorrectionInstructionSQLEndpoint(CorrectionInstructionType type) {
         return String.format(CORRECTION_INSTRUCTION_SQL_ENDPOINT, String.format("delay=%d", updateTimer), type);
     }
 }
