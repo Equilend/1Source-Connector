@@ -355,6 +355,17 @@ class ReturnProcessorTest {
     }
 
     @Test
+    void confirmReturnTrade__OkResponse_FUTUREStatus() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(2L);
+        returnTrade.setTradeOut(new TradeOut());
+
+        ReturnTrade result = returnProcessor.confirmReturnTrade(returnTrade);
+
+        assertEquals("FUTURE", result.getTradeOut().getStatus());
+    }
+
+    @Test
     void confirmReturnTrade_ThrownHttpClientErrorException_SavedCloudEvent() {
         ReturnTrade returnTrade = new ReturnTrade();
         returnTrade.setTradeId(2L);

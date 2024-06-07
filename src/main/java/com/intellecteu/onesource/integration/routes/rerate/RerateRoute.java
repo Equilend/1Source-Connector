@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_AMEND;
 import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_CANCELLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMATION_POSTPONED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
@@ -182,11 +183,24 @@ public class RerateRoute extends RouteBuilder {
             .log("<<< Finished GET_RERATE_APPROVED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPROVED, APPLIED], RerateTrade[PROPOSAL_APPROVED]");
 
         from(createRerateTradeSQLEndpoint(PROPOSAL_APPROVED))
+            .to("direct:confirmRerateTrade");
+
+        from(createRerateTradeSQLEndpoint(CONFIRMATION_POSTPONED, 5000))
+            .to("direct:confirmRerateTrade");
+
+        from("direct:confirmRerateTrade")
             .log(">>> Started POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
-            .bean(rerateProcessor, "confirmRerateTrade")
+            .choice()
+                .when(method(rerateProcessor, "isRerateTradePostponed"))
+                    .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CONFIRMATION_POSTPONED)")
+                .otherwise()
+                    .bean(rerateProcessor, "confirmRerateTrade")
+                    .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CONFIRMED)")
+                .endChoice()
+            .end()
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED]");
+            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED, CONFIRMATION_POSTPONED]");
 
         from("direct:processingRerateAppliedEvent")
             .log(">>> Started PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId}")
@@ -262,8 +276,12 @@ public class RerateRoute extends RouteBuilder {
         return String.format(unmatchedRerateTradeSQLEndpoint, String.format("delay=%d", updateTimer), status);
     }
 
+    private String createRerateTradeSQLEndpoint(ProcessingStatus status, long delay) {
+        return String.format(RERATE_TRADE_SQL_ENDPOINT, String.format("delay=%d", delay), status);
+    }
+
     private String createRerateTradeSQLEndpoint(ProcessingStatus status) {
-        return String.format(RERATE_TRADE_SQL_ENDPOINT, String.format("delay=%d", updateTimer), status);
+        return createRerateTradeSQLEndpoint(status, updateTimer);
     }
 
     private String createRerateSQLEndpoint(ProcessingStatus status) {
