@@ -318,6 +318,7 @@ public class ReturnProcessor {
     public ReturnTrade confirmReturnTrade(ReturnTrade returnTrade) {
         try {
             backOfficeService.confirmReturnTrade(returnTrade);
+            returnTrade.getTradeOut().setStatus("FUTURE");
         }catch (HttpStatusCodeException exception) {
             recordCloudEvent(CONFIRM_RETURN_TRADE, TECHNICAL_EXCEPTION_SPIRE,
                 new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())

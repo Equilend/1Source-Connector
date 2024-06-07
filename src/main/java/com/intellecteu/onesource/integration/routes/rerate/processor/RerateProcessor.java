@@ -18,7 +18,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -52,6 +52,7 @@ import static com.intellecteu.onesource.integration.utils.IntegrationUtils.toStr
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
@@ -67,6 +68,7 @@ import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
+import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.RerateReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder;
@@ -97,6 +99,7 @@ public class RerateProcessor {
     private final RerateReconcileService rerateReconcileService;
     private final DeclineInstructionService declineInstructionService;
     private final CorrectionInstructionService correctionInstructionService;
+    private final ReturnTradeService returnTradeService;
     private final CloudEventRecordService cloudEventRecordService;
     private final RerateCloudEventBuilder eventBuilder;
 
@@ -105,7 +108,7 @@ public class RerateProcessor {
         RerateTradeService rerateTradeService,
         RerateService rerateService,
         RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
-        CorrectionInstructionService correctionInstructionService, CloudEventRecordService cloudEventRecordService) {
+        CorrectionInstructionService correctionInstructionService, ReturnTradeService returnTradeService, CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.rerateTradeService = rerateTradeService;
@@ -113,6 +116,7 @@ public class RerateProcessor {
         this.rerateReconcileService = rerateReconcileService;
         this.declineInstructionService = declineInstructionService;
         this.correctionInstructionService = correctionInstructionService;
+        this.returnTradeService = returnTradeService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (RerateCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RERATE);
     }
@@ -305,10 +309,42 @@ public class RerateProcessor {
         return rerate;
     }
 
+    public boolean isRerateTradePostponed(RerateTrade rerateTrade) {
+        Optional<RerateTrade> notConfirmedRerateTrade = findNotConfirmedRerateTradeWithLowerTradeId(rerateTrade);
+        if (notConfirmedRerateTrade.isPresent()) {
+            return true;
+        } else {
+            Optional<ReturnTrade> notConfirmedReturnTrade = findNotConfirmedReturnTradeWithLowerTradeId(rerateTrade);
+            if (notConfirmedReturnTrade.isPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Optional<RerateTrade> findNotConfirmedRerateTradeWithLowerTradeId(RerateTrade rerateTrade) {
+        return rerateTradeService.findReturnTrade(
+            rerateTrade.getRelatedPositionId(),
+            List.of(CREATED, SUBMITTED, WAITING_PROPOSAL)).stream().filter(
+            rerate -> rerateTrade.getTradeId() > rerate.getTradeId() && (
+                "Rerate".equals(rerate.getTradeOut().getTradeType())
+                    || "Rerate Borrow".equals(
+                    rerate.getTradeOut().getTradeType()))).findFirst();
+    }
+
+    private Optional<ReturnTrade> findNotConfirmedReturnTradeWithLowerTradeId(RerateTrade rerateTrade) {
+        return returnTradeService.findReturnTrade(
+            rerateTrade.getRelatedPositionId(),
+            List.of(CREATED, SUBMITTED)).stream().filter(
+            rt -> rerateTrade.getTradeId() > rt.getTradeId() && ("Return Loan".equals(rt.getTradeOut().getTradeType())
+                || "Return Borrow".equals(
+                rt.getTradeOut().getTradeType()))).findFirst();
+    }
+
     public RerateTrade confirmRerateTrade(RerateTrade rerateTrade) {
         try {
             backOfficeService.confirmBackOfficeRerateTrade(rerateTrade);
-            rerateTrade.setProcessingStatus(CONFIRMED);
+            rerateTrade.getTradeOut().setStatus("FUTURE");
         } catch (HttpStatusCodeException codeException) {
             recordHttpExceptionCloudEvent(POST_RERATE_TRADE_CONFIRMATION, TECHNICAL_EXCEPTION_SPIRE,
                 codeException, rerateTrade.getMatchingRerateId(), rerateTrade.getTradeId(),
