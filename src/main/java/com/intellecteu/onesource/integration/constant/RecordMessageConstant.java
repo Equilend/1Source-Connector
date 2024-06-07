@@ -424,7 +424,7 @@ public class RecordMessageConstant {
             public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been declined in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
             public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
             public static final String CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate pending settlement %s has been canceled by one of the two counterparties in 1Source but the rerate pending settlement has not been retrieved in the Integration toolkit.";
-            public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has not been retrieved in the Integration toolkit";
+            public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has been replaced in SPIRE but the rerate trade has not been retrieved in the Integration toolkit.";
             public static final String DECLINE_RERATE_EXCEPTION_RERATE_MSG = "The rerate %s has not been retrieved in the Integration toolkit";
             public static final String CONFIRM_EXCEPTION_RERATE_MSG = "The rerate trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source rerate is : %s. The reason is: %s";
             public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";

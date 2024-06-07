@@ -108,7 +108,8 @@ public class RerateProcessor {
         RerateTradeService rerateTradeService,
         RerateService rerateService,
         RerateReconcileService rerateReconcileService, DeclineInstructionService declineInstructionService,
-        CorrectionInstructionService correctionInstructionService, ReturnTradeService returnTradeService, CloudEventRecordService cloudEventRecordService) {
+        CorrectionInstructionService correctionInstructionService, ReturnTradeService returnTradeService,
+        CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
         this.rerateTradeService = rerateTradeService;
@@ -397,15 +398,20 @@ public class RerateProcessor {
     }
 
     private void cancelLinkedRerate(CorrectionInstruction correctionInstruction, RerateTrade rerateTrade) {
-        Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
-        if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
-            cancelRerate(rerate, PROCESS_TRADE_UPDATE);
-            rerate.setProcessingStatus(CANCEL_SUBMITTED);
-            saveRerate(rerate);
-            recordRerateTradeReplaceSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
-                correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), rerate);
-        } else if (DISCREPANCIES == rerate.getProcessingStatus()) {
-            delinkRerate(rerate);
+        try {
+            Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
+            if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
+                cancelRerate(rerate, PROCESS_TRADE_UPDATE);
+                rerate.setProcessingStatus(CANCEL_SUBMITTED);
+                saveRerate(rerate);
+                recordRerateTradeReplaceSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
+                    correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), rerate);
+            } else if (DISCREPANCIES == rerate.getProcessingStatus()) {
+                delinkRerate(rerate);
+            }
+        } catch (EntityNotFoundException e) {
+            log.debug("Rerate:{} that should be linked to the replaced SPIRE rerate trade was not found.",
+                rerateTrade.getMatchingRerateId());
         }
     }
 

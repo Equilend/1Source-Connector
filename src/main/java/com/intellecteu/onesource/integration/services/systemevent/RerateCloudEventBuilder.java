@@ -200,7 +200,7 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                     case RERATE_TRADE_REPLACE_SUBMITTED ->
                         createRerateTradeReplaceSubmittedCloudRequest(subProcess, recordType, data);
                     case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
-                        createEntityExceptionCloudRequest(subProcess, recordType, data);
+                        createReplaceRerateToolkitExceptionCloudRequest(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -451,7 +451,19 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             format(REPLACE_EXCEPTION_RERATE, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(RelatedObject.notApplicable()))
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createReplaceRerateToolkitExceptionCloudRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(REPLACE_RERATE_EXCEPTION_RERATE_MSG, data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(REPLACE_EXCEPTION_RERATE, data.get(TRADE_ID)),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE)))
         );
     }
 
