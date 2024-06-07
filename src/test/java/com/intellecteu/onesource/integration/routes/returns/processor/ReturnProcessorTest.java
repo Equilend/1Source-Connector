@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CONFIRM_RETURN_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
@@ -19,6 +20,8 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RETUR
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
+import static org.junit.Assert.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +36,9 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
+import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.NackInstruction;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
@@ -43,6 +48,7 @@ import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.NackInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
@@ -74,6 +80,8 @@ class ReturnProcessorTest {
     @Mock
     private NackInstructionService nackInstructionService;
     @Mock
+    private RerateTradeService rerateTradeService;
+    @Mock
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private ReturnCloudEventBuilder eventBuilder;
@@ -85,7 +93,7 @@ class ReturnProcessorTest {
         doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         returnProcessor = new ReturnProcessor(backOfficeService, oneSourceService, returnTradeService, returnService,
-            returnReconcileService, nackInstructionService, cloudEventRecordService);
+            returnReconcileService, nackInstructionService, rerateTradeService, cloudEventRecordService);
     }
 
     @Test
@@ -278,7 +286,8 @@ class ReturnProcessorTest {
         NackInstruction result = returnProcessor.sendNegativeAck(nackInstruction);
 
         verify(cloudEventRecordService, times(1)).record(any());
-        verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_NEGATIVELY), eq(NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED),
+        verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_NEGATIVELY),
+            eq(NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED),
             any(), any());
     }
 
@@ -297,6 +306,65 @@ class ReturnProcessorTest {
 
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(ACKNOWLEDGE_RETURN_NEGATIVELY), eq(TECHNICAL_EXCEPTION_1SOURCE),
+            any(), any());
+    }
+
+    @Test
+    void isReturnTradePostponed_ExistOlderReturnTrade_True() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(2L);
+        ReturnTrade olderReturnTrade = new ReturnTrade();
+        olderReturnTrade.setTradeId(1L);
+        TradeOut tradeOut = new TradeOut();
+        tradeOut.setTradeType("Return Loan");
+        olderReturnTrade.setTradeOut(tradeOut);
+        doReturn(List.of(olderReturnTrade)).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = returnProcessor.isReturnTradePostponed(returnTrade);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isReturnTradePostponed_ExistOlderRerateTrade_True() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(2L);
+        RerateTrade olderRerateTrade = new RerateTrade();
+        olderRerateTrade.setTradeId(1L);
+        TradeOut tradeOut = new TradeOut();
+        tradeOut.setTradeType("Rerate Borrow");
+        olderRerateTrade.setTradeOut(tradeOut);
+        doReturn(List.of(olderRerateTrade)).when(rerateTradeService).findReturnTrade(any(), any());
+        doReturn(List.of()).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = returnProcessor.isReturnTradePostponed(returnTrade);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isReturnTradePostponed_NotExistOlderRerateTrade_False() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(2L);
+        doReturn(List.of()).when(rerateTradeService).findReturnTrade(any(), any());
+        doReturn(List.of()).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = returnProcessor.isReturnTradePostponed(returnTrade);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void confirmReturnTrade_ThrownHttpClientErrorException_SavedCloudEvent() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(2L);
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(backOfficeService)
+            .confirmReturnTrade(any());
+
+        returnProcessor.confirmReturnTrade(returnTrade);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(CONFIRM_RETURN_TRADE), eq(TECHNICAL_EXCEPTION_SPIRE),
             any(), any());
     }
 }

@@ -268,6 +268,16 @@ public class BackOfficeService {
         return List.of();
     }
 
+    public void confirmReturnTrade(ReturnTrade returnTrade) {
+        OneSourceConfimationDTO body = new OneSourceConfimationDTO();
+        body.setTradeId(returnTrade.getTradeId());
+        body.setPositionId(returnTrade.getRelatedPositionId());
+        body.setLedgerId(returnTrade.getMatching1SourceReturnId());
+        body.userId(userId);
+        body.setUserName(userName);
+        tradeSpireApiClient.confirmTrade(body);
+    }
+
     public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade) {
         OneSourceConfimationDTO body = new OneSourceConfimationDTO();
         body.setTradeId(rerateTrade.getTradeId());
@@ -275,9 +285,6 @@ public class BackOfficeService {
         body.setLedgerId(rerateTrade.getMatchingRerateId());
         body.userId(userId);
         body.setUserName(userName);
-        var instructionDTO = new com.intellecteu.onesource.integration.services.client.spire.dto.InstructionDTO();
-        instructionDTO.accountDTO(new AccountDTO().dtc(0l));
-        body.setInstructions(instructionDTO);
         tradeSpireApiClient.confirmTrade(body);
     }
 

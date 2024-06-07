@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -54,6 +55,12 @@ public class ReturnTradeService {
         Optional<ReturnTradeEntity> unmatchedReturnTradeEntities = returnTradeRepository.findByTradeIdAndProcessingStatusAndMatching1SourceReturnIdNull(
             tradeId, status);
         return unmatchedReturnTradeEntities.map(backOfficeMapper::toModel);
+    }
+
+    public List<ReturnTrade> findReturnTrade(Long positionId, List<ProcessingStatus> processingStatuses) {
+        List<ReturnTradeEntity> returnTradeEntityList = returnTradeRepository.findByRelatedPositionIdAndProcessingStatusIn(
+            positionId, processingStatuses);
+        return returnTradeEntityList.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
     }
 
     public ReturnTrade markReturnTradeAsMatched(ReturnTrade returnTrade, Return oneSourceReturn) {
