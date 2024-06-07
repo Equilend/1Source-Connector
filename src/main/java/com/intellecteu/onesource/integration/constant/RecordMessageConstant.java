@@ -442,6 +442,7 @@ public class RecordMessageConstant {
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TE_SBJ = "Trade - %s";
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TI_SBJ = "1Source Return - %s";
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_NOT_AUTHORIZED_SBJ = "1Source Return - %s";
+            public static final String CONFIRM_RETURN_TRADE_TE_SBJ = "1Trade - %s";
             public static final String GET_RETURN_ACKNOWLEDGEMENT_DETAILS_TE_SBJ = "Trade - %s";
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Extract of new return pending conf. - %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
@@ -461,6 +462,7 @@ public class RecordMessageConstant {
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TE_MSG = "The return %s matching with the return trade %s cannot be negatively acknowledged for the following reason: %s";
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TI_MSG = "The return %s cannot be updated with the processing status NACK_SUBMITTED as it is not retrieved within the integration toolkit.";
             public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_NOT_AUTHORIZED_MSG = "The negative acknowledgement instruction for the return %s is not authorised as not generated from a “RETURN_DISCREPANCIES” or “RETURN_UNMATCHED” event.";
+            public static final String CONFIRM_RETURN_TRADE_TE_MSG = "The return trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source return is : %s. The reason is: %s";
             public static final String GET_RETURN_ACKNOWLEDGEMENT_DETAILS_TE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG = "New return pending confirmation cannot be extracted from SPIRE for the following reason: %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s has not been processed by 1Source for the following reason: %s";

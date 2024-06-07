@@ -1,6 +1,8 @@
 package com.intellecteu.onesource.integration.routes.returns;
 
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMATION_POSTPONED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_ACKNOWLEDGED;
@@ -40,6 +42,12 @@ public class ReturnRoute extends RouteBuilder {
             + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
             + "query=SELECT r FROM ReturnTradeEntity r WHERE r.processingStatus = '%s' "
             + "AND (r.tradeOut.tradeType LIKE '%%Return Borrow%%' OR r.tradeOut.tradeType LIKE '%%Return Borrow (Full)%%') ";
+
+    private static final String RETURN_TRADE_SQL_ENDPOINT =
+        "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.ReturnTradeEntity?"
+            + "%s&"
+            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+            + "query=SELECT r FROM ReturnTradeEntity r WHERE r.processingStatus = '%s' ";
 
     public static final String RETURN_SQL_ENDPOINT =
         "jpa://com.intellecteu.onesource.integration.repository.entity.onesource.ReturnEntity?"
@@ -146,6 +154,25 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
             .log("<<< Finished CAPTURE_RETURN_ACKNOWLEDGEMENT for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[CREATED]");
 
+        from(createReturnTradeSQLEndpoint(TO_CONFIRM))
+            .to("direct:confirmReturnTrade");
+
+        from(createReturnTradeSQLEndpoint(CONFIRMATION_POSTPONED, 5000L))
+            .to("direct:confirmReturnTrade");
+
+        from("direct:confirmReturnTrade")
+            .log(">>> Started CONFIRM_RETURN_TRADE for ReturnTrade: ${body.tradeId}")
+            .bean(backOfficeMapper, "toModel")
+            .choice()
+                .when(method(returnProcessor, "isReturnTradePostponed"))
+                    .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, CONFIRMATION_POSTPONED)")
+                .otherwise()
+                    .bean(returnProcessor, "confirmReturnTrade")
+                    .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, CONFIRMED)")
+                .endChoice()
+            .end()
+            .log("<<< Finished CONFIRM_RETURN_TRADE for ReturnTrade: ${body.tradeId} with expected statuses: ReturnTrade[CONFIRMED, CONFIRMATION_POSTPONED]");
+
     }
     //@formatter:on
 
@@ -171,6 +198,15 @@ public class ReturnRoute extends RouteBuilder {
                 + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
                 + "query=SELECT d FROM NackInstructionEntity d WHERE d.processingStatus IS NULL";
         return String.format(nackInstructionSQL, String.format("delay=%d", updateTimer));
+    }
+
+    private String createReturnTradeSQLEndpoint(ProcessingStatus processingStatus, long delay) {
+        return String.format(RETURN_TRADE_SQL_ENDPOINT, String.format("delay=%d", delay),
+            processingStatus);
+    }
+
+    private String createReturnTradeSQLEndpoint(ProcessingStatus processingStatus) {
+        return createReturnTradeSQLEndpoint(processingStatus, updateTimer);
     }
 
 }

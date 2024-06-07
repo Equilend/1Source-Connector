@@ -4,6 +4,7 @@ import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CONFIRM_RETURN_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
@@ -17,6 +18,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.WAITING_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.NEGATIVE_ACKNOWLEDGEMENT_NOT_AUTHORIZED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
@@ -30,6 +32,7 @@ import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BO
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
+import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess;
@@ -42,6 +45,7 @@ import com.intellecteu.onesource.integration.model.onesource.Return;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.NackInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
+import com.intellecteu.onesource.integration.services.RerateTradeService;
 import com.intellecteu.onesource.integration.services.ReturnService;
 import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
@@ -69,15 +73,16 @@ public class ReturnProcessor {
     private final ReturnTradeService returnTradeService;
     private final ReturnService returnService;
     private final ReturnReconcileService returnReconcileService;
-    private final CloudEventRecordService cloudEventRecordService;
     private final NackInstructionService nackInstructionService;
+    private final RerateTradeService rerateTradeService;
+    private final CloudEventRecordService cloudEventRecordService;
     private final ReturnCloudEventBuilder eventBuilder;
 
     @Autowired
     public ReturnProcessor(BackOfficeService backOfficeService, OneSourceService oneSourceService,
         ReturnTradeService returnTradeService, ReturnService returnService,
         ReturnReconcileService returnReconcileService,
-        NackInstructionService nackInstructionService,
+        NackInstructionService nackInstructionService, RerateTradeService rerateTradeService,
         CloudEventRecordService cloudEventRecordService) {
         this.backOfficeService = backOfficeService;
         this.oneSourceService = oneSourceService;
@@ -85,6 +90,7 @@ public class ReturnProcessor {
         this.returnService = returnService;
         this.returnReconcileService = returnReconcileService;
         this.nackInstructionService = nackInstructionService;
+        this.rerateTradeService = rerateTradeService;
         this.cloudEventRecordService = cloudEventRecordService;
         this.eventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
     }
@@ -115,7 +121,8 @@ public class ReturnProcessor {
         return returnService.saveReturn(oneSourceReturn);
     }
 
-    public NackInstruction saveNackInstructionWithProcessingStatus(NackInstruction nackInstruction, ProcessingStatus processingStatus) {
+    public NackInstruction saveNackInstructionWithProcessingStatus(NackInstruction nackInstruction,
+        ProcessingStatus processingStatus) {
         nackInstruction.setProcessingStatus(processingStatus);
         return nackInstructionService.save(nackInstruction);
     }
@@ -274,6 +281,53 @@ public class ReturnProcessor {
                 List.of());
         }
         return nackInstruction;
+    }
+
+    public boolean isReturnTradePostponed(ReturnTrade returnTrade) {
+        Optional<ReturnTrade> notConfirmedReturnTrade = findNotConfirmedReturnTradeWithLowerTradeId(returnTrade);
+        if (notConfirmedReturnTrade.isPresent()) {
+            return true;
+        } else {
+            Optional<RerateTrade> notConfirmedRerateTrade = findNotConfirmedRerateTradeWithLowerTradeId(returnTrade);
+            if (notConfirmedRerateTrade.isPresent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Optional<RerateTrade> findNotConfirmedRerateTradeWithLowerTradeId(ReturnTrade returnTrade) {
+        return rerateTradeService.findReturnTrade(
+            returnTrade.getRelatedPositionId(),
+            List.of(CREATED, SUBMITTED, WAITING_PROPOSAL)).stream().filter(
+            rerate -> returnTrade.getTradeId() > rerate.getTradeId() && (
+                "Rerate".equals(rerate.getTradeOut().getTradeType())
+                    || "Rerate Borrow".equals(
+                    rerate.getTradeOut().getTradeType()))).findFirst();
+    }
+
+    private Optional<ReturnTrade> findNotConfirmedReturnTradeWithLowerTradeId(ReturnTrade returnTrade) {
+        return returnTradeService.findReturnTrade(
+            returnTrade.getRelatedPositionId(),
+            List.of(CREATED, SUBMITTED)).stream().filter(
+            rt -> returnTrade.getTradeId() > rt.getTradeId() && ("Return Loan".equals(rt.getTradeOut().getTradeType())
+                || "Return Borrow".equals(
+                rt.getTradeOut().getTradeType()))).findFirst();
+    }
+
+    public ReturnTrade confirmReturnTrade(ReturnTrade returnTrade) {
+        try {
+            backOfficeService.confirmReturnTrade(returnTrade);
+        }catch (HttpStatusCodeException exception) {
+            recordCloudEvent(CONFIRM_RETURN_TRADE, TECHNICAL_EXCEPTION_SPIRE,
+                new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
+                    .putReturnId(returnTrade.getMatching1SourceReturnId())
+                    .putTradeId(returnTrade.getTradeId())
+                    .putPositionId(returnTrade.getRelatedPositionId())
+                    .putContractId(returnTrade.getRelatedContractId()).getData(), List.of());
+            throwExceptionForRedeliveryPolicy(exception);
+        }
+        return returnTrade;
     }
 
     private void recordCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
