@@ -11,6 +11,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.POSIT
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -30,7 +31,6 @@ import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
-import com.intellecteu.onesource.integration.services.client.onesource.OneSourceApiClient;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
@@ -76,23 +76,97 @@ class UpdatePositionProcessorTest {
     }
 
     @Test
-    @Disabled(value = "should be reworked according to new changes")
-    void testUpdatePositionForRerate_shouldUpdateInitialPosition() {
+    void testUpdatePositionForRerate_shouldUpdateInitialPosition_whenBothHasFixedRate() {
         final TradeOut trade = ModelTestFactory.buildSpireTrade("RERATE");
+        trade.getPosition().setPositionId(25L);
+        trade.getPosition().getIndex().setIndexName("Fixed Rate");
+
         List<Position> positionList = new ArrayList<>();
         positionList.add(ModelTestFactory.buildPosition());
         positionList.add(ModelTestFactory.buildPosition());
         Position thirdPosition = ModelTestFactory.buildPosition();
         thirdPosition.setPositionId(trade.getPosition().getPositionId());
+        thirdPosition.getIndex().setIndexName("Fixed Rate");
+        thirdPosition.getIndex().setSpread(5.05d);
         positionList.add(thirdPosition);
 
         Position expectedposition = service.updatePositionForRerateTrade(trade, positionList);
 
-        assertEquals(thirdPosition.getRate(), expectedposition.getRate());
-        assertEquals(thirdPosition.getAccrualDate(), expectedposition.getAccrualDate());
-        assertEquals(thirdPosition.getIndex().getIndexId(), expectedposition.getIndex().getIndexId());
-        assertEquals(thirdPosition.getIndex().getIndexName(), expectedposition.getIndex().getIndexName());
-        assertEquals(thirdPosition.getIndex().getSpread(), expectedposition.getIndex().getSpread());
+        assertEquals(expectedposition.getRate(), trade.getRateOrSpread());
+        assertEquals(expectedposition.getAccrualDate(), trade.getAccrualDate());
+        assertNotNull(expectedposition.getIndex().getSpread());
+    }
+
+    @Test
+    void testUpdatePositionForRerate_shouldUpdateInitialPosition_whenInitialPositionHasNotFixedRate() {
+        final TradeOut trade = ModelTestFactory.buildSpireTrade("RERATE");
+        trade.getPosition().setPositionId(25L);
+        trade.getPosition().getIndex().setIndexName("Fixed Rate");
+        trade.getPosition().getIndex().setIndexId(1001);
+
+        List<Position> positionList = new ArrayList<>();
+        positionList.add(ModelTestFactory.buildPosition());
+        positionList.add(ModelTestFactory.buildPosition());
+        Position thirdPosition = ModelTestFactory.buildPosition();
+        thirdPosition.setPositionId(trade.getPosition().getPositionId());
+        thirdPosition.getIndex().setIndexName("Floating Rate");
+        positionList.add(thirdPosition);
+
+        Position expectedposition = service.updatePositionForRerateTrade(trade, positionList);
+
+        assertEquals(expectedposition.getRate(), trade.getRateOrSpread());
+        assertEquals(expectedposition.getAccrualDate(), trade.getAccrualDate());
+        assertEquals(expectedposition.getIndex().getIndexId(), trade.getPosition().getIndex().getIndexId());
+        assertEquals(expectedposition.getIndex().getIndexName(), trade.getPosition().getIndex().getIndexName());
+        assertNull(expectedposition.getIndex().getSpread());
+    }
+
+    @Test
+    void testUpdatePositionForRerate_shouldUpdateInitialPosition_whenInitialBothHasNotFixedRate() {
+        final TradeOut trade = ModelTestFactory.buildSpireTrade("RERATE");
+        trade.getPosition().setPositionId(25L);
+        trade.getPosition().getIndex().setIndexName("Floating Rate");
+        trade.getPosition().getIndex().setIndexId(1001);
+
+        List<Position> positionList = new ArrayList<>();
+        positionList.add(ModelTestFactory.buildPosition());
+        positionList.add(ModelTestFactory.buildPosition());
+        Position thirdPosition = ModelTestFactory.buildPosition();
+        thirdPosition.setPositionId(trade.getPosition().getPositionId());
+        thirdPosition.getIndex().setIndexName("Floating Rate");
+        positionList.add(thirdPosition);
+
+        Position expectedposition = service.updatePositionForRerateTrade(trade, positionList);
+
+        assertNull(expectedposition.getRate());
+        assertEquals(expectedposition.getAccrualDate(), trade.getAccrualDate());
+        assertEquals(expectedposition.getIndex().getIndexId(), trade.getPosition().getIndex().getIndexId());
+        assertEquals(expectedposition.getIndex().getIndexName(), trade.getPosition().getIndex().getIndexName());
+        assertEquals(expectedposition.getIndex().getSpread(), trade.getRateOrSpread());
+    }
+
+    @Test
+    void testUpdatePositionForRerate_shouldUpdateInitialPosition_whenInitialInitialPositionHasFixedRate() {
+        final TradeOut trade = ModelTestFactory.buildSpireTrade("RERATE");
+        trade.getPosition().setPositionId(25L);
+        trade.getPosition().getIndex().setIndexName("Floating Rate");
+        trade.getPosition().getIndex().setIndexId(1001);
+
+        List<Position> positionList = new ArrayList<>();
+        positionList.add(ModelTestFactory.buildPosition());
+        positionList.add(ModelTestFactory.buildPosition());
+        Position thirdPosition = ModelTestFactory.buildPosition();
+        thirdPosition.setPositionId(trade.getPosition().getPositionId());
+        thirdPosition.getIndex().setIndexName("Fixed Rate");
+        positionList.add(thirdPosition);
+
+        Position expectedposition = service.updatePositionForRerateTrade(trade, positionList);
+
+        assertNull(expectedposition.getRate());
+        assertEquals(expectedposition.getAccrualDate(), trade.getAccrualDate());
+        assertEquals(expectedposition.getIndex().getIndexId(), trade.getPosition().getIndex().getIndexId());
+        assertEquals(expectedposition.getIndex().getIndexName(), trade.getPosition().getIndex().getIndexName());
+        assertEquals(expectedposition.getIndex().getSpread(), trade.getRateOrSpread());
     }
 
     @Test

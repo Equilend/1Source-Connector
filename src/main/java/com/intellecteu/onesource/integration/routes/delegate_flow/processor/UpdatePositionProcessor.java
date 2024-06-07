@@ -60,8 +60,7 @@ public class UpdatePositionProcessor {
     }
 
     private static void updateFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
-        Position updateRequestPosition = tradeUpdateRequest.getPosition();
-        final Index indexUpdateRequest = updateRequestPosition.getIndex();
+        final Index indexUpdateRequest = tradeUpdateRequest.getPosition().getIndex();
         final Index initialIndex = initialPosition.getIndex();
         if (indexUpdateRequest != null && initialIndex != null) {
             final String updateRequestIndexName = indexUpdateRequest.getIndexName();
@@ -89,7 +88,7 @@ public class UpdatePositionProcessor {
                 initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate());
                 initialIndex.setIndexId(indexUpdateRequest.getIndexId());
                 initialIndex.setIndexName(indexUpdateRequest.getIndexName());
-                initialIndex.setSpread(indexUpdateRequest.getSpread());
+                initialIndex.setSpread(tradeUpdateRequest.getRateOrSpread());
             }
         }
     }
