@@ -9,9 +9,11 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_LOAN_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RERATE_TRADE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_OFF_SETTING_TRADE_CANCEL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCEL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_OFF_SET_CANCEL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_TRADE_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
@@ -19,7 +21,6 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
@@ -36,6 +37,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RERAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_CREATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_REPLACED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_TRADE_REPLACE_SUBMITTED;
@@ -84,6 +86,7 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.HttpStatusCodeException;
@@ -388,7 +391,7 @@ public class RerateProcessor {
             recordRerateTradeReplacedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACED, rerateTrade.getTradeId(),
                 correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId());
             if (StringUtils.isNotBlank(rerateTrade.getMatchingRerateId())) {
-                cancelLinkedRerate(correctionInstruction, rerateTrade);
+                instructRerateCancelOnAmendInstruction(correctionInstruction, rerateTrade.getMatchingRerateId());
             }
         } catch (EntityNotFoundException e) {
             recordCloudEvent(PROCESS_TRADE_UPDATE, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, null,
@@ -397,50 +400,85 @@ public class RerateProcessor {
         return correctionInstruction;
     }
 
-    private void cancelLinkedRerate(CorrectionInstruction correctionInstruction, RerateTrade rerateTrade) {
+    private void instructRerateCancelOnAmendInstruction(CorrectionInstruction correctionInstruction, String rerateId) {
         try {
-            Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
-            if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
-                cancelRerate(rerate, PROCESS_TRADE_UPDATE);
-                rerate.setProcessingStatus(CANCEL_SUBMITTED);
-                saveRerate(rerate);
-                recordRerateTradeReplaceSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
-                    correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), rerate);
-            } else if (DISCREPANCIES == rerate.getProcessingStatus()) {
-                delinkRerate(rerate);
+            Rerate linkedRerate = cancelRerate(rerateId, PROCESS_TRADE_UPDATE);
+            recordRerateTradeSubmittedCloudEvent(PROCESS_TRADE_UPDATE, RERATE_TRADE_REPLACE_SUBMITTED,
+                correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), linkedRerate);
+            if (DISCREPANCIES == linkedRerate.getProcessingStatus()) {
+                delinkRerate(linkedRerate);
             }
         } catch (EntityNotFoundException e) {
-            log.debug("Rerate:{} that should be linked to the replaced SPIRE rerate trade was not found.",
-                rerateTrade.getMatchingRerateId());
+            log.debug("Rerate:{} that is linked to the replaced SPIRE rerate trade was not found.", rerateId);
         }
     }
 
-    public CorrectionInstruction cancelRerateTrade(CorrectionInstruction correctionInstruction) {
+    private void instructRerateCancelOnCancelInstruction(CorrectionInstruction correctionInstruction, String rerateId) {
         try {
-            RerateTrade rerateTrade = rerateTradeService.getByTradeId(
-                correctionInstruction.getAmendedTradeId());
-            rerateTrade.setProcessingStatus(CANCELED);
-            saveRerateTrade(rerateTrade);
-            recordRerateTradeCanceledCloudEvent(PROCESS_TRADE_CANCELED, RERATE_TRADE_CANCELED,
-                rerateTrade.getMatchingRerateId(),
-                correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId());
-            if (rerateTrade.getMatchingRerateId() != null && !rerateTrade.getMatchingRerateId().isEmpty()) {
-                Rerate rerate = rerateService.getByRerateId(rerateTrade.getMatchingRerateId());
-                if (MATCHED.equals(rerate.getProcessingStatus()) || APPROVED.equals(rerate.getProcessingStatus())) {
-                    cancelRerate(rerate, PROCESS_TRADE_CANCEL);
-                    rerate.setProcessingStatus(CANCEL_SUBMITTED);
-                    saveRerate(rerate);
-                } else if (!CANCELED.equals(rerate.getProcessingStatus())
-                    && !DECLINED.equals(rerate.getProcessingStatus())) {
-                    rerate = delinkRerate(rerate);
-                    saveRerate(rerate);
-                }
+            Rerate linkedRerate = cancelRerate(rerateId, PROCESS_TRADE_CANCEL);
+            recordRerateTradeSubmittedCloudEvent(PROCESS_TRADE_CANCEL, RERATE_TRADE_CANCEL_SUBMITTED,
+                correctionInstruction.getOldTradeId(), correctionInstruction.getAmendedTradeId(), linkedRerate);
+            if (DISCREPANCIES == linkedRerate.getProcessingStatus()) {
+                delinkRerate(linkedRerate);
             }
         } catch (EntityNotFoundException e) {
-            recordCloudEvent(PROCESS_TRADE_CANCEL, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, null,
-                correctionInstruction.getOldTradeId(), null, null);
+            log.debug("Rerate:{} that is linked to the canceled SPIRE rerate trade was not found.", rerateId);
+        }
+    }
+
+    @Transactional
+    public CorrectionInstruction cancelRerateTrade(CorrectionInstruction correctionInstruction) {
+        try {
+            RerateTrade rerateTrade = rerateTradeService.getByTradeId(correctionInstruction.getOldTradeId());
+            rerateTrade.setProcessingStatus(CANCELED);
+            saveRerateTrade(rerateTrade);
+            recordRerateTradeCanceledCloudEvent(PROCESS_TRADE_CANCELED, RERATE_TRADE_CANCELED, correctionInstruction);
+            RerateTrade offSettingRerate = findUpdateRerateTrade(correctionInstruction.getAmendedTradeId(), CANCELED);
+            if (offSettingRerate == null) {
+                recordOffsetToolkitTechnicalEvent(correctionInstruction, PROCESS_OFF_SETTING_TRADE_CANCEL);
+            }
+            instructRerateCancelOnCancelInstruction(correctionInstruction, rerateTrade.getMatchingRerateId());
+        } catch (EntityNotFoundException e) {
+            recordOffsetToolkitTechnicalEvent(correctionInstruction, PROCESS_TRADE_OFF_SET_CANCEL);
         }
         return correctionInstruction;
+    }
+
+    private void recordOffsetToolkitTechnicalEvent(CorrectionInstruction correctionInstruction,
+        IntegrationSubProcess subProcess) {
+        Map<String, String> data = Map.of(
+            "oldTradeId", String.valueOf(correctionInstruction.getOldTradeId()),
+            "amendedTradeId", String.valueOf(correctionInstruction.getAmendedTradeId()));
+        recordCloudEvent(subProcess, TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, data, null);
+    }
+
+    private Rerate cancelRerate(String rerateId, IntegrationSubProcess subProcess) {
+        Rerate rerate = rerateService.getByRerateId(rerateId);
+        if (Set.of(MATCHED, APPROVED, CANCEL_PENDING).contains(rerate.getProcessingStatus())) {
+            cancelRerate(rerate, subProcess);
+            rerate.setProcessingStatus(CANCEL_SUBMITTED);
+            return saveRerate(rerate);
+        }
+        return rerate;
+    }
+
+    /**
+     * Get rerate trade by id, update processing status and persist.
+     *
+     * @param rerateTradeId Long id of the rerate trade
+     * @param processingStatus ProcessingStatus
+     * @return the persisted rerate trade with updated processing status or null if not found
+     */
+    @Transactional
+    public @Nullable RerateTrade findUpdateRerateTrade(Long rerateTradeId, ProcessingStatus processingStatus) {
+        try {
+            RerateTrade rerateTrade = rerateTradeService.getByTradeId(rerateTradeId);
+            updateRerateTradeProcessingStatus(rerateTrade, processingStatus);
+            return saveRerateTrade(rerateTrade);
+        } catch (EntityNotFoundException e) {
+            log.debug("No rerate trade was found by id:{}", rerateTradeId);
+            return null;
+        }
     }
 
     private void cancelRerate(Rerate rerate, IntegrationSubProcess subProcess) {
@@ -531,7 +569,7 @@ public class RerateProcessor {
         recordCloudEvent(subProcess, recordType, data, fieldImpacteds);
     }
 
-    private void recordRerateTradeReplaceSubmittedCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
+    private void recordRerateTradeSubmittedCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         Long oldTradeId, Long amendedTradeId, Rerate rerate) {
         Map<String, String> data = new HashMap<>();
         data.put("oldTradeId", toStringNullSafe(oldTradeId));
@@ -557,11 +595,10 @@ public class RerateProcessor {
     }
 
     private void recordRerateTradeCanceledCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
-        String rerateId, Long oldTradeId, Long amendedTradeId) {
+        CorrectionInstruction correctionInstruction) {
         Map<String, String> data = new HashMap<>();
-        data.put("oldTradeId", toStringNullSafe(oldTradeId));
-        data.put("amendedTradeId", toStringNullSafe(amendedTradeId));
-        data.put(RERATE_ID, rerateId);
+        data.put("oldTradeId", toStringNullSafe(correctionInstruction.getOldTradeId()));
+        data.put("amendedTradeId", toStringNullSafe(correctionInstruction.getAmendedTradeId()));
         var recordRequest = eventBuilder.buildRequest(subProcess, recordType,
             data, List.of());
         cloudEventRecordService.record(recordRequest);

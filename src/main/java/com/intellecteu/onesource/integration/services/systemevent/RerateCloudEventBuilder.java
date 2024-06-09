@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.services.systemevent;
 
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.BACKOFFICE_RERATE;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RERATE;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
@@ -30,9 +31,12 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_FOR_APPROVE_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.MATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.POST_RERATE_EXCEPTION_1SOURCE_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.PROCESS_OFF_SETTING_TRADE_CANCEL_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.PROCESS_OFF_SET_TRADE_CANCEL_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACED_RERATE_TRADE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.REPLACE_RERATE_EXCEPTION_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.RERATE_CANCELED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.RERATE_CANCELED_SUBMITTED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.RERATE_CANCEL_PENDING_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.DataMsg.UNMATCHED_RERATE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.APPLIED_RERATE;
@@ -46,6 +50,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_RERATE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CANCEL_RERATE_SUBMITTED;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CONFIRM_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.CREATED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.DECLIED_RERATE;
@@ -55,6 +60,8 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.GET_RERATE_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.MATCHED_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.POST_RERATE_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.PROCESS_OFF_SETTING_TRADE_CANCEL_SUBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.PROCESS_OFF_SET_TRADE_CANCEL_SUBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACED_RERATE_TRADE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.REPLACE_EXCEPTION_RERATE;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Rerate.Subject.RERATE_CANCELED;
@@ -227,6 +234,20 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
                     default -> null;
                 };
             }
+            case PROCESS_OFF_SETTING_TRADE_CANCEL: {
+                return switch (recordType) {
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createProcessOffSettingTradeCancelEventRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_TRADE_OFF_SET_CANCEL: {
+                return switch (recordType) {
+                    case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
+                        createProcessOffSetTradeCancelEventRequest(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
             case PROCESS_RERATE_DECLINED: {
                 return switch (recordType) {
                     case RERATE_PROPOSAL_DECLINED -> createDecliedRecordRequest(subProcess, recordType, data);
@@ -243,6 +264,8 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             }
             case PROCESS_TRADE_CANCEL: {
                 return switch (recordType) {
+                    case RERATE_TRADE_CANCEL_SUBMITTED ->
+                        createRerateTradeCancelSubmittedEventRequest(subProcess, recordType, data);
                     case TECHNICAL_EXCEPTION_1SOURCE ->
                         createCancelRerateExceptionCloudRequest(subProcess, recordType, data);
                     case TECHNICAL_ISSUE_INTEGRATION_TOOLKIT ->
@@ -500,15 +523,34 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
 
     private CloudEventBuildRequest createRerateTradeCanceledCloudRequest(IntegrationSubProcess subProcess,
         RecordType recordType, Map<String, String> data) {
-        String dataMessage = format(CANCELED_RERATE_MSG, data.get("oldTradeId"), data.get("amendedTradeId"),
+        String dataMessage = format(CANCELED_RERATE_MSG, data.get("oldTradeId"), data.get("amendedTradeId"));
+        return createRecordRequest(
+            recordType,
+            format(CANCELED_RERATE, data.get("oldTradeId")),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(
+                new RelatedObject(data.get("oldTradeId"), "Canceled Trade"),
+                new RelatedObject(data.get("amendedTradeId"), "Offsetting Trade")))
+        );
+    }
+
+    private CloudEventBuildRequest createRerateTradeCancelSubmittedEventRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(RERATE_CANCELED_SUBMITTED_MSG, data.get("oldTradeId"), data.get("amendedTradeId"),
             data.get(RERATE_ID));
         return createRecordRequest(
             recordType,
-            format(CANCELED_RERATE, data.get("amendedTradeId")),
+            format(CANCEL_RERATE_SUBMITTED, data.get(TRADE_ID)),
             RERATE,
             subProcess,
-            createEventData(dataMessage, List.of(new RelatedObject(data.get("oldTradeId"), "Canceled Trade"),
-                new RelatedObject(data.get("amendedTradeId"), "offsetting Trade")))
+            createEventData(dataMessage, List.of(
+                new RelatedObject(data.get("oldTradeId"), "Initial Trade"),
+                new RelatedObject(data.get("amendedTradeId"), "Amended Trade"),
+                new RelatedObject(data.get(RERATE_ID), ONESOURCE_RERATE),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_CONTRACT)))
         );
     }
 
@@ -560,6 +602,38 @@ public class RerateCloudEventBuilder extends IntegrationCloudEventBuilder {
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), ONESOURCE_RERATE)))
+        );
+    }
+
+    private CloudEventBuildRequest createProcessOffSettingTradeCancelEventRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        final String oldTradeId = data.get("oldTradeId");
+        final String amendedTradeId = data.get("amendedTradeId");
+        String dataMessage = format(PROCESS_OFF_SETTING_TRADE_CANCEL_MSG, oldTradeId, amendedTradeId);
+        return createRecordRequest(
+            recordType,
+            format(PROCESS_OFF_SETTING_TRADE_CANCEL_SUBJ, amendedTradeId),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(
+                new RelatedObject(oldTradeId, "Off-set Trade"),
+                new RelatedObject(amendedTradeId, "Off-setting Trade")))
+        );
+    }
+
+    private CloudEventBuildRequest createProcessOffSetTradeCancelEventRequest(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        final String oldTradeId = data.get("oldTradeId");
+        final String amendedTradeId = data.get("amendedTradeId");
+        String dataMessage = format(PROCESS_OFF_SET_TRADE_CANCEL_MSG, oldTradeId);
+        return createRecordRequest(
+            recordType,
+            format(PROCESS_OFF_SET_TRADE_CANCEL_SUBJ, oldTradeId),
+            RERATE,
+            subProcess,
+            createEventData(dataMessage, List.of(
+                new RelatedObject(oldTradeId, "Off-set Trade"),
+                new RelatedObject(amendedTradeId, "Off-setting Trade")))
         );
     }
 
