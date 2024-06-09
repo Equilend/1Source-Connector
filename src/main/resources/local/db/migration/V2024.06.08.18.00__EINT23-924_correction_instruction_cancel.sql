@@ -1,0 +1,9 @@
+-- INSERT into correction_instruction (instruction_id, instruction_type, amended_trade_id, old_trade_id, proposal_type, creation_date_time)
+-- VALUES ('3', 'RERATE_CANCELLED', 33, 22, 'RERATE', '2024-06-07 13:50:41.633000');
+--
+-- INSERT INTO rerate_trade (trade_id, creation_datetime, last_update_datetime, matching_rerate_id, processing_status, related_contract_id, related_position_id, trade_out_trade_id)
+-- VALUES (33,'2024-06-08 14:59:40.896383','2024-06-08 15:05:35.406893', '22', 'SUBMITTED', '3344-4455-5566-6677', 3333, null),
+--        (22,'2024-06-08 14:59:40.896383','2024-06-08 15:05:35.406893', '33', 'SUBMITTED', '2222-3333-4444-5555', 2222, null);
+--
+-- INSERT INTO rerate (rerate_id, processing_status, contract_id, matching_spire_trade_id, related_spire_position_id)
+-- VALUES ('33', 'MATCHED', '3434-4545-5656-6767', 33, 3333);

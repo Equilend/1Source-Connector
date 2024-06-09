@@ -386,7 +386,10 @@ public class RecordMessageConstant {
             public static final String RERATE_CANCELED = "1Source Rerate - %s";
             public static final String RERATE_CANCEL_PENDING = "1Source Rerate - %s";
             public static final String REPLACED_RERATE_TRADE = "Trade - %s";
+            public static final String PROCESS_OFF_SET_TRADE_CANCEL_SUBJ = "Trade - %s";
+            public static final String PROCESS_OFF_SETTING_TRADE_CANCEL_SUBJ = "Trade - %s";
             public static final String CANCEL_RERATE = "Trade - %s";
+            public static final String CANCEL_RERATE_SUBMITTED = "Trade - %s";
             public static final String CANCELED_RERATE = "Trade - %s";
             public static final String APPROVE_EXCEPTION_RERATE = "Trade - %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
@@ -413,11 +416,14 @@ public class RecordMessageConstant {
             public static final String APPLIED_RERATE_MSG = "The rerate %s matching with the SPIRE rerate trade %s has been now applied on the loan contract %s";
             public static final String DECLIED_RERATE_MSG = "The rerate proposal %s has been declined.";
             public static final String CANCELED_RERATE_PROPOSAL_MSG = "The rerate proposal %s has been canceled.";
+            public static final String PROCESS_OFF_SETTING_TRADE_CANCEL_MSG = "The rerate trade %s has been canceled in SPIRE but the off-setting  %s rerate trade has not been retrieved in the Integration toolkit.";
+            public static final String PROCESS_OFF_SET_TRADE_CANCEL_MSG = "The rerate trade %s has been canceled in SPIRE but the rerate trade has not been retrieved in the Integration toolkit.";
             public static final String RERATE_CANCELED_MSG = "The rerate %s has been canceled.";
+            public static final String RERATE_CANCELED_SUBMITTED_MSG = "The update of the SPIRE rerate trade %s offset by the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s.";
             public static final String RERATE_CANCEL_PENDING_MSG = "The rerate %s has been cancel pending.";
             public static final String REPLACED_RERATE_TRADE_MSG = "The SPIRE rerate trade %s has been replaced with a SPIRE rerate trade: %s .";
             public static final String CANCEL_RERATE_MSG = "The update of the SPIRE rerate trade %s replaced with the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s.";
-            public static final String CANCELED_RERATE_MSG = "The update of the SPIRE rerate trade %s offset by the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s .";
+            public static final String CANCELED_RERATE_MSG = "The SPIRE rerate trade %s has been offset with the SPIRE rerate trade: %s.";
             public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been approved but the rerate proposal has not been retrieved in the Integration toolkit";
             public static final String APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate %s has been applied in 1Source but the rerate has not been retrieved in the Integration toolkit";
@@ -429,7 +435,7 @@ public class RecordMessageConstant {
             public static final String CONFIRM_EXCEPTION_RERATE_MSG = "The rerate trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source rerate is : %s. The reason is: %s";
             public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";
             public static final String DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE_MSG = "The decline instruction for the 1Source rerate %s is not authorised as not generated from a “RERATE_PROPOSAL_DISCREPANCIES” or “RERATE_PROPOSAL_UNMATCHED” event.";
-            public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be canceled for the following reason: %s";
+            public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s (generated from the SPIRE rerate trade: %s) cannot be canceled for the following reason:  Bad request or more information needed";
             public static final String CANCEL_EXCEPTION_RERATE_PROCESS_TRADE_UPDATE_MSG = "The rerate proposal %s (generated from the SPIRE rerate trade: %s) cannot be canceled for the following reason: %s";
 
         }
