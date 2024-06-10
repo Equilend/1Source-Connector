@@ -15,6 +15,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.GET_RETURN_EXCEPTION_1SOURCE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_PENDING_CONFIRMATION_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.POST_RETURN_SUBMITTED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.PROCESS_RETURN_SETTLED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.PROCESS_RETURN_TRADE_SETTLED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.PROCESS_RETURN_TRADE_SETTLED_TE_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RECONCILE_RETURN_DISCREPANCIES_MSG;
@@ -34,6 +35,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.GET_RETURN_EXCEPTION_1SOURCE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_PENDING_CONFIRMATION_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.POST_RETURN_SUBMITTED_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.PROCESS_RETURN_SETTLED_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.PROCESS_RETURN_TRADE_SETTLED_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.PROCESS_RETURN_TRADE_SETTLED_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RECONCILE_RETURN_DISCREPANCIES_SBJ;
@@ -231,6 +233,12 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                     case TECHNICAL_EXCEPTION_1SOURCE ->
                         createSettlementReturnTechnicalExceptionCR(subProcess, recordType, data);
                     case RETURN_SETTLED_SUBMITTED -> createSettledReturnCR(subProcess, recordType, data);
+                    default -> null;
+                };
+            }
+            case PROCESS_RETURN_SETTLED: {
+                return switch (recordType) {
+                    case RETURN_SETTLED -> createSettledOneSourceReturnCR(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -499,6 +507,21 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
         return createRecordRequest(
             recordType,
             format(PROCESS_RETURN_TRADE_SETTLED_SBJ, data.get(TRADE_ID)),
+            RETURN,
+            subProcess,
+            createEventData(dataMessage, List.of(new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
+        );
+    }
+
+    private CloudEventBuildRequest createSettledOneSourceReturnCR(IntegrationSubProcess subProcess, RecordType recordType,
+        Map<String, String> data) {
+        String dataMessage = format(PROCESS_RETURN_SETTLED_MSG, data.get(RETURN_ID), data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(PROCESS_RETURN_SETTLED_SBJ, data.get(TRADE_ID)),
             RETURN,
             subProcess,
             createEventData(dataMessage, List.of(new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),

@@ -7,6 +7,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_SETTLED;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.mapper.NackInstructionMapper;
@@ -152,7 +153,7 @@ public class ReturnRoute extends RouteBuilder {
             .bean(oneSourceMapper, "toModel")
             .bean(returnEventProcessor, "processReturnAcknowledgedEvent")
             .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
-            .log("<<< Finished CAPTURE_RETURN_ACKNOWLEDGEMENT for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[CREATED]");
+            .log("<<< Finished CAPTURE_RETURN_ACKNOWLEDGEMENT for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[POSITIVELY_ACKNOWLEDGED, NEGATIVELY_ACKNOWLEDGED]");
 
         from(createReturnTradeSQLEndpoint(TO_CONFIRM))
             .to("direct:confirmReturnTrade");
@@ -182,6 +183,12 @@ public class ReturnRoute extends RouteBuilder {
             .end()
             .log("<<< Finished PROCESS_RETURN_TRADE_SETTLED for ReturnTrades with expected statuses: ReturnTrade[SETTLED]");
 
+        from(createTradeEventSQLEndpoint(CREATED, RETURN_SETTLED))
+            .log(">>> Started PROCESS_RETURN_SETTLED for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnEventProcessor, "processReturnSettledEvent")
+            .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
+            .log("<<< Finished PROCESS_RETURN_SETTLED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[SETTLED]");
     }
     //@formatter:on
 
