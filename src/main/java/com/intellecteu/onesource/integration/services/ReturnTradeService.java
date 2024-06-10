@@ -63,6 +63,11 @@ public class ReturnTradeService {
         return returnTradeEntityList.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
     }
 
+    public List<ReturnTrade> findReturnTradeWithStatus(List<String> statuses) {
+        List<ReturnTradeEntity> returnTradeEntityList = returnTradeRepository.findByTradeOut_StatusIn(statuses);
+        return returnTradeEntityList.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
+    }
+
     public ReturnTrade markReturnTradeAsMatched(ReturnTrade returnTrade, Return oneSourceReturn) {
         returnTrade.setMatching1SourceReturnId(oneSourceReturn.getReturnId());
         returnTrade.setLastUpdateDatetime(LocalDateTime.now());

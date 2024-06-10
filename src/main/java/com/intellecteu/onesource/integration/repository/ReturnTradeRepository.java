@@ -26,5 +26,7 @@ public interface ReturnTradeRepository extends JpaRepository<ReturnTradeEntity, 
     List<ReturnTradeEntity> findByRelatedPositionIdAndProcessingStatusIn(Long relatedPositionId,
         Collection<ProcessingStatus> processingStatuses);
 
+    List<ReturnTradeEntity> findByTradeOut_StatusIn(Collection<String> statuses);
+
     ;
 }

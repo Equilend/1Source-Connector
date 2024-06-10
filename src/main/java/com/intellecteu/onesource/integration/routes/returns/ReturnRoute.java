@@ -173,6 +173,15 @@ public class ReturnRoute extends RouteBuilder {
             .end()
             .log("<<< Finished CONFIRM_RETURN_TRADE for ReturnTrade: ${body.tradeId} with expected statuses: ReturnTrade[CONFIRMED, CONFIRMATION_POSTPONED]");
 
+        from(String.format("timer://eventTimer?period=%d", 60000))
+            .log(">>> Started PROCESS_RETURN_TRADE_SETTLED for ReturnTrades")
+            .bean(returnProcessor, "fetchOpenReturnTrades")
+            .split(body())
+                .bean(returnProcessor, "postSettlementStatus")
+                .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, SETTLED)")
+            .end()
+            .log("<<< Finished PROCESS_RETURN_TRADE_SETTLED for ReturnTrades with expected statuses: ReturnTrade[SETTLED]");
+
     }
     //@formatter:on
 

@@ -76,6 +76,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -252,7 +253,7 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public List<ReturnTrade> retrieveReturnTrades(Optional<Long> lastTradeId) {
+    public List<ReturnTrade> retrieveNewReturnTrades(Optional<Long> lastTradeId) {
         Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
             .tuples(createTuplesGetReturnTrades(maxTradeId.toString()));
@@ -266,6 +267,29 @@ public class BackOfficeService {
                 .collect(Collectors.toList());
         }
         return List.of();
+    }
+
+    public List<ReturnTrade> retrieveOpenReturnTrades(List<Long> tradeIds) {
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
+            .tuples(createTuplesGetOpenReturnTrades(tradeIds));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery).start(0L);
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToReturnTrade)
+                .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    private List<NQueryTuple> createTuplesGetOpenReturnTrades(List<Long> tradeIds) {
+        List<NQueryTuple> tuples = new ArrayList<>();
+        tuples.add(
+            new NQueryTuple().lValue("tradeId").operator(OperatorEnum.IN).rValue1(StringUtils.join(tradeIds, ",")));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS).rValue1("OPEN"));
+        return tuples;
     }
 
     public void confirmReturnTrade(ReturnTrade returnTrade) {

@@ -2,9 +2,11 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CONFIRM_RETURN_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
@@ -17,6 +19,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.NEGAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
@@ -100,7 +103,7 @@ class ReturnProcessorTest {
     void fetchNewReturnTrades_BackOfficeResponseWithModel_StoredEntity() {
         ReturnTrade returnTrade = new ReturnTrade();
         returnTrade.setTradeId(1l);
-        doReturn(List.of(returnTrade)).when(backOfficeService).retrieveReturnTrades(any());
+        doReturn(List.of(returnTrade)).when(backOfficeService).retrieveNewReturnTrades(any());
 
         List<ReturnTrade> result = returnProcessor.fetchNewReturnTrades();
 
@@ -355,7 +358,7 @@ class ReturnProcessorTest {
     }
 
     @Test
-    void confirmReturnTrade__OkResponse_FUTUREStatus() {
+    void confirmReturnTrade_OkResponse_FUTUREStatus() {
         ReturnTrade returnTrade = new ReturnTrade();
         returnTrade.setTradeId(2L);
         returnTrade.setTradeOut(new TradeOut());
@@ -376,6 +379,68 @@ class ReturnProcessorTest {
 
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(CONFIRM_RETURN_TRADE), eq(TECHNICAL_EXCEPTION_SPIRE),
+            any(), any());
+    }
+
+    @Test
+    void fetchOpenReturnTrades_ResponseWithOpenReturnTrade_ListOfOpenReturnTrade() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        ReturnTrade returnTrade2 = new ReturnTrade();
+        returnTrade2.setTradeId(2L);
+        ReturnTrade openReturnTrade = new ReturnTrade();
+        openReturnTrade.setTradeId(1L);
+
+        doReturn(List.of(returnTrade, returnTrade2)).when(returnTradeService).findReturnTradeWithStatus(any());
+        doReturn(List.of(openReturnTrade)).when(backOfficeService).retrieveOpenReturnTrades(any());
+
+        List<ReturnTrade> result = returnProcessor.fetchOpenReturnTrades();
+
+        assertEquals(result.size(), 1);
+        assertEquals(result.get(0).getTradeId(), 1l);
+    }
+
+    @Test
+    void fetchOpenReturnTrades_ThrownHttpClientErrorException_SavedCloudEvent() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        doReturn(List.of(returnTrade)).when(returnTradeService).findReturnTradeWithStatus(any());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(backOfficeService)
+            .retrieveOpenReturnTrades(any());
+
+        returnProcessor.fetchOpenReturnTrades();
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_TRADE_SETTLED), eq(TECHNICAL_EXCEPTION_SPIRE),
+            any(), any());
+    }
+
+    @Test
+    void postSettlementStatus_OkResponse_SETTLEDStatus() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        returnTrade.setTradeOut(new TradeOut());
+
+        ReturnTrade result = returnProcessor.postSettlementStatus(returnTrade);
+
+        assertEquals("SETTLED", result.getTradeOut().getStatus());
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_TRADE_SETTLED), eq(RETURN_SETTLED_SUBMITTED),
+            any(), any());
+    }
+
+    @Test
+    void postSettlementStatus_ThrownHttpClientErrorException_SavedCloudEvent() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        returnTrade.setTradeOut(new TradeOut());
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(oneSourceService)
+            .instructReturnStatus(any(), any());
+
+        ReturnTrade result = returnProcessor.postSettlementStatus(returnTrade);
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_TRADE_SETTLED), eq(TECHNICAL_EXCEPTION_1SOURCE),
             any(), any());
     }
 }

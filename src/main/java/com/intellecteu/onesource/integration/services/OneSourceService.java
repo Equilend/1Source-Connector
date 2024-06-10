@@ -14,6 +14,7 @@ import com.intellecteu.onesource.integration.model.onesource.ContractProposalApp
 import com.intellecteu.onesource.integration.model.onesource.Recall1Source;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.model.onesource.Return;
+import com.intellecteu.onesource.integration.model.onesource.ReturnStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.model.onesource.SettlementStatusUpdate;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
@@ -238,6 +239,12 @@ public class OneSourceService {
     public void postReturnTrade(ReturnTrade returnTrade) {
         ReturnProposalDTO body = buildReturnProposal(returnTrade);
         returnsApi.ledgerContractsContractIdReturnsPost(body, returnTrade.getRelatedContractId());
+    }
+
+    public void instructReturnStatus(ReturnTrade returnTrade, ReturnStatus returnStatus) {
+        SettlementStatusUpdateDTO body  = new SettlementStatusUpdateDTO();
+        body.setSettlementStatus(SettlementStatusDTO.valueOf(returnStatus.name()));
+        returnsApi.ledgerContractsContractIdReturnsReturnIdPatch(returnTrade.getRelatedContractId(), returnTrade.getMatching1SourceReturnId(), body);
     }
 
     private ReturnProposalDTO buildReturnProposal(ReturnTrade returnTrade) {
