@@ -455,6 +455,7 @@ public class RecordMessageConstant {
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Extract of new return pending conf. - %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
             public static final String POST_RETURN_SUBMITTED_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_SETTLED_SBJ = "Trade - %s";
             public static final String PROCESS_RETURN_TRADE_SETTLED_SBJ = "Trade - %s";
             public static final String PROCESS_RETURN_TRADE_SETTLED_TE_SBJ = "Trade - %s";
             public static final String GET_RETURN_EXCEPTION_1SOURCE_SBJ = "Trade - %s";
@@ -478,6 +479,7 @@ public class RecordMessageConstant {
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG = "New return pending confirmation cannot be extracted from SPIRE for the following reason: %s";
             public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s has not been processed by 1Source for the following reason: %s";
             public static final String POST_RETURN_SUBMITTED_MSG = "The return trade %s has been submitted to 1Source to request the return creation";
+            public static final String PROCESS_RETURN_SETTLED_MSG = "The return %s matching with the return trade %s has been marked as settled";
             public static final String PROCESS_RETURN_TRADE_SETTLED_MSG = "The SPIRE return trade %s matching the return %s has been settled.";
             public static final String PROCESS_RETURN_TRADE_SETTLED_TE_MSG = "The return %s matching with the return trade %s cannot be set to settle in 1Source for the following reason: %s";
             public static final String GET_RETURN_EXCEPTION_1SOURCE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";

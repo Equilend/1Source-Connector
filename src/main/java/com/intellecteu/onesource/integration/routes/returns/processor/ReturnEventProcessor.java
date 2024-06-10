@@ -4,12 +4,15 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RETURN_ACKNOWLEDGEMENT_DETAILS;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.POSITIVELY_ACKNOWLEDGED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_POSITIVELY_ACKNOWLEDGED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.RESOURCE_URI;
@@ -22,6 +25,7 @@ import com.intellecteu.onesource.integration.model.enums.RecordType;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.onesource.AcknowledgementType;
 import com.intellecteu.onesource.integration.model.onesource.Return;
+import com.intellecteu.onesource.integration.model.onesource.ReturnStatus;
 import com.intellecteu.onesource.integration.model.onesource.TradeEvent;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.ReturnService;
@@ -129,6 +133,29 @@ public class ReturnEventProcessor {
             throwExceptionForRedeliveryPolicy(e);
         }
         return event;
+    }
+
+    public TradeEvent processReturnSettledEvent(TradeEvent tradeEvent){
+        String resourceUri = tradeEvent.getResourceUri();
+        String returnId = getReturnId(resourceUri);
+        Return oneSourceReturn = returnService.getByReturnId(returnId);
+        oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+        oneSourceReturn.setReturnStatus(ReturnStatus.SETTLED);
+        oneSourceReturn.setProcessingStatus(SETTLED);
+        returnService.saveReturn(oneSourceReturn);
+        recordCloudEvent(PROCESS_RETURN_SETTLED, RETURN_SETTLED,  new DataBuilder()
+            .putReturnId(oneSourceReturn.getReturnId())
+            .putTradeId(oneSourceReturn.getMatchingSpireTradeId())
+            .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
+            .putContractId(oneSourceReturn.getContractId()).getData(), List.of());
+        return tradeEvent;
+    }
+
+    private String getReturnId(String resourceUri) {
+        if (resourceUri.endsWith("/")) {
+            resourceUri = resourceUri.substring(0, resourceUri.length() - 1);
+        }
+        return resourceUri.substring(resourceUri.lastIndexOf("/") + 1);
     }
 
     private void recordHttpExceptionCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
