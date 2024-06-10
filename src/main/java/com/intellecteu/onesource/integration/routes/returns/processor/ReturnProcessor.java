@@ -4,10 +4,12 @@ import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CONFIRM_RETURN_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_RETURN_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
@@ -23,6 +25,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.NEGAT
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
@@ -42,6 +45,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.NackInstru
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.onesource.Return;
+import com.intellecteu.onesource.integration.model.onesource.ReturnStatus;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.NackInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
@@ -131,7 +135,7 @@ public class ReturnProcessor {
         Optional<Long> lastTradeId = returnTradeService.getMaxTradeId();
         List<ReturnTrade> rerateTradeList = new ArrayList<>();
         try {
-            rerateTradeList = backOfficeService.retrieveReturnTrades(lastTradeId);
+            rerateTradeList = backOfficeService.retrieveNewReturnTrades(lastTradeId);
         } catch (HttpStatusCodeException exception) {
             recordHttpExceptionCloudEvent(GET_NEW_RETURN_PENDING_CONFIRMATION, TECHNICAL_EXCEPTION_SPIRE, exception,
                 null, null);
@@ -319,7 +323,7 @@ public class ReturnProcessor {
         try {
             backOfficeService.confirmReturnTrade(returnTrade);
             returnTrade.getTradeOut().setStatus("FUTURE");
-        }catch (HttpStatusCodeException exception) {
+        } catch (HttpStatusCodeException exception) {
             recordCloudEvent(CONFIRM_RETURN_TRADE, TECHNICAL_EXCEPTION_SPIRE,
                 new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
                     .putReturnId(returnTrade.getMatching1SourceReturnId())
@@ -327,6 +331,47 @@ public class ReturnProcessor {
                     .putPositionId(returnTrade.getRelatedPositionId())
                     .putContractId(returnTrade.getRelatedContractId()).getData(), List.of());
             throwExceptionForRedeliveryPolicy(exception);
+        }
+        return returnTrade;
+    }
+
+    public List<ReturnTrade> fetchOpenReturnTrades() {
+        List<ReturnTrade> returnTradesWithFUTURE = returnTradeService.findReturnTradeWithStatus(List.of("FUTURE"));
+        if (!returnTradesWithFUTURE.isEmpty()) {
+            try {
+                List<Long> openReturnTradeIds = backOfficeService.retrieveOpenReturnTrades(
+                        returnTradesWithFUTURE.stream().map(ReturnTrade::getTradeId).toList()).stream()
+                    .map(ReturnTrade::getTradeId).toList();
+                return returnTradesWithFUTURE.stream()
+                    .filter(rt -> openReturnTradeIds.contains(rt.getTradeId())).toList();
+            } catch (HttpStatusCodeException exception) {
+                recordCloudEvent(CAPTURE_RETURN_TRADE_SETTLED, TECHNICAL_EXCEPTION_SPIRE,
+                    new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText()).getData(),
+                    List.of());
+            }
+        }
+        return List.of();
+    }
+
+    public ReturnTrade postSettlementStatus(ReturnTrade returnTrade) {
+        try {
+            oneSourceService.instructReturnStatus(returnTrade, ReturnStatus.SETTLED);
+            returnTrade.getTradeOut().setStatus("SETTLED");
+            recordCloudEvent(PROCESS_RETURN_TRADE_SETTLED, RETURN_SETTLED_SUBMITTED,
+                new ReturnCloudEventBuilder.DataBuilder()
+                    .putReturnId(returnTrade.getMatching1SourceReturnId())
+                    .putTradeId(returnTrade.getTradeId())
+                    .putPositionId(returnTrade.getRelatedPositionId())
+                    .putContractId(returnTrade.getRelatedContractId()).getData(),
+                List.of());
+        } catch (HttpStatusCodeException exception) {
+            recordCloudEvent(PROCESS_RETURN_TRADE_SETTLED, TECHNICAL_EXCEPTION_1SOURCE,
+                new ReturnCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
+                    .putReturnId(returnTrade.getMatching1SourceReturnId())
+                    .putTradeId(returnTrade.getTradeId())
+                    .putPositionId(returnTrade.getRelatedPositionId())
+                    .putContractId(returnTrade.getRelatedContractId()).getData(),
+                List.of());
         }
         return returnTrade;
     }
