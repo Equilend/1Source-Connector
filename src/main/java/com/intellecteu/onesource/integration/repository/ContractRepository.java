@@ -27,6 +27,9 @@ public interface ContractRepository extends JpaRepository<ContractEntity, Long> 
 
     Optional<ContractEntity> findByContractId(String contractId);
 
+    Optional<ContractEntity> findByContractIdAndProcessingStatusNot(String contractId,
+        ProcessingStatus processingStatus);
+
     //TODO check if inner join will be enough in this case.
     @Query("select c from ContractEntity c left join fetch c.trade t left join fetch t.venues v left join fetch t.collateral col left join fetch t.transactingParties prt left join fetch prt.party left join fetch t.rate rt left join fetch rt.fee f left join fetch rt.rebate rb left join fetch rb.fixed left join fetch rb.floating left join fetch t.instrument i left join fetch i.price where v.venueRefKey = :venueRefId")
     List<ContractEntity> findByVenueRefId(@Param("venueRefId") String venueRefId);

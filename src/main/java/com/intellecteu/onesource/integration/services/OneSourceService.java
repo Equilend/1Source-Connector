@@ -222,7 +222,7 @@ public class OneSourceService {
     }
 
     public boolean instructCancelLoanContract(String contractId) throws RestClientException {
-        log.debug("Sending request to cancel a loan contract id = {}.", contractId);
+        log.debug("Sending request to cancel a loan contract id:{}.", contractId);
         contractsApi.ledgerContractsContractIdCancelPost(contractId);
         return true;
     }

@@ -1,0 +1,201 @@
+Prepared local migration data: V2024.06.11.13.00__EINT23-445_get_updated_positions_pending_confirmation_rerate_trade_type.sql
+
+1. Insert to position table the position:
+    - status should be 'PENDING ONESOURCE CONFIRMATION';
+    - processing status should be null or 'CREATED';
+    - position.matching1SourceLoanContractId should be matched with the linked contract;
+    - position.indexDTO.indexName should be 'Fixed Rate'.
+
+2. Create the matched mock for SPIRE endpoint: '/trades/search/onesource/trade/query'
+    - tradeOut type should be 'Cancel Loan';
+    - tradeOut.positionOutDTO.positionId should match with the initial position inserted;
+    - tradeOut.positionOutDTO.indexDTO.indexName should be 'Fixed Rate'.
+
+    Example:
+    {
+        "data": {
+            "beans": [
+                {
+                    "accrualDate": "2024-02-21T08:57:03.843Z",
+                    "contractSettleDate": "2024-02-21T08:57:03.843Z",
+                    "depoId": 0,
+                    "endDate": "2024-02-21T08:57:03.843Z",
+                    "lastModTs": "2024-02-21T08:57:03.843Z",
+                    "positionId": 0,
+                    "positionOutDTO": {
+                        "__qualifiedName": "1",
+                        "accountDTO": {
+                            "__qualifiedName": "string",
+                            "accountId": 7890,
+                            "dtc": 1,
+                            "lei": "7890",
+                            "oneSourceId": 7890,
+                            "shortName": "lender_acc"
+                        },
+                        "accountId": 7890,
+                        "amount": 17935.5,
+                        "collateralTypeDTO": {
+                            "__qualifiedName": "string",
+                            "categoryId": 0,
+                            "collateralType": "CASH",
+                            "collateralTypeId": 0,
+                            "extCollateralType": "string",
+                            "minRatingValue": 0,
+                            "profileNo": "string",
+                            "statusId": 0,
+                            "tripartyAgentCode": "string"
+                        },
+                        "contractValue": 17935.5,
+                        "counterPartyDTO": {
+                            "__qualifiedName": "string",
+                            "accountId": 46,
+                            "dtc": 2,
+                            "lei": "7890",
+                            "oneSourceId": 46,
+                            "shortName": "borrower_acc"
+                        },
+                        "currencyDTO": {
+                            "basisId": 0,
+                            "bojCurrencyCode": 102,
+                            "countryId": 0,
+                            "currencyId": 51,
+                            "currencyKy": "USD",
+                            "currencyName": "US Dollar",
+                            "currencySymbol": "$"
+                        },
+                        "customValue2": "7890",
+                        "depoId": 0,
+                        "endDate": "2023-10-25T13:50:41.633Z",
+                        "exposureDTO": {
+                            "__qualifiedName": "string",
+                            "accountId": 7890,
+                            "counterpartyId": 46,
+                            "cpHaircut": 1.02,
+                            "cpMarkRoundTo": 0,
+                            "currencyId": 0,
+                            "depoId": 0,
+                            "exposureId": 1111,
+                            "initMarkRoundTo": 0,
+                            "positionTypeId": 50,
+                            "xpHaircut": 0
+                        },
+                        "exposureId": 0,
+                        "indexDTO": {
+                            "__qualifiedName": "string",
+                            "indexId": 0,
+                            "indexName": "Fixed Rate",
+                            "isActive": true,
+                            "lookBack": 0,
+                            "parentIndexId": 0,
+                            "spread": 0
+                        },
+                        "indexId": 0,
+                        "loanBorrowDTO": {
+                            "__qualifiedName": "string",
+                            "allInRate": 0,
+                            "collateralCalendarId": 0,
+                            "collateralIndexId": 0,
+                            "collateralLookback": 0,
+                            "collateralRate": 0,
+                            "collateralSpread": 0,
+                            "currentAllInRate": 0,
+                            "currentTaxWithholdingRate": 0,
+                            "dividend": 0,
+                            "dividendCurrencyId": 0,
+                            "endDate": "2023-10-25T13:50:41.633Z",
+                            "positionId": 9999,
+                            "startDate": "2023-10-25T13:50:41.633Z",
+                            "taxWithholdingRate": 85
+                        },
+                        "positionId": 7890,
+                        "positionRef": "string",
+                        "positionTypeId": 0,
+                        "positiontypeDTO": {
+                            "positionType": "CASH LOAN",
+                            "positionTypeId": 0
+                        },
+                        "price": 119.57,
+                        "quantity": 15000,
+                        "rate": 0.05,
+                        "securityDetailDTO": {
+                            "__qualifiedName": "string",
+                            "baseFeeRate": 0,
+                            "bloombergId": "string",
+                            "cusip": "023135106",
+                            "factor": 0,
+                            "fxRate": 0,
+                            "isin": "US0231351067",
+                            "issueDate": "2023-10-25T13:50:41.633Z",
+                            "lastAccrualDate": "2023-10-25T13:50:41.633Z",
+                            "lastModTs": "2023-10-25T13:50:41.633Z",
+                            "price": 0,
+                            "priceDTO": {
+                                "__qualifiedName": "string",
+                                "askPrice": 0,
+                                "bidPrice": 0,
+                                "cleanPrice": 0,
+                                "comments": "string",
+                                "defaultPrice": 0,
+                                "dirtyPrice": 0,
+                                "id": {
+                                    "__qualifiedName": "string",
+                                    "currencyId": 0,
+                                    "priceDate": "2023-10-25T13:50:41.633Z",
+                                    "refId": 0,
+                                    "securityId": 0
+                                },
+                                "isDirty": 0,
+                                "lastModTs": "2023-10-25T13:50:41.633Z",
+                                "lastModUserId": 0,
+                                "lastPrice": 0,
+                                "price": 0
+                            },
+                            "priceFactor": 0,
+                            "quickCode": "457",
+                            "rate": 0,
+                            "securityId": 314937,
+                            "sedol": "2000019",
+                            "spread": 0,
+                            "ticker": "222"
+                        },
+                        "securityId": 1,
+                        "seqNo": "string",
+                        "settleDate": "2023-10-25T13:50:41.633Z",
+                        "settledQuantity": 0,
+                        "shellCusip": "string",
+                        "spread": 0,
+                        "statusDTO": {
+                            "__qualifiedName": "string",
+                            "status": "PENDING ONESOURCE CONFIRMATION",
+                            "statusId": 0
+                        },
+                        "targetPrice": 0,
+                        "termId": 0,
+                        "tradeDate": "2023-10-25T13:50:41.633Z"
+                    },
+                    "postDate": "2024-02-21T08:57:03.844Z",
+                    "price": 0,
+                    "quantity": 15000,
+                    "rateOrSpread": 0.05,
+                    "settleDate": "2024-02-21T08:57:03.845Z",
+                    "tradeDate": "2024-02-21T08:57:03.845Z",
+                    "tradeId": 0,
+                    "tradeReasonId": 0,
+                    "tradeTypeDetailDTO": {
+                        "tradeType": "Cancel Loan",
+                        "tradeTypeId": 0
+                    },
+                    "tradeTypeId": 0
+                }
+            ],
+            "groups": [],
+            "totalRows": 1
+        },
+        "errCode": "string",
+        "error": true,
+        "message": "string",
+        "status": "SUCCESS",
+        "success": true
+    }
+
+3.Insert to the contract table the matched contract.

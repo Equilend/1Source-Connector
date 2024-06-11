@@ -94,7 +94,7 @@ import org.springframework.util.CollectionUtils;
 public class ContractReconcileService implements ReconcileService<Contract, Position> {
 
     public static final String RECONCILE_EXCEPTION = """
-        The 1source contract id=%s is in discrepancies with the backoffice position id=%s""";
+        The 1source contract id:%s is in discrepancies with the backoffice position id:%s""";
 
     public static final String RECONCILE_MISMATCH = "Reconciliation mismatch. Contract proposal %s:%s "
         + "is not matched with Backoffice position %s:%s";

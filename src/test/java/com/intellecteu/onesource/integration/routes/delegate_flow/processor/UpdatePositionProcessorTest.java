@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CANCEL_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,7 +31,6 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
-import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactoryImpl;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ContractInitiationCloudEventBuilder;
@@ -39,7 +39,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -50,8 +49,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UpdatePositionProcessorTest {
 
-    @Mock
-    private PositionService positionService;
     @Mock
     private BackOfficeService backOfficeService;
     @Mock
@@ -224,32 +221,39 @@ class UpdatePositionProcessorTest {
         Contract contract = ModelTestFactory.buildContract();
         contract.setContractId("1111-2222-3333-4444");
 
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        var argumentCaptor = ArgumentCaptor.forClass(Contract.class);
 
-        service.executeCancelRequest(position);
+        when(contractService.findContractById("1111-2222-3333-4444")).thenReturn(Optional.of(contract));
+        when(oneSourceService.instructCancelLoanContract("1111-2222-3333-4444")).thenReturn(true);
+        when(contractService.save(argumentCaptor.capture())).thenReturn(contract);
+
+        service.instructProposalCancel(position);
+        Contract expectedContractSaved = argumentCaptor.getValue();
 
         verify(oneSourceService).instructCancelLoanContract(contract.getContractId());
+        verify(oneSourceService).instructCancelLoanContract(contract.getContractId());
+        verify(contractService).save(any(Contract.class));
+
+        assertEquals(ProcessingStatus.CANCEL_SUBMITTED, expectedContractSaved.getProcessingStatus());
     }
 
     @Test
-    @Disabled("should be reworked")
-    void testExecuteCancelRequest_shouldNotSendCancelRequestIfMatchedContractIsMissed() {
+    void testExecuteCancelRequest_shouldNotSendCancelRequestIfMatchedContractIsNotRetrieved() {
         Position position = ModelTestFactory.buildPosition();
         position.setPositionId(33L);
-        position.setMatching1SourceLoanContractId(null);
+        position.setMatching1SourceLoanContractId("1111-2222-3333-4444");
 
         Contract contract = ModelTestFactory.buildContract();
         contract.setContractId("1111-2222-3333-4444");
 
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractById("1111-2222-3333-4444")).thenReturn(Optional.empty());
 
-        service.executeCancelRequest(position);
+        service.instructProposalCancel(position);
 
         verify(oneSourceService, never()).instructCancelLoanContract(any());
     }
 
     @Test
-    @Disabled("should be reworked")
     void testCancelContractForCancelLoanTrade_shouldSendCancelRequestAndCreateSystemRecord() {
         Position position = ModelTestFactory.buildPosition();
         position.setPositionId(33L);
@@ -262,7 +266,10 @@ class UpdatePositionProcessorTest {
         var recordFactory = new CloudEventFactoryImpl(Map.of(CONTRACT_INITIATION,
             new ContractInitiationCloudEventBuilder("1.0", "http://localhost:8000")));
 
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractByIdExcludeProcessingStatus("1111-2222-3333-4444", DECLINED))
+            .thenReturn(Optional.of(contract));
+        when(oneSourceService.instructCancelLoanContract(contract.getContractId())).thenReturn(true);
+        when(contractService.save(any(Contract.class))).thenReturn(contract);
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
 
         service.cancelContractForCancelLoanTrade(position);
@@ -277,30 +284,8 @@ class UpdatePositionProcessorTest {
         position.setPositionId(33L);
         position.setMatching1SourceLoanContractId("1111-2222-3333-4444");
 
-        Contract contract = ModelTestFactory.buildContract();
-        contract.setContractId("1111-2222-3333-4444");
-        contract.setProcessingStatus(ProcessingStatus.DECLINED);
-
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
-
-        service.cancelContractForCancelLoanTrade(position);
-
-        verify(oneSourceService, never()).instructCancelLoanContract(any());
-        verify(cloudEventRecordService, never()).record(any(CloudEventBuildRequest.class));
-    }
-
-    @Test
-    @Disabled("should be reworked")
-    void testCancelContractForCancelLoanTrade_shouldNotSendCancelRequestAndDoRecord_whenMatchedContractIdIsMissed() {
-        Position position = ModelTestFactory.buildPosition();
-        position.setPositionId(33L);
-        position.setMatching1SourceLoanContractId(null);
-
-        Contract contract = ModelTestFactory.buildContract();
-        contract.setContractId("1111-2222-3333-4444");
-        contract.setProcessingStatus(ProcessingStatus.CREATED);
-
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractByIdExcludeProcessingStatus("1111-2222-3333-4444", DECLINED))
+            .thenReturn(Optional.empty());
 
         service.cancelContractForCancelLoanTrade(position);
 
@@ -314,20 +299,15 @@ class UpdatePositionProcessorTest {
         position.setPositionId(33L);
         position.setMatching1SourceLoanContractId("1111");
 
-        Contract contract = ModelTestFactory.buildContract();
-        contract.setContractId("2222");
-        contract.setProcessingStatus(ProcessingStatus.CREATED);
-
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractByIdExcludeProcessingStatus("1111", DECLINED)).thenReturn(Optional.empty());
 
         service.cancelContractForCancelLoanTrade(position);
 
-        verify(oneSourceService, never()).instructCancelLoanContract(contract.getContractId());
+        verify(oneSourceService, never()).instructCancelLoanContract(position.getMatching1SourceLoanContractId());
         verify(cloudEventRecordService, never()).record(any(CloudEventBuildRequest.class));
     }
 
     @Test
-    @Disabled("should be reworked")
     void testCancelContractForCancelLoanTrade_shouldCreatePositionCancelSubmittedSystemRecord() {
         Position position = ModelTestFactory.buildPosition();
         position.setPositionId(33L);
@@ -337,6 +317,7 @@ class UpdatePositionProcessorTest {
         contract.setContractId("1111-2222-3333-4444");
         contract.setProcessingStatus(ProcessingStatus.CREATED);
         contract.setMatchingSpirePositionId(33L);
+        contract.setMatchingSpireTradeId(333L);
 
         var recordFactory = new CloudEventFactoryImpl(Map.of(CONTRACT_INITIATION,
             new ContractInitiationCloudEventBuilder("1.0", "http://localhost:8000")));
@@ -348,7 +329,10 @@ class UpdatePositionProcessorTest {
             the 1Source loan contract proposal 1111-2222-3333-4444 generated \
             from this position has been instructed to 1Source""";
 
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractByIdExcludeProcessingStatus("1111-2222-3333-4444", DECLINED))
+            .thenReturn(Optional.of(contract));
+        when(oneSourceService.instructCancelLoanContract("1111-2222-3333-4444")).thenReturn(true);
+        when(contractService.save(any(Contract.class))).thenReturn(contract);
         when(cloudEventRecordService.getFactory()).thenReturn(recordFactory);
         doNothing().when(cloudEventRecordService).record(argumentCaptor.capture());
 
@@ -358,7 +342,7 @@ class UpdatePositionProcessorTest {
         final List<RelatedObject> expectedRelatedObjects = List.of(
             new RelatedObject("1111-2222-3333-4444", ONESOURCE_LOAN_CONTRACT),
             new RelatedObject("33", POSITION),
-            new RelatedObject("tradeId", SPIRE_TRADE));
+            new RelatedObject("333", SPIRE_TRADE));
 
         assertEquals(POSITION_CANCEL_SUBMITTED, expectedEventRequest.getRecordType());
         assertEquals("Position - 33", expectedEventRequest.getSubject());
@@ -411,7 +395,7 @@ class UpdatePositionProcessorTest {
 
         var argumentCaptor = ArgumentCaptor.forClass(Contract.class);
 
-        when(contractService.findByPositionId(33L)).thenReturn(Optional.of(contract));
+        when(contractService.findContractById("1111")).thenReturn(Optional.of(contract));
         when(contractService.save(argumentCaptor.capture())).thenReturn(null);
 
         service.updateLoanContract(position);
