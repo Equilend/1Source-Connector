@@ -34,6 +34,7 @@ import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.model.backoffice.CancelReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -233,10 +234,10 @@ public class BackOfficeService {
         );
     }
 
-    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeId) {
-        Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
+    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeIdOpt) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
+            .tuples(createTuplesGetNewTrades(lastTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
         if (response.getBody() != null) {
@@ -253,10 +254,10 @@ public class BackOfficeService {
         return List.of();
     }
 
-    public List<ReturnTrade> retrieveNewReturnTrades(Optional<Long> lastTradeId) {
-        Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
+    public List<ReturnTrade> retrieveNewReturnTrades(Optional<Long> lastTradeIdOpt) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetReturnTrades(maxTradeId.toString()));
+            .tuples(createTuplesGetReturnTrades(lastTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
         if (response.getBody().getData() != null
@@ -289,6 +290,40 @@ public class BackOfficeService {
         tuples.add(
             new NQueryTuple().lValue("tradeId").operator(OperatorEnum.IN).rValue1(StringUtils.join(tradeIds, ",")));
         tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS).rValue1("OPEN"));
+        return tuples;
+    }
+
+    public List<CancelReturnTrade> retrieveCancelledReturnTrades(Optional<Long> lastTradeIdOpt, List<Long> tradeIds) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
+            .tuples(createTuplesGetCancelledReturnTrades(lastTradeId, tradeIds));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery).start(0L);
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToCancelReturnTrade)
+                .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    private CancelReturnTrade mapBackOfficeTradeOutDTOToCancelReturnTrade(TradeOutDTO tradeOutDTO) {
+        CancelReturnTrade cancelReturnTrade = new CancelReturnTrade();
+        cancelReturnTrade.setTradeId(tradeOutDTO.getTradeId());
+        cancelReturnTrade.setOffsetId(tradeOutDTO.getOffsetId());
+        cancelReturnTrade.setType(tradeOutDTO.getTradeTypeDetailDTO().getTradeType());
+        return cancelReturnTrade;
+    }
+
+    private List<NQueryTuple> createTuplesGetCancelledReturnTrades(Long lastTradeId, List<Long> tradeIds) {
+        List<NQueryTuple> tuples = new ArrayList<>();
+        tuples.add(new NQueryTuple().lValue("tradetype").operator(IN).rValue1(
+            "Cancel Return Borrow, Cancel Return Borrow (Full), Cancel Return Loan, Cancel Return loan (Full)"));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS).rValue1("CANCELLED"));
+        tuples.add(new NQueryTuple().lValue("tradeId").operator(GREATER_THAN).rValue1(lastTradeId.toString()));
+        tuples.add(new NQueryTuple().lValue("offsetId").operator(IN).rValue1(StringUtils.join(tradeIds, ",")));
         return tuples;
     }
 

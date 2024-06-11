@@ -516,7 +516,8 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
         );
     }
 
-    private CloudEventBuildRequest createSettledOneSourceReturnCR(IntegrationSubProcess subProcess, RecordType recordType,
+    private CloudEventBuildRequest createSettledOneSourceReturnCR(IntegrationSubProcess subProcess,
+        RecordType recordType,
         Map<String, String> data) {
         String dataMessage = format(PROCESS_RETURN_SETTLED_MSG, data.get(RETURN_ID), data.get(TRADE_ID));
         return createRecordRequest(
@@ -530,4 +531,5 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                 new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
+
 }

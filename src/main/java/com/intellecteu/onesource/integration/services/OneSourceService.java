@@ -316,4 +316,11 @@ public class OneSourceService {
             recall1SourceId, contractId);
         recallsApi.ledgerContractsContractIdRecallsRecallIdCancelPost(contractId, recall1SourceId);
     }
+
+    public void instructReturnCancellation(String return1SourceId, String contractId) {
+        log.debug("Sending return cancellation instruction to 1Source for returnId:{}, contractId:{} ",
+            return1SourceId, contractId);
+        returnsApi.ledgerContractsContractIdReturnsReturnIdCancelPost(contractId, return1SourceId);
+    }
+
 }

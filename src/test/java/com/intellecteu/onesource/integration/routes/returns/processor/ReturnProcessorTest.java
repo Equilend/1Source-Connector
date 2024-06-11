@@ -2,12 +2,15 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_NEGATIVELY;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.ACKNOWLEDGE_RETURN_POSITIVELY;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_TRADE_CANCELLATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CONFIRM_RETURN_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.MATCH_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_TRADE_SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.VALIDATE_RETURN;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -20,6 +23,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RETUR
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_MATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_PENDING_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
@@ -39,9 +43,11 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.ProcessExceptionDetails;
+import com.intellecteu.onesource.integration.model.backoffice.CancelReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.NackInstruction;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudSystemEvent;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
@@ -57,6 +63,7 @@ import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.ReturnReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import com.intellecteu.onesource.integration.services.systemevent.ReturnCancellationCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
 import java.util.List;
 import java.util.Optional;
@@ -88,12 +95,15 @@ class ReturnProcessorTest {
     private CloudEventRecordService cloudEventRecordService;
     @Mock
     private ReturnCloudEventBuilder eventBuilder;
+    @Mock
+    private ReturnCancellationCloudEventBuilder returnCancellationCloudEventBuilder;
 
     @BeforeEach
     void setUp() {
         openMocks(this);
         CloudEventFactory cloudEventFactory = mock(CloudEventFactory.class);
-        doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(any());
+        doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(eq(IntegrationProcess.RETURN));
+        doReturn(returnCancellationCloudEventBuilder).when(cloudEventFactory).eventBuilder(eq(IntegrationProcess.RETURN_CANCELLATION));
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         returnProcessor = new ReturnProcessor(backOfficeService, oneSourceService, returnTradeService, returnService,
             returnReconcileService, nackInstructionService, rerateTradeService, cloudEventRecordService);
@@ -441,6 +451,81 @@ class ReturnProcessorTest {
 
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_TRADE_SETTLED), eq(TECHNICAL_EXCEPTION_1SOURCE),
+            any(), any());
+    }
+
+    @Test
+    void fetchAndProcessCanceledReturnTrades_LenderCancelReturnTrade_ListOfCanceledReturnTradeAndUNMATCHEDReturnStatus() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        returnTrade.setMatching1SourceReturnId("returnId1");
+        ReturnTrade returnTrade2 = new ReturnTrade();
+        returnTrade2.setTradeId(2L);
+        doReturn(List.of(returnTrade, returnTrade2)).when(returnTradeService).findReturnTradeWithStatus(any());
+        CancelReturnTrade cancelReturnTrade = new CancelReturnTrade();
+        cancelReturnTrade.setTradeId(3L);
+        cancelReturnTrade.setOffsetId(1L);
+        cancelReturnTrade.setType("Cancel Return Loan");
+        doReturn(List.of(cancelReturnTrade)).when(backOfficeService).retrieveCancelledReturnTrades(any(), any());
+        Return onesourceReturn = new Return();
+        onesourceReturn.setReturnId("returnId1");
+        doReturn(onesourceReturn).when(returnService).getByReturnId(any());
+
+        List<ReturnTrade> returnTrades = returnProcessor.fetchAndProcessCanceledReturnTrades();
+
+        assertEquals(1, returnTrades.size());
+        assertEquals(1l, returnTrades.get(0).getTradeId());
+        assertEquals(UNMATCHED, onesourceReturn.getProcessingStatus());
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(returnCancellationCloudEventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_TRADE_CANCELED), eq(RETURN_TRADE_CANCELED),
+            any(), any());
+    }
+
+    @Test
+    void fetchAndProcessCanceledReturnTrades_BorrowerCancelReturnTrade_ListOfCanceledReturnTradeAndCANCELSUBMITTEDReturnStatus() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        returnTrade.setMatching1SourceReturnId("returnId1");
+        ReturnTrade returnTrade2 = new ReturnTrade();
+        returnTrade2.setTradeId(2L);
+        doReturn(List.of(returnTrade, returnTrade2)).when(returnTradeService).findReturnTradeWithStatus(any());
+        CancelReturnTrade cancelReturnTrade = new CancelReturnTrade();
+        cancelReturnTrade.setTradeId(3L);
+        cancelReturnTrade.setOffsetId(1L);
+        cancelReturnTrade.setType("Cancel Return Borrow (Full)");
+        doReturn(List.of(cancelReturnTrade)).when(backOfficeService).retrieveCancelledReturnTrades(any(), any());
+        Return onesourceReturn = new Return();
+        onesourceReturn.setReturnId("returnId1");
+        doReturn(onesourceReturn).when(returnService).getByReturnId(any());
+
+        List<ReturnTrade> returnTrades = returnProcessor.fetchAndProcessCanceledReturnTrades();
+
+        assertEquals(1, returnTrades.size());
+        assertEquals(1l, returnTrades.get(0).getTradeId());
+        assertEquals(CANCEL_SUBMITTED, onesourceReturn.getProcessingStatus());
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(returnCancellationCloudEventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_TRADE_CANCELED), eq(RETURN_TRADE_CANCELED),
+            any(), any());
+    }
+
+    @Test
+    void fetchAndProcessCanceledReturnTrades_ThrownHttpClientErrorException_SavedCloudEvent() {
+        ReturnTrade returnTrade = new ReturnTrade();
+        returnTrade.setTradeId(1L);
+        returnTrade.setMatching1SourceReturnId("returnId1");
+        ReturnTrade returnTrade2 = new ReturnTrade();
+        returnTrade2.setTradeId(2L);
+        doReturn(List.of(returnTrade, returnTrade2)).when(returnTradeService).findReturnTradeWithStatus(any());
+        CancelReturnTrade cancelReturnTrade = new CancelReturnTrade();
+        cancelReturnTrade.setTradeId(3L);
+        cancelReturnTrade.setOffsetId(1L);
+        cancelReturnTrade.setType("Cancel Return Borrow (Full)");
+        doThrow(new HttpClientErrorException(HttpStatusCode.valueOf(400))).when(backOfficeService).retrieveCancelledReturnTrades(any(), any());
+
+        List<ReturnTrade> returnTrades = returnProcessor.fetchAndProcessCanceledReturnTrades();
+
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(returnCancellationCloudEventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_TRADE_CANCELLATION), eq(TECHNICAL_EXCEPTION_SPIRE),
             any(), any());
     }
 }
