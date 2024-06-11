@@ -427,8 +427,8 @@ public class RecordMessageConstant {
             public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been approved but the rerate proposal has not been retrieved in the Integration toolkit";
             public static final String APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate %s has been applied in 1Source but the rerate has not been retrieved in the Integration toolkit";
-            public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been declined in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
-            public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
+            public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been declined in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
+            public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
             public static final String CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate pending settlement %s has been canceled by one of the two counterparties in 1Source but the rerate pending settlement has not been retrieved in the Integration toolkit.";
             public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has been replaced in SPIRE but the rerate trade has not been retrieved in the Integration toolkit.";
             public static final String DECLINE_RERATE_EXCEPTION_RERATE_MSG = "The rerate %s has not been retrieved in the Integration toolkit";
