@@ -189,6 +189,14 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnEventProcessor, "processReturnSettledEvent")
             .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
             .log("<<< Finished PROCESS_RETURN_SETTLED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[SETTLED]");
+
+        from(String.format("timer://eventTimer?period=%d", 60000))
+            .log(">>> Started PROCESS_RETURN_TRADE_CANCELED for ReturnTrades")
+            .bean(returnProcessor, "fetchAndProcessCanceledReturnTrades")
+            .split(body())
+                .bean(returnProcessor, "saveReturnTradeWithProcessingStatus(${body}, CANCELED)")
+            .end()
+            .log("<<< Finished PROCESS_RETURN_TRADE_CANCELED for ReturnTrades with expected statuses: ReturnTrade[CANCELED], Return[UNMATCHED, CANCEL_SUBMITTED]");
     }
     //@formatter:on
 

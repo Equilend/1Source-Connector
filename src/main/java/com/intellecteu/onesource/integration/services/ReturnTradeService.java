@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,7 +64,7 @@ public class ReturnTradeService {
         return returnTradeEntityList.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
     }
 
-    public List<ReturnTrade> findReturnTradeWithStatus(List<String> statuses) {
+    public List<ReturnTrade> findReturnTradeWithStatus(Set<String> statuses) {
         List<ReturnTradeEntity> returnTradeEntityList = returnTradeRepository.findByTradeOut_StatusIn(statuses);
         return returnTradeEntityList.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
     }
@@ -73,4 +74,5 @@ public class ReturnTradeService {
         returnTrade.setLastUpdateDatetime(LocalDateTime.now());
         return save(returnTrade);
     }
+
 }

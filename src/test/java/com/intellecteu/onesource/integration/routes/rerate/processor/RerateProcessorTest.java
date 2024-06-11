@@ -1,6 +1,7 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -358,10 +359,19 @@ class RerateProcessorTest {
         CorrectionInstruction correctionInstruction = new CorrectionInstruction();
         correctionInstruction.setOldTradeId(oldTradeId);
         correctionInstruction.setAmendedTradeId(amendedTradeId);
+        RerateTrade oldRerateTrade = new RerateTrade();
+        oldRerateTrade.setTradeId(oldTradeId);
+        oldRerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
+        doReturn(oldRerateTrade).when(rerateTradeService).getByTradeId(oldTradeId);
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(amendedTradeId);
         rerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
         doReturn(rerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("id");
+        rerate.setProcessingStatus(CANCEL_PENDING);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+        doReturn(rerate).when(rerateService).saveRerate(any());
 
         CorrectionInstruction result = rerateProcessor.cancelRerateTrade(correctionInstruction);
 
