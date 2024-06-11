@@ -97,4 +97,10 @@ public class ContractService {
         return contractRepository.findByContractId(contractId).map(oneSourceMapper::toModel);
     }
 
+    public Optional<Contract> findContractByIdExcludeProcessingStatus(String contractId,
+        ProcessingStatus processingStatus) {
+        return contractRepository.findByContractIdAndProcessingStatusNot(contractId, processingStatus)
+            .map(oneSourceMapper::toModel);
+    }
+
 }
