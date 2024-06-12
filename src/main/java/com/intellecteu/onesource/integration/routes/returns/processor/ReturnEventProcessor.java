@@ -4,12 +4,15 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RETURN_ACKNOWLEDGEMENT_DETAILS;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.POSITIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_CONFIRM;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_POSITIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED;
@@ -135,20 +138,39 @@ public class ReturnEventProcessor {
         return event;
     }
 
-    public TradeEvent processReturnSettledEvent(TradeEvent tradeEvent){
+    public TradeEvent processReturnSettledEvent(TradeEvent tradeEvent) {
         String resourceUri = tradeEvent.getResourceUri();
         String returnId = getReturnId(resourceUri);
         Return oneSourceReturn = returnService.getByReturnId(returnId);
-        oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
-        oneSourceReturn.setReturnStatus(ReturnStatus.SETTLED);
-        oneSourceReturn.setProcessingStatus(SETTLED);
-        returnService.saveReturn(oneSourceReturn);
-        recordCloudEvent(PROCESS_RETURN_SETTLED, RETURN_SETTLED,  new DataBuilder()
+        updateStatusesAndSaveReturn(oneSourceReturn, ReturnStatus.SETTLED, SETTLED);
+        recordBusinessEvent(oneSourceReturn, PROCESS_RETURN_SETTLED, RETURN_SETTLED);
+        return tradeEvent;
+    }
+
+    public TradeEvent processReturnCancellationEvent(TradeEvent tradeEvent) {
+        String resourceUri = tradeEvent.getResourceUri();
+        String returnId = getReturnId(resourceUri);
+        Return oneSourceReturn = returnService.getByReturnId(returnId);
+        updateStatusesAndSaveReturn(oneSourceReturn, ReturnStatus.CANCELED, CANCELED);
+        recordBusinessEvent(oneSourceReturn, PROCESS_RETURN_CANCELED, RETURN_CANCELED);
+        return tradeEvent;
+    }
+
+    private void recordBusinessEvent(Return oneSourceReturn, IntegrationSubProcess subProcess, RecordType recordType) {
+        recordCloudEvent(subProcess, recordType, new DataBuilder()
             .putReturnId(oneSourceReturn.getReturnId())
             .putTradeId(oneSourceReturn.getMatchingSpireTradeId())
             .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
-            .putContractId(oneSourceReturn.getContractId()).getData(), List.of());
-        return tradeEvent;
+            .putContractId(oneSourceReturn.getContractId())
+            .getData(), List.of());
+    }
+
+    private Return updateStatusesAndSaveReturn(Return oneSourceReturn, ReturnStatus returnStatus,
+        ProcessingStatus processingStatus) {
+        oneSourceReturn.setLastUpdateDatetime(LocalDateTime.now());
+        oneSourceReturn.setReturnStatus(returnStatus);
+        oneSourceReturn.setProcessingStatus(processingStatus);
+        return returnService.saveReturn(oneSourceReturn);
     }
 
     private String getReturnId(String resourceUri) {

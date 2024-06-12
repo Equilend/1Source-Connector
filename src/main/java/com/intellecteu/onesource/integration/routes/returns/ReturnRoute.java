@@ -6,6 +6,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_ACKNOWLEDGED;
+import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_PENDING;
 import static com.intellecteu.onesource.integration.model.onesource.EventType.RETURN_SETTLED;
 
@@ -189,6 +190,13 @@ public class ReturnRoute extends RouteBuilder {
             .bean(returnEventProcessor, "processReturnSettledEvent")
             .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
             .log("<<< Finished PROCESS_RETURN_SETTLED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[SETTLED]");
+
+        from(createTradeEventSQLEndpoint(CREATED, RETURN_CANCELED))
+            .log(">>> Started PROCESS_RETURN_CANCELATION for TradeEvent: ${body.eventId}")
+            .bean(oneSourceMapper, "toModel")
+            .bean(returnEventProcessor, "processReturnCancellationEvent")
+            .bean(returnEventProcessor, "saveEventWithProcessingStatus(${body}, PROCESSED)")
+            .log("<<< Finished PROCESS_RETURN_CANCELATION for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Return[CANCELED]");
 
         from(String.format("timer://eventTimer?period=%d", 60000))
             .log(">>> Started PROCESS_RETURN_TRADE_CANCELED for ReturnTrades")

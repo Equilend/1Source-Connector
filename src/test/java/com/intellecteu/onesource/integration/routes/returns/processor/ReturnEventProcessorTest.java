@@ -2,11 +2,14 @@ package com.intellecteu.onesource.integration.routes.returns.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_RETURN_ACKNOWLEDGEMENT;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RETURN_ACKNOWLEDGEMENT_DETAILS;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RETURN_SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.POSITIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_NEGATIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_POSITIVELY_ACKNOWLEDGED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_SETTLED;
@@ -34,6 +37,7 @@ import com.intellecteu.onesource.integration.services.TradeEventService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -62,8 +66,8 @@ class ReturnEventProcessorTest {
         CloudEventFactory cloudEventFactory = mock(CloudEventFactory.class);
         doReturn(eventBuilder).when(cloudEventFactory).eventBuilder(any());
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
-        returnEventProcessor = new ReturnEventProcessor(returnService, tradeEventService, returnTradeService, oneSourceService,
-            cloudEventRecordService);
+        returnEventProcessor = new ReturnEventProcessor(returnService, tradeEventService, returnTradeService,
+            oneSourceService, cloudEventRecordService);
     }
 
     @Test
@@ -108,7 +112,8 @@ class ReturnEventProcessorTest {
 
         assertEquals(POSITIVELY_ACKNOWLEDGED, oneSourceReturn.getProcessingStatus());
         verify(cloudEventRecordService, times(1)).record(any());
-        verify(eventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_ACKNOWLEDGEMENT), eq(RETURN_POSITIVELY_ACKNOWLEDGED),
+        verify(eventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_ACKNOWLEDGEMENT),
+            eq(RETURN_POSITIVELY_ACKNOWLEDGED),
             any(), any());
     }
 
@@ -128,7 +133,8 @@ class ReturnEventProcessorTest {
 
         assertEquals(NEGATIVELY_ACKNOWLEDGED, oneSourceReturn.getProcessingStatus());
         verify(cloudEventRecordService, times(1)).record(any());
-        verify(eventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_ACKNOWLEDGEMENT), eq(RETURN_NEGATIVELY_ACKNOWLEDGED),
+        verify(eventBuilder, times(1)).buildRequest(eq(CAPTURE_RETURN_ACKNOWLEDGEMENT),
+            eq(RETURN_NEGATIVELY_ACKNOWLEDGED),
             any(), any());
     }
 
@@ -143,7 +149,8 @@ class ReturnEventProcessorTest {
         TradeEvent result = returnEventProcessor.processReturnAcknowledgedEvent(tradeEvent);
 
         verify(cloudEventRecordService, times(1)).record(any());
-        verify(eventBuilder, times(1)).buildRequest(eq(GET_RETURN_ACKNOWLEDGEMENT_DETAILS), eq(TECHNICAL_EXCEPTION_1SOURCE),
+        verify(eventBuilder, times(1)).buildRequest(eq(GET_RETURN_ACKNOWLEDGEMENT_DETAILS),
+            eq(TECHNICAL_EXCEPTION_1SOURCE),
             any(), any());
     }
 
@@ -158,10 +165,27 @@ class ReturnEventProcessorTest {
 
         TradeEvent result = returnEventProcessor.processReturnSettledEvent(tradeEvent);
 
-        assertEquals(ReturnStatus.SETTLED, oneSourceReturn.getReturnStatus());
-        assertEquals(SETTLED, oneSourceReturn.getProcessingStatus());
+        Assertions.assertEquals(ReturnStatus.SETTLED, oneSourceReturn.getReturnStatus());
+        Assertions.assertEquals(SETTLED, oneSourceReturn.getProcessingStatus());
         verify(cloudEventRecordService, times(1)).record(any());
         verify(eventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_SETTLED), eq(RETURN_SETTLED),
             any(), any());
+    }
+
+    @Test
+    void processReturnCanceledEvent_CANCELEDEvent_ProcessingStatusCANCELED() {
+        TradeEvent tradeEvent = new TradeEvent();
+        tradeEvent.setEventType(EventType.RETURN_CANCELED);
+        tradeEvent.setResourceUri("/v1/ledger/returns/93f834ff-66b5-4195-892b-8f316ed77006");
+        Return oneSourceReturn = new Return();
+        doReturn(oneSourceReturn).when(returnService).getByReturnId("93f834ff-66b5-4195-892b-8f316ed77006");
+
+        returnEventProcessor.processReturnCancellationEvent(tradeEvent);
+
+        Assertions.assertEquals(ReturnStatus.CANCELED, oneSourceReturn.getReturnStatus());
+        Assertions.assertEquals(CANCELED, oneSourceReturn.getProcessingStatus());
+        verify(cloudEventRecordService, times(1)).record(any());
+        verify(eventBuilder, times(1)).buildRequest(eq(PROCESS_RETURN_CANCELED),
+            eq(RETURN_CANCELED), any(), any());
     }
 }
