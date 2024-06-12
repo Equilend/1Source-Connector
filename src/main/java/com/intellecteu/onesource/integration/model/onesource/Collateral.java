@@ -4,12 +4,11 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL_VALUE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CONTRACT_PRICE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CURRENCY;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import java.util.LinkedList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,10 +36,22 @@ public class Collateral implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(contractPrice, CONTRACT_PRICE, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(collateralValue, COLLATERAL_VALUE, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(currency, CURRENCY, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(type, COLLATERAL_TYPE, ONE_SOURCE_LOAN_CONTRACT);
+        var missedFields = new LinkedList<String>();
+        if (contractPrice == null) {
+            missedFields.add(CONTRACT_PRICE);
+        }
+        if (collateralValue == null) {
+            missedFields.add(COLLATERAL_VALUE);
+        }
+        if (currency == null) {
+            missedFields.add(CURRENCY);
+        }
+        if (type == null) {
+            missedFields.add(COLLATERAL_TYPE);
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 
 }

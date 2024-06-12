@@ -13,6 +13,7 @@ public interface ReconcileService<T extends Reconcilable, R extends Reconcilable
 
     /*
      * Function to wrap try-catch and validate objects that implement Reconcilable interface.
+     * Might be deprecated on reconcilable abstraction changes.
      */
     default Function<Reconcilable, List<String>> validateReconcilableObject() {
         return reconcilable -> {

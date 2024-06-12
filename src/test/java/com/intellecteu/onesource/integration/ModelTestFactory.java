@@ -406,6 +406,7 @@ public class ModelTestFactory {
             .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
             .amount(tradeAgreement.getCollateral().getCollateralValue())
             .price(tradeAgreement.getCollateral().getContractPrice())
+            .index(new Index(12, "testIndexName", 10.0))
             .exposure(buildPositionExposure(tradeAgreement))
             .positionType(buildPositionType(tradeAgreement))
             .positionAccount(buildAccount(tradeAgreement.getTransactingParties().get(0)))

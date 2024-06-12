@@ -3,13 +3,13 @@ package com.intellecteu.onesource.integration.model.backoffice;
 
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ACCOUNT_LEI;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CP_ACCOUNT_LEI;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.BACKOFFICE_POSITION;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +36,13 @@ public class Account implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        String failMsg = String.format("%s or %s", POSITION_ACCOUNT_LEI, POSITION_CP_ACCOUNT_LEI);
-        throwIfFieldMissedException(lei, failMsg, BACKOFFICE_POSITION);
+        List<String> missedFields = new ArrayList<>();
+
+        if (lei == null) {
+            missedFields.add(String.format("%s or %s", POSITION_ACCOUNT_LEI, POSITION_CP_ACCOUNT_LEI));
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 }

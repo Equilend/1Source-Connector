@@ -39,19 +39,19 @@ public class Return implements Reconcilable {
     @Override
     public void validateForReconciliation() throws ValidationException {
         var missedFields = new LinkedList<String>();
-        if(quantity == null) {
+        if (quantity == null) {
             missedFields.add("1sourceReturn.quantity");
         }
-        if(collateral != null && collateral.getCollateralValue() == null) {
+        if (collateral != null && collateral.getCollateralValue() == null) {
             missedFields.add("1sourceReturn.collateral.collateralValue");
         }
-        if(settlementType == null) {
+        if (settlementType == null) {
             missedFields.add("1sourceReturn.settlementType");
         }
-        if(returnDate == null) {
+        if (returnDate == null) {
             missedFields.add("1sourceReturn.returnDate");
         }
-        if(returnSettlementDate == null) {
+        if (returnSettlementDate == null) {
             missedFields.add("1sourceReturn.returnSettlementDate");
         }
         if (!missedFields.isEmpty()) {

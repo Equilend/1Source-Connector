@@ -44,7 +44,8 @@ public class ExceptionUtils {
         throwIfFieldMissedException(null, fieldName, fieldSource);
     }
 
-    public static void throwExceptionForRedeliveryPolicy(HttpStatusCodeException codeException) throws HttpStatusCodeException {
+    public static void throwExceptionForRedeliveryPolicy(HttpStatusCodeException codeException)
+        throws HttpStatusCodeException {
         if (codeException.getStatusCode().is5xxServerError()) {
             throw codeException;
         }

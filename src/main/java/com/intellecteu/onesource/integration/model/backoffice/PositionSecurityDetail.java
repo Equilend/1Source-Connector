@@ -1,16 +1,15 @@
 package com.intellecteu.onesource.integration.model.backoffice;
 
 
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.CUSIP;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.ISIN;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUICK;
-import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SEDOL;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.BACKOFFICE_POSITION;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwFieldMissedException;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_CUSIP;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_ISIN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_QUICK;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_SEDOL;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.AllArgsConstructor;
@@ -44,7 +43,7 @@ public class PositionSecurityDetail implements Reconcilable {
     public void validateForReconciliation() throws ValidationException {
         String failedValidationFields = getFailedValidationFields();
         if (!failedValidationFields.isEmpty()) {
-            throwFieldMissedException(failedValidationFields, BACKOFFICE_POSITION);
+            throw new ValidationException(List.of(failedValidationFields));
         }
     }
 
@@ -52,7 +51,7 @@ public class PositionSecurityDetail implements Reconcilable {
         var requiredFieldsNull = Stream.of(cusip, isin, sedol, quickCode)
             .allMatch(Objects::isNull);
         if (requiredFieldsNull) {
-            return String.join(", ", CUSIP, ISIN, SEDOL, QUICK);
+            return String.join(", ", POSITION_CUSIP, POSITION_ISIN, POSITION_SEDOL, POSITION_QUICK);
         }
         return "";
     }
