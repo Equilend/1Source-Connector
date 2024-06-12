@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CLOSED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_BORROWER;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED_LENDER;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RECALL_CANCELED;
@@ -133,10 +134,11 @@ public class RecallProcessor {
         try {
             final RecallSpire recallSpire = recallService.getMatchedSpireRecall(recall1Source)
                 .orElseThrow(EntityNotFoundException::new);
-            recall1Source.setMatchingSpireRecallId(Long.valueOf(recallSpire.getRecallId()));
+            recall1Source.setMatchingSpireRecallId(recallSpire.getRecallId());
             recall1Source.setRelatedSpirePositionId(recallSpire.getRelatedPositionId());
             updateRecall1SourceProcessingStatus(recall1Source, CONFIRMED_LENDER);
             recallSpire.setMatching1SourceRecallId(recall1Source.getRecallId());
+            recallSpire.setProcessingStatus(CONFIRMED);
             saveSpireRecall(recallSpire);
             createRecallConfirmedRecord(recall1Source, recallSpire);
         } catch (RuntimeException e) {
