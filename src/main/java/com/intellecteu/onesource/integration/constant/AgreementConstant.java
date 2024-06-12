@@ -36,6 +36,7 @@ public class AgreementConstant {
         public static final String PRICE_UNIT = "trade.instrument.price.unit";
         public static final String QUANTITY = "trade.quantity";
         public static final String QUICK = "trade.instrument.quick";
+        public static final String RATE = "trade.rate";
         public static final String REBATE = "trade.rate.rebate";
         public static final String REBATE_FIXED = "trade.rate.rebate.fixed";
         public static final String REBATE_FIXED_BASE_RATE = "trade.rate.rebate.fixed.baseRate";
@@ -52,6 +53,7 @@ public class AgreementConstant {
         public static final String TICKER = "trade.instrument.ticker";
         public static final String TRADE = "trade";
         public static final String TRADE_DATE = "trade.tradeDate";
+        public static final String TRANSACTING_PARTIES = "trade.transactingParties";
         public static final String VENUE_REF_KEY = "trade.executionVenue.venueRefKey";
     }
 

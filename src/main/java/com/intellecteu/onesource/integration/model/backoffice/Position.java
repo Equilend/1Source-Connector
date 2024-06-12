@@ -13,8 +13,6 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Fi
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.RATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.SETTLE_DATE;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.BACKOFFICE_POSITION;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -23,6 +21,8 @@ import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -129,26 +129,61 @@ public class Position implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(positionSecurityDetail, POSITION_SECURITY, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(rate, RATE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(index, POSITION_INDEX, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(quantity, POSITION_QUANTITY, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(currency, POSITION_CURRENCY, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(tradeDate, POSITION_TRADE_DATE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(settleDate, SETTLE_DATE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(deliverFree, DELIVER_FREE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(price, POSITION_PRICE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(amount, POSITION_AMOUNT, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(positionType, POSITION_TYPE, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(positionCpAccount, POSITION_CP_ACCOUNT, BACKOFFICE_POSITION);
-        throwIfFieldMissedException(positionAccount, POSITION_ACCOUNT, BACKOFFICE_POSITION);
+        List<String> missedFields = new ArrayList<>();
 
-        positionSecurityDetail.validateForReconciliation();
-        index.validateForReconciliation();
-        currency.validateForReconciliation();
-        positionType.validateForReconciliation();
-        positionCpAccount.validateForReconciliation();
-        positionAccount.validateForReconciliation();
-
+        if (positionSecurityDetail == null) {
+            missedFields.add(POSITION_SECURITY);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(positionSecurityDetail));
+        }
+        if (rate == null) {
+            missedFields.add(RATE);
+        }
+        if (index == null) {
+            missedFields.add(POSITION_INDEX);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(index));
+        }
+        if (currency == null) {
+            missedFields.add(POSITION_CURRENCY);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(currency));
+        }
+        if (quantity == null) {
+            missedFields.add(POSITION_QUANTITY);
+        }
+        if (tradeDate == null) {
+            missedFields.add(POSITION_TRADE_DATE);
+        }
+        if (settleDate == null) {
+            missedFields.add(SETTLE_DATE);
+        }
+        if (deliverFree == null) {
+            missedFields.add(DELIVER_FREE);
+        }
+        if (price == null) {
+            missedFields.add(POSITION_PRICE);
+        }
+        if (amount == null) {
+            missedFields.add(POSITION_AMOUNT);
+        }
+        if (positionType == null) {
+            missedFields.add(POSITION_TYPE);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(positionType));
+        }
+        if (positionCpAccount == null) {
+            missedFields.add(POSITION_CP_ACCOUNT);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(positionCpAccount));
+        }
+        if (positionAccount == null) {
+            missedFields.add(POSITION_ACCOUNT);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(positionAccount));
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 }

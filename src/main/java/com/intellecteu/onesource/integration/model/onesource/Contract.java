@@ -1,15 +1,14 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
-import com.intellecteu.onesource.integration.model.enums.FieldSource;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
@@ -44,8 +43,15 @@ public class Contract implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(trade, TRADE, FieldSource.ONE_SOURCE_LOAN_CONTRACT);
-        trade.validateForReconciliation();
+        var missedFields = new LinkedList<String>();
+        if (trade == null) {
+            missedFields.add(TRADE);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(trade));
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 
     public void setProcessingStatus(ProcessingStatus processingStatus) {

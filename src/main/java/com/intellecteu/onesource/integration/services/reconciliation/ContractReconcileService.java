@@ -65,6 +65,7 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
+import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
@@ -103,9 +104,11 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
     public void reconcile(Contract contract, @NonNull Position backofficePosition) throws ReconcileException {
         var reconciliationExceptionDetails = new ArrayList<ProcessExceptionDetails>();
         var tradeAgreement = contract.getTrade();
-        reconciliationExceptionDetails.addAll(validateReconcilableObject(contract, ONE_SOURCE_LOAN_CONTRACT));
-        reconciliationExceptionDetails.addAll(validateReconcilableObject(backofficePosition, BACKOFFICE_POSITION));
-        reconciliationExceptionDetails.addAll(reconcileTrade(tradeAgreement, backofficePosition));
+        reconciliationExceptionDetails.addAll(getMissedRequiredFields(contract, ONE_SOURCE_LOAN_CONTRACT));
+        reconciliationExceptionDetails.addAll(getMissedRequiredFields(backofficePosition, BACKOFFICE_POSITION));
+        if (tradeAgreement != null) {
+            reconciliationExceptionDetails.addAll(reconcileTrade(tradeAgreement, backofficePosition));
+        }
         if (!reconciliationExceptionDetails.isEmpty()) {
             reconciliationExceptionDetails.forEach(msg -> log.trace(msg.getFieldValue()));
             throw new ReconcileException(
@@ -114,11 +117,16 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
         }
     }
 
-    private List<ProcessExceptionDetails> validateReconcilableObject(Reconcilable reconcilable,
+    private List<ProcessExceptionDetails> getMissedRequiredFields(Reconcilable reconcilable,
         FieldSource fieldSource) {
-        return validateReconcilableObject().apply(reconcilable).stream().map(
-            invalidField -> new ProcessExceptionDetails(fieldSource, invalidField, "null",
-                FieldExceptionType.MISSING)).toList();
+        return validateReconcilableObject().apply(reconcilable).stream()
+            .map(invalidField -> ProcessExceptionDetails.builder()
+                .fieldName(invalidField)
+                .fieldValue("null")
+                .source(fieldSource)
+                .fieldExceptionType(FieldExceptionType.MISSING)
+                .build())
+            .toList();
     }
 
     private Collection<? extends ProcessExceptionDetails> reconcileTrade(TradeAgreement trade,
@@ -152,6 +160,9 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
     }
 
     private List<ProcessExceptionDetails> reconcileInstrument(Instrument instrument, Position position) {
+        if (instrument == null) {
+            return List.of();
+        }
         var failsList = checkEqualityOfSecurityIdentifiers(instrument, position);
         failsList.addAll(checkInstrumentUnit(instrument.getPrice(), position.getPositionSecurityDetail()));
         return failsList;
@@ -220,16 +231,19 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
             if (floatingPositionRate(positionIndex)) {
                 final FloatingRate floatingRate = rate.getRebate().getFloating();
                 if (floatingRate != null) {
-                    checkEquality(floatingRate.getBenchmark().name(),
-                        REBATE_FLOATING_BENCHMARK, positionIndex.getIndexName(), POSITION_INDEX_NAME)
-                        .ifPresent(failsLog::add);
-                    reconcileFloatingRebateSpread(floatingRate, positionIndex)
-                        .ifPresent(failsLog::add);
-                    checkEquality(floatingRate.getEffectiveRate(),
-                        REBATE_FLOATING_EFFECTIVE_RATE, position.getRate(), RATE)
-                        .ifPresent(failsLog::add);
-                    reconcileFloatingDate(floatingRate, position)
-                        .ifPresent(failsLog::add);
+                    final Benchmark benchmark = floatingRate.getBenchmark();
+                    if (benchmark != null) {
+                        checkEquality(benchmark.name(),
+                            REBATE_FLOATING_BENCHMARK, positionIndex.getIndexName(), POSITION_INDEX_NAME)
+                            .ifPresent(failsLog::add);
+                        reconcileFloatingRebateSpread(floatingRate, positionIndex)
+                            .ifPresent(failsLog::add);
+                        checkEquality(floatingRate.getEffectiveRate(),
+                            REBATE_FLOATING_EFFECTIVE_RATE, position.getRate(), RATE)
+                            .ifPresent(failsLog::add);
+                        reconcileFloatingDate(floatingRate, position)
+                            .ifPresent(failsLog::add);
+                    }
                 }
             }
         }
@@ -363,11 +377,14 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
 
     private List<ProcessExceptionDetails> reconcileCollateral(Collateral collateral, Position position) {
         List<ProcessExceptionDetails> failsLog = new ArrayList<>();
-        if (collateral.getContractPrice() != null) {
+        if (collateral == null) {
+            return failsLog;
+        }
+        if (collateral.getContractPrice() != null && position.getPrice() != null) {
             checkEquality(collateral.getContractPrice(), CONTRACT_PRICE, position.getPrice(), POSITION_PRICE)
                 .ifPresent(failsLog::add);
         }
-        if (collateral.getCollateralValue() != null) {
+        if (collateral.getCollateralValue() != null && position.getAmount() != null) {
             checkEquality(collateral.getCollateralValue(), COLLATERAL_VALUE, position.getAmount(), POSITION_AMOUNT)
                 .ifPresent(failsLog::add);
         }
@@ -412,19 +429,22 @@ public class ContractReconcileService implements ReconcileService<Contract, Posi
         return failsLog;
     }
 
-    private Optional<ProcessExceptionDetails> reconcileLei(List<TransactingParty> transactionParties,
+    private Optional<ProcessExceptionDetails> reconcileLei(List<TransactingParty> transactingParties,
         Position position) {
         var positionAccountLei = position.getAccountLei();
         var positionCpLei = position.getCpLei();
 
-        for (var txParty : transactionParties) {
-            var partyGleifLei = txParty.getParty().getGleifLei();
-            if (partyGleifLei != null) {
-                if (partyGleifLei.equals(positionAccountLei) || partyGleifLei.equals(positionCpLei)) {
-                    return Optional.empty();
+        if (transactingParties != null) {
+            for (var txParty : transactingParties) {
+                var partyGleifLei = txParty.getParty().getGleifLei();
+                if (partyGleifLei != null) {
+                    if (partyGleifLei.equals(positionAccountLei) || partyGleifLei.equals(positionCpLei)) {
+                        return Optional.empty();
+                    }
                 }
             }
         }
+
         String valueMsg = "Reconciliation mismatch. OneSourceAccount Lei or CounterParty Lei "
             + "is not matched with Spire Position Lei";
         return Optional.of(new ProcessExceptionDetails(
