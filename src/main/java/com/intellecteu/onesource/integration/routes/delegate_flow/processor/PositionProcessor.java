@@ -11,11 +11,15 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationSubPr
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.FUTURE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MULTIPLE_FIGI;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NO_FIGI;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UPDATE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.MULTIPLE_FIGI_CODES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.NO_FIGI_CODE_RETRIEVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SETTLED_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_UNMATCHED;
@@ -27,6 +31,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.ContractNotFoundException;
+import com.intellecteu.onesource.integration.exception.FigiRetrievementException;
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
@@ -45,6 +50,7 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementStatus;
 import com.intellecteu.onesource.integration.services.AgreementService;
 import com.intellecteu.onesource.integration.services.BackOfficeService;
 import com.intellecteu.onesource.integration.services.ContractService;
+import com.intellecteu.onesource.integration.services.FigiService;
 import com.intellecteu.onesource.integration.services.IntegrationDataTransformer;
 import com.intellecteu.onesource.integration.services.MatchingService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
@@ -52,6 +58,8 @@ import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.SettlementService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import com.intellecteu.onesource.integration.utils.IntegrationUtils;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -82,6 +90,7 @@ public class PositionProcessor {
     private final CloudEventRecordService cloudEventRecordService;
     private final MatchingService matchingService;
     private final IntegrationDataTransformer dataTransformer;
+    private final FigiService figiService;
 
     public Position savePosition(Position position) {
         return positionService.savePosition(position);
@@ -111,6 +120,45 @@ public class PositionProcessor {
         }
         position.getPositionCpAccount().setDtc(dtc);
         return position;
+    }
+
+    /**
+     * Retrieve and persist figi code by the ticker. Stop processing flow and update position processing status if figi
+     * couldn't be retrieved.
+     *
+     * @param position Position
+     * @return the initial position if figi was retrieved or null
+     */
+    @Transactional
+    public @Nullable Position manageFigiCode(@NotNull Position position) {
+        try {
+            final String ticker = position.getPositionSecurityDetail().getTicker();
+            figiService.findAndSaveFigi(ticker);
+            return position;
+        } catch (FigiRetrievementException e) {
+            return processFigiException(position, e);
+        } catch (Exception e) {
+            log.debug("Unexpected exception during retrieving figi code. Details: {}", e.getMessage());
+            position.setProcessingStatus(NO_FIGI);
+            savePosition(position);
+            return null;
+        }
+    }
+
+    private Position processFigiException(Position position, FigiRetrievementException e) {
+        if (e.isFigiRetrieved()) {
+            log.debug("Multiple figi code returned for position:{}", position.getPositionId());
+            position.setProcessingStatus(MULTIPLE_FIGI);
+            createCloudEvent(String.valueOf(position.getPositionId()), MULTIPLE_FIGI_CODES, "",
+                CONTRACT_INITIATION);
+        } else {
+            log.debug("No figi code returned for position:{}", position.getPositionId());
+            position.setProcessingStatus(NO_FIGI);
+            createCloudEvent(String.valueOf(position.getPositionId()), NO_FIGI_CODE_RETRIEVED, "",
+                CONTRACT_INITIATION);
+        }
+        savePosition(position);
+        return null;
     }
 
     private Long retrievePartyDtc(Contract contract, PartyRole partyRole) {
@@ -272,7 +320,8 @@ public class PositionProcessor {
     @Transactional
     public void matchContractProposalAsBorrower(Position position) {
         try {
-            Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(UNMATCHED); // todo improve move this from position list loop
+            Set<Contract> unmatchedContracts = contractService.findAllByProcessingStatus(
+                UNMATCHED); // todo improve move this from position list loop
             if (unmatchedContracts.isEmpty()) {
                 throw new ContractNotFoundException();
             }
@@ -375,10 +424,10 @@ public class PositionProcessor {
                 (SPIRE Position: {}) for the following reason: {}""", positionId, e.getStatusCode());
             log.debug("Details: {}", e.getMessage());
             Optional<String> eventId = cloudEventRecordService.getToolkitCloudEventId(positionId,
-                    POST_LOAN_CONTRACT_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE);
+                POST_LOAN_CONTRACT_PROPOSAL, TECHNICAL_EXCEPTION_1SOURCE);
             eventId.ifPresentOrElse(
-                    cloudEventRecordService::updateTime,
-                    () ->  createExceptionCloudEvent(positionId, e, CONTRACT_INITIATION, POST_LOAN_CONTRACT_PROPOSAL));
+                cloudEventRecordService::updateTime,
+                () -> createExceptionCloudEvent(positionId, e, CONTRACT_INITIATION, POST_LOAN_CONTRACT_PROPOSAL));
             throwExceptionForRedeliveryPolicy(e);
             return false;
         }

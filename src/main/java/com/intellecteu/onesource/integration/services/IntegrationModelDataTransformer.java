@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.model.onesource.SettlementTy
 import static com.intellecteu.onesource.integration.model.onesource.TermType.FIXED;
 import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
 
+import com.intellecteu.onesource.integration.exception.FigiRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
@@ -65,12 +66,12 @@ import org.springframework.stereotype.Component;
 public class IntegrationModelDataTransformer implements IntegrationDataTransformer {
 
     private final String spireUserId;
-    private final FigiHandler figiHandler;
+    private final FigiService figiService;
 
 
-    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId, FigiHandler figiHandler) {
+    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId, FigiService figiService) {
         this.spireUserId = spireUserId;
-        this.figiHandler = figiHandler;
+        this.figiService = figiService;
     }
 
     @Override
@@ -363,9 +364,10 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     private String createFigiFromPositionDetail(PositionSecurityDetail positionSecurityDetail) {
         final String ticker = positionSecurityDetail.getTicker();
         if (StringUtils.isEmpty(ticker)) {
-            return null;
+            log.debug("Ticker is null, cannot retrieve figi");
+            throw new FigiRetrievementException("Figi cannot be retrieved by ticker because ticker is empty!");
         }
-        return figiHandler.getFigiFromTicker(ticker);
+        return figiService.findFigiByTicker(ticker);
     }
 
     private Price buildPriceFromPosition(Position position) {

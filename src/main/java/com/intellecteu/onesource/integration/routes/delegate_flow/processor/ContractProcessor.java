@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_FIGI_CODE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
@@ -17,6 +18,8 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MULTIPLE_FIGI;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NO_FIGI;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
@@ -31,6 +34,8 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.MULTIPLE_FIGI_CODES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.NO_FIGI_CODE_RETRIEVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
@@ -45,6 +50,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import com.intellecteu.onesource.integration.exception.FigiRetrievementException;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -438,7 +444,24 @@ public class ContractProcessor {
     }
 
     public ContractProposal createProposalFromPosition(@NonNull Position position) {
-        return dataTransformer.toLenderContractProposal(position);
+        try {
+            return dataTransformer.toLenderContractProposal(position);
+        } catch (FigiRetrievementException e) {
+            if (e.isFigiRetrieved()) {
+                log.debug("Multiple figi codes retrieved for position:{}", position.getPositionId());
+                position.setProcessingStatus(MULTIPLE_FIGI);
+                positionService.savePosition(position);
+                createBusinessEvent(String.valueOf(position.getPositionId()), MULTIPLE_FIGI_CODES, "",
+                    GET_FIGI_CODE, CONTRACT_INITIATION);
+            } else {
+                log.debug("No figi code retrieved for position:{}", position.getPositionId());
+                position.setProcessingStatus(NO_FIGI);
+                positionService.savePosition(position);
+                createBusinessEvent(String.valueOf(position.getPositionId()), NO_FIGI_CODE_RETRIEVED, "",
+                    GET_FIGI_CODE, CONTRACT_INITIATION);
+            }
+            return null;
+        }
     }
 
     public Contract saveContract(@NonNull Contract contract) {

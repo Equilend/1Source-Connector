@@ -61,6 +61,8 @@ public class RecordMessageConstant {
             public static final String LOAN_CONTRACT_PROPOSAL_NOT_MATCHED_DECLINED_SUBJECT = "Loan contract proposal - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVED = "Position - %s";
+            public static final String MULTIPLE_FIGI_CODE_RETRIEVED_SUBJECT = "Position - %s";
+            public static final String NO_FIGI_CODE_RETRIEVED_SUBJECT = "Position - %s";
             public static final String GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE = """
                 Extract of new positions pending conf. - %s""";
             public static final String CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
@@ -213,6 +215,14 @@ public class RecordMessageConstant {
             public static final String MATCHED_POSITION_LOAN_CONTRACT_PROPOSAL_MSG = """
                 The loan contract proposal %s has been matched \
                 with a SPIRE position %s and needs now to be validated.""";
+
+            public static final String MULTIPLE_FIGI_CODE_RETRIEVED_MSG = """
+                Multiple FIGI codes have been retrieved for the position %s. \
+                The Integration Toolkit cannot post a loan contract proposal to 1Source""";
+
+            public static final String NO_FIGI_CODE_RETRIEVED_MSG = """
+                No FIGI code has been retrieved for the position %s. \
+                The Integration Toolkit cannot post a loan contract proposal to 1Source""";
 
             public static final String POSITION_CANCELED_MSG = """
                 The position %s has been canceled""";

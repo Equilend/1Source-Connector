@@ -1,5 +1,3 @@
--- Test POST_LOAN_CONTRACT_PROPOSAL Lender success flow data
-
 -- INSERT INTO account (id, account_id, short_name, lei, one_source_id, dtc)
 -- VALUES (22, 22, 'lender_acc', '22', 123, 1),
 --        (44, 44, 'borrower_acc', '44', 789, 2);

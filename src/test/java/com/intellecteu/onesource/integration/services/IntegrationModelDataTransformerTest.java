@@ -18,12 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class IntegrationModelDataTransformerTest {
 
     @Mock
-    private FigiHandler figiHandler;
+    private FigiService figiService;
     private IntegrationModelDataTransformer dataTransformer;
 
     @BeforeEach
     void setUp() {
-        dataTransformer = new IntegrationModelDataTransformer("testSpireUserId", figiHandler);
+        dataTransformer = new IntegrationModelDataTransformer("testSpireUserId", figiService);
     }
 
     @Test
