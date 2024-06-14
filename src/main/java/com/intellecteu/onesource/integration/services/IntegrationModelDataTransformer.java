@@ -5,9 +5,10 @@ import static com.intellecteu.onesource.integration.model.onesource.PartyRole.LE
 import static com.intellecteu.onesource.integration.model.onesource.RoundingMode.ALWAYSUP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
+import static com.intellecteu.onesource.integration.model.onesource.TermType.FIXED;
 import static com.intellecteu.onesource.integration.model.onesource.TermType.OPEN;
-import static com.intellecteu.onesource.integration.model.onesource.TermType.TERM;
 
+import com.intellecteu.onesource.integration.exception.FigiRetrievementException;
 import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
@@ -15,6 +16,7 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Collateral;
 import com.intellecteu.onesource.integration.model.onesource.CollateralType;
@@ -44,6 +46,12 @@ import com.intellecteu.onesource.integration.model.onesource.TransactingParty;
 import com.intellecteu.onesource.integration.model.onesource.Venue;
 import com.intellecteu.onesource.integration.model.onesource.VenueParty;
 import com.intellecteu.onesource.integration.model.onesource.VenueType;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.PartyRoleDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.RecallProposalDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartiesDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenuePartyDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.VenueTypeDTO;
 import io.micrometer.common.util.StringUtils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,12 +66,12 @@ import org.springframework.stereotype.Component;
 public class IntegrationModelDataTransformer implements IntegrationDataTransformer {
 
     private final String spireUserId;
-    private final FigiHandler figiHandler;
+    private final FigiService figiService;
 
 
-    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId, FigiHandler figiHandler) {
+    public IntegrationModelDataTransformer(@Value("${spire.user-id}") String spireUserId, FigiService figiService) {
         this.spireUserId = spireUserId;
-        this.figiHandler = figiHandler;
+        this.figiService = figiService;
     }
 
     @Override
@@ -92,6 +100,30 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
             .ledgerId(position.getMatching1SourceLoanContractId())
             .instructions(buildPositionInstructions(position))
             .build();
+    }
+
+    @Override
+    public RecallProposalDTO to1SourceRecallProposal(RecallSpire recallSpire) {
+        RecallProposalDTO recallInstruction = new RecallProposalDTO();
+        final VenueDTO venue = buildVenueForRecallInstruction(recallSpire);
+        recallInstruction.executionVenue(venue);
+        recallInstruction.quantity(recallSpire.getQuantity());
+        recallInstruction.recallDate(recallSpire.getRecallDate());
+        recallInstruction.recallDueDate(recallSpire.getRecallDueDate());
+        return recallInstruction;
+    }
+
+    private VenueDTO buildVenueForRecallInstruction(RecallSpire recallSpire) {
+        VenueDTO venue = new VenueDTO();
+        venue.setType(VenueTypeDTO.OFFPLATFORM);
+        VenuePartyDTO venueParty = new VenuePartyDTO();
+        venueParty.setPartyRole(PartyRoleDTO.LENDER);
+        venueParty.setVenuePartyRefKey(
+            String.format("%d-%d", recallSpire.getRecallId(), recallSpire.getRelatedPositionId()));
+        VenuePartiesDTO venueParties = new VenuePartiesDTO();
+        venueParties.add(venueParty);
+        venue.setVenueParties(venueParties);
+        return venue;
     }
 
     private Integer retrieveOneSourceUserId() {
@@ -186,7 +218,7 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
         if (termId == 1) {
             return OPEN;
         } else if (termId == 2) {
-            return TERM;
+            return FIXED;
         }
         return null;
     }
@@ -332,9 +364,10 @@ public class IntegrationModelDataTransformer implements IntegrationDataTransform
     private String createFigiFromPositionDetail(PositionSecurityDetail positionSecurityDetail) {
         final String ticker = positionSecurityDetail.getTicker();
         if (StringUtils.isEmpty(ticker)) {
-            return null;
+            log.debug("Ticker is null, cannot retrieve figi");
+            throw new FigiRetrievementException("Figi cannot be retrieved by ticker because ticker is empty!");
         }
-        return figiHandler.getFigiFromTicker(ticker);
+        return figiService.findFigiByTicker(ticker);
     }
 
     private Price buildPriceFromPosition(Position position) {

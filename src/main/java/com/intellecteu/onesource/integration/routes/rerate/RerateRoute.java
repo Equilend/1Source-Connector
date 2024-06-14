@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.routes.rerate;
 
 import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_AMEND;
 import static com.intellecteu.onesource.integration.model.enums.CorrectionInstructionType.RERATE_CANCELLED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMATION_POSTPONED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
@@ -79,10 +80,13 @@ public class RerateRoute extends RouteBuilder {
     private final long updateTimer;
 
     @Autowired
-    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor, OneSourceMapper oneSourceMapper,
+    public RerateRoute(RerateProcessor rerateProcessor, RerateEventProcessor rerateEventProcessor,
+        OneSourceMapper oneSourceMapper,
         BackOfficeMapper backOfficeMapper, DeclineInstructionMapper declineInstructionMapper,
-        CorrectionInstructionMapper correctionInstructionMapper,@Value("${route.rerate.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
-        @Value("${route.rerate.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern, @Value("${route.rerate.timer}") long updateTimer) {
+        CorrectionInstructionMapper correctionInstructionMapper,
+        @Value("${route.rerate.redelivery-policy.max-redeliveries}") Integer redeliveryPolicyMaxRedeliveries,
+        @Value("${route.rerate.redelivery-policy.delay-pattern}") String redeliveryPolicyDelayPattern,
+        @Value("${route.rerate.timer}") long updateTimer) {
         this.rerateProcessor = rerateProcessor;
         this.rerateEventProcessor = rerateEventProcessor;
         this.oneSourceMapper = oneSourceMapper;
@@ -179,11 +183,24 @@ public class RerateRoute extends RouteBuilder {
             .log("<<< Finished GET_RERATE_APPROVED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[APPROVED, APPLIED], RerateTrade[PROPOSAL_APPROVED]");
 
         from(createRerateTradeSQLEndpoint(PROPOSAL_APPROVED))
+            .to("direct:confirmRerateTrade");
+
+        from(createRerateTradeSQLEndpoint(CONFIRMATION_POSTPONED, 5000))
+            .to("direct:confirmRerateTrade");
+
+        from("direct:confirmRerateTrade")
             .log(">>> Started POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId}")
             .bean(backOfficeMapper, "toModel")
-            .bean(rerateProcessor, "confirmRerateTrade")
+            .choice()
+                .when(method(rerateProcessor, "isRerateTradePostponed"))
+                    .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CONFIRMATION_POSTPONED)")
+                .otherwise()
+                    .bean(rerateProcessor, "confirmRerateTrade")
+                    .bean(rerateProcessor, "updateRerateTradeProcessingStatus(${body}, CONFIRMED)")
+                .endChoice()
+            .end()
             .bean(rerateProcessor, "saveRerateTrade")
-            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED]");
+            .log("<<< Finished POST_RERATE_TRADE_CONFIRMATION for RerateTrade: ${body.tradeId} with expected statuses: RerateTrade[CONFIRMED, CONFIRMATION_POSTPONED]");
 
         from("direct:processingRerateAppliedEvent")
             .log(">>> Started PROCESS_RERATE_APPLIED for TradeEvent: ${body.eventId}")
@@ -210,12 +227,13 @@ public class RerateRoute extends RouteBuilder {
             .log("<<< Finished PROCESS_RERATE_DECLINED for TradeEvent: ${body.eventId} with expected statuses: TradeEvent[PROCESSED], Rerate[DECLINED]");
 
         from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_AMEND))
+            .routeId("ProcessTradeUpdate_RerateAmend")
             .log(">>> Started PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId}")
             .bean(correctionInstructionMapper, "toModel")
             .bean(rerateProcessor, "amendRerateTrade")
             .bean(rerateProcessor, "updateCorrectionInstructionProcessingStatus(${body}, PROCESSED)")
             .bean(rerateProcessor, "saveCorrectionInstruction")
-            .log("<<< Finished PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], Rerate[PROPOSED, TO_VALIDATE], RerateTrade[REPLACED]");
+            .log("<<< Finished PROCESS_TRADE_UPDATE for CorrectionInstruction: ${body.instructionId} with expected statuses: CorrectionInstruction[PROCESSED], Rerate[PROPOSED, CANCEL_SUBMITTED], RerateTrade[REPLACED]");
 
         from(createUnprocessedCorrectionInstructionSQLEndpoint(RERATE_CANCELLED))
             .log(">>> Started PROCESS_TRADE_CANCEL for CorrectionInstruction: ${body.instructionId}")
@@ -249,27 +267,32 @@ public class RerateRoute extends RouteBuilder {
             Arrays.stream(eventTypes).map(EventType::toString).collect(Collectors.joining("','")));
     }
 
-    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status){
-        var unmatchedRerateTradeSQLEndpoint = "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
-            + "%s&"
-            + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
-            + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
-        return String.format(unmatchedRerateTradeSQLEndpoint, String.format("delay=%d",updateTimer), status);
+    private String createUnmatchedRerateTradeSQLEndpoint(ProcessingStatus status) {
+        var unmatchedRerateTradeSQLEndpoint =
+            "jpa://com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity?"
+                + "%s&"
+                + "consumeLockEntity=false&consumeDelete=false&sharedEntityManager=true&joinTransaction=false&"
+                + "query=SELECT r FROM RerateTradeEntity r WHERE r.processingStatus = '%s' and r.matchingRerateId = null";
+        return String.format(unmatchedRerateTradeSQLEndpoint, String.format("delay=%d", updateTimer), status);
+    }
+
+    private String createRerateTradeSQLEndpoint(ProcessingStatus status, long delay) {
+        return String.format(RERATE_TRADE_SQL_ENDPOINT, String.format("delay=%d", delay), status);
     }
 
     private String createRerateTradeSQLEndpoint(ProcessingStatus status) {
-        return String.format(RERATE_TRADE_SQL_ENDPOINT, String.format("delay=%d", updateTimer), status);
+        return createRerateTradeSQLEndpoint(status, updateTimer);
     }
 
     private String createRerateSQLEndpoint(ProcessingStatus status) {
         return String.format(RERATE_SQL_ENDPOINT, String.format("delay=%d", updateTimer), status);
     }
 
-    private String createUnprocessedDeclineInstructionSQLEndpoint(){
+    private String createUnprocessedDeclineInstructionSQLEndpoint() {
         return String.format(DECLINE_INSTRUCTION_SQL_ENDPOINT, String.format("delay=%d", updateTimer));
     }
 
-    private String createUnprocessedCorrectionInstructionSQLEndpoint(CorrectionInstructionType type){
+    private String createUnprocessedCorrectionInstructionSQLEndpoint(CorrectionInstructionType type) {
         return String.format(CORRECTION_INSTRUCTION_SQL_ENDPOINT, String.format("delay=%d", updateTimer), type);
     }
 }

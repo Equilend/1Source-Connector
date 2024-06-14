@@ -13,7 +13,6 @@ import static com.intellecteu.onesource.integration.model.onesource.EventType.RE
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -85,7 +84,6 @@ class RerateEventProcessorTest {
         rerate.setRerateId("1");
         rerate.setMatchingSpireTradeId(1l);
         doReturn(rerate).when(rerateService).getByRerateId(any());
-        doCallRealMethod().when(rerateService).mergeRerate(any(), any());
         RerateTrade rerateTrade = new RerateTrade();
         doReturn(rerateTrade).when(rerateTradeService).getByTradeId(any());
         doReturn(new CloudEventFactoryImpl(

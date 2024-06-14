@@ -88,13 +88,13 @@ public class IntegrationUtils {
     }
 
     /**
-     * Retrieve contract id from the 1Source event resource Uri. Expected URI format:
+     * Retrieve id from the 1Source event resource Uri. Expected URI format:
      * /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
      *
      * @param resourceUri String
      * @return String contract id or the initial string if the format is unexpected
      */
-    public static String parseContractIdFrom1SourceResourceUri(String resourceUri) {
+    public static String parseIdFrom1SourceResourceUri(String resourceUri) {
         if (!resourceUri.contains("/")) {
             return resourceUri;
         }
@@ -106,9 +106,8 @@ public class IntegrationUtils {
 
     /**
      * Retrieve agreement id from the 1Source event resource Uri. Expected URI format:
-     * /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006
-     * The method is duplicate for contract id parsing, but should be the separate as
-     * there are in progress requirements for parsing sub-entities from the resource uri
+     * /v1/ledger/agreements/93f834ff-66b5-4195-892b-8f316ed77006 The method is duplicate for contract id parsing, but
+     * should be the separate as there are in progress requirements for parsing sub-entities from the resource uri
      *
      * @param resourceUri String
      * @return String agreement id or the initial string if the format is unexpected
@@ -130,7 +129,7 @@ public class IntegrationUtils {
 
     }
 
-    public static String toStringNullSafe(Object obj){
+    public static String toStringNullSafe(Object obj) {
         return obj != null ? obj.toString() : null;
     }
 }

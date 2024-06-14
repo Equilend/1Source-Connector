@@ -1,0 +1,11 @@
+-- INSERT INTO recall_spire_instruction (instruction_id, instruction_type, spire_recall_id, related_contract_id,
+--                                       related_position_id, creation_date_time, quantity, recall_date, recall_due_date)
+-- VALUES ('102030', 'RECALL_CANCELLATION', 123, '1111-2222-3333-4444',
+--         444, '2024-05-29 11:50:41.633000', 100, '2024-05-29', '2024-05-29');
+--
+-- INSERT INTO recall_spire (recall_id, related_position_id, instruction_id, matching_1source_recall_id, related_contract_id,
+--                           processing_status, status, creation_date_time, last_update_date_time, open_quantity, quantity,
+--                           recall_date, recall_due_date)
+-- VALUES (123, 444, '102030', '90807', '1111-2222-3333-4444',
+--         'CONFIRMED_LENDER', 'OPEN', '2024-05-20 13:50:41.633000', '2024-05-20 13:50:41.633000', 40, 100,
+--         '2024-05-29', '2024-05-29');

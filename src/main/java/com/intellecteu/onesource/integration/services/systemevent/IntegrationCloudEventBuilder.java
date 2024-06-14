@@ -5,9 +5,11 @@ import static com.intellecteu.onesource.integration.constant.IntegrationConstant
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_LOAN_PROPOSAL;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.ONESOURCE_TRADE_AGREEMENT;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.POSITION;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SHARED_TRADE_TICKET;
+import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_RECALL;
 import static com.intellecteu.onesource.integration.constant.IntegrationConstant.DomainObjects.SPIRE_TRADE;
 import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
 import static org.springframework.util.MimeTypeUtils.APPLICATION_JSON_VALUE;
@@ -26,6 +28,7 @@ import com.intellecteu.onesource.integration.model.integrationtoolkit.systemeven
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -59,6 +62,11 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
 
     public abstract CloudEventBuildRequest buildToolkitIssueRequest(String recorded, IntegrationSubProcess subProcess);
 
+    public CloudEventBuildRequest buildToolkitIssueRequest(IntegrationSubProcess subProcess,
+        Map<String, String> data) {
+        return null;
+    }
+
     public CloudEventBuildRequest buildExceptionRequest(String recorded, HttpStatusCodeException e,
         IntegrationSubProcess subProcess, String related) {
         return null;
@@ -73,6 +81,7 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
         return buildRequest(recorded, recordType, null);
     }
 
+    // todo rework or add Map<String,String> relatedData as an object instead of String related
     public abstract CloudEventBuildRequest buildRequest(String recorded, RecordType recordType, String related);
 
     public CloudEventBuildRequest buildRequest(IntegrationSubProcess subProcess, RecordType recordType,
@@ -171,6 +180,49 @@ public abstract class IntegrationCloudEventBuilder implements CloudEventBuilder<
             ngtTicket = "";
         }
         return getAgreementRelatedToNgtPosition(agreementInfo, positionId, ngtTicket);
+    }
+
+    protected List<RelatedObject> getSpireRecallRelatedToPositionAndContract(String relatedSequence) {
+        String[] relatedIds = relatedSequence.split(",");
+        String recallId;
+        String positionId;
+        String contractId;
+        try {
+            recallId = relatedIds[0];
+            positionId = relatedIds[1];
+            contractId = relatedIds[2];
+        } catch (IndexOutOfBoundsException e) {
+            recallId = "";
+            positionId = "";
+            contractId = "";
+        }
+        return getSpireRecallRelatedToPositionAndContract(recallId, positionId, contractId);
+    }
+
+    protected List<RelatedObject> getRecall1SourceRelatedToRecallSpire(String recall1sourceId, String recallSpireId,
+        String positionId, String contractId) {
+        List<RelatedObject> relatedObjects = new ArrayList<>();
+        if (recall1sourceId != null) {
+            relatedObjects.add(new RelatedObject(recall1sourceId, ONESOURCE_RECALL));
+        }
+        if (contractId != null) {
+            relatedObjects.add(new RelatedObject(contractId, ONESOURCE_LOAN_CONTRACT));
+        }
+        if (recallSpireId != null) {
+            relatedObjects.add(new RelatedObject(recallSpireId, SPIRE_RECALL));
+        }
+        if (positionId != null) {
+            relatedObjects.add(new RelatedObject(positionId, POSITION));
+        }
+        return relatedObjects;
+    }
+
+    protected List<RelatedObject> getSpireRecallRelatedToPositionAndContract(String recallInfo, String positionInfo,
+        String contractInfo) {
+        var tradeAgreement = new RelatedObject(recallInfo, SPIRE_RECALL);
+        var relatedPosition = new RelatedObject(positionInfo, POSITION);
+        var relatedTrade = new RelatedObject(contractInfo, ONESOURCE_LOAN_CONTRACT);
+        return List.of(tradeAgreement, relatedPosition, relatedTrade);
     }
 
     protected List<RelatedObject> getAgreementRelatedToNgtPosition(String agreementInfo, String positionInfo,

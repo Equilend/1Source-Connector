@@ -16,6 +16,7 @@ import static com.intellecteu.onesource.integration.model.onesource.RoundingMode
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.VenueType.ONPLATFORM;
 
+import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
 import com.intellecteu.onesource.integration.model.backoffice.Account;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
@@ -25,7 +26,10 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionExposure;
 import com.intellecteu.onesource.integration.model.backoffice.PositionSecurityDetail;
 import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
+import com.intellecteu.onesource.integration.model.enums.RecallInstructionType;
+import com.intellecteu.onesource.integration.model.enums.RecallStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.SystemEventData;
@@ -144,6 +148,7 @@ public class ModelTestFactory {
         agreement.setVenues(List.of(buildVenue(agreement.getId())));
         return agreement;
     }
+
     public static AgreementDTO buildAgreementDTO() {
         final AgreementDTO agreementDTO = new AgreementDTO();
         agreementDTO.setAgreementId("testAgreement");
@@ -162,7 +167,7 @@ public class ModelTestFactory {
         venueTrade.setBillingCurrency(CurrencyCdDTO.USD);
         venueTrade.dividendRatePct(5.0D);
         venueTrade.setTradeDate(LocalDate.of(2024, 4, 19));
-        venueTrade.setTermType(TermTypeDTO.TERM);
+        venueTrade.setTermType(TermTypeDTO.FIXED);
         venueTrade.setTermDate(LocalDate.of(2024, 4, 19));
         venueTrade.setSettlementDate(LocalDate.of(2024, 4, 19));
         venueTrade.setSettlementType(SettlementTypeDTO.DVP);
@@ -221,7 +226,7 @@ public class ModelTestFactory {
         collateralDTO.setCurrency(CurrencyCdDTO.USD);
         collateralDTO.setType(CollateralTypeDTO.CASH);
         collateralDTO.setDescriptionCd(CollateralDescriptionDTO.DEBT);
-        collateralDTO.setMargin(205);
+        collateralDTO.setMargin(205.5);
         collateralDTO.setRoundingRule(1);
         collateralDTO.setRoundingMode(RoundingModeDTO.ALWAYSUP);
         return collateralDTO;
@@ -401,6 +406,7 @@ public class ModelTestFactory {
             .deliverFree(translateDeliverFree(tradeAgreement.getSettlementType()))
             .amount(tradeAgreement.getCollateral().getCollateralValue())
             .price(tradeAgreement.getCollateral().getContractPrice())
+            .index(new Index(12, "testIndexName", 10.0))
             .exposure(buildPositionExposure(tradeAgreement))
             .positionType(buildPositionType(tradeAgreement))
             .positionAccount(buildAccount(tradeAgreement.getTransactingParties().get(0)))
@@ -550,7 +556,7 @@ public class ModelTestFactory {
     public static VenueParty buildVenueParty() {
         return VenueParty.builder()
             .partyRole(LENDER)
-            .venueId("testVenuePartyRefKey")
+            .venuePartyRefKey("testVenuePartyRefKey")
             .build();
     }
 
@@ -618,6 +624,35 @@ public class ModelTestFactory {
             .trade(buildTradeAgreement())
             .settlementList(List.of(buildSettlement()))
             .build();
+    }
 
+    public static RecallSpire buildRecall(Long recallId, Long relatedPositionId) {
+        return RecallSpire.builder()
+            .recallId(recallId)
+            .relatedPositionId(relatedPositionId)
+            .matching1SourceRecallId("matching1SourceRecallId")
+            .relatedContractId("testContractId")
+            .status(RecallStatus.OPEN)
+            .creationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33))
+            .lastUpdateDateTime(LocalDateTime.now())
+            .openQuantity(123)
+            .quantity(456)
+            .recallDate(LocalDate.of(2024, 5, 16))
+            .recallDueDate(LocalDate.of(2025, 5, 16))
+            .build();
+    }
+
+    public static RecallInstructionDTO buildRecallInstruction(String instructionId, Long spireRecallId) {
+        return RecallInstructionDTO.builder()
+            .instructionId(instructionId)
+            .instructionType(RecallInstructionType.RECALL)
+            .spireRecallId(spireRecallId)
+            .relatedContractId("testContractId")
+            .relatedPositionId(77L)
+            .creationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33))
+            .quantity(456)
+            .recallDate(LocalDate.of(2024, 5, 16))
+            .recallDueDate(LocalDate.of(2025, 5, 16))
+            .build();
     }
 }

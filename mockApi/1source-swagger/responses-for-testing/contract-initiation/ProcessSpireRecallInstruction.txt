@@ -1,0 +1,7 @@
+Prepared local migration data: V2024.05.20.16.00__EINT23-874_process_spire_recall_instruction.sql
+
+1. Insert to the database recall
+    - processingStatus should be 'CREATED'
+
+2. Create 1Source mock for /ledger/contracts/{contractId}/recalls POST endpoint
+    - should return 201 response code

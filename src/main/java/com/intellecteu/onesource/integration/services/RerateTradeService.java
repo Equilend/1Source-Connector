@@ -2,6 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.Rerate;
 import com.intellecteu.onesource.integration.repository.RerateTradeRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
@@ -25,9 +26,9 @@ public class RerateTradeService {
         this.backOfficeMapper = backOfficeMapper;
     }
 
-    public RerateTrade getByTradeId(Long tradeId){
+    public RerateTrade getByTradeId(Long tradeId) {
         RerateTradeEntity rerateTradeEntity = rerateTradeRepository.getReferenceById(tradeId);
-        return  backOfficeMapper.toModel(rerateTradeEntity);
+        return backOfficeMapper.toModel(rerateTradeEntity);
     }
 
     public RerateTrade save(RerateTrade rerateTrade) {
@@ -62,5 +63,11 @@ public class RerateTradeService {
         rerateTrade.setMatchingRerateId(rerate.getRerateId());
         rerateTrade.setLastUpdateDatetime(LocalDateTime.now());
         return save(rerateTrade);
+    }
+
+    public List<RerateTrade> findReturnTrade(Long positionId, List<ProcessingStatus> processingStatuses) {
+        List<RerateTradeEntity> rerateTradeEntities = rerateTradeRepository.findByRelatedPositionIdAndProcessingStatusIn(
+            positionId, processingStatuses);
+        return rerateTradeEntities.stream().map(backOfficeMapper::toModel).collect(Collectors.toList());
     }
 }

@@ -1,0 +1,9 @@
+Prepared local migration data: V2024.05.24.13.00__EINT23-876_match_recalls.sql
+
+1. Recall 1Source should be persisted in the database:
+    - processing status should be CREATED;
+    - recall1Source.executionVenue.venueParties.venueRefKey for the LENDER
+    must match with the format: 'recallSpire.recallId-recallSpire.relatedPositionId'
+
+2. Recall SPIRE should be persisted in the database
+    - recall Id and position Id should match with recall1D

@@ -39,13 +39,6 @@ public class RerateService {
         return oneSourceMapper.toModel(rerateEntity);
     }
 
-    public Rerate mergeRerate(Rerate rerate, Rerate rerateUpdate){
-        rerate.setRerate(rerateUpdate.getRerate());
-        rerate.setRate(rerateUpdate.getRate());
-        rerate.setRerateStatus(rerateUpdate.getRerateStatus());
-        return rerate;
-    }
-
     public Optional<Rerate> findUnmatchedRerate(String contractId, LocalDate effectiveDate) {
         List<Rerate> rerateList = rerateRepository.findByContractIdAndProcessingStatus(contractId,  UNMATCHED).stream().map(oneSourceMapper::toModel)
             .collect(Collectors.toList());

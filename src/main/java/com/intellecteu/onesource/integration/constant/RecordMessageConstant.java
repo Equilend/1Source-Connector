@@ -6,11 +6,13 @@ import lombok.experimental.UtilityClass;
 public class RecordMessageConstant {
 
     public static final String NOT_APPLICABLE = "N/A";
+
     public static class ContractCancellation {
 
         public static class Subject {
+
             public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_SUBJECT = """
-            Capture of canceled positions - %s""";
+                Capture of canceled positions - %s""";
             public static final String INSTRUCT_CONTRACT_CANCEL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_CANCEL_PENDING_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_CANCELED_SUBJECT = "Position - %s";
@@ -19,6 +21,7 @@ public class RecordMessageConstant {
         }
 
         public static class DataMsg {
+
             public static final String CAPTURE_POSITION_CANCELED_EXCEPTION_MSG = """
                 Canceled positions cannot be captured from SPIRE for the following reason: %s""";
 
@@ -58,6 +61,8 @@ public class RecordMessageConstant {
             public static final String LOAN_CONTRACT_PROPOSAL_NOT_MATCHED_DECLINED_SUBJECT = "Loan contract proposal - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL_SUBJECT = "Position - %s";
             public static final String LOAN_CONTRACT_PROPOSAL_APPROVED = "Position - %s";
+            public static final String MULTIPLE_FIGI_CODE_RETRIEVED_SUBJECT = "Position - %s";
+            public static final String NO_FIGI_CODE_RETRIEVED_SUBJECT = "Position - %s";
             public static final String GET_UPDATED_POSITIONS_PENDING_CONFIRMATION_EXCEPTION_SPIRE = """
                 Extract of new positions pending conf. - %s""";
             public static final String CANCEL_LOAN_CONTRACT_PROPOSAL_EXCEPTION_1SOURCE = "Position - %s";
@@ -211,6 +216,14 @@ public class RecordMessageConstant {
                 The loan contract proposal %s has been matched \
                 with a SPIRE position %s and needs now to be validated.""";
 
+            public static final String MULTIPLE_FIGI_CODE_RETRIEVED_MSG = """
+                Multiple FIGI codes have been retrieved for the position %s. \
+                The Integration Toolkit cannot post a loan contract proposal to 1Source""";
+
+            public static final String NO_FIGI_CODE_RETRIEVED_MSG = """
+                No FIGI code has been retrieved for the position %s. \
+                The Integration Toolkit cannot post a loan contract proposal to 1Source""";
+
             public static final String POSITION_CANCELED_MSG = """
                 The position %s has been canceled""";
 
@@ -296,6 +309,77 @@ public class RecordMessageConstant {
         }
     }
 
+    public static class Recall {
+
+        public static class Subject {
+
+            public static final String GET_RECALL_DETAILS_SUBJECT = "1SourceRecall - %s";
+            public static final String PROCESS_SPIRE_RECALL_INSTR_SUBJECT = "SPIRE Recall - %s";
+            public static final String RECALL_CANCEL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CANCELED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CANCELED_NO_SPIRE_RECALL_SUBJECT = "1Source Recall id %s - ContractId %s";
+            public static final String RECALL_CLOSED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CLOSED_NO_SPIRE_RECALL_SUBJECT = "1Source Recall id %s - ContractId %s";
+            public static final String RECALL_CONFIRMED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String RECALL_CONFIRMED_SUBJECT_NO_POSITION = "1Source Recall id %s - ContractId %s";
+            public static final String RECALL_SUBMITTED_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_SUBJECT = "SPIRE Recall id %s - PositionId %s";
+            public static final String ONESOURCE_RECALL_CANCELLATION_ISSUE_SUBJECT = "1Source Recall - %s";
+            public static final String ONESOURCE_RECALL_CLOSURE_ISSUE_SUBJECT = "1Source Recall - %s";
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_SUBJECT = "SPIRE Recall id %s - "
+                + "PositionId %s";
+        }
+
+        public static class DataMsg {
+
+            public static final String GET_RECALL_DETAILS_MSG = """
+                The details of the 1Source recall %s have not been retrieved from 1Source \
+                for the following reason: %s""";
+
+            public static final String ONESOURCE_RECALL_CANCELLATION_ISSUE_MSG = """
+                The 1Source Recall %s has been marked as canceled in 1Source \
+                but the 1Source Recall has not been retrieved in the Integration toolkit.""";
+
+            public static final String ONESOURCE_RECALL_CLOSURE_ISSUE_MSG = """
+                The 1Source Recall %s has been marked as closed in 1Source \
+                but the 1Source Recall has not been retrieved in the Integration toolkit.""";
+            public static final String PROCESS_SPIRE_RECALL_INSTR_MSG = "The SPIRE recall %s "
+                + "has not been processed by 1Source for the following reason: %s";
+
+            public static final String RECALL_CANCEL_SUBMITTED_MSG = """
+                The cancellation of the 1Source recall: %s (created from the SPIRE recall: %s) \
+                has been submitted to 1Source""";
+
+            public static final String RECALL_CANCELED_MSG = """
+                The recall %s (created from the SPIRE recall: %s) has been canceled in 1Source""";
+
+            public static final String RECALL_CANCELED_NO_SPIRE_RECALL_MSG = """
+                The recall %s has been canceled in 1Source""";
+
+            public static final String RECALL_CLOSED_MSG = """
+                The recall %s (created from the SPIRE recall: %s) has been closed in 1Source""";
+
+            public static final String RECALL_CLOSED_NO_SPIRE_RECALL_MSG = """
+                The recall %s has been canceled in 1Source""";
+
+            public static final String RECALL_CONFIRMED_MSG = "The recall %s, confirmed within 1Source, "
+                + "has been recorded";
+
+            public static final String RECALL_SUBMITTED_MSG = "The recall %s has been submitted "
+                + "to 1Source to request the recall creation";
+
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_MSG = """
+                The recall cancellation instruction (cancelling the recall instruction %s) \
+                has not been processed by 1Source for the following reason: %s""";
+
+            public static final String SPIRE_RECALL_CANCELLATION_INSTR_ISSUE_MSG = """
+                The recall cancellation instruction (cancelling the recall instruction %s) \
+                has not been processed by 1Source because either the SPIRE recall trade \
+                has not been retrieved in the Integration toolkit or the matching 1Source Recall id \
+                has not been cross-referenced in the recorded SPIRE recall trade.""";
+        }
+    }
+
     public static class Rerate {
 
         public static class Subject {
@@ -312,7 +396,10 @@ public class RecordMessageConstant {
             public static final String RERATE_CANCELED = "1Source Rerate - %s";
             public static final String RERATE_CANCEL_PENDING = "1Source Rerate - %s";
             public static final String REPLACED_RERATE_TRADE = "Trade - %s";
+            public static final String PROCESS_OFF_SET_TRADE_CANCEL_SUBJ = "Trade - %s";
+            public static final String PROCESS_OFF_SETTING_TRADE_CANCEL_SUBJ = "Trade - %s";
             public static final String CANCEL_RERATE = "Trade - %s";
+            public static final String CANCEL_RERATE_SUBMITTED = "Trade - %s";
             public static final String CANCELED_RERATE = "Trade - %s";
             public static final String APPROVE_EXCEPTION_RERATE = "Trade - %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE = "1Source Rerate - %s";
@@ -339,23 +426,27 @@ public class RecordMessageConstant {
             public static final String APPLIED_RERATE_MSG = "The rerate %s matching with the SPIRE rerate trade %s has been now applied on the loan contract %s";
             public static final String DECLIED_RERATE_MSG = "The rerate proposal %s has been declined.";
             public static final String CANCELED_RERATE_PROPOSAL_MSG = "The rerate proposal %s has been canceled.";
+            public static final String PROCESS_OFF_SETTING_TRADE_CANCEL_MSG = "The rerate trade %s has been canceled in SPIRE but the off-setting  %s rerate trade has not been retrieved in the Integration toolkit.";
+            public static final String PROCESS_OFF_SET_TRADE_CANCEL_MSG = "The rerate trade %s has been canceled in SPIRE but the rerate trade has not been retrieved in the Integration toolkit.";
             public static final String RERATE_CANCELED_MSG = "The rerate %s has been canceled.";
+            public static final String RERATE_CANCELED_SUBMITTED_MSG = "The update of the SPIRE rerate trade %s offset by the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s.";
             public static final String RERATE_CANCEL_PENDING_MSG = "The rerate %s has been cancel pending.";
             public static final String REPLACED_RERATE_TRADE_MSG = "The SPIRE rerate trade %s has been replaced with a SPIRE rerate trade: %s .";
             public static final String CANCEL_RERATE_MSG = "The update of the SPIRE rerate trade %s replaced with the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s.";
-            public static final String CANCELED_RERATE_MSG = "The update of the SPIRE rerate trade %s offset by the SPIRE rerate trade: %s has led to the cancelation of the rerate proposal %s .";
+            public static final String CANCELED_RERATE_MSG = "The SPIRE rerate trade %s has been offset with the SPIRE rerate trade: %s.";
             public static final String APPROVE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be approved for the following reason: %s";
             public static final String APPROVE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been approved but the rerate proposal has not been retrieved in the Integration toolkit";
             public static final String APPLIED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate %s has been applied in 1Source but the rerate has not been retrieved in the Integration toolkit";
-            public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been declined in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
-            public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal % has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
+            public static final String DECLINE_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been declined in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
+            public static final String CANCELED_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate proposal %s has been canceled in 1Source but the rerate proposal has not been retrieved in the Integration toolkit.";
             public static final String CANCEL_PENDING_TECHNICAL_EXCEPTION_RERATE_MSG = "The rerate pending settlement %s has been canceled by one of the two counterparties in 1Source but the rerate pending settlement has not been retrieved in the Integration toolkit.";
-            public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has not been retrieved in the Integration toolkit";
+            public static final String REPLACE_RERATE_EXCEPTION_RERATE_MSG = "The rerate trade %s has been replaced in SPIRE but the rerate trade has not been retrieved in the Integration toolkit.";
             public static final String DECLINE_RERATE_EXCEPTION_RERATE_MSG = "The rerate %s has not been retrieved in the Integration toolkit";
             public static final String CONFIRM_EXCEPTION_RERATE_MSG = "The rerate trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source rerate is : %s. The reason is: %s";
             public static final String DECLINE_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be declined for the following reason: %s";
             public static final String DECLINE_NOT_AUTHORIZED_EXCEPTION_RERATE_MSG = "The decline instruction for the 1Source rerate %s is not authorised as not generated from a “RERATE_PROPOSAL_DISCREPANCIES” or “RERATE_PROPOSAL_UNMATCHED” event.";
-            public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s matching with the rerate trade %s cannot be canceled for the following reason: %s";
+            public static final String CANCEL_EXCEPTION_RERATE_MSG = "The rerate proposal %s (generated from the SPIRE rerate trade: %s) cannot be canceled for the following reason:  Bad request or more information needed";
+            public static final String CANCEL_EXCEPTION_RERATE_PROCESS_TRADE_UPDATE_MSG = "The rerate proposal %s (generated from the SPIRE rerate trade: %s) cannot be canceled for the following reason: %s";
 
         }
     }
@@ -363,11 +454,61 @@ public class RecordMessageConstant {
     public static class Return {
 
         public static class Subject {
+
+            public static final String ACKNOWLEDGE_RETURN_POSITIVELY_TE_SBJ = "Trade - %s";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TE_SBJ = "Trade - %s";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TI_SBJ = "1Source Return - %s";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_NOT_AUTHORIZED_SBJ = "1Source Return - %s";
+            public static final String CAPTURE_RETURN_TRADE_CANCELLATION_TE_SBJ = "Capture of canceled return trades - %s";
+            public static final String CAPTURE_RETURN_TRADE_SETTLED_TE_SBJ = "Capture of settled return trades - %s";
+            public static final String CONFIRM_RETURN_TRADE_TE_SBJ = "1Trade - %s";
+            public static final String GET_RETURN_ACKNOWLEDGEMENT_DETAILS_TE_SBJ = "Trade - %s";
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Extract of new return pending conf. - %s";
+            public static final String PROCESS_RETURN_CANCELED_SBJ = "Trade - %s";
+            public static final String POST_RETURN_PENDING_CONFIRMATION_TE_SBJ = "Trade - %s";
+            public static final String POST_RETURN_SUBMITTED_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_SETTLED_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_TRADE_CANCELED_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_TRADE_CANCELED_TE_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_TRADE_SETTLED_SBJ = "Trade - %s";
+            public static final String PROCESS_RETURN_TRADE_SETTLED_TE_SBJ = "Trade - %s";
+            public static final String GET_RETURN_EXCEPTION_1SOURCE_SBJ = "Trade - %s";
+            public static final String RETURN_MATCHED_SBJ = "Trade - %s";
+            public static final String RETURN_UNMATCHED_SBJ = "1Source Return - %s";
+            public static final String RETURN_PENDING_ACKNOWLEDGEMENT_SBJ = "Trade - %s";
+            public static final String RETURN_POSITIVELY_ACKNOWLEDGED_SBJ = "Trade - %s";
+            public static final String RETURN_NEGATIVELY_ACKNOWLEDGED_SBJ = "Trade - %s";
+            public static final String RETURN_VALIDATED_SBJ = "Trade - %s";
+            public static final String RECONCILE_RETURN_DISCREPANCIES_SBJ = "Trade - %s";
         }
 
         public static class DataMsg {
+
+            public static final String ACKNOWLEDGE_RETURN_POSITIVELY_TE_MSG = "The return %s matching with the return trade %s cannot be positively acknowledged for the following reason: %s";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TE_MSG = "The return %s matching with the return trade %s cannot be negatively acknowledged for the following reason: %s";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_TI_MSG = "The return %s cannot be updated with the processing status NACK_SUBMITTED as it is not retrieved within the integration toolkit.";
+            public static final String ACKNOWLEDGE_RETURN_NEGATIVELY_NOT_AUTHORIZED_MSG = "The negative acknowledgement instruction for the return %s is not authorised as not generated from a “RETURN_DISCREPANCIES” or “RETURN_UNMATCHED” event.";
+            public static final String CAPTURE_RETURN_TRADE_CANCELLATION_TE_MSG = "Canceled return trades cannot be captured from SPIRE for the following reason: %s";
+            public static final String CAPTURE_RETURN_TRADE_SETTLED_TE_MSG = "Settled return trades cannot be captured from SPIRE for the following reason: %s";
+            public static final String CONFIRM_RETURN_TRADE_TE_MSG = "The return trade %s have not been confirmed in SPIRE. The identifier of the confirmed 1Source return is : %s. The reason is: %s";
+            public static final String GET_RETURN_ACKNOWLEDGEMENT_DETAILS_TE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";
             public static final String GET_NEW_RETURN_PENDING_CONFIRMATION_TE_MSG = "New return pending confirmation cannot be extracted from SPIRE for the following reason: %s";
+            public static final String PROCESS_RETURN_CANCELED_MSG = "The return %s matching with the return trade %s has been cancelled following the cancellation of the return trade in SPIRE.";
+            public static final String POST_RETURN_PENDING_CONFIRMATION_TE_MSG = "The return instruction (generated from the SPIRE return trade: %s has not been processed by 1Source for the following reason: %s";
+            public static final String POST_RETURN_SUBMITTED_MSG = "The return trade %s has been submitted to 1Source to request the return creation";
+            public static final String PROCESS_RETURN_SETTLED_MSG = "The return %s matching with the return trade %s has been marked as settled";
+            public static final String PROCESS_RETURN_TRADE_CANCELED_MSG = "The SPIRE return trade %s has been canceled.";
+            public static final String PROCESS_RETURN_TRADE_CANCELED_TE_MSG = "The return %s matching with the return trade %s cannot be canceled in 1Source for the following reason: %s";
+            public static final String PROCESS_RETURN_TRADE_SETTLED_MSG = "The SPIRE return trade %s matching the return %s has been settled.";
+            public static final String PROCESS_RETURN_TRADE_SETTLED_TE_MSG = "The return %s matching with the return trade %s cannot be set to settle in 1Source for the following reason: %s";
+            public static final String GET_RETURN_EXCEPTION_1SOURCE_MSG = "The details of the return %s have not been retrieved from 1Source for the following reason: %s";
+            public static final String RETURN_MATCHED_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be be validated";
+            public static final String RETURN_UNMATCHED_MSG = "The return %s has been captured but not matched with a return trade.";
+            public static final String RETURN_PENDING_ACKNOWLEDGEMENT_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be acknowledged by the counterparty";
+            public static final String RETURN_POSITIVELY_ACKNOWLEDGED_MSG = "The return %s matching with the return trade %s has been positively acknowledged by the counterparty";
+            public static final String RETURN_NEGATIVELY_ACKNOWLEDGED_MSG = "The return %s matching with the return trade %s has been negatively acknowledged by the counterparty for the following reason: %s.";
+            public static final String RETURN_VALIDATED_MSG = "The return %s has been reconciled with the return trade %s and needs now to be acknowledged";
+            public static final String RECONCILE_RETURN_DISCREPANCIES_MSG = "The return %s has been found in discrepancy with the return trade %s and needs now to be investigated for resolution.";
         }
     }
 

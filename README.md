@@ -137,7 +137,7 @@ Integration tests + skip Unit tests:
 | route.delegate-flow.contract-initiation.timer                              | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | route.delegate-flow.contract-initiation.redelivery-policy.max-redeliveries | NO       | 2                                                | The maximum redeliveries for Apache camel exception handler                                        |
 | route.delegate-flow.contract-initiation.redelivery-policy.delay-pattern    | NO       | 1:2000;2:30000                                   | The delay pattern for Apache camel exception handler                                               |
-| route.delegate-flow.update-position.enable                                 | NO       | 60000                                            | A turn on/off Update Position route for delegated contract initiation flow.                        |
+| route.delegate-flow.update-position.enable                                 | NO       | true                                             | A turn on/off Update Position route for delegated contract initiation flow.                        |
 | route.delegate-flow.update-position.timer                                  | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | route.position-listener.enable                                             | NO       | true                                             | Turn on/off Position Listener route.                                                               |
 | route.position-listener.timer                                              | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
@@ -150,7 +150,24 @@ Integration tests + skip Unit tests:
 | route.returns.timer                                                        | NO       | 5000                                             | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | route.returns.redelivery-policy.max-redeliveries                           | NO       | 2                                                | The maximum redeliveries for Apache camel exception handler                                        |
 | route.returns.redelivery-policy.delay-pattern                              | NO       | 1:2000;2:30000                                   | The delay pattern for Apache camel exception handler                                               |
+| route.unilateral-flow.recall-confirmation.enable                           | NO       | true                                             | A turn on/off Update Position route for delegated contract initiation flow.                        |
+| route.unilateral-flow.recall-confirmation.timer                            | NO       | 60000                                            | A scheduled timer for Apache camel to execute the route, in milliseconds.                          |
 | spire.base-endpoint                                                        | YES      |                                                  | The endpoint for Spire environment.                                                                |
+| spire.kafka.consumer.bootstrap-server                                      | YES      | localhost:29092                                  | A bootstrap server for the Kafka for consumer                                                      |
+| spire.kafka.consumer.listener.correction-instruction.enable                | YES      | true                                             | Enable Kafka listener for correction instruction                                                   |
+| spire.kafka.consumer.listener.correction-instruction.group-id              | YES      | it-ci                                            | Kafka group-id  for correction instruction                                                         |
+| spire.kafka.consumer.listener.correction-instruction.topic                 | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
+| spire.kafka.consumer.listener.decline-instruction.enable                   | YES      | true                                             | Enable Kafka listener for decline instruction                                                      |
+| spire.kafka.consumer.listener.decline-instruction.group-id                 | YES      | it-di                                            | Kafka group-id  for decline instruction                                                            |
+| spire.kafka.consumer.listener.decline-instruction.topic                    | YES      | declineInstruction                               | Kafka topic for decline instruction                                                                |
+| spire.kafka.consumer.listener.recall-instruction.enable                    | YES      | false                                            | Enable Kafka listener for recall instructions. Should be enabled only for the Lender participant.  |
+| spire.kafka.consumer.listener.recall-instruction.group-id                  | YES      | it-ri                                            | Kafka group-id  for recall instruction                                                             |
+| spire.kafka.consumer.listener.recall-instruction.topic                     | YES      | recallInstruction                                | Kafka topic for recall instruction                                                                 |
+| spire.kafka.consumer.listener.nack-instruction.enable                      | YES      | true                                             | Enable Kafka listener for negative acknowledge instruction                                         |
+| spire.kafka.consumer.listener.nack-instruction.group-id                    | YES      | it-ni                                            | Kafka group-id  for negative acknowledge instruction                                               |
+| spire.kafka.consumer.listener.nack-instruction.topic                       | YES      | nackInstruction                                  | Kafka topic for negative acknowledge instruction                                                   |
+| spire.kafka.consumer.password                                              | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
+| spire.kafka.consumer.username                                              | YES      | kafka-user                                       | A user for authorization for the Kafka consumer                                                    |
 | spire.kafka.producer.auth.key                                              | YES      | empty                                            | A key for authorization to the Kafka cluster.                                                      |
 | spire.kafka.producer.auth.secret                                           | YES      | empty                                            | A secret for authorization to the Kafka cluster.                                                   |
 | spire.kafka.producer.bootstrap-server                                      | YES      | localhost:9092                                   | A bootstrap server for the Kafka.                                                                  |
@@ -170,11 +187,6 @@ Integration tests + skip Unit tests:
 | spring.flyway.user                                                         | YES      | postgres                                         | Username for the db.                                                                               |
 | spring.jackson.date-format                                                 | NO       | yyyy-MM-dd'T'HH:mm:ss.SSSX                       | Date format setting.                                                                               |
 | starting-trade-event-datetime                                              | YES      | 2023-06-25T09:51:16.111Z                         | A date to retrieve to retrieve the events from.                                                    |
-| spire.kafka.consumer.bootstrap-server                                      | YES      | localhost:29092                                  | A bootstrap server for the Kafka for consumer                                                      |
-| spire.kafka.consumer.username                                              | YES      | kafka-user                                       | A user for authorization for the Kafka consumer                                                    |
-| spire.kafka.consumer.password                                              | YES      | kafka-password                                   | A password for authorization for the Kafka consumer                                                |
-| spire.kafka.consumer.listener.correction-instruction.group-id              | YES      | it-ci                                            | Kafka group-id  for correction instruction                                                         |
-| spire.kafka.consumer.listener.correction-instruction.topic                 | YES      | correctionInstruction                            | Kafka topic  for correction instruction                                                            |
 
 ### 4.1 System environments for the build
 
@@ -195,6 +207,8 @@ Integration tests + skip Unit tests:
 | route.rerate.timer                                            | RERATE_ROUTE_TIMER                                   |
 | route.returns.enable                                          | RETURN_ROUTE_ENABLE                                  |
 | route.returns.timer                                           | RETURN_ROUTE_TIMER                                   |
+| route.unilateral-flow.recall-confirmation.enable              | RC_UNILATERAL_FLOW_ENABLE                            |
+| route.unilateral-flow.recall-confirmation.timer               | RC_UNILATERAL_FLOW_TIMER                             |
 | onesource.auth.api.client-id                                  | 1SOURCE_AUTH_API_CLIENT_ID                           |
 | onesource.auth.api.realm                                      | 1SOURCE_AUTH_API_REALM                               |
 | onesource.auth.api.server-url                                 | 1SOURCE_AUTH_API_URL                                 |
@@ -208,6 +222,16 @@ Integration tests + skip Unit tests:
 | onesource.base-endpoint                                       | 1SOURCE_ENDPOINT                                     |
 | onesource.version                                             | 1SOURCE_VERSION                                      |
 | spire.base-endpoint                                           | SPIRE_BASE_ENDPOINT                                  |
+| spire.kafka.consumer.bootstrap-server                         | SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER                |
+| spire.kafka.consumer.listener.correction-instruction.group-id | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID |
+| spire.kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
+| spire.kafka.consumer.listener.decline-instruction.group-id    | SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_GROUP_ID    |
+| spire.kafka.consumer.listener.decline-instruction.topic       | SPIRE_KAFKA_CONSUMER_DECLINE_INSTRUCTION_TOPIC       |
+| spire.kafka.consumer.listener.recall-instruction.enable       | SPIRE_KAFKA_CONSUMER_RECALL_LISTENER_ENABLE          |
+| spire.kafka.consumer.listener.recall-instruction.group-id     | SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_GROUP_ID     |
+| spire.kafka.consumer.listener.recall-instruction.topic        | SPIRE_KAFKA_CONSUMER_RECALL_INSTRUCTION_TOPIC        |
+| spire.kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |
+| spire.kafka.consumer.username                                 | SPIRE_KAFKA_CONSUMER_USERNAME                        |
 | spire.kafka.producer.auth.key                                 | SPIRE_KAFKA_KEY                                      |
 | spire.kafka.producer.auth.secret                              | SPIRE_KAFKA_SECRET                                   |
 | spire.kafka.producer.bootstrap-server                         | SPIRE_KAFKA_BOOTSTRAP_SERVER                         |
@@ -224,11 +248,6 @@ Integration tests + skip Unit tests:
 | spring.flyway.url                                             | DB_URL                                               |
 | spring.flyway.user                                            | DB_USERNAME                                          |
 | starting-trade-event-datetime                                 | CAMEL_TIMESTAMP                                      |
-| spire.kafka.consumer.bootstrap-server                         | SPIRE_KAFKA_CONSUMER_BOOTSTRAP_SERVER                |
-| spire.kafka.consumer.username                                 | SPIRE_KAFKA_CONSUMER_USERNAME                        |
-| spire.kafka.consumer.password                                 | SPIRE_KAFKA_CONSUMER_PASSWORD                        |
-| spire.kafka.consumer.listener.correction-instruction.group-id | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_GROUP_ID |
-| spire.kafka.consumer.listener.correction-instruction.topic    | SPIRE_KAFKA_CONSUMER_CORRECTION_INSTRUCTION_TOPIC    |
 
 ## 5.1 Generated DTO based on swagger
 

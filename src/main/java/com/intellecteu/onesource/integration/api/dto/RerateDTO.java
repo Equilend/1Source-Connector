@@ -15,6 +15,7 @@ package com.intellecteu.onesource.integration.api.dto;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -23,7 +24,7 @@ import java.util.Objects;
  * RerateDTO
  */
 
-@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-03-22T08:22:20.593613900Z[Europe/London]")
+//@jakarta.annotation.Generated(value = "io.swagger.codegen.v3.generators.java.JavaClientCodegen", date = "2024-03-22T08:22:20.593613900Z[Europe/London]")
 
 public class RerateDTO {
 
@@ -78,14 +79,19 @@ public class RerateDTO {
      * Processing status of the rerate.
      */
     public enum ProcessingStatusEnum {
+        ACK_SUBMITTED("ACK_SUBMITTED"),
         APPROVED("APPROVED"),
         CANCELED("CANCELED"),
+        CLOSED("CLOSED"),
+        CONFIRMED_BORROWER("CONFIRMED_BORROWER"),
+        CONFIRMED_LENDER("CONFIRMED_LENDER"),
         CREATED("CREATED"),
         DECLINED("DECLINED"),
         DISCREPANCIES("DISCREPANCIES"),
         PROPOSED("PROPOSED"),
         MATCHED_CANCELED_POSITION("MATCHED_CANCELED_POSITION"),
         MATCHED_POSITION("MATCHED_POSITION"),
+        NACK_SUBMITTED("NACK_SUBMITTED"),
         NEW("NEW"),
         ONESOURCE_ISSUE("ONESOURCE_ISSUE"),
         PROCESSED("PROCESSED"),
@@ -102,6 +108,7 @@ public class RerateDTO {
         SPIRE_ISSUE("SPIRE_ISSUE"),
         SPIRE_POSITION_CANCELED("SPIRE_POSITION_CANCELED"),
         TO_CANCEL("TO_CANCEL"),
+        TO_CONFIRM("TO_CONFIRM"),
         TO_DECLINE("TO_DECLINE"),
         UPDATED("UPDATED"),
         VALIDATED("VALIDATED"),
@@ -149,7 +156,7 @@ public class RerateDTO {
     }
 
     @JsonProperty("processingStatus")
-    private ProcessingStatusEnum processingStatus = null;
+    private ProcessingStatus processingStatus = null;
 
     @JsonProperty("matchingSpireTradeId")
     private String matchingSpireTradeId = null;
@@ -223,7 +230,7 @@ public class RerateDTO {
         this.rerateStatus = rerateStatus;
     }
 
-    public RerateDTO processingStatus(ProcessingStatusEnum processingStatus) {
+    public RerateDTO processingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
         return this;
     }
@@ -234,11 +241,11 @@ public class RerateDTO {
      * @return processingStatus
      **/
     @Schema(required = true, description = "Processing status of the rerate.")
-    public ProcessingStatusEnum getProcessingStatus() {
+    public ProcessingStatus getProcessingStatus() {
         return processingStatus;
     }
 
-    public void setProcessingStatus(ProcessingStatusEnum processingStatus) {
+    public void setProcessingStatus(ProcessingStatus processingStatus) {
         this.processingStatus = processingStatus;
     }
 

@@ -1,12 +1,11 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
+import java.util.LinkedList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,8 +26,15 @@ public class Rate implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(rebate, REBATE, ONE_SOURCE_LOAN_CONTRACT);
-        rebate.validateForReconciliation();
+        var missedFields = new LinkedList<String>();
+        if (rebate == null) {
+            missedFields.add(REBATE);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(rebate));
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 
     public Double getRebateRate() {

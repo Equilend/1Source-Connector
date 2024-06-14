@@ -14,7 +14,6 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 /**
@@ -38,9 +37,6 @@ public class FloatingRateDefDTO {
 
   @JsonProperty("isAutoRerate")
   private Boolean isAutoRerate = null;
-
-  @JsonProperty("effectiveDateDelay")
-  private BigDecimal effectiveDateDelay = null;
 
   @JsonProperty("effectiveDate")
   private LocalDate effectiveDate = null;
@@ -138,24 +134,6 @@ public class FloatingRateDefDTO {
     this.isAutoRerate = isAutoRerate;
   }
 
-  public FloatingRateDefDTO effectiveDateDelay(BigDecimal effectiveDateDelay) {
-    this.effectiveDateDelay = effectiveDateDelay;
-    return this;
-  }
-
-   /**
-   * Get effectiveDateDelay
-   * @return effectiveDateDelay
-  **/
-  @Schema(description = "")
-  public BigDecimal getEffectiveDateDelay() {
-    return effectiveDateDelay;
-  }
-
-  public void setEffectiveDateDelay(BigDecimal effectiveDateDelay) {
-    this.effectiveDateDelay = effectiveDateDelay;
-  }
-
   public FloatingRateDefDTO effectiveDate(LocalDate effectiveDate) {
     this.effectiveDate = effectiveDate;
     return this;
@@ -207,14 +185,13 @@ public class FloatingRateDefDTO {
         Objects.equals(this.spread, floatingRateDef.spread) &&
         Objects.equals(this.effectiveRate, floatingRateDef.effectiveRate) &&
         Objects.equals(this.isAutoRerate, floatingRateDef.isAutoRerate) &&
-        Objects.equals(this.effectiveDateDelay, floatingRateDef.effectiveDateDelay) &&
         Objects.equals(this.effectiveDate, floatingRateDef.effectiveDate) &&
         Objects.equals(this.cutoffTime, floatingRateDef.cutoffTime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(benchmark, baseRate, spread, effectiveRate, isAutoRerate, effectiveDateDelay, effectiveDate, cutoffTime);
+    return Objects.hash(benchmark, baseRate, spread, effectiveRate, isAutoRerate, effectiveDate, cutoffTime);
   }
 
 
@@ -228,7 +205,6 @@ public class FloatingRateDefDTO {
     sb.append("    spread: ").append(toIndentedString(spread)).append("\n");
     sb.append("    effectiveRate: ").append(toIndentedString(effectiveRate)).append("\n");
     sb.append("    isAutoRerate: ").append(toIndentedString(isAutoRerate)).append("\n");
-    sb.append("    effectiveDateDelay: ").append(toIndentedString(effectiveDateDelay)).append("\n");
     sb.append("    effectiveDate: ").append(toIndentedString(effectiveDate)).append("\n");
     sb.append("    cutoffTime: ").append(toIndentedString(cutoffTime)).append("\n");
     sb.append("}");

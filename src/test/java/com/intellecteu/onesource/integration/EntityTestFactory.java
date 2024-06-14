@@ -25,11 +25,13 @@ import com.intellecteu.onesource.integration.model.backoffice.PositionStatus;
 import com.intellecteu.onesource.integration.model.backoffice.PositionType;
 import com.intellecteu.onesource.integration.model.enums.FieldExceptionType;
 import com.intellecteu.onesource.integration.model.enums.FieldSource;
+import com.intellecteu.onesource.integration.model.enums.RecallStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.FieldImpacted;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.RelatedObject;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.systemevent.cloudevent.CloudEventProcessingStatus;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.model.onesource.TermType;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.CollateralEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.ContractEntity;
 import com.intellecteu.onesource.integration.repository.entity.onesource.FeeRateEntity;
@@ -333,5 +335,21 @@ public class EntityTestFactory {
             .fieldValue("test-" + fieldSource.getValue())
             .fieldExceptionType(fieldExceptionType)
             .build();
+    }
+
+    public static RecallSpireEntity buildRecallEntity(Long recallId, Long relatedPositionId) {
+        RecallSpireEntity entity = new RecallSpireEntity();
+        entity.setRecallId(recallId);
+        entity.setRelatedPositionId(relatedPositionId);
+        entity.setMatching1SourceRecallId("matching1SourceRecallId");
+        entity.setRelatedContractId("testContractId");
+        entity.setStatus(RecallStatus.OPEN);
+        entity.setCreationDateTime(LocalDateTime.of(2024, 5, 16, 12, 22, 33));
+        entity.setLastUpdateDateTime(LocalDateTime.now());
+        entity.setOpenQuantity(123);
+        entity.setQuantity(456);
+        entity.setRecallDate(LocalDate.of(2024, 5, 16));
+        entity.setRecallDueDate(LocalDate.of(2025, 5, 16));
+        return entity;
     }
 }

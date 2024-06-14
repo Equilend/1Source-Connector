@@ -58,46 +58,50 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
 
         from("direct:updatePositionForRerateTrade")
             .routeId("RerateTradeTypeRoute")
+            .log(">>> Start RerateTradeTypeRoute subprocess.")
             .bean(updatePositionProcessor, "updatePositionForRerateTrade(${body}, ${headers.initialPositions})")
             .filter(body().isNotNull())
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, UPDATED)")
             .bean(updatePositionProcessor, "savePosition")
             .filter(simple("${body.matching1SourceLoanContractId} != null"))
-            .bean(updatePositionProcessor, "executeCancelRequest")
+            .setHeader("position", body())
+            .bean(updatePositionProcessor, "instructProposalCancel")
             .filter(body().isNotNull())
-            .bean(contractProcessor, "saveContract")
-            .log("Rerate trade type was updated");
+            .bean(updatePositionProcessor, "delinkContract(${header.position})")
+            .log("<<< Finished RerateTradeTypeRoute subprocess.");
 
         from("direct:updatePositionForRerateBorrowTrade")
             .routeId("RerateBorrowTradeTypeRoute")
+            .log(">>> Start RerateBorrowTradeTypeRoute subprocess.")
             .bean(updatePositionProcessor, "updatePositionForRerateTrade(${body}, ${headers.initialPositions})")
             .filter(body().isNotNull())
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, UPDATED)")
             .bean(updatePositionProcessor, "savePosition")
-            .log("Rerate Borrow trade type was updated");
+            .log("<<< Finished RerateBorrowTradeTypeRoute subprocess.");
 
         from("direct:updatePositionForRollTrade")
             .routeId("RollLoanTradeTypeRoute")
+            .log(">>> Start RollLoanTradeTypeRoute subprocess.")
             .bean(updatePositionProcessor, "updatePositionForRollTrade(${body}, ${headers.initialPositions})")
             .filter(body().isNotNull())
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, UPDATED)")
             .bean(updatePositionProcessor, "savePosition")
             .filter(simple("${body.matching1SourceLoanContractId} != null"))
-            .bean(updatePositionProcessor, "executeCancelRequest")
-            .filter(body().isNotNull())
-            .bean(contractProcessor, "saveContract")
-            .log("Roll Loan trade type was updated");
+            .bean(updatePositionProcessor, "instructProposalCancel")
+            .log("<<< Finished RollLoanTradeTypeRoute subprocess.");
 
         from("direct:updatePositionForRollBorrowTrade")
             .routeId("RollBorrowTradeTypeRoute")
+            .log(">>> Start RollBorrowTradeTypeRoute subprocess.")
             .bean(updatePositionProcessor, "updatePositionForRollTrade(${body}, ${headers.initialPositions})")
             .filter(body().isNotNull())
             .bean(updatePositionProcessor, "updatePositionProcessingStatus(${body}, UPDATED)")
             .bean(updatePositionProcessor, "savePosition")
-            .log("Roll Loan trade type was updated");
+            .log("<<< Finished RollBorrowTradeTypeRoute subprocess.");
 
         from("direct:updatePositionForCancelLoanTrade")
             .routeId("CancelLoanTradeTypeRoute")
+            .log(">>> Start CancelLoanTradeTypeRoute subprocess.")
             .setBody(simple("${body.position}"))
             .bean(updatePositionProcessor, "getPositionToUpdateById(${body.positionId}, ${headers.initialPositions})")
             .filter(body().isNotNull())
@@ -106,10 +110,11 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
             .bean(updatePositionProcessor, "savePosition")
             .filter(simple("${body.matching1SourceLoanContractId} != null"))
             .bean(updatePositionProcessor, "cancelContractForCancelLoanTrade")
-            .log("Cancel Loan trade type was updated");
+            .log("<<< Finished CancelLoanTradeTypeRoute subprocess.");
 
         from("direct:updatePositionForCancelBorrowTrade")
             .routeId("CancelBorrowTradeTypeRoute")
+            .log(">>> Start CancelBorrowTradeTypeRoute subprocess.")
             .setBody(simple("${body.position}"))
             .bean(updatePositionProcessor,
                 "getPositionToUpdateById(${body.positionId}, ${headers.initialPositions})")
@@ -120,7 +125,7 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
             .bean(updatePositionProcessor, "recordPositionCanceledSystemEvent")
             .bean(updatePositionProcessor, "updateLoanContract")
             .bean(updatePositionProcessor, "recordPositionUnmatchedSystemEvent")
-            .log("Cancel Borrow trade type was updated");
+            .log("<<< Finished CancelBorrowTradeTypeRoute subprocess.");
     }
 
     private String createPositionSQLEndpoint(String... positionStatuses) {

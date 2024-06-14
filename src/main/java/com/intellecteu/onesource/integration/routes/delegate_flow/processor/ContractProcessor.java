@@ -8,6 +8,7 @@ import static com.intellecteu.onesource.integration.model.enums.IntegrationProce
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.APPROVE_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CAPTURE_POSITION_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.DECLINE_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_FIGI_CODE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_PROPOSAL;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_LOAN_CONTRACT_SETTLED;
@@ -17,6 +18,8 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MULTIPLE_FIGI;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.NO_FIGI;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROCESSED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SETTLED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.UNMATCHED;
@@ -31,13 +34,15 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_PENDING_APPROVAL;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.MULTIPLE_FIGI_CODES;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.NO_FIGI_CODE_RETRIEVED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.POSITION_CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.CANCELED;
 import static com.intellecteu.onesource.integration.model.onesource.ContractStatus.OPEN;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
-import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseContractIdFrom1SourceResourceUri;
+import static com.intellecteu.onesource.integration.utils.IntegrationUtils.parseIdFrom1SourceResourceUri;
 import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
@@ -45,6 +50,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
+import com.intellecteu.onesource.integration.exception.FigiRetrievementException;
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.enums.IntegrationProcess;
@@ -103,7 +109,7 @@ public class ContractProcessor {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
         try {
-            String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+            String contractId = parseIdFrom1SourceResourceUri(resourceUri);
             return oneSourceService.retrieveContractDetails(contractId);
         } catch (HttpStatusCodeException e) {
             log.debug("Contract {} was not retrieved. Details: {} ", resourceUri, e.getMessage());
@@ -136,6 +142,7 @@ public class ContractProcessor {
             positionService.getByPositionIdAndRole(contract.getMatchingSpirePositionId(), PartyRole.BORROWER)
                 .ifPresent(position -> {
                     position.setMatching1SourceLoanContractId(null);
+                    position.setProcessingStatus(UNMATCHED);
                     positionService.savePosition(position);
                     String record = contract.getContractId();
                     String related = String.format("%d,%d", position.getPositionId(), position.getTradeId());
@@ -148,7 +155,7 @@ public class ContractProcessor {
     public Contract retrieveContractFromEvent(@NonNull TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
-        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        String contractId = parseIdFrom1SourceResourceUri(resourceUri);
         return contractService.findContractById(contractId).orElse(null);
     }
 
@@ -185,7 +192,7 @@ public class ContractProcessor {
     public void updateSettledContract(TradeEvent event) {
         // expected format for resourceUri: /v1/ledger/contracts/93f834ff-66b5-4195-892b-8f316ed77006
         String resourceUri = event.getResourceUri();
-        String contractId = parseContractIdFrom1SourceResourceUri(resourceUri);
+        String contractId = parseIdFrom1SourceResourceUri(resourceUri);
         final Optional<Contract> contractOptional = contractService.findContractById(contractId);
         contractOptional.ifPresentOrElse(
             this::updateAndRecordSystemEvent,
@@ -210,7 +217,7 @@ public class ContractProcessor {
     }
 
     public Contract declineCapturedContract(TradeEvent event) {
-        String contractId = parseContractIdFrom1SourceResourceUri(event.getResourceUri());
+        String contractId = parseIdFrom1SourceResourceUri(event.getResourceUri());
         return contractService.findContractById(contractId)
             .map(this::declineContract)
             .orElse(null);
@@ -229,6 +236,7 @@ public class ContractProcessor {
         positionService.getByPositionId(positionId)
             .ifPresent(position -> {
                 position.setMatching1SourceLoanContractId(null);
+                position.setProcessingStatus(UNMATCHED);
                 positionService.savePosition(position);
             });
     }
@@ -261,19 +269,20 @@ public class ContractProcessor {
 
     public void matchBorrowerPosition(@NonNull Contract contract) {
         final Set<Position> notMatchedPositions = positionService.getNotMatched();
-//        if (isNgtTradeContract(contract)) { todo waiting for story update if we still need this logic
-//            matchNgtTradeContractForBorrower(contract, notMatchedPositions);
-//        } else {
-        matchContractForBorrower(contract, notMatchedPositions);
-//        }
+        if (isNgtTradeContract(contract)) {
+            matchNgtTradeContractForBorrower(contract, notMatchedPositions);
+        } else {
+            matchContractForBorrower(contract, notMatchedPositions);
+        }
     }
 
     private void matchNgtTradeContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
-//        String positionCustomValue2 = contract.getTrade().getVenue().getVenueRefKey();
-//        notMatchedPositions.stream()
-//            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
-//            .findAny()
-//            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
+        String positionCustomValue2 = contract.getTrade().getVenues().get(0)
+            .getVenueRefKey(); // todo waiting for the information how to iterate through venues
+        notMatchedPositions.stream()
+            .filter(position -> positionCustomValue2.equals(position.getCustomValue2()))
+            .findAny()
+            .ifPresent(position -> updateAndRecordMatchedSystemEventForBorrower(contract, position));
     }
 
     private void matchContractForBorrower(Contract contract, Set<Position> notMatchedPositions) {
@@ -305,6 +314,7 @@ public class ContractProcessor {
     private Position updateMatchedContractAndPosition(Contract contract, Position position) {
         saveContractAsMatched(contract, position);
         position.setMatching1SourceLoanContractId(contract.getContractId());
+        position.setProcessingStatus(MATCHED);
         return positionService.savePosition(position);
     }
 
@@ -434,7 +444,24 @@ public class ContractProcessor {
     }
 
     public ContractProposal createProposalFromPosition(@NonNull Position position) {
-        return dataTransformer.toLenderContractProposal(position);
+        try {
+            return dataTransformer.toLenderContractProposal(position);
+        } catch (FigiRetrievementException e) {
+            if (e.isFigiRetrieved()) {
+                log.debug("Multiple figi codes retrieved for position:{}", position.getPositionId());
+                position.setProcessingStatus(MULTIPLE_FIGI);
+                positionService.savePosition(position);
+                createBusinessEvent(String.valueOf(position.getPositionId()), MULTIPLE_FIGI_CODES, "",
+                    GET_FIGI_CODE, CONTRACT_INITIATION);
+            } else {
+                log.debug("No figi code retrieved for position:{}", position.getPositionId());
+                position.setProcessingStatus(NO_FIGI);
+                positionService.savePosition(position);
+                createBusinessEvent(String.valueOf(position.getPositionId()), NO_FIGI_CODE_RETRIEVED, "",
+                    GET_FIGI_CODE, CONTRACT_INITIATION);
+            }
+            return null;
+        }
     }
 
     public Contract saveContract(@NonNull Contract contract) {

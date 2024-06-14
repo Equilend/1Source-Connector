@@ -1,13 +1,18 @@
 package com.intellecteu.onesource.integration.mapper;
 
-import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.kafka.dto.RecallInstructionDTO;
 import com.intellecteu.onesource.integration.model.backoffice.Account;
+import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.PositionInstruction;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpire;
+import com.intellecteu.onesource.integration.model.backoffice.RecallSpireInstruction;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
 import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireEntity;
+import com.intellecteu.onesource.integration.repository.entity.backoffice.RecallSpireInstructionEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.RerateTradeEntity;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.ReturnTradeEntity;
 import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
@@ -30,10 +35,10 @@ public abstract class BackOfficeMapper {
     @Mapping(target = "index", source = "tradeOutDTO.positionOutDTO.indexDTO")
     @Mapping(target = "status", source = "tradeOutDTO.statusDTO.status")
     @Mapping(target = "statusId", source = "tradeOutDTO.statusDTO.statusId")
-    @Mapping(target = "account", source ="tradeOutDTO.accountDTO")
-    @Mapping(target = "counterParty", source ="tradeOutDTO.counterPartyDTO")
-    @Mapping(target = "depoId", source ="tradeOutDTO.depositoryDTO.depoId")
-    @Mapping(target = "depoKy",  source ="tradeOutDTO.depositoryDTO.depoKy")
+    @Mapping(target = "account", source = "tradeOutDTO.accountDTO")
+    @Mapping(target = "counterParty", source = "tradeOutDTO.counterPartyDTO")
+    @Mapping(target = "depoId", source = "tradeOutDTO.depositoryDTO.depoId")
+    @Mapping(target = "depoKy", source = "tradeOutDTO.depositoryDTO.depoKy")
     public abstract TradeOut toModel(TradeOutDTO tradeOutDTO);
 
     @Mapping(target = "positionSecurityDetail", source = "securityDetailDTO")
@@ -93,5 +98,19 @@ public abstract class BackOfficeMapper {
     public abstract ReturnTrade toModel(ReturnTradeEntity returnTradeEntity);
 
     public abstract ReturnTradeEntity toEntity(ReturnTrade returnTrade);
+
+    @Mapping(target = "lastUpdateDateTime", ignore = true)
+    public abstract RecallSpireEntity toEntity(RecallSpire recallSpire);
+
+    public abstract RecallSpire toModel(RecallSpireEntity recallSpireEntity);
+
+    @Mapping(target = "recallId", source = "spireRecallId")
+    public abstract RecallSpire toModel(RecallInstructionDTO recallInstructionDTO);
+
+    public abstract RecallSpireInstructionEntity toEntity(RecallInstructionDTO recallInstruction);
+
+    public abstract RecallSpireInstructionEntity toEntity(RecallSpireInstruction recallInstruction);
+
+    public abstract RecallSpireInstruction toModel(RecallSpireInstructionEntity recallInstruction);
 
 }
