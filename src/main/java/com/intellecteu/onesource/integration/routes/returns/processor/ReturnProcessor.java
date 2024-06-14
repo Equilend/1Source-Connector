@@ -33,6 +33,7 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.RETUR
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_CANCELED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_TRADE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_UNMATCHED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RETURN_VALIDATED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_SPIRE;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
@@ -106,8 +107,10 @@ public class ReturnProcessor {
         this.nackInstructionService = nackInstructionService;
         this.rerateTradeService = rerateTradeService;
         this.cloudEventRecordService = cloudEventRecordService;
-        this.returnCloudEventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN);
-        this.returnCancellationCloudEventBuilder = (ReturnCancellationCloudEventBuilder) cloudEventRecordService.getFactory().eventBuilder(RETURN_CANCELLATION);
+        this.returnCloudEventBuilder = (ReturnCloudEventBuilder) cloudEventRecordService.getFactory()
+            .eventBuilder(RETURN);
+        this.returnCancellationCloudEventBuilder = (ReturnCancellationCloudEventBuilder) cloudEventRecordService.getFactory()
+            .eventBuilder(RETURN_CANCELLATION);
     }
 
     public ReturnTrade saveReturnTrade(ReturnTrade returnTrade) {
@@ -240,6 +243,13 @@ public class ReturnProcessor {
         try {
             returnReconcileService.reconcile(oneSourceReturn, returnTrade);
             oneSourceReturn.setProcessingStatus(VALIDATED);
+            recordCloudEvent(VALIDATE_RETURN, RETURN_VALIDATED,
+                new ReturnCloudEventBuilder.DataBuilder()
+                    .putReturnId(oneSourceReturn.getReturnId())
+                    .putTradeId(oneSourceReturn.getMatchingSpireTradeId())
+                    .putPositionId(oneSourceReturn.getRelatedSpirePositionId())
+                    .putContractId(oneSourceReturn.getContractId())
+                    .getData(), List.of());
         } catch (ReconcileException e) {
             log.error("Reconciliation fails with message: {} ", e.getMessage());
             e.getErrorList().forEach(msg -> log.debug(msg.getFieldValue()));
@@ -394,7 +404,7 @@ public class ReturnProcessor {
         Optional<Long> lastTradeId = returnTradeService.getMaxTradeId();
         if (!returnTrades.isEmpty()) {
             try {
-                 List<CancelReturnTrade> cancelReturnTrades = backOfficeService.retrieveCancelledReturnTrades(
+                List<CancelReturnTrade> cancelReturnTrades = backOfficeService.retrieveCancelledReturnTrades(
                     lastTradeId, returnTrades.stream().map(ReturnTrade::getTradeId).toList());
                 List<ReturnTrade> updatedReturnTrades = new ArrayList<>();
                 for (CancelReturnTrade cancelReturnTrade : cancelReturnTrades) {
@@ -422,7 +432,8 @@ public class ReturnProcessor {
                 return updatedReturnTrades;
             } catch (HttpStatusCodeException exception) {
                 recordReturnCancellationCloudEvent(CAPTURE_RETURN_TRADE_CANCELLATION, TECHNICAL_EXCEPTION_SPIRE,
-                    new ReturnCancellationCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText()).getData(),
+                    new ReturnCancellationCloudEventBuilder.DataBuilder().putHttpStatusText(exception.getStatusText())
+                        .getData(),
                     List.of());
             }
         }
@@ -470,7 +481,8 @@ public class ReturnProcessor {
 
     private void recordReturnCancellationCloudEvent(IntegrationSubProcess subProcess, RecordType recordType,
         Map<String, String> data, List<FieldImpacted> fieldImpacteds) {
-        var recordRequest = returnCancellationCloudEventBuilder.buildRequest(subProcess, recordType, data, fieldImpacteds);
+        var recordRequest = returnCancellationCloudEventBuilder.buildRequest(subProcess, recordType, data,
+            fieldImpacteds);
         cloudEventRecordService.record(recordRequest);
     }
 

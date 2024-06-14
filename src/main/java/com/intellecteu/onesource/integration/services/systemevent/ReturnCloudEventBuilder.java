@@ -25,6 +25,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_PENDING_ACKNOWLEDGEMENT_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_POSITIVELY_ACKNOWLEDGED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_UNMATCHED_MSG;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.DataMsg.RETURN_VALIDATED_MSG;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.ACKNOWLEDGE_RETURN_NEGATIVELY_NOT_AUTHORIZED_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.ACKNOWLEDGE_RETURN_NEGATIVELY_TE_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.ACKNOWLEDGE_RETURN_NEGATIVELY_TI_SBJ;
@@ -46,6 +47,7 @@ import static com.intellecteu.onesource.integration.constant.RecordMessageConsta
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_PENDING_ACKNOWLEDGEMENT_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_POSITIVELY_ACKNOWLEDGED_SBJ;
 import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_UNMATCHED_SBJ;
+import static com.intellecteu.onesource.integration.constant.RecordMessageConstant.Return.Subject.RETURN_VALIDATED_SBJ;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RETURN_CANCELLATION;
@@ -182,6 +184,7 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
                 return switch (recordType) {
                     case RETURN_DISCREPANCIES ->
                         createReturnDiscrepanciesCR(subProcess, recordType, data, fieldImpacteds);
+                    case RETURN_VALIDATED -> createReturnValidatedCR(subProcess, recordType, data);
                     default -> null;
                 };
             }
@@ -304,6 +307,22 @@ public class ReturnCloudEventBuilder extends IntegrationCloudEventBuilder {
             RERATE,
             subProcess,
             createEventData(dataMessage, List.of(new RelatedObject(data.get(RESOURCE_URI), SPIRE_TRADE)))
+        );
+    }
+
+    private CloudEventBuildRequest createReturnValidatedCR(IntegrationSubProcess subProcess,
+        RecordType recordType, Map<String, String> data) {
+        String dataMessage = format(RETURN_VALIDATED_MSG, data.get(RETURN_ID), data.get(TRADE_ID));
+        return createRecordRequest(
+            recordType,
+            format(RETURN_VALIDATED_SBJ, data.get(TRADE_ID)),
+            RETURN,
+            subProcess,
+            createEventData(dataMessage, List.of(
+                new RelatedObject(data.get(RETURN_ID), ONESOURCE_RETURN),
+                new RelatedObject(data.get(POSITION_ID), POSITION),
+                new RelatedObject(data.get(TRADE_ID), SPIRE_TRADE),
+                new RelatedObject(data.get(CONTRACT_ID), ONESOURCE_LOAN_CONTRACT)))
         );
     }
 

@@ -478,6 +478,7 @@ public class RecordMessageConstant {
             public static final String RETURN_PENDING_ACKNOWLEDGEMENT_SBJ = "Trade - %s";
             public static final String RETURN_POSITIVELY_ACKNOWLEDGED_SBJ = "Trade - %s";
             public static final String RETURN_NEGATIVELY_ACKNOWLEDGED_SBJ = "Trade - %s";
+            public static final String RETURN_VALIDATED_SBJ = "Trade - %s";
             public static final String RECONCILE_RETURN_DISCREPANCIES_SBJ = "Trade - %s";
         }
 
@@ -506,6 +507,7 @@ public class RecordMessageConstant {
             public static final String RETURN_PENDING_ACKNOWLEDGEMENT_MSG = "The return %s has been captured and matched with the return trade %s. It needs know to be acknowledged by the counterparty";
             public static final String RETURN_POSITIVELY_ACKNOWLEDGED_MSG = "The return %s matching with the return trade %s has been positively acknowledged by the counterparty";
             public static final String RETURN_NEGATIVELY_ACKNOWLEDGED_MSG = "The return %s matching with the return trade %s has been negatively acknowledged by the counterparty for the following reason: %s.";
+            public static final String RETURN_VALIDATED_MSG = "The return %s has been reconciled with the return trade %s and needs now to be acknowledged";
             public static final String RECONCILE_RETURN_DISCREPANCIES_MSG = "The return %s has been found in discrepancy with the return trade %s and needs now to be investigated for resolution.";
         }
     }
