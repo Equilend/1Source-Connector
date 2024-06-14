@@ -8,6 +8,7 @@ import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.onesource.PartyRole;
 import com.intellecteu.onesource.integration.repository.PositionRepository;
 import com.intellecteu.onesource.integration.repository.entity.backoffice.PositionEntity;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
@@ -106,8 +107,8 @@ public class PositionService {
     }
 
     /**
-     * Return the latest trade id for the persisted positions.
-     * If the list of persisted positions is empty, "0" will be returned.
+     * Return the latest trade id for the persisted positions. If the list of persisted positions is empty, "0" will be
+     * returned.
      *
      * @return String last trade id of persisted positions or "0"
      */
@@ -125,5 +126,13 @@ public class PositionService {
     public List<Position> getAllByPositionStatus(String status) {
         return positionRepository.findAllByPositionStatus(status).stream()
             .map(backOfficeMapper::toModel).toList();
+    }
+
+    @Transactional
+    public Position delinkContract(@NotNull Position position) {
+        log.debug("Delink positionId:{} from a contractId:{}!", position.getPositionId(),
+            position.getMatching1SourceLoanContractId());
+        position.setMatching1SourceLoanContractId(null);
+        return savePosition(position);
     }
 }

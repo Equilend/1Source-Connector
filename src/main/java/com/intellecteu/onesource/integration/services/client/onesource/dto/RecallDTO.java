@@ -204,7 +204,7 @@ public class RecallDTO {
    * Get lastUpdateDatetime
    * @return lastUpdateDatetime
   **/
-  @Schema(required = true, description = "")
+  @Schema(description = "")
   public LocalDateTime getLastUpdateDatetime() {
     return lastUpdateDatetime;
   }

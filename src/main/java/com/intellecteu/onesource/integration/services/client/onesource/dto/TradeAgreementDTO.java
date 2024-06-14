@@ -35,6 +35,9 @@ public class TradeAgreementDTO {
   @JsonProperty("quantity")
   private Integer quantity = null;
 
+  @JsonProperty("openQuantity")
+  private Integer openQuantity = null;
+
   @JsonProperty("billingCurrency")
   private CurrencyCdDTO billingCurrency = null;
 
@@ -132,6 +135,24 @@ public class TradeAgreementDTO {
 
   public void setQuantity(Integer quantity) {
     this.quantity = quantity;
+  }
+
+  public TradeAgreementDTO openQuantity(Integer openQuantity) {
+    this.openQuantity = openQuantity;
+    return this;
+  }
+
+   /**
+   * Get openQuantity
+   * @return openQuantity
+  **/
+  @Schema(description = "")
+  public Integer getOpenQuantity() {
+    return openQuantity;
+  }
+
+  public void setOpenQuantity(Integer openQuantity) {
+    this.openQuantity = openQuantity;
   }
 
   public TradeAgreementDTO billingCurrency(CurrencyCdDTO billingCurrency) {
@@ -310,6 +331,7 @@ public class TradeAgreementDTO {
         Objects.equals(this.instrument, tradeAgreement.instrument) &&
         Objects.equals(this.rate, tradeAgreement.rate) &&
         Objects.equals(this.quantity, tradeAgreement.quantity) &&
+        Objects.equals(this.openQuantity, tradeAgreement.openQuantity) &&
         Objects.equals(this.billingCurrency, tradeAgreement.billingCurrency) &&
         Objects.equals(this.dividendRatePct, tradeAgreement.dividendRatePct) &&
         Objects.equals(this.tradeDate, tradeAgreement.tradeDate) &&
@@ -323,7 +345,7 @@ public class TradeAgreementDTO {
 
   @Override
   public int hashCode() {
-    return Objects.hash(venues, instrument, rate, quantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
+    return Objects.hash(venues, instrument, rate, quantity, openQuantity, billingCurrency, dividendRatePct, tradeDate, termType, termDate, settlementDate, settlementType, collateral, transactingParties);
   }
 
 
@@ -336,6 +358,7 @@ public class TradeAgreementDTO {
     sb.append("    instrument: ").append(toIndentedString(instrument)).append("\n");
     sb.append("    rate: ").append(toIndentedString(rate)).append("\n");
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+    sb.append("    openQuantity: ").append(toIndentedString(openQuantity)).append("\n");
     sb.append("    billingCurrency: ").append(toIndentedString(billingCurrency)).append("\n");
     sb.append("    dividendRatePct: ").append(toIndentedString(dividendRatePct)).append("\n");
     sb.append("    tradeDate: ").append(toIndentedString(tradeDate)).append("\n");

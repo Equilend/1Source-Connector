@@ -1,9 +1,30 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.RERATE;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.*;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.*;
-import static com.intellecteu.onesource.integration.model.enums.RecordType.*;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_RERATE_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_CANCEL_PENDING;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.PROCESS_RERATE_PROPOSAL_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPLIED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.MATCHED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_APPLIED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_CANCEL_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_APPROVED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_CANCELED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.RERATE_PROPOSAL_DECLINED;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_EXCEPTION_1SOURCE;
+import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHNICAL_ISSUE_INTEGRATION_TOOLKIT;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.CONTRACT_ID;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.HTTP_STATUS_TEXT;
 import static com.intellecteu.onesource.integration.services.systemevent.RerateCloudEventBuilder.POSITION_ID;
@@ -93,7 +114,7 @@ public class RerateEventProcessor {
         try {
             String rerateId = getRerateId(resourceUri);
             Rerate rerate = rerateService.getByRerateId(rerateId);
-            if(!APPLIED.equals(rerate.getProcessingStatus())) {
+            if (!APPLIED.equals(rerate.getProcessingStatus())) {
                 rerate.setLastUpdateDatetime(LocalDateTime.now());
                 rerate.setRerateStatus(RerateStatus.PENDING);
                 rerate.setProcessingStatus(APPROVED);
@@ -121,14 +142,16 @@ public class RerateEventProcessor {
         String resourceUri = event.getResourceUri();
         try {
             String contractId = getContractId(resourceUri);
-            Rerate rerate = rerateService.findRerateByContractIdAndProcessingStatuses(contractId, List.of(APPROVED, VALIDATED, MATCHED, APPROVAL_SUBMITTED));
+            Rerate rerate = rerateService.findRerateByContractIdAndProcessingStatuses(contractId,
+                List.of(APPROVED, VALIDATED, MATCHED, APPROVAL_SUBMITTED));
             rerate.setLastUpdateDatetime(LocalDateTime.now());
             rerate.setRerateStatus(RerateStatus.APPLIED);
             rerate.setProcessingStatus(APPLIED);
             rerateService.saveRerate(rerate);
             recordRerateAppliedCloudEvent(rerate);
         } catch (EntityNotFoundException e) {
-            log.debug("Rerate Entity with contract id {} was not found. Details: {} ", getContractId(resourceUri), e.getMessage());
+            log.debug("Rerate Entity with contract id {} was not found. Details: {} ", getContractId(resourceUri),
+                e.getMessage());
             recordRerateEntityNotFoundTechnicalException(PROCESS_RERATE_APPLIED,
                 TECHNICAL_ISSUE_INTEGRATION_TOOLKIT, resourceUri);
         }
@@ -173,7 +196,7 @@ public class RerateEventProcessor {
                     rerateTradeService.save(rerateTrade);
                 }
                 recordRerateProposalCanceledCloudEvent(rerate);
-            }else{
+            } else {
                 recordRerateCanceledCloudEvent(rerate);
             }
             rerate.setLastUpdateDatetime(LocalDateTime.now());
@@ -293,7 +316,8 @@ public class RerateEventProcessor {
         data.put(RERATE_ID, rerate.getRerateId());
         data.put(POSITION_ID, toStringNullSafe(rerate.getRelatedSpirePositionId()));
         data.put(CONTRACT_ID, rerate.getContractId());
-        var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_CANCEL_PENDING, RERATE_CANCEL_PENDING_CONFIRMATION, data,
+        var recordRequest = eventBuilder.buildRequest(PROCESS_RERATE_CANCEL_PENDING, RERATE_CANCEL_PENDING_CONFIRMATION,
+            data,
             List.of());
         cloudEventRecordService.record(recordRequest);
     }

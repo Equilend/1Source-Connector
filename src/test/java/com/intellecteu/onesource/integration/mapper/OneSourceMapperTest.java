@@ -138,7 +138,7 @@ class OneSourceMapperTest {
 
         assertNotNull(venueParty);
         assertEquals(venueParty.getPartyRole().name(), venuePartyDTO.getPartyRole().name());
-        assertEquals(venueParty.getVenueId(), venuePartyDTO.getVenuePartyRefKey());
+        assertEquals(venueParty.getVenuePartyRefKey(), venuePartyDTO.getVenuePartyRefKey());
     }
 
     @Test

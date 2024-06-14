@@ -2,13 +2,12 @@ package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE_FLOATING_BENCHMARK;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE_FLOATING_EFFECTIVE_RATE;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,7 +34,15 @@ public class FloatingRate implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(benchmark, REBATE_FLOATING_BENCHMARK, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(effectiveRate, REBATE_FLOATING_EFFECTIVE_RATE, ONE_SOURCE_LOAN_CONTRACT);
+        var missedFields = new LinkedList<String>();
+        if (benchmark == null) {
+            missedFields.add(REBATE_FLOATING_BENCHMARK);
+        }
+        if (effectiveRate == null) {
+            missedFields.add(REBATE_FLOATING_EFFECTIVE_RATE);
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 }

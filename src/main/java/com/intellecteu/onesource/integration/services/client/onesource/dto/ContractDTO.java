@@ -37,8 +37,8 @@ public class ContractDTO {
   @JsonProperty("lastUpdatePartyId")
   private String lastUpdatePartyId = null;
 
-  @JsonProperty("lastUpdateDatetime")
-  private LocalDateTime lastUpdateDatetime = null;
+  @JsonProperty("lastUpdateDateTime")
+  private LocalDateTime lastUpdateDateTime = null;
 
   @JsonProperty("isInitiator")
   private Boolean isInitiator = null;
@@ -49,8 +49,8 @@ public class ContractDTO {
   @JsonProperty("settlement")
   private List<PartySettlementInstructionDTO> settlement = null;
 
-  @JsonProperty("splitContractId")
-  private String splitContractId = null;
+  @JsonProperty("parentContractId")
+  private String parentContractId = null;
 
   public ContractDTO contractId(String contractId) {
     this.contractId = contractId;
@@ -124,22 +124,22 @@ public class ContractDTO {
     this.lastUpdatePartyId = lastUpdatePartyId;
   }
 
-  public ContractDTO lastUpdateDatetime(LocalDateTime lastUpdateDatetime) {
-    this.lastUpdateDatetime = lastUpdateDatetime;
+  public ContractDTO lastUpdateDateTime(LocalDateTime lastUpdateDateTime) {
+    this.lastUpdateDateTime = lastUpdateDateTime;
     return this;
   }
 
    /**
-   * Get lastUpdateDatetime
-   * @return lastUpdateDatetime
+   * Get lastUpdateDateTime
+   * @return lastUpdateDateTime
   **/
-  @Schema(required = true, description = "")
-  public LocalDateTime getLastUpdateDatetime() {
-    return lastUpdateDatetime;
+  @Schema(description = "")
+  public LocalDateTime getLastUpdateDateTime() {
+    return lastUpdateDateTime;
   }
 
-  public void setLastUpdateDatetime(LocalDateTime lastUpdateDatetime) {
-    this.lastUpdateDatetime = lastUpdateDatetime;
+  public void setLastUpdateDateTime(LocalDateTime lastUpdateDateTime) {
+    this.lastUpdateDateTime = lastUpdateDateTime;
   }
 
   public ContractDTO isInitiator(Boolean isInitiator) {
@@ -204,22 +204,22 @@ public class ContractDTO {
     this.settlement = settlement;
   }
 
-  public ContractDTO splitContractId(String splitContractId) {
-    this.splitContractId = splitContractId;
+  public ContractDTO parentContractId(String parentContractId) {
+    this.parentContractId = parentContractId;
     return this;
   }
 
    /**
-   * Get splitContractId
-   * @return splitContractId
+   * Get parentContractId
+   * @return parentContractId
   **/
   @Schema(description = "")
-  public String getSplitContractId() {
-    return splitContractId;
+  public String getParentContractId() {
+    return parentContractId;
   }
 
-  public void setSplitContractId(String splitContractId) {
-    this.splitContractId = splitContractId;
+  public void setParentContractId(String parentContractId) {
+    this.parentContractId = parentContractId;
   }
 
 
@@ -236,16 +236,16 @@ public class ContractDTO {
         Objects.equals(this.lastEvent, contract.lastEvent) &&
         Objects.equals(this.contractStatus, contract.contractStatus) &&
         Objects.equals(this.lastUpdatePartyId, contract.lastUpdatePartyId) &&
-        Objects.equals(this.lastUpdateDatetime, contract.lastUpdateDatetime) &&
+        Objects.equals(this.lastUpdateDateTime, contract.lastUpdateDateTime) &&
         Objects.equals(this.isInitiator, contract.isInitiator) &&
         Objects.equals(this.trade, contract.trade) &&
         Objects.equals(this.settlement, contract.settlement) &&
-        Objects.equals(this.splitContractId, contract.splitContractId);
+        Objects.equals(this.parentContractId, contract.parentContractId);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(contractId, lastEvent, contractStatus, lastUpdatePartyId, lastUpdateDatetime, isInitiator, trade, settlement, splitContractId);
+    return Objects.hash(contractId, lastEvent, contractStatus, lastUpdatePartyId, lastUpdateDateTime, isInitiator, trade, settlement, parentContractId);
   }
 
 
@@ -258,11 +258,11 @@ public class ContractDTO {
     sb.append("    lastEvent: ").append(toIndentedString(lastEvent)).append("\n");
     sb.append("    contractStatus: ").append(toIndentedString(contractStatus)).append("\n");
     sb.append("    lastUpdatePartyId: ").append(toIndentedString(lastUpdatePartyId)).append("\n");
-    sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
+    sb.append("    lastUpdateDateTime: ").append(toIndentedString(lastUpdateDateTime)).append("\n");
     sb.append("    isInitiator: ").append(toIndentedString(isInitiator)).append("\n");
     sb.append("    trade: ").append(toIndentedString(trade)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
-    sb.append("    splitContractId: ").append(toIndentedString(splitContractId)).append("\n");
+    sb.append("    parentContractId: ").append(toIndentedString(parentContractId)).append("\n");
     sb.append("}");
     return sb.toString();
   }

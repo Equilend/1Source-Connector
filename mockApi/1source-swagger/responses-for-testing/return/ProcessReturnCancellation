@@ -1,0 +1,7 @@
+1. Insert to the return table values:
+INSERT INTO return (return_id,matching_spire_trade_id, related_spire_position_id, contract_id)
+VALUES ('87711', 84, 74, '7654-3210-2345-7890');
+
+2. Insert to the trade_event table the event:
+INSERT INTO trade_event (event_id, event_type, event_datetime, resource_uri, processing_status)
+VALUES ('99', 'RETURN_CANCELED', now(), '/ledger/contracts/7654-3210-2345-7890/returns/87711', 'CREATED');

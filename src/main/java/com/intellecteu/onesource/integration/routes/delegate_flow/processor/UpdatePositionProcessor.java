@@ -1,6 +1,8 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.CANCEL_LOAN_CONTRACT_PROPOSAL;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.PROPOSED;
 import static com.intellecteu.onesource.integration.model.enums.RecordType.LOAN_CONTRACT_PROPOSAL_UNMATCHED;
@@ -19,12 +21,16 @@ import com.intellecteu.onesource.integration.services.ContractService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.PositionService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
 
 @Service
 @Slf4j
@@ -59,9 +65,8 @@ public class UpdatePositionProcessor {
         return initialPosition;
     }
 
-    private static void updateFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
-        Position updateRequestPosition = tradeUpdateRequest.getPosition();
-        final Index indexUpdateRequest = updateRequestPosition.getIndex();
+    private void updateFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
+        final Index indexUpdateRequest = tradeUpdateRequest.getPosition().getIndex();
         final Index initialIndex = initialPosition.getIndex();
         if (indexUpdateRequest != null && initialIndex != null) {
             final String updateRequestIndexName = indexUpdateRequest.getIndexName();
@@ -79,7 +84,7 @@ public class UpdatePositionProcessor {
         }
     }
 
-    private static void updateNotFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
+    private void updateNotFixedRate(Position initialPosition, TradeOut tradeUpdateRequest) {
         final Index indexUpdateRequest = tradeUpdateRequest.getPosition().getIndex();
         final Index initialIndex = initialPosition.getIndex();
         if (indexUpdateRequest != null && initialIndex != null) {
@@ -89,7 +94,7 @@ public class UpdatePositionProcessor {
                 initialPosition.setAccrualDate(tradeUpdateRequest.getAccrualDate());
                 initialIndex.setIndexId(indexUpdateRequest.getIndexId());
                 initialIndex.setIndexName(indexUpdateRequest.getIndexName());
-                initialIndex.setSpread(indexUpdateRequest.getSpread());
+                initialIndex.setSpread(tradeUpdateRequest.getRateOrSpread());
             }
         }
     }
@@ -141,33 +146,53 @@ public class UpdatePositionProcessor {
         return positionService.savePosition(position);
     }
 
-    public Contract executeCancelRequest(Position position) {
-        return contractService.findByPositionId(position.getPositionId())
-            .map(contract -> {
-                final String matchedContractId = position.getMatching1SourceLoanContractId();
-                executeCancelRequest(position.getPositionId(), contract, matchedContractId);
-                return contract;
-            })
-            .orElse(null); // temporary solution until new flow will be implemented
+    /**
+     * Instruct the cancellation of the locan contract proposal that has been previously generated from the position
+     * before the update if the contract can be found.
+     *
+     * @param position Position
+     * @return persisted contract with processing status CANCEL_SUBMITTED or null if no linked contract was found or
+     * contract was not cancelled
+     */
+    public @Nullable Contract instructProposalCancel(Position position) {
+        return contractService.findContractById(position.getMatching1SourceLoanContractId())
+            .map(this::submitContractCancel)
+            .orElse(null);
+    }
+
+    @Transactional
+    public Position delinkContract(@NotNull Position position) {
+        return positionService.delinkContract(position);
+    }
+
+    private Contract submitContractCancel(Contract contract) {
+        boolean isCanceled = executeCancelRequest(contract);
+        if (isCanceled) {
+            log.debug("Contract:{} was canceled", contract.getContractId());
+            contract.setProcessingStatus(CANCEL_SUBMITTED);
+            return contractService.save(contract);
+        }
+        log.debug("Contract:{} was not canceled!", contract.getContractId());
+        return null;
     }
 
     public void cancelContractForCancelLoanTrade(Position position) {
-        final Optional<Contract> contractOptional = contractService.findByPositionId(position.getPositionId());
-        contractOptional.ifPresent(contract -> {
-            final String matchedContractId = position.getMatching1SourceLoanContractId();
-            if (contract.getProcessingStatus() != DECLINED && matchedContractId.equals(contract.getContractId())) {
-                var canceled = executeCancelRequest(position.getPositionId(), contract, matchedContractId);
-                if (canceled) {
-                    recordPositionCancelSubmittedEvent(contract);
-                    contractService.save(contract);
-                }
-            }
-        });
+        log.debug("Searching for not DECLINED Contract to cancel:{} ", position.getMatching1SourceLoanContractId());
+        contractService.findContractByIdExcludeProcessingStatus(position.getMatching1SourceLoanContractId(), DECLINED)
+            .map(this::submitContractCancel)
+            .ifPresent(this::recordPositionCancelSubmittedEvent);
     }
 
-    private boolean executeCancelRequest(Long positionId, Contract contract, String matchedContractId) {
-        log.debug("Sending cancel request for contract Id:{}, position Id:{}", matchedContractId, positionId);
-        return oneSourceService.instructCancelLoanContract(contract.getContractId());
+    private boolean executeCancelRequest(Contract contract) {
+        try {
+            return oneSourceService.instructCancelLoanContract(contract.getContractId());
+        } catch (HttpStatusCodeException e) {
+            var eventBuilder = cloudEventRecordService.getFactory().eventBuilder(CONTRACT_INITIATION);
+            var recordRequest = eventBuilder.buildExceptionRequest(contract.getContractId(), e,
+                CANCEL_LOAN_CONTRACT_PROPOSAL, contract.getContractId());
+            cloudEventRecordService.record(recordRequest);
+            return false;
+        }
     }
 
     public void recordPositionCanceledSystemEvent(Position toCancelPosition) {
@@ -180,7 +205,8 @@ public class UpdatePositionProcessor {
         if (cancelBorrowPosition.getMatching1SourceLoanContractId() == null) {
             return Optional.empty();
         }
-        final Optional<Contract> contractOpt = contractService.findByPositionId(cancelBorrowPosition.getPositionId());
+        final Optional<Contract> contractOpt = contractService.findContractById(
+            cancelBorrowPosition.getMatching1SourceLoanContractId());
         return contractOpt
             .map(this::updateCancelBorrowContract)
             .map(contractService::save);

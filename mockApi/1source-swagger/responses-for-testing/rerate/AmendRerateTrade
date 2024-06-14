@@ -1,0 +1,27 @@
+1. Insert to the correction_instruction table the instruction.
+    - instruction_type should be RERATE_AMEND;
+    - old_trade_id should be linked to the persisted rerate trade;
+    - processing_status should be null;
+    - proposal_type should be RERATE.
+
+INSERT into correction_instruction (instruction_id, instruction_type, amended_trade_id, old_trade_id, proposal_type, creation_date_time)
+VALUES ('1', 'RERATE_AMEND', 222, 2, 'RERATE', '2024-06-06 13:50:41.633000');
+
+2. Insert to the rerate_trade the rerate.
+    - insert can be done using '/events' endpoint in 1Source Ledger mock:
+    [
+        {
+            "eventId": 4,
+            "eventType": "RERATE_PROPOSED",
+            "eventDateTime": "2023-07-30T13:41:29.011Z",
+            "resourceUri": "/ledger/rerates/93f834ff-66b5-4195-892b-8f316ed77006"
+        }
+    ]
+
+    - align with the linked rerate: set matching_rerate_id to match with linked rerate 'rerate_id' field.
+
+3. Insert to the rerate the linked rerate.
+    - processing_status should be MATCHED, APPROVED or CANCEL_PENDING
+
+INSERT INTO rerate (rerate_id, processing_status, contract_id, matching_spire_trade_id, related_spire_position_id)
+VALUES ('1928', 'MATCHED', '3434-4545-5656-6767', 2, 7041397)

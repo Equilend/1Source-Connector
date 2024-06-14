@@ -4,11 +4,11 @@ import static com.intellecteu.onesource.integration.constant.AgreementConstant.F
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.COLLATERAL;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.INSTRUMENT;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.QUANTITY;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.RATE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_DATE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.SETTLEMENT_TYPE;
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRADE_DATE;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
+import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.TRANSACTING_PARTIES;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,6 +16,7 @@ import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -54,23 +55,57 @@ public class TradeAgreement implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(instrument, INSTRUMENT, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(quantity, QUANTITY, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(billingCurrency, BILLING_CURRENCY, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(tradeDate, TRADE_DATE, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(settlementDate, SETTLEMENT_DATE, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(settlementType, SETTLEMENT_TYPE, ONE_SOURCE_LOAN_CONTRACT);
-        throwIfFieldMissedException(collateral, COLLATERAL, ONE_SOURCE_LOAN_CONTRACT);
-        rate.validateForReconciliation();
-        collateral.validateForReconciliation();
-        instrument.validateForReconciliation();
-        validateParties();
-    }
+        List<String> missedFields = new ArrayList<>();
 
-    private void validateParties() throws ValidationException {
-        for (var party : transactingParties) {
-            party.getParty().validateForReconciliation();
+        if (instrument == null) {
+            missedFields.add(INSTRUMENT);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(instrument));
+        }
+        if (quantity == null) {
+            missedFields.add(QUANTITY);
+        }
+        if (billingCurrency == null) {
+            missedFields.add(BILLING_CURRENCY);
+        }
+        if (tradeDate == null) {
+            missedFields.add(TRADE_DATE);
+        }
+        if (settlementDate == null) {
+            missedFields.add(SETTLEMENT_DATE);
+        }
+        if (settlementType == null) {
+            missedFields.add(SETTLEMENT_TYPE);
+        }
+        if (rate == null) {
+            missedFields.add(RATE);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(rate));
+        }
+        if (collateral == null) {
+            missedFields.add(COLLATERAL);
+        } else {
+            missedFields.addAll(getMissedRequiredFields(collateral));
+        }
+        if (transactingParties == null) {
+            missedFields.add(TRANSACTING_PARTIES);
+        } else {
+            missedFields.addAll(validateParties());
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
         }
     }
 
+    private List<String> validateParties() {
+        List<String> missedFields = new ArrayList<>();
+        for (var party : transactingParties) {
+            try {
+                party.getParty().validateForReconciliation();
+            } catch (ValidationException e) {
+                missedFields.addAll(e.getInvalidFields());
+            }
+        }
+        return missedFields;
+    }
 }

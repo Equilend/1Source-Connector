@@ -2,7 +2,7 @@ package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.DVP;
 import static com.intellecteu.onesource.integration.model.onesource.SettlementType.FOP;
-import static com.intellecteu.onesource.integration.services.reconciliation.OneSourceSpireReconcileService.RECONCILE_EXCEPTION;
+import static com.intellecteu.onesource.integration.services.reconciliation.ContractReconcileService.RECONCILE_EXCEPTION;
 import static java.lang.String.format;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.Currency;
 import com.intellecteu.onesource.integration.model.backoffice.Index;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
+import com.intellecteu.onesource.integration.model.onesource.Benchmark;
 import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.FixedRate;
 import com.intellecteu.onesource.integration.model.onesource.FloatingRate;
@@ -29,7 +30,6 @@ import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
@@ -37,7 +37,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@Disabled
 class ContractReconcileServiceTest {
 
     private ReconcileService<Contract, Position> service;
@@ -149,22 +148,6 @@ class ContractReconcileServiceTest {
         position.getPositionSecurityDetail().setBloombergId(null);
 
         verifyReconciliationFailure();
-    }
-
-    @Test
-    @Order(9)
-    @Disabled
-    @Deprecated(since = "1.0.4", forRemoval = true)
-    @DisplayName("Should reconcile if bloombergId security is not matched.")
-    void reconcile_shouldReconcile_whenBloombergIdNotMatched() throws Exception {
-        position.getPositionSecurityDetail().setBloombergId("customValue");
-        position.getPositionSecurityDetail().setQuickCode(null);
-        position.getPositionSecurityDetail().setSedol(null);
-        position.getPositionSecurityDetail().setIsin(null);
-        position.getPositionSecurityDetail().setCusip(null);
-        position.getPositionSecurityDetail().setTicker(null);
-
-        service.reconcile(contract, position);
     }
 
     @Test
@@ -343,11 +326,11 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(34)
-    @DisplayName("Throw exception if cpHaircut is missed")
-    void reconcile_shouldThrowException_whenCpHaircutIsMissed() {
+    @DisplayName("Skip reconciliation if cpHaircut is missed")
+    void reconcile_shouldSkip_whenCpHaircutIsMissed() throws Exception {
         position.getExposure().setCpHaircut(null);
 
-        verifyReconciliationFailure();
+        service.reconcile(contract, position);
     }
 
     @Test
@@ -362,7 +345,7 @@ class ContractReconcileServiceTest {
     @Test
     @Order(36)
     @DisplayName("Ignore reconciliation if cpMarkRoundTo is missed")
-    void reconcile_shouldThrowException_whenCpMarkRoundToIsMissed() throws Exception {
+    void reconcile_shouldSkipCpMarkRoundTo_whenCpMarkRoundToIsMissed() throws Exception {
         position.getExposure().setCpMarkRoundTo(null);
 
         service.reconcile(contract, position);
@@ -370,11 +353,11 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(37)
-    @DisplayName("Ignore reconciliation for cpMarkRoundTo")
-    void reconcile_shouldSuccess_whenCpMarkRoundToHasMismatch() throws Exception {
+    @DisplayName("Trade collateral rounding rule must be reconciled with CpMarkRoundTo")
+    void reconcile_shouldThrowException_whenCpMarkRoundToHasMismatch() throws Exception {
         position.getExposure().setCpMarkRoundTo(99999);
 
-        service.reconcile(contract, position);
+        verifyReconciliationFailure();
     }
 
     @Test
@@ -540,11 +523,11 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(55)
-    @DisplayName("Throw exception if trade contract collateral margin is missed")
-    void reconcile_shouldThrowException_whenCollateralMarginIsMissed() {
+    @DisplayName("Skip field reconciliation if trade contract collateral margin is missed")
+    void reconcile_shouldThrowException_whenCollateralMarginIsMissed() throws Exception {
         contract.getTrade().getCollateral().setMargin(null);
 
-        verifyReconciliationFailure();
+        service.reconcile(contract, position);
     }
 
     @Test
@@ -642,7 +625,7 @@ class ContractReconcileServiceTest {
     @DisplayName("Should throw exception if position.termId is 1 and "
         + "trade.termType is not OPEN")
     void reconcile_shouldThrowException_whenTermTypeIsNotOpen() {
-        contract.getTrade().setTermType(TermType.TERM);
+        contract.getTrade().setTermType(TermType.FIXED);
         position.setTermId(1);
 
         verifyReconciliationFailure();
@@ -671,9 +654,9 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(68)
-    @DisplayName("Throw exception if trade.rate.rebate.fixed.effectiveDate is not matched with position.settleDate")
+    @DisplayName("Throw exception if trade.rate.rebate.fixed.effectiveDate is not matched with position.accrualDate")
     void reconcile_shouldThrowException_whenRateRebateFixedEffectiveDateNotMatched() {
-        position.setSettleDate(LocalDateTime.now());
+        position.setAccrualDate(LocalDateTime.now());
         contract.getTrade().getRate().getRebate().getFixed().setEffectiveDate(LocalDate.now().minusDays(2));
 
         verifyReconciliationFailure();
@@ -708,15 +691,16 @@ class ContractReconcileServiceTest {
 
     @Test
     @Order(71)
-    @DisplayName("Should reconcile trade.rate.rebate.fixed.effectiveDate with position.settleDate")
+    @DisplayName("Should reconcile trade floating spread")
     void reconcile_shouldReconcile_whenRateRebateFloatingSpreadIsMatched() throws Exception {
         var floating = FloatingRate.builder()
-            .spread(1.0d)
+            .spread(10.07d)
+            .benchmark(Benchmark.BGCR)
             .effectiveRate(10.2d) // must match with positionDto test data position.rate
             .build();
         contract.getTrade().getRate().getRebate().setFixed(null);
         contract.getTrade().getRate().getRebate().setFloating(floating);
-        position.setIndex(new Index(11, "testName", 1.0d));
+        position.setIndex(new Index(11, "BGCR", 10.07d));
 
         service.reconcile(contract, position);
     }

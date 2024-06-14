@@ -12,6 +12,7 @@ import com.intellecteu.onesource.integration.model.onesource.Contract;
 import com.intellecteu.onesource.integration.model.onesource.EventType;
 import com.intellecteu.onesource.integration.repository.TradeEventRepository;
 import com.intellecteu.onesource.integration.services.client.onesource.dto.RerateDTO;
+import com.intellecteu.onesource.integration.services.client.onesource.dto.ReturnDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.util.Optional;
 import java.util.Set;
@@ -79,6 +80,11 @@ public class OneSourceApiClientImpl implements OneSourceApiClient {
     public RerateDTO retrieveRerate(String rerateUri) {
         log.debug("Retrieving rerate: {}", rerateUri);
         return restTemplate.getForObject(onesourceBaseEndpoint + rerateUri, RerateDTO.class);
+    }
+
+    public ReturnDTO retrieveReturn(String returnUri) {
+        log.debug("Retrieving return: {}", returnUri);
+        return restTemplate.getForObject(onesourceBaseEndpoint + returnUri, ReturnDTO.class);
     }
 
     private String retrieveEventId(String agreementUri, EventType eventType) {

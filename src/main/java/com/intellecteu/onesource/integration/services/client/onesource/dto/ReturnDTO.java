@@ -14,6 +14,7 @@ package com.intellecteu.onesource.integration.services.client.onesource.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +46,18 @@ public class ReturnDTO {
 
   @JsonProperty("settlementType")
   private SettlementTypeDTO settlementType = null;
+
+  @JsonProperty("returnDate")
+  private LocalDate returnDate = null;
+
+  @JsonProperty("returnSettlementDate")
+  private LocalDate returnSettlementDate = null;
+
+  @JsonProperty("acknowledgementType")
+  private AcknowledgementTypeDTO acknowledgementType = null;
+
+  @JsonProperty("description")
+  private String description = null;
 
   @JsonProperty("settlement")
   private List<PartySettlementInstructionDTO> settlement = null;
@@ -178,6 +191,78 @@ public class ReturnDTO {
     this.settlementType = settlementType;
   }
 
+  public ReturnDTO returnDate(LocalDate returnDate) {
+    this.returnDate = returnDate;
+    return this;
+  }
+
+   /**
+   * Get returnDate
+   * @return returnDate
+  **/
+  @Schema(description = "")
+  public LocalDate getReturnDate() {
+    return returnDate;
+  }
+
+  public void setReturnDate(LocalDate returnDate) {
+    this.returnDate = returnDate;
+  }
+
+  public ReturnDTO returnSettlementDate(LocalDate returnSettlementDate) {
+    this.returnSettlementDate = returnSettlementDate;
+    return this;
+  }
+
+   /**
+   * Get returnSettlementDate
+   * @return returnSettlementDate
+  **/
+  @Schema(description = "")
+  public LocalDate getReturnSettlementDate() {
+    return returnSettlementDate;
+  }
+
+  public void setReturnSettlementDate(LocalDate returnSettlementDate) {
+    this.returnSettlementDate = returnSettlementDate;
+  }
+
+  public ReturnDTO acknowledgementType(AcknowledgementTypeDTO acknowledgementType) {
+    this.acknowledgementType = acknowledgementType;
+    return this;
+  }
+
+   /**
+   * Get acknowledgementType
+   * @return acknowledgementType
+  **/
+  @Schema(description = "")
+  public AcknowledgementTypeDTO getAcknowledgementType() {
+    return acknowledgementType;
+  }
+
+  public void setAcknowledgementType(AcknowledgementTypeDTO acknowledgementType) {
+    this.acknowledgementType = acknowledgementType;
+  }
+
+  public ReturnDTO description(String description) {
+    this.description = description;
+    return this;
+  }
+
+   /**
+   * Get description
+   * @return description
+  **/
+  @Schema(description = "")
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public ReturnDTO settlement(List<PartySettlementInstructionDTO> settlement) {
     this.settlement = settlement;
     return this;
@@ -239,13 +324,17 @@ public class ReturnDTO {
         Objects.equals(this.quantity, _return.quantity) &&
         Objects.equals(this.collateral, _return.collateral) &&
         Objects.equals(this.settlementType, _return.settlementType) &&
+        Objects.equals(this.returnDate, _return.returnDate) &&
+        Objects.equals(this.returnSettlementDate, _return.returnSettlementDate) &&
+        Objects.equals(this.acknowledgementType, _return.acknowledgementType) &&
+        Objects.equals(this.description, _return.description) &&
         Objects.equals(this.settlement, _return.settlement) &&
         Objects.equals(this.lastUpdateDatetime, _return.lastUpdateDatetime);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlementType, settlement, lastUpdateDatetime);
+    return Objects.hash(returnId, contractId, status, executionVenue, quantity, collateral, settlementType, returnDate, returnSettlementDate, acknowledgementType, description, settlement, lastUpdateDatetime);
   }
 
 
@@ -261,6 +350,10 @@ public class ReturnDTO {
     sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
     sb.append("    collateral: ").append(toIndentedString(collateral)).append("\n");
     sb.append("    settlementType: ").append(toIndentedString(settlementType)).append("\n");
+    sb.append("    returnDate: ").append(toIndentedString(returnDate)).append("\n");
+    sb.append("    returnSettlementDate: ").append(toIndentedString(returnSettlementDate)).append("\n");
+    sb.append("    acknowledgementType: ").append(toIndentedString(acknowledgementType)).append("\n");
+    sb.append("    description: ").append(toIndentedString(description)).append("\n");
     sb.append("    settlement: ").append(toIndentedString(settlement)).append("\n");
     sb.append("    lastUpdateDatetime: ").append(toIndentedString(lastUpdateDatetime)).append("\n");
     sb.append("}");

@@ -1,7 +1,7 @@
 package com.intellecteu.onesource.integration.routes.rerate.processor;
 
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.APPROVAL_SUBMITTED;
-import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CONFIRMED;
+import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CANCEL_PENDING;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.CREATED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DECLINE_SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.DISCREPANCIES;
@@ -9,6 +9,7 @@ import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.SUBMITTED;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.TO_VALIDATE;
 import static com.intellecteu.onesource.integration.model.enums.ProcessingStatus.VALIDATED;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,6 +24,7 @@ import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
+import com.intellecteu.onesource.integration.model.backoffice.ReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.TradeOut;
 import com.intellecteu.onesource.integration.model.enums.ProcessingStatus;
 import com.intellecteu.onesource.integration.model.integrationtoolkit.CorrectionInstruction;
@@ -37,6 +39,7 @@ import com.intellecteu.onesource.integration.services.DeclineInstructionService;
 import com.intellecteu.onesource.integration.services.OneSourceService;
 import com.intellecteu.onesource.integration.services.RerateService;
 import com.intellecteu.onesource.integration.services.RerateTradeService;
+import com.intellecteu.onesource.integration.services.ReturnTradeService;
 import com.intellecteu.onesource.integration.services.reconciliation.RerateReconcileService;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventFactory;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
@@ -72,6 +75,8 @@ class RerateProcessorTest {
     @Mock
     private CorrectionInstructionService correctionInstructionService;
     @Mock
+    private ReturnTradeService returnTradeService;
+    @Mock
     private OneSourceService oneSourceService;
 
     RerateProcessor rerateProcessor;
@@ -85,7 +90,7 @@ class RerateProcessorTest {
         doReturn(cloudEventFactory).when(cloudEventRecordService).getFactory();
         rerateProcessor = new RerateProcessor(backOfficeService, oneSourceService,
             rerateTradeService, rerateService, rerateReconcileService, declineInstructionService,
-            correctionInstructionService, cloudEventRecordService);
+            correctionInstructionService, returnTradeService, cloudEventRecordService);
     }
 
     @Test
@@ -232,13 +237,59 @@ class RerateProcessorTest {
     }
 
     @Test
-    void confirmRerateTrade_OkResponse_SENTFORAPPROVALStatus() {
+    void isReturnTradePostponed_ExistOlderReturnTrade_True() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(2L);
+        ReturnTrade olderReturnTrade = new ReturnTrade();
+        olderReturnTrade.setTradeId(1L);
+        TradeOut tradeOut = new TradeOut();
+        tradeOut.setTradeType("Return Loan");
+        olderReturnTrade.setTradeOut(tradeOut);
+        doReturn(List.of(olderReturnTrade)).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = rerateProcessor.isRerateTradePostponed(rerateTrade);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isReturnTradePostponed_ExistOlderRerateTrade_True() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(2L);
+        RerateTrade olderRerateTrade = new RerateTrade();
+        olderRerateTrade.setTradeId(1L);
+        TradeOut tradeOut = new TradeOut();
+        tradeOut.setTradeType("Rerate Borrow");
+        olderRerateTrade.setTradeOut(tradeOut);
+        doReturn(List.of(olderRerateTrade)).when(rerateTradeService).findReturnTrade(any(), any());
+        doReturn(List.of()).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = rerateProcessor.isRerateTradePostponed(rerateTrade);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void isReturnTradePostponed_NotExistOlderRerateTrade_False() {
+        RerateTrade rerateTrade = new RerateTrade();
+        rerateTrade.setTradeId(2L);
+        doReturn(List.of()).when(rerateTradeService).findReturnTrade(any(), any());
+        doReturn(List.of()).when(returnTradeService).findReturnTrade(any(), any());
+
+        boolean result = rerateProcessor.isRerateTradePostponed(rerateTrade);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void confirmRerateTrade_OkResponse_FUTUREStatus() {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(1l);
+        rerateTrade.setTradeOut(new TradeOut());
 
         RerateTrade result = rerateProcessor.confirmRerateTrade(rerateTrade);
 
-        assertEquals(CONFIRMED, result.getProcessingStatus());
+        assertEquals("FUTURE", result.getTradeOut().getStatus());
     }
 
     @Test
@@ -283,8 +334,8 @@ class RerateProcessorTest {
 
     @Test
     void amendRerateTrade_existRerateTrade_REPLACEDStatus() {
-        long oldTradeId = 1l;
-        long amendedTradeId = 2l;
+        long oldTradeId = 1L;
+        long amendedTradeId = 2L;
         CorrectionInstruction correctionInstruction = new CorrectionInstruction();
         correctionInstruction.setOldTradeId(oldTradeId);
         correctionInstruction.setAmendedTradeId(amendedTradeId);
@@ -296,7 +347,7 @@ class RerateProcessorTest {
         doReturn(rerateTrade).when(rerateTradeService).getByTradeId(oldTradeId);
         doReturn(newRerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
 
-        CorrectionInstruction result = rerateProcessor.amendRerateTrade(correctionInstruction);
+        rerateProcessor.amendRerateTrade(correctionInstruction);
 
         assertEquals(ProcessingStatus.REPLACED, rerateTrade.getProcessingStatus());
     }
@@ -308,10 +359,19 @@ class RerateProcessorTest {
         CorrectionInstruction correctionInstruction = new CorrectionInstruction();
         correctionInstruction.setOldTradeId(oldTradeId);
         correctionInstruction.setAmendedTradeId(amendedTradeId);
+        RerateTrade oldRerateTrade = new RerateTrade();
+        oldRerateTrade.setTradeId(oldTradeId);
+        oldRerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
+        doReturn(oldRerateTrade).when(rerateTradeService).getByTradeId(oldTradeId);
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeId(amendedTradeId);
         rerateTrade.setProcessingStatus(ProcessingStatus.WAITING_PROPOSAL);
         doReturn(rerateTrade).when(rerateTradeService).getByTradeId(amendedTradeId);
+        Rerate rerate = new Rerate();
+        rerate.setRerateId("id");
+        rerate.setProcessingStatus(CANCEL_PENDING);
+        doReturn(rerate).when(rerateService).getByRerateId(any());
+        doReturn(rerate).when(rerateService).saveRerate(any());
 
         CorrectionInstruction result = rerateProcessor.cancelRerateTrade(correctionInstruction);
 

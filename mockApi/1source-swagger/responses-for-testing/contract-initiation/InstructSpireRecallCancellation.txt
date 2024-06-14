@@ -1,0 +1,10 @@
+Prepared local migration data: V2024.05.29.12.00__EINT23-877_instruct_spire_recall_cancellation.sql
+
+1. Insert to the recall_spire_instruction:
+    - Should match the Spire recall in the database;
+    - Should have 'RECALL_CANCELLATION' instruction type;
+    - Should have the processingStatus null or 'CREATED'.
+
+2. Insert to the recall_spire the Spire recall:
+    -  should have the status 'CONFIRMED_LENDER',
+    - should have matching_1source_recall_id not empty field.

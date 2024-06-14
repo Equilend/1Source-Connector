@@ -1,13 +1,12 @@
 package com.intellecteu.onesource.integration.model.onesource;
 
 import static com.intellecteu.onesource.integration.constant.AgreementConstant.Field.REBATE_FIXED_BASE_RATE;
-import static com.intellecteu.onesource.integration.model.enums.FieldSource.ONE_SOURCE_LOAN_CONTRACT;
-import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwIfFieldMissedException;
 
 import com.intellecteu.onesource.integration.exception.ValidationException;
 import com.intellecteu.onesource.integration.services.reconciliation.Reconcilable;
 import jakarta.persistence.Table;
 import java.time.LocalDate;
+import java.util.LinkedList;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,7 +28,13 @@ public class FixedRate implements Reconcilable {
 
     @Override
     public void validateForReconciliation() throws ValidationException {
-        throwIfFieldMissedException(baseRate, REBATE_FIXED_BASE_RATE, ONE_SOURCE_LOAN_CONTRACT);
+        var missedFields = new LinkedList<String>();
+        if (baseRate == null) {
+            missedFields.add(REBATE_FIXED_BASE_RATE);
+        }
+        if (!missedFields.isEmpty()) {
+            throw new ValidationException(missedFields);
+        }
     }
 
     public FixedRate(Double baseRate) {

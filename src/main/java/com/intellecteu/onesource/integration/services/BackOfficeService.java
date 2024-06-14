@@ -3,17 +3,38 @@ package com.intellecteu.onesource.integration.services;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.*;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_NEW_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.PENDING_ONESOURCE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.POSITION_ID;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_BORROW;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.ROLL_LOAN;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.STATUS;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_ID;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
-import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.*;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
+import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.POST_POSITION_UPDATE;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.CANCELLED;
 import static com.intellecteu.onesource.integration.model.enums.PositionStatusEnum.OPEN;
-import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.*;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.EQUALS;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.GREATER_THAN;
+import static com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum.IN;
 import static java.lang.String.join;
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.FORBIDDEN;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
+import com.intellecteu.onesource.integration.model.backoffice.CancelReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.Position;
 import com.intellecteu.onesource.integration.model.backoffice.PositionConfirmationRequest;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -29,8 +50,23 @@ import com.intellecteu.onesource.integration.model.onesource.SettlementInstructi
 import com.intellecteu.onesource.integration.services.client.spire.InstructionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.PositionSpireApiClient;
 import com.intellecteu.onesource.integration.services.client.spire.TradeSpireApiClient;
-import com.intellecteu.onesource.integration.services.client.spire.dto.*;
+import com.intellecteu.onesource.integration.services.client.spire.dto.AccountDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.LoanTradeInputDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQuery;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple;
 import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryTuple.OperatorEnum;
+import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.PositionDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.PositionOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseInstructionDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponsePositionOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO.StatusEnum;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponsePositionDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SwiftbicDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
 import java.util.ArrayList;
@@ -41,6 +77,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -197,26 +234,30 @@ public class BackOfficeService {
         );
     }
 
-    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeId) {
-        Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
+    public List<RerateTrade> getNewBackOfficeRerateTradeEvents(Optional<Long> lastTradeIdOpt) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetNewTrades(maxTradeId.toString()));
+            .tuples(createTuplesGetNewTrades(lastTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
-        if (response.getBody().getData() != null
-            && response.getBody().getData().getTotalRows() != null
-            && response.getBody().getData().getTotalRows() > 0) {
-            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
-            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
-                .collect(Collectors.toList());
+        if (response.getBody() != null) {
+            if (StatusEnum.ERROR.equals(response.getBody().getStatus())) {
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, response.getBody().getMessage());
+            }
+            if (response.getBody().getData() != null && response.getBody().getData().getTotalRows() != null
+                && response.getBody().getData().getTotalRows() > 0) {
+                List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+                return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToRerateTrade)
+                    .collect(Collectors.toList());
+            }
         }
         return List.of();
     }
 
-    public List<ReturnTrade> retrieveReturnTrades(Optional<Long> lastTradeId) {
-        Long maxTradeId = lastTradeId.orElse(STARTING_TRADE_ID);
+    public List<ReturnTrade> retrieveNewReturnTrades(Optional<Long> lastTradeIdOpt) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
         NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
-            .tuples(createTuplesGetReturnTrades(maxTradeId.toString()));
+            .tuples(createTuplesGetReturnTrades(lastTradeId.toString()));
         NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery);
         ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
         if (response.getBody().getData() != null
@@ -229,6 +270,73 @@ public class BackOfficeService {
         return List.of();
     }
 
+    public List<ReturnTrade> retrieveOpenReturnTrades(List<Long> tradeIds) {
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
+            .tuples(createTuplesGetOpenReturnTrades(tradeIds));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery).start(0L);
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToReturnTrade)
+                .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    private List<NQueryTuple> createTuplesGetOpenReturnTrades(List<Long> tradeIds) {
+        List<NQueryTuple> tuples = new ArrayList<>();
+        tuples.add(
+            new NQueryTuple().lValue("tradeId").operator(OperatorEnum.IN).rValue1(StringUtils.join(tradeIds, ",")));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS).rValue1("OPEN"));
+        return tuples;
+    }
+
+    public List<CancelReturnTrade> retrieveCancelledReturnTrades(Optional<Long> lastTradeIdOpt, List<Long> tradeIds) {
+        Long lastTradeId = lastTradeIdOpt.orElse(STARTING_TRADE_ID);
+        NQuery nQuery = new NQuery().andOr(NQuery.AndOrEnum.AND)
+            .tuples(createTuplesGetCancelledReturnTrades(lastTradeId, tradeIds));
+        NQueryRequest nQueryRequest = new NQueryRequest().nQuery(nQuery).start(0L);
+        ResponseEntity<SResponseNQueryResponseTradeOutDTO> response = tradeSpireApiClient.getTrades(nQueryRequest);
+        if (response.getBody().getData() != null
+            && response.getBody().getData().getTotalRows() != null
+            && response.getBody().getData().getTotalRows() > 0) {
+            List<TradeOutDTO> tradeOutDTOList = response.getBody().getData().getBeans();
+            return tradeOutDTOList.stream().map(this::mapBackOfficeTradeOutDTOToCancelReturnTrade)
+                .collect(Collectors.toList());
+        }
+        return List.of();
+    }
+
+    private CancelReturnTrade mapBackOfficeTradeOutDTOToCancelReturnTrade(TradeOutDTO tradeOutDTO) {
+        CancelReturnTrade cancelReturnTrade = new CancelReturnTrade();
+        cancelReturnTrade.setTradeId(tradeOutDTO.getTradeId());
+        cancelReturnTrade.setOffsetId(tradeOutDTO.getOffsetId());
+        cancelReturnTrade.setType(tradeOutDTO.getTradeTypeDetailDTO().getTradeType());
+        return cancelReturnTrade;
+    }
+
+    private List<NQueryTuple> createTuplesGetCancelledReturnTrades(Long lastTradeId, List<Long> tradeIds) {
+        List<NQueryTuple> tuples = new ArrayList<>();
+        tuples.add(new NQueryTuple().lValue("tradetype").operator(IN).rValue1(
+            "Cancel Return Borrow, Cancel Return Borrow (Full), Cancel Return Loan, Cancel Return loan (Full)"));
+        tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS).rValue1("CANCELLED"));
+        tuples.add(new NQueryTuple().lValue("tradeId").operator(GREATER_THAN).rValue1(lastTradeId.toString()));
+        tuples.add(new NQueryTuple().lValue("offsetId").operator(IN).rValue1(StringUtils.join(tradeIds, ",")));
+        return tuples;
+    }
+
+    public void confirmReturnTrade(ReturnTrade returnTrade) {
+        OneSourceConfimationDTO body = new OneSourceConfimationDTO();
+        body.setTradeId(returnTrade.getTradeId());
+        body.setPositionId(returnTrade.getRelatedPositionId());
+        body.setLedgerId(returnTrade.getMatching1SourceReturnId());
+        body.userId(userId);
+        body.setUserName(userName);
+        tradeSpireApiClient.confirmTrade(body);
+    }
+
     public void confirmBackOfficeRerateTrade(RerateTrade rerateTrade) {
         OneSourceConfimationDTO body = new OneSourceConfimationDTO();
         body.setTradeId(rerateTrade.getTradeId());
@@ -236,9 +344,6 @@ public class BackOfficeService {
         body.setLedgerId(rerateTrade.getMatchingRerateId());
         body.userId(userId);
         body.setUserName(userName);
-        var instructionDTO = new com.intellecteu.onesource.integration.services.client.spire.dto.InstructionDTO();
-        instructionDTO.accountDTO(new AccountDTO().dtc(0l));
-        body.setInstructions(instructionDTO);
         tradeSpireApiClient.confirmTrade(body);
     }
 

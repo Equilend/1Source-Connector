@@ -65,26 +65,17 @@ public class AppConfig {
         return objectMapper;
     }
 
+    @Bean("oneSourceApiClient")
+    public com.intellecteu.onesource.integration.services.client.onesource.invoker.ApiClient oneSourceApiClient(RestTemplate restTemplate,
+        @Value("${onesource.base-endpoint}") String onesourceBasePath,
+        @Value("${onesource.version}") String onesourceVersion){
+        var apiClient = new com.intellecteu.onesource.integration.services.client.onesource.invoker.ApiClient(restTemplate);
+        apiClient.setBasePath(onesourceBasePath.concat(onesourceVersion));
+        return apiClient;
+    }
+
     @Bean("spireApiClient")
     public ApiClient spireApiClient(RestTemplate restTemplate,
-        @Value("${spire.base-endpoint}") String spireBasePath) {
-        ApiClient apiClient = new ApiClient(restTemplate);
-        apiClient.setBasePath(spireBasePath);
-        return apiClient;
-    }
-
-    @Bean("lenderApiClient")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public ApiClient lenderApiClient(RestTemplate restTemplate,
-        @Value("${spire.base-endpoint}") String spireBasePath) {
-        ApiClient apiClient = new ApiClient(restTemplate);
-        apiClient.setBasePath(spireBasePath);
-        return apiClient;
-    }
-
-    @Bean("borrowerApiClient")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public ApiClient borrowerApiClient(RestTemplate restTemplate,
         @Value("${spire.base-endpoint}") String spireBasePath) {
         ApiClient apiClient = new ApiClient(restTemplate);
         apiClient.setBasePath(spireBasePath);
@@ -97,38 +88,10 @@ public class AppConfig {
         return new PositionSpireApiClient(spireApiClient, clientId);
     }
 
-    @Bean("lenderPositionSpireApiClient")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public PositionSpireApiClient lenderPositionSpireApiClient(ApiClient lenderApiClient,
-        @Value("${spire.username}") String clientId) {
-        return new PositionSpireApiClient(lenderApiClient, clientId);
-    }
-
-    @Bean("borrowerPositionSpireApiClient")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public PositionSpireApiClient borrowerPositionSpireApiClient(ApiClient borrowerApiClient,
-        @Value("${spire.username}") String clientId) {
-        return new PositionSpireApiClient(borrowerApiClient, clientId);
-    }
-
     @Bean
     public TradeSpireApiClient tradeSpireApiClient(ApiClient spireApiClient,
         @Value("${spire.username}") String clientId) {
         return new TradeSpireApiClient(spireApiClient, clientId);
-    }
-
-    @Bean
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public TradeSpireApiClient lenderTradeSpireApiClient(ApiClient lenderApiClient,
-        @Value("${spire.username}") String clientId) {
-        return new TradeSpireApiClient(lenderApiClient, clientId);
-    }
-
-    @Bean
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public TradeSpireApiClient borrowerTradeSpireApiClient(ApiClient borrowerApiClient,
-        @Value("${spire.username}") String clientId) {
-        return new TradeSpireApiClient(borrowerApiClient, clientId);
     }
 
     @Bean
@@ -138,26 +101,6 @@ public class AppConfig {
          BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
         return new BackOfficeService(spirePositionApiClient, tradeSpireApiClient, instructionClient, userId,
             userName, backOfficeMapper, cloudEventRecordService);
-    }
-
-    @Bean("lenderBackOfficeService")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public BackOfficeService lenderBackOfficeService(PositionSpireApiClient lenderPositionSpireApiClient,
-        TradeSpireApiClient lenderTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
-        BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
-        return new BackOfficeService(lenderPositionSpireApiClient, lenderTradeSpireApiClient, instructionClient, userId,
-            userName, backOfficeMapper, cloudEventRecordService);
-    }
-
-    @Bean("borrowerBackOfficeService")
-    @Deprecated(since = "0.0.5-SNAPSHOT")
-    public BackOfficeService borrowerBackOfficeService(PositionSpireApiClient borrowerPositionSpireApiClient,
-        TradeSpireApiClient borrowerTradeSpireApiClient, InstructionSpireApiClient instructionClient,
-        @Value("${spire.user-id}") Integer userId, @Value("${spire.username}") String userName,
-        BackOfficeMapper backOfficeMapper, CloudEventRecordService cloudEventRecordService) {
-        return new BackOfficeService(borrowerPositionSpireApiClient, borrowerTradeSpireApiClient, instructionClient,
-            userId, userName, backOfficeMapper, cloudEventRecordService);
     }
 
     @Bean

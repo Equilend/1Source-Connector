@@ -17,6 +17,6 @@ public class VenueParty {
     @JsonIgnore
     private Long id;
     private PartyRole partyRole;
-    private String venueId;
+    private String venuePartyRefKey;
 
 }

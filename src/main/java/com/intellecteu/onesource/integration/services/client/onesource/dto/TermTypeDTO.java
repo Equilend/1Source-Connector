@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum TermTypeDTO {
   OPEN("OPEN"),
-  TERM("TERM");
+  FIXED("FIXED");
 
   private String value;
 
