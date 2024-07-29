@@ -9,8 +9,7 @@
 
 ## 1. Project Description
 
-OneSource integration toolkit is a mediator service between 1SOURCE and SPIRE systems. The toolkit aims to enhance the
-end-user experience with lending or borrowing securities.
+The 1Source Connector an abstraction layer which mediates between 1SOURCE and SPIRE systems. The Connector is a reference implementation of a gateway between the two platforms.
 
 ## 2. Technologies
 
