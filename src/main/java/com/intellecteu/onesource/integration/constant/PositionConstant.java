@@ -57,7 +57,7 @@ public class PositionConstant {
         public static final String NEW_BORROW = "New Borrow";
         public static final String NEW_LOAN = "New Loan";
         public static final String POSITION_ID = "positionId";
-        public static final String PENDING_ONESOURCE_CONFIRMATION = "PENDING ONESOURCE CONFIRMATION";
+        public static final String PENDING_LEDGER_CONFIRMATION = "PENDING LEDGER CONFIRMATION";
         public static final String RERATE = "Rerate";
         public static final String RERATE_BORROW = "Rerate Borrow";
         public static final String ROLL_BORROW = "Roll Borrow";
@@ -70,7 +70,7 @@ public class PositionConstant {
 
     public static class Status {
 
-        public final static String PENDING_ONESOURCE_CONFIRMATION = "PENDING ONESOURCE CONFIRMATION";
+        public final static String PENDING_LEDGER_CONFIRMATION = "PENDING LEDGER CONFIRMATION";
     }
 
 }

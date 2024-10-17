@@ -12,11 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -27,6 +23,7 @@ public class ContractController {
 
     private final ContractApiService contractService;
 
+    @CrossOrigin
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<PageResponse<ContractDto>> getContracts(final Pageable pageable,
         @RequestParam(required = false) final MultiValueMap<String, String> parameters) {
@@ -36,6 +33,7 @@ public class ContractController {
             .body(contracts);
     }
 
+    @CrossOrigin
     @GetMapping(path = "/{id}", produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<ContractDto> getContractById(@NonNull @PathVariable final String id) {
         ContractDto contract = contractService.getContractById(id);

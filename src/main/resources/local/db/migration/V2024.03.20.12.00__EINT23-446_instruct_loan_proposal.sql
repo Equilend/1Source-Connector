@@ -14,5 +14,5 @@
 --         22, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
 --         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
 --         1.02, 1, 0, 'CASH LOAN', true,
---         22, 44, '22', '44', 'CREATED', 'PENDING ONESOURCE CONFIRMATION',
+--         22, 44, '22', '44', 'CREATED', 'PENDING LEDGER CONFIRMATION',
 --         123, 'Fixed Rate', 11.0, '2023-10-25 13:50:41.633000');

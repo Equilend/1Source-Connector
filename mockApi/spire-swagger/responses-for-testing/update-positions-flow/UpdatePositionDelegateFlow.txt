@@ -18,10 +18,10 @@ VALUES ('35', '35', '35', '023135107', 'US0231351068',
         11000.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
         1.02, 0, 0, 'CASH LOAN',
-        35, 46, '35', '46', 'CREATED', 'PENDING ONESOURCE CONFIRMATION',
+        35, 46, '35', '46', 'CREATED', 'PENDING LEDGER CONFIRMATION',
         333, 'EFFR', 0.2, '2023-10-25 13:50:41.633000', 35);
 
-2. Create a Trade response with a matched position for '/trades/search/onesource/trade/query'
+2. Create a Trade response with a matched position for '/trades/search/trade/query'
     - the status should be 200
     - setup the TradeType as Rerate | Rerate Borrow | Roll Loan | Roll Borrow | Cancel Loan | Cancel Borrow
 
@@ -181,7 +181,7 @@ VALUES ('35', '35', '35', '023135107', 'US0231351068',
                         "spread": 0,
                         "statusDTO": {
                             "__qualifiedName": "string",
-                            "status": "PENDING ONESOURCE CONFIRMATION",
+                            "status": "PENDING LEDGER CONFIRMATION",
                             "statusId": 0
                         },
                         "targetPrice": 0,

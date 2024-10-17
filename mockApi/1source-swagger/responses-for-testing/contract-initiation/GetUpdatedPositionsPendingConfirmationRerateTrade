@@ -1,12 +1,12 @@
 Prepared local migration data: V2024.06.11.13.00__EINT23-445_get_updated_positions_pending_confirmation_rerate_trade_type.sql
 
 1. Insert to position table the position:
-    - status should be 'PENDING ONESOURCE CONFIRMATION';
+    - status should be 'PENDING LEDGER CONFIRMATION';
     - processing status should be null or 'CREATED';
     - position.matching1SourceLoanContractId should be matched with the linked contract;
     - position.indexDTO.indexName should be 'Fixed Rate'.
 
-2. Create the matched mock for SPIRE endpoint: '/trades/search/onesource/trade/query'
+2. Create the matched mock for SPIRE endpoint: '/trades/search/trade/query'
     - tradeOut type should be 'Rerate';
     - tradeOut.positionOutDTO.positionId should match with the initial position inserted;
     - tradeOut.positionOutDTO.indexDTO.indexName should be 'Fixed Rate'.
@@ -166,7 +166,7 @@ Prepared local migration data: V2024.06.11.13.00__EINT23-445_get_updated_positio
                         "spread": 0,
                         "statusDTO": {
                             "__qualifiedName": "string",
-                            "status": "PENDING ONESOURCE CONFIRMATION",
+                            "status": "PENDING LEDGER CONFIRMATION",
                             "statusId": 0
                         },
                         "targetPrice": 0,

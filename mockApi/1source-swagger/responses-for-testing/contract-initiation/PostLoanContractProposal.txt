@@ -18,7 +18,7 @@ VALUES ('9999', '9999', '123', '023135107', 'US0231351068',
         9999.0, 'USD', 85.0, '2023-10-25 13:50:41.633000', 0,
         '2023-10-25 13:50:41.633000', false, 17935.5, 119.57,
         1.02, 0, 0, 'CASH LOAN',
-        9999, 8888, '9999', '8888', 'CREATED', 'PENDING ONESOURCE CONFIRMATION',
+        9999, 8888, '9999', '8888', 'CREATED', 'PENDING LEDGER CONFIRMATION',
         123, 'EFFR', 11.0, '2023-10-25 13:50:41.633000');
 
 2. Check the mock response for the POST `/ledger/contracts` endpoint:

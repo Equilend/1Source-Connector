@@ -14,7 +14,7 @@
 --         7890.0, 'USD', 85.0, '2024-02-21 13:50:41.633000', 1,
 --         '2023-10-25 13:50:41.633000', false, 1799411.5, 119.57,
 --         1.02, 0, 0, 'CASH BORROW', '2024-03-24 13:50:41.633000',
---         7890, 6710, '4141', '1212', 'CREATED', 'PENDING ONESOURCE CONFIRMATION', true,
+--         7890, 6710, '4141', '1212', 'CREATED', 'PENDING LEDGER CONFIRMATION', true,
 --         12, 'Fixed Rate', 11.0, '2023-10-25 13:50:41.633000', '32b71278-9ad2-445a-bfb0-b5ada72f7890');
 --
 -- INSERT INTO internal_ref (id, broker, account_id, internal_id)

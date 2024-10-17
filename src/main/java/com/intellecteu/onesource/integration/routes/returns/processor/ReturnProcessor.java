@@ -40,6 +40,19 @@ import static com.intellecteu.onesource.integration.model.enums.RecordType.TECHN
 import static com.intellecteu.onesource.integration.model.onesource.PartyRole.BORROWER;
 import static com.intellecteu.onesource.integration.utils.ExceptionUtils.throwExceptionForRedeliveryPolicy;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpStatusCodeException;
+
 import com.intellecteu.onesource.integration.exception.ReconcileException;
 import com.intellecteu.onesource.integration.model.backoffice.CancelReturnTrade;
 import com.intellecteu.onesource.integration.model.backoffice.RerateTrade;
@@ -64,19 +77,9 @@ import com.intellecteu.onesource.integration.services.systemevent.CloudEventReco
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCancellationCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder;
 import com.intellecteu.onesource.integration.services.systemevent.ReturnCloudEventBuilder.DataBuilder;
+
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.HttpStatusCodeException;
 
 @Component
 @Slf4j
@@ -314,11 +317,8 @@ public class ReturnProcessor {
             return true;
         } else {
             Optional<RerateTrade> notConfirmedRerateTrade = findNotConfirmedRerateTradeWithLowerTradeId(returnTrade);
-            if (notConfirmedRerateTrade.isPresent()) {
-                return true;
-            }
+            return notConfirmedRerateTrade.isPresent();
         }
-        return false;
     }
 
     private Optional<RerateTrade> findNotConfirmedRerateTradeWithLowerTradeId(ReturnTrade returnTrade) {
@@ -400,7 +400,7 @@ public class ReturnProcessor {
     @Transactional
     public List<ReturnTrade> fetchAndProcessCanceledReturnTrades() {
         List<ReturnTrade> returnTrades = returnTradeService.findReturnTradeWithStatus(
-            Set.of("FUTURE", "PENDING ONESOURCE CONFIRMATION"));
+            Set.of("FUTURE", "PENDING LEDGER CONFIRMATION"));
         Optional<Long> lastTradeId = returnTradeService.getMaxTradeId();
         if (!returnTrades.isEmpty()) {
             try {

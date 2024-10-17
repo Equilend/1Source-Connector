@@ -1,13 +1,12 @@
 package com.intellecteu.onesource.integration.services;
 
 import static com.intellecteu.onesource.integration.constant.PositionConstant.BORROWER_POSITION_TYPE;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.LENDER_POSITION_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Field.COMMA_DELIMITER;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_LOAN;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.CANCEL_NEW_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_BORROW;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.NEW_LOAN;
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.PENDING_ONESOURCE_CONFIRMATION;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.POSITION_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.RERATE_BORROW;
@@ -17,6 +16,7 @@ import static com.intellecteu.onesource.integration.constant.PositionConstant.Re
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_ID;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_STATUS;
 import static com.intellecteu.onesource.integration.constant.PositionConstant.Request.TRADE_TYPE;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Status.PENDING_LEDGER_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationProcess.CONTRACT_INITIATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_NEW_POSITIONS_PENDING_CONFIRMATION;
 import static com.intellecteu.onesource.integration.model.enums.IntegrationSubProcess.GET_UPDATED_POSITIONS_PENDING_CONFIRMATION;
@@ -31,6 +31,23 @@ import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
+import org.springframework.web.client.RestClientException;
 
 import com.intellecteu.onesource.integration.exception.InstructionRetrievementException;
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
@@ -69,22 +86,8 @@ import com.intellecteu.onesource.integration.services.client.spire.dto.TradeDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.TradeOutDTO;
 import com.intellecteu.onesource.integration.services.client.spire.dto.instruction.InstructionDTO;
 import com.intellecteu.onesource.integration.services.systemevent.CloudEventRecordService;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
-import org.springframework.lang.NonNull;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpStatusCodeException;
-import org.springframework.web.client.RestClientException;
 
 //@Service initiated in @see com.intellecteu.onesource.integration.config.AppConfig
 @Slf4j
@@ -428,7 +431,7 @@ public class BackOfficeService {
     private List<NQueryTuple> createTuplesGetNewTradePositions(String lastTradeId) {
         return List.of(
             buildTuple(TRADE_TYPE, IN, join(COMMA_DELIMITER, List.of(NEW_LOAN, NEW_BORROW))),
-            buildTuple(TRADE_STATUS, EQUALS, PENDING_ONESOURCE_CONFIRMATION),
+            buildTuple(TRADE_STATUS, EQUALS, PENDING_LEDGER_CONFIRMATION),
             buildTuple(TRADE_ID, GREATER_THAN, lastTradeId)
         );
     }
@@ -528,7 +531,7 @@ public class BackOfficeService {
                 .rValue1("Rerate, Rerate Borrow"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
         tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
-            .rValue1("PENDING ONESOURCE CONFIRMATION"));
+            .rValue1("PENDING LEDGER CONFIRMATION"));
         return tuples;
     }
 
@@ -537,7 +540,7 @@ public class BackOfficeService {
         RerateTrade rerateTrade = new RerateTrade();
         rerateTrade.setTradeOut(tradeOut);
         rerateTrade.setTradeId(tradeOut.getTradeId());
-        rerateTrade.setRelatedPositionId(Long.valueOf(tradeOut.getPosition().getPositionId()));
+        rerateTrade.setRelatedPositionId(tradeOut.getPosition().getPositionId());
         rerateTrade.setRelatedContractId(tradeOutDTO.getPositionOutDTO().getLedgerId());
         return rerateTrade;
     }
@@ -549,7 +552,7 @@ public class BackOfficeService {
                 .rValue1("Return Loan, Return Borrow"));
         tuples.add(new NQueryTuple().lValue("tradeId").operator(OperatorEnum.GREATER_THAN).rValue1(maxTradeId));
         tuples.add(new NQueryTuple().lValue("status").operator(OperatorEnum.EQUALS)
-            .rValue1("PENDING ONESOURCE CONFIRMATION"));
+            .rValue1("PENDING LEDGER CONFIRMATION"));
         return tuples;
     }
 

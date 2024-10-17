@@ -1,6 +1,6 @@
 package com.intellecteu.onesource.integration.routes.delegate_flow;
 
-import static com.intellecteu.onesource.integration.constant.PositionConstant.Status.PENDING_ONESOURCE_CONFIRMATION;
+import static com.intellecteu.onesource.integration.constant.PositionConstant.Status.PENDING_LEDGER_CONFIRMATION;
 
 import com.intellecteu.onesource.integration.mapper.BackOfficeMapper;
 import com.intellecteu.onesource.integration.routes.delegate_flow.processor.ContractProcessor;
@@ -23,7 +23,6 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
 
     private final long updateTimer;
     private final UpdatePositionProcessor updatePositionProcessor;
-    private final ContractProcessor contractProcessor;
     private final BackOfficeMapper backOfficeMapper;
 
     public UpdatePositionDelegateFlowRoute(
@@ -32,13 +31,12 @@ public class UpdatePositionDelegateFlowRoute extends RouteBuilder {
         ContractProcessor contractProcessor, BackOfficeMapper backOfficeMapper) {
         this.updatePositionProcessor = updatePositionProcessor;
         this.updateTimer = updateTimer;
-        this.contractProcessor = contractProcessor;
         this.backOfficeMapper = backOfficeMapper;
     }
 
     @Override
     public void configure() {
-        from(createPositionSQLEndpoint(PENDING_ONESOURCE_CONFIRMATION))
+        from(createPositionSQLEndpoint(PENDING_LEDGER_CONFIRMATION))
             .routeId("GetUpdatedPositionsPendingConfirmation")
             .log(">>> Start GET_UPDATED_POSITIONS_PENDING_CONFIRMATION subprocess.")
             .bean(backOfficeMapper, "toPositionList")

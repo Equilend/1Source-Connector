@@ -16,12 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -33,6 +28,7 @@ public class NackInstructionController {
     private final NackInstructionApiService nackInstructionApiService;
     private final NackInstructionApiMapper mapper;
 
+    @CrossOrigin
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<PageResponse<NackInstructionDTO>> getNackInstructions(Pageable pageable,
         @RequestParam(required = false) final MultiValueMap<String, String> parameters) {
@@ -42,6 +38,7 @@ public class NackInstructionController {
             .body(new PageResponse<>(nackInstructions.map(mapper::toDTO)));
     }
 
+    @CrossOrigin
     @PostMapping(consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<NackInstructionDTO> createNackInstruction(
         @NotNull @RequestBody NackInstructionDTO nackInstructionDTO) {

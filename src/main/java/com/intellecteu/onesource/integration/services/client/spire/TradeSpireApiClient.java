@@ -1,11 +1,7 @@
 package com.intellecteu.onesource.integration.services.client.spire;
 
-import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
-import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
-import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseOneSourceConfimationDTO;
-import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
 import java.util.List;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,10 +14,16 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.intellecteu.onesource.integration.services.client.spire.dto.NQueryRequest;
+import com.intellecteu.onesource.integration.services.client.spire.dto.OneSourceConfimationDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseNQueryResponseTradeOutDTO;
+import com.intellecteu.onesource.integration.services.client.spire.dto.SResponseOneSourceConfimationDTO;
+import com.intellecteu.onesource.integration.services.client.spire.invoker.ApiClient;
+
 public class TradeSpireApiClient {
 
-    private ApiClient apiClient;
-    private String clientId;
+    private final ApiClient apiClient;
+    private final String clientId;
 
     public TradeSpireApiClient(ApiClient apiClient, String clientId) {
         this.apiClient = apiClient;
@@ -77,17 +79,17 @@ public class TradeSpireApiClient {
      */
     public ResponseEntity<SResponseNQueryResponseTradeOutDTO> getOneSourceTradesUsingPOSTWithHttpInfo(
         String accessToken, String clientId, NQueryRequest nQueryRequest) throws RestClientException {
-        Object postBody = nQueryRequest;
 
-        String path = UriComponentsBuilder.fromPath("/trades/search/onesource/trade/query").build().toUriString();
+        String path = UriComponentsBuilder.fromPath("/trades/search/trade/query").build().toUriString();
 
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<>();
 
         if (accessToken != null) {
             headerParams.add("access_token", apiClient.parameterToString(accessToken));
         }
+
         if (clientId != null) {
             headerParams.add("client_id", apiClient.parameterToString(clientId));
         }
@@ -105,7 +107,7 @@ public class TradeSpireApiClient {
 
         ParameterizedTypeReference<SResponseNQueryResponseTradeOutDTO> returnType = new ParameterizedTypeReference<>() {
         };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
+        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, nQueryRequest, headerParams, formParams, accept,
             contentType, authNames, returnType);
     }
 
@@ -132,13 +134,12 @@ public class TradeSpireApiClient {
      */
     public ResponseEntity<SResponseNQueryResponseTradeOutDTO> getTradesUsingPOSTWithHttpInfo(String accessToken,
         String clientId, NQueryRequest nQueryRequest) throws RestClientException {
-        Object postBody = nQueryRequest;
 
-        String path = UriComponentsBuilder.fromPath("/trades/search/onesource/trade/query").build().toUriString();
+        String path = UriComponentsBuilder.fromPath("/trades/search/trade/query").build().toUriString();
 
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<>();
 
         if (accessToken != null) {
             headerParams.add("access_token", apiClient.parameterToString(accessToken));
@@ -160,7 +161,7 @@ public class TradeSpireApiClient {
 
         ParameterizedTypeReference<SResponseNQueryResponseTradeOutDTO> returnType = new ParameterizedTypeReference<>() {
         };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
+        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, nQueryRequest, headerParams, formParams, accept,
             contentType, authNames, returnType);
     }
 
@@ -213,7 +214,6 @@ public class TradeSpireApiClient {
      */
     public ResponseEntity<SResponseOneSourceConfimationDTO> confirmAndBatchPendingPositionsUsingPOSTWithHttpInfo(
         String accessToken, OneSourceConfimationDTO input) throws RestClientException {
-        Object postBody = input;
 
         // verify the required parameter 'input' is set
         if (input == null) {
@@ -223,9 +223,9 @@ public class TradeSpireApiClient {
 
         String path = UriComponentsBuilder.fromPath("/trades/oneSource/comfirmation").build().toUriString();
 
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<String, String>();
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         final HttpHeaders headerParams = new HttpHeaders();
-        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<String, Object>();
+        final MultiValueMap<String, Object> formParams = new LinkedMultiValueMap<>();
 
         if (accessToken != null) {
             headerParams.add("access_token", apiClient.parameterToString(accessToken));
@@ -242,9 +242,9 @@ public class TradeSpireApiClient {
 
         String[] authNames = new String[]{};
 
-        ParameterizedTypeReference<SResponseOneSourceConfimationDTO> returnType = new ParameterizedTypeReference<SResponseOneSourceConfimationDTO>() {
+        ParameterizedTypeReference<SResponseOneSourceConfimationDTO> returnType = new ParameterizedTypeReference<>() {
         };
-        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, postBody, headerParams, formParams, accept,
+        return apiClient.invokeAPI(path, HttpMethod.POST, queryParams, input, headerParams, formParams, accept,
             contentType, authNames, returnType);
     }
 
